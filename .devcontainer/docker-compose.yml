@@ -1,0 +1,24 @@
+version: '3.9'
+
+services:
+  app:
+    env_file:
+      - .env
+    image: mcr.microsoft.com/devcontainers/base:jammy
+    network_mode: service:db
+    command: sleep infinity
+    depends_on:
+      - db
+    volumes:
+      - ../../:/workspaces:cached
+  
+  db:
+    image: neo4j:community
+    env_file:
+      - .env
+    restart: unless-stopped
+    volumes:
+      - neo4j-data:/data
+
+volumes:
+  neo4j-data:
