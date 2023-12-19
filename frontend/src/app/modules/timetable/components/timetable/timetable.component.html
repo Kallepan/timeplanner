@@ -32,7 +32,7 @@
     <!-- Now display the slots by using the respective gridRow !-->
     @for (slot of workplace.slots; track slot) {
       <div
-        class="cell"
+        class="cell header"
         [ngStyle]="{
           'grid-row': slot.gridRow,
           'grid-column': 2
@@ -58,7 +58,7 @@
             'grid-column': ts.gridColumn
           }"
         >
-          Person: {{ ts.occupiedBy }} <br />
+          <app-select-person-for-timeslot></app-select-person-for-timeslot>
           @if (displayTime) {
             {{ ts.startTime }} - {{ ts.endTime }}
           }

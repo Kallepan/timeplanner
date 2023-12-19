@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { TimetableComponent } from '@app/modules/timetable/components/timetable.component';
+import { TimetableComponent } from '@app/modules/timetable/components/timetable/timetable.component';
 import { AbstractTimetableDataService } from '@app/modules/timetable/services/timetable-data.service';
 import { PlannerTimetableDataService } from '../../services/planner-timetable-data.service';
 import { DUMMY_TIMESLOTS } from '../../tests/timeslots.data';
