@@ -1,11 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, signal } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WeekdayIDToGridColumn } from '@app/shared/functions/weekday-to-grid-column.function';
 import { Subject, catchError, map, of, tap } from 'rxjs';
 import { TimeslotResponse } from '../interfaces/backend.interface';
 import { Slot, Weekday, Workplace } from '../interfaces/timetable.interface';
 
+@Injectable({
+  providedIn: null,
+})
 export abstract class AbstractTimetableDataService {
   /**
    * This service is respsonsible for providing the data for the timetable.
