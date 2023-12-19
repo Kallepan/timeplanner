@@ -1,0 +1,6 @@
+<div class="container">
+    @for(route of routes; track route) {
+    <button mat-raised-button color="accent" [routerLink]="route.path"
+        (click)="closeSidenav.emit()">{{route.title}}</button>
+    }
+</div>

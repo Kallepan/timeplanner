@@ -1,63 +1,58 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the
 // README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
-	"name": "Timeplanner DevContainer",
-	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
-	"dockerComposeFile": "docker-compose.yml",
-	"service": "app",
-	"workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
-	"features": {
-		"ghcr.io/devcontainers/features/go:1": {
-			"version": "latest"
-		},
-		"ghcr.io/devcontainers/features/node:1": {
-			"version": "lts",
-			"nvmVersion": "latest"
-		}
-	},
-	// Features to add to the dev container. More info: https://containers.dev/features.
-	// "features": {},
-	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	"forwardPorts": [
-		4200,
-		8080,
-		7474,
-		7687
-	],
-	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "bash .devcontainer/post-create.sh",
-	// Configure tool-specific properties.
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"GitHub.copilot",
-				"GitHub.copilot-chat",
-				"eamodio.gitlens",
-				"golang.go",
-				"jakeboone02.cypher-query-language",
-				"Angular.ng-template",
-				"DavidAnson.vscode-markdownlint",
-				"eamodio.gitlens",
-				"ms-azuretools.vscode-docker",
-				"esbenp.prettier-vscode",
-				"dbaeumer.vscode-eslint"
-			],
-			"settings": {
-				"editor.defaultFormatter": "esbenp.prettier-vscode",
-				"editor.formatOnSave": true,
-				"[javascript]": {
-					"editor.maxTokenizationLineLength": 2500,
-					"editor.formatOnSave": true,
-					"source.organizeImports": true
-				},
-				"[typescript]": {
-					"editor.maxTokenizationLineLength": 2500,
-					"editor.formatOnSave": true,
-					"source.organizeImports": true
-				}
-			}
-		}
-	}
-	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	// "remoteUser": "root"
+  "name": "Timeplanner DevContainer",
+  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "features": {
+    "ghcr.io/devcontainers/features/go:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts",
+      "nvmVersion": "latest"
+    }
+  },
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  // "features": {},
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  "forwardPorts": [4200, 7474, 7687, 8080, 9876],
+  // Use 'postCreateCommand' to run commands after the container is created.
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+  // Configure tool-specific properties.
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "eamodio.gitlens",
+        "golang.go",
+        "jakeboone02.cypher-query-language",
+        "Angular.ng-template",
+        "DavidAnson.vscode-markdownlint",
+        "eamodio.gitlens",
+        "ms-azuretools.vscode-docker",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint"
+      ],
+      "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "[javascript]": {
+          "editor.maxTokenizationLineLength": 2500,
+          "editor.formatOnSave": true,
+          "source.organizeImports": true
+        },
+        "[typescript]": {
+          "editor.maxTokenizationLineLength": 2500,
+          "editor.formatOnSave": true,
+          "source.organizeImports": true
+        }
+      }
+    }
+  }
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "root"
 }

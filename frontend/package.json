@@ -45,6 +45,6 @@
     "prettier": "^3.1.1",
     "prettier-plugin-organize-imports": "^3.2.4",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "*"
+    "typescript": "5.2.2"
   }
 }
