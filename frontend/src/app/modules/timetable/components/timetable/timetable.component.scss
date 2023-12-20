@@ -29,3 +29,8 @@
   grid-column-end: 10;
   border-bottom: 1px solid var(--border-color);
 }
+
+.not-occupied {
+  background-color: var(--highlight-color);
+  margin: 1px;
+}

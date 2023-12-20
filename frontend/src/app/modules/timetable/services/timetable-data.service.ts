@@ -3,8 +3,14 @@ import { Injectable, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WeekdayIDToGridColumn } from '@app/shared/functions/weekday-to-grid-column.function';
 import { Subject, catchError, map, of, tap } from 'rxjs';
-import { TimeslotResponse } from '../interfaces/backend.interface';
-import { Slot, Weekday, Workplace } from '../interfaces/timetable.interface';
+import {
+  Slot,
+  Timeslot,
+  TimeslotResponse,
+  Weekday,
+  Workplace,
+} from '../interfaces/timetable.interface';
+import { TimetableAPIService } from './timetable-api.service';
 
 @Injectable({
   providedIn: null,
@@ -20,6 +26,8 @@ export abstract class AbstractTimetableDataService {
    * gridRowStart and gridRowEnd as well as the gridColumn (timeslot)
    * and gridRow (slot).
    **/
+  private timetableAPIService = inject(TimetableAPIService);
+
   protected readonly http = inject(HttpClient);
 
   // fullHeight of the timetable
@@ -84,13 +92,13 @@ export abstract class AbstractTimetableDataService {
         // convert to Workplace interface
         const workplaceSlots: Slot[] = [];
         slotMap.forEach((timeslots, slotName) => {
-          const slots: any[] = [];
+          const slots: Timeslot[] = [];
           timeslots.forEach((timeslot) => {
             slots.push({
               startTime: timeslot.start_time,
               endTime: timeslot.end_time,
               occupied: false,
-              occupiedBy: '', // TODO: Replace with person
+              occupiedBy: null,
               disabled: timeslot.disabled,
               gridColumn: WeekdayIDToGridColumn(timeslot.weekday_id),
             });
@@ -130,7 +138,7 @@ export abstract class AbstractTimetableDataService {
 
       this._fullHeight.set(fullHeight);
     }),
-    catchError((error) => of([])),
+    catchError(() => of([])),
   );
   private _workplaces = signal<Workplace[]>([]);
   get workplaces$(): Workplace[] {

@@ -1,3 +1,5 @@
+import { Person, PersonResponse } from './person.interface';
+
 // Stores display information for the weekday
 export interface Weekday {
   name: string;
@@ -29,19 +31,23 @@ export interface Timeslot {
   // additional information
   occupied: boolean;
   // Todo: This is only for debug, in the future, this should be a Person array
-  occupiedBy: string;
+  occupiedBy: Person | null;
   disabled?: boolean;
 
   // display
   gridColumn: number;
 }
 
-export interface Person {
-  email: string;
-  firstname: string;
-  lastname: string;
-  id: string; // 4 Letter identifier
+// the timeslot returned from the backend
+export interface TimeslotResponse {
+  department_name: string;
+  workplace_name: string;
+  name: string;
 
-  workingHours: number;
-  actualHours: number;
+  weekday_id: string; // 3 Letter identifier
+  start_time: string;
+  end_time: string;
+  disabled?: boolean;
+
+  persons: PersonResponse | null;
 }

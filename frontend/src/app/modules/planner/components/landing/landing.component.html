@@ -1,9 +1,9 @@
 <div class="container">
   <app-timetable
-    [displayTime]="true"
+    [showActions]="true"
     [fullHeight]="timetableDataService.fullHeight$"
     [weekdayDatas]="timetableDataService.weekdays$"
     [workplaceDatas]="timetableDataService.workplaces$"
-  >
+    (personDroppedIn)="handleDropIn($event)">
   </app-timetable>
 </div>

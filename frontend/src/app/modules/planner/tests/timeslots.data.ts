@@ -1,4 +1,4 @@
-import { TimeslotResponse } from '@app/modules/timetable/interfaces/backend.interface';
+import { TimeslotResponse } from '@app/modules/timetable/interfaces/timetable.interface';
 
 export const DUMMY_TIMESLOTS: TimeslotResponse[] = [
   {
@@ -8,7 +8,7 @@ export const DUMMY_TIMESLOTS: TimeslotResponse[] = [
     weekday_id: 'MON',
     start_time: '08:00',
     end_time: '12:00',
-    persons: [],
+    persons: null,
   },
   {
     department_name: 'Department 1',
@@ -17,7 +17,7 @@ export const DUMMY_TIMESLOTS: TimeslotResponse[] = [
     weekday_id: 'MON',
     start_time: '08:00',
     end_time: '12:00',
-    persons: [],
+    persons: null,
   },
   {
     department_name: 'Department 1',
@@ -26,7 +26,7 @@ export const DUMMY_TIMESLOTS: TimeslotResponse[] = [
     weekday_id: 'TUE',
     start_time: '08:00',
     end_time: '12:00',
-    persons: [],
+    persons: null,
   },
   {
     department_name: 'Department 1',
@@ -35,7 +35,7 @@ export const DUMMY_TIMESLOTS: TimeslotResponse[] = [
     weekday_id: 'WED',
     start_time: '08:00',
     end_time: '12:00',
-    persons: [],
+    persons: null,
   },
   {
     department_name: 'Department 1',
@@ -44,6 +44,6 @@ export const DUMMY_TIMESLOTS: TimeslotResponse[] = [
     weekday_id: 'TUE',
     start_time: '08:00',
     end_time: '12:00',
-    persons: [],
+    persons: null,
   },
 ];

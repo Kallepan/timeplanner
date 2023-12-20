@@ -1,0 +1,10 @@
+<div class="actions-container">
+  <mat-slide-toggle
+    color="primary"
+    (change)="toggleEditing.emit($event.checked)">
+    Editieren
+  </mat-slide-toggle>
+  <mat-slide-toggle color="primary" (change)="toggleTimes.emit($event.checked)"
+    >Zeiten anzeigen</mat-slide-toggle
+  >
+</div>

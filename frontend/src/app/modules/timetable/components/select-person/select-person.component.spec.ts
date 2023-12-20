@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TimetableComponent } from './timetable.component';
+import { SelectPersonComponent } from './select-person.component';
 
-describe('TimetableComponent', () => {
-  let component: TimetableComponent;
-  let fixture: ComponentFixture<TimetableComponent>;
+describe('SelectPersonComponent', () => {
+  let component: SelectPersonComponent;
+  let fixture: ComponentFixture<SelectPersonComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TimetableComponent],
+      imports: [SelectPersonComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(TimetableComponent);
+    fixture = TestBed.createComponent(SelectPersonComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
