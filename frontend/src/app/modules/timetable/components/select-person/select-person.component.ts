@@ -2,8 +2,10 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   inject,
 } from '@angular/core';
 import { PersonDataService } from '../../services/person-data.service';
@@ -28,7 +30,7 @@ import { AsyncPipe } from '@angular/common';
   templateUrl: './select-person.component.html',
   styleUrl: './select-person.component.scss',
 })
-export class SelectPersonComponent implements OnInit {
+export class SelectPersonComponent implements OnInit, OnChanges {
   private readonly personDataService = inject(PersonDataService);
 
   control = new FormControl<string | Person>('');
@@ -62,5 +64,11 @@ export class SelectPersonComponent implements OnInit {
 
       return toBeFiltered.toLowerCase().includes(filterValue);
     });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedPerson']) {
+      this.control.setValue(this.selectedPerson);
+    }
   }
 }

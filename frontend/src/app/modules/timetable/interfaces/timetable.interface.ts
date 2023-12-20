@@ -29,7 +29,6 @@ export interface Timeslot {
   endTime: string;
 
   // additional information
-  occupied: boolean;
   // Todo: This is only for debug, in the future, this should be a Person array
   occupiedBy: Person | null;
   disabled?: boolean;

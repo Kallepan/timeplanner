@@ -7,7 +7,7 @@
       (toggleEditing)="editable = $event"
       (toggleTimes)="displayTime = $event"></app-actions>
   }
-  <div class="timetable">
+  <div class="timetable mat-elevation-z8">
     <!-- Add static headers -->
     <div class="cell header">Arbeitsplatz</div>
     <div class="cell header">Slot</div>
@@ -49,7 +49,8 @@
             personDroppedIn.emit({
               person: $event.item.data,
               timeslots: slot.timeslots
-            })
+            });
+            assignPersonToTimeslot($event.item.data, slot.timeslots)
           ">
           {{ slot.name }}
         </div>

@@ -39,4 +39,14 @@ export class TimetableComponent {
   @Input() workplaceDatas: Workplace[] = [];
 
   @Output() personDroppedIn = new EventEmitter<PersonDropIn>();
+
+  protected assignPersonToTimeslot(
+    person: Person,
+    timeslots: Timeslot[],
+  ): void {
+    // This works because the timeslots are passed by reference. Hooraay JS!
+    timeslots.forEach((timeslot) => {
+      timeslot.occupiedBy = person;
+    });
+  }
 }

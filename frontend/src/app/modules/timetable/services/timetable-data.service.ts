@@ -97,7 +97,6 @@ export abstract class AbstractTimetableDataService {
             slots.push({
               startTime: timeslot.start_time,
               endTime: timeslot.end_time,
-              occupied: false,
               occupiedBy: null,
               disabled: timeslot.disabled,
               gridColumn: WeekdayIDToGridColumn(timeslot.weekday_id),
