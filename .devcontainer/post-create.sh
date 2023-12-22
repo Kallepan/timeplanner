@@ -1,12 +1,17 @@
 #!/bin/bash
 
 # Install global dependencies
-NODE_MODULES="@angular/cli eslint"
+NODE_MODULES="@angular/cli"
 npm install -g ${NODE_MODULES} && \
     npm cache clean --force
 
-# install backend dependencies
-cd backend
+# install auth backend dependencies
+cd auth-backend
+go mod download
+go mod tidy
+
+# install planner backend dependencies
+cd ../planner-backend
 go mod download
 go mod tidy
 

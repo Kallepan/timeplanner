@@ -1,24 +1,43 @@
-version: '3.9'
+version: "3.9"
 
 services:
   app:
     env_file:
       - .env
     image: mcr.microsoft.com/devcontainers/base:jammy
-    network_mode: service:db
     command: sleep infinity
     depends_on:
-      - db
+      - auth-db
+      - planner-db
     volumes:
       - ../../:/workspaces:cached
-  
-  db:
+    networks:
+      - default
+
+  auth-db:
+    env_file:
+      - .env
+    image: postgres:16
+    restart: unless-stopped
+    volumes:
+      - auth-db-data:/var/lib/postgresql/data
+    networks:
+      - default
+
+  planner-db:
     image: neo4j:community
     env_file:
       - .env
     restart: unless-stopped
     volumes:
-      - neo4j-data:/data
+      - planner-db-data:/data
+    networks:
+      - default
 
 volumes:
-  neo4j-data:
+  planner-db-data:
+  auth-db-data:
+
+networks:
+  default:
+    name: backend
