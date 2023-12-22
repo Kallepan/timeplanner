@@ -50,6 +50,14 @@
         "[typescript]": {
           "editor.maxTokenizationLineLength": 2500,
           "editor.formatOnSave": true
+        },
+        "[go]": {
+          "editor.defaultFormatter": "golang.go",
+          "editor.insertSpaces": false,
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+          }
         }
       }
     }
