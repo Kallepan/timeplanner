@@ -21,3 +21,6 @@ yarn install
 
 ng config -g cli.analytics false && \
     ng config -g cli.completion.prompted true
+
+# install go tools
+go install github.com/google/wire/cmd/wire@latest

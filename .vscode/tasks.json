@@ -3,6 +3,16 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "wire gen auth-backend",
+      "type": "shell",
+      "command": "sh",
+      "args": ["-c", "cd auth-backend && wire gen auth-backend/config"],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
       "type": "npm",
       "script": "start",
       "isBackground": true,
