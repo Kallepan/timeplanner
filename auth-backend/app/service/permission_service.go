@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/google/wire"
 )
 
 type PermissionService interface {
@@ -21,16 +22,20 @@ type PermissionService interface {
 }
 
 type PermissionServiceImpl struct {
-	permissionRepository repository.PermissionRepository
+	PermissionRepository repository.PermissionRepository
 }
 
 func (p PermissionServiceImpl) GetAllPermissions(c *gin.Context) {
+	/* GetAllPermissions is a function to get all permissions
+	 * @param c is gin context
+	 * @return void
+	 */
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program get all permissions")
 
-	data, err := p.permissionRepository.FindAllPermissions()
+	data, err := p.PermissionRepository.FindAllPermissions()
 	if err != nil {
-		slog.Error("Error when fetching data from database", err)
+		slog.Error("Error when fetching data from database", "error", err)
 		pkg.PanicException(constant.DatabaseError)
 	}
 
@@ -38,6 +43,10 @@ func (p PermissionServiceImpl) GetAllPermissions(c *gin.Context) {
 }
 
 func (p PermissionServiceImpl) GetPermissionById(c *gin.Context) {
+	/* GetPermissionById is a function to get permission by id
+	 * @param c is gin context
+	 * @return void
+	 */
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program get permission by id")
 
@@ -48,9 +57,9 @@ func (p PermissionServiceImpl) GetPermissionById(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	data, err := p.permissionRepository.FindPermissionById(permissionID)
+	data, err := p.PermissionRepository.FindPermissionById(permissionID)
 	if err != nil {
-		slog.Error("Error when fetching data from database", err)
+		slog.Error("Error when fetching data from database", "error", err)
 		pkg.PanicException(constant.DatabaseError)
 	}
 
@@ -58,6 +67,10 @@ func (p PermissionServiceImpl) GetPermissionById(c *gin.Context) {
 }
 
 func (p PermissionServiceImpl) AddPermission(c *gin.Context) {
+	/* AddPermission is a function to add permission
+	 * @param c is gin context
+	 * @return void
+	 */
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program add permission")
 
@@ -67,9 +80,9 @@ func (p PermissionServiceImpl) AddPermission(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	data, err := p.permissionRepository.Save(&request)
+	data, err := p.PermissionRepository.Save(&request)
 	if err != nil {
-		slog.Error("Error when saving data to database", err)
+		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.DatabaseError)
 	}
 
@@ -77,6 +90,10 @@ func (p PermissionServiceImpl) AddPermission(c *gin.Context) {
 }
 
 func (p PermissionServiceImpl) UpdatePermission(c *gin.Context) {
+	/* UpdatePermission is a function to update permission by id
+	 * @param c is gin context
+	 * @return void
+	 */
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program update permission")
 
@@ -93,18 +110,18 @@ func (p PermissionServiceImpl) UpdatePermission(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	data, err := p.permissionRepository.FindPermissionById(permissionID)
+	data, err := p.PermissionRepository.FindPermissionById(permissionID)
 	if err != nil {
-		slog.Error("Error when fetching data from database", err)
-		pkg.PanicException(constant.DatabaseError)
+		slog.Error("Error when fetching data from database", "error", err)
+		pkg.PanicException(constant.DataNotFound)
 	}
 
 	data.Name = request.Name
 	data.Description = request.Description
 
-	data, err = p.permissionRepository.Save(&data)
+	data, err = p.PermissionRepository.Save(&data)
 	if err != nil {
-		slog.Error("Error when saving data to database", err)
+		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.DatabaseError)
 	}
 
@@ -112,6 +129,10 @@ func (p PermissionServiceImpl) UpdatePermission(c *gin.Context) {
 }
 
 func (p PermissionServiceImpl) DeletePermission(c *gin.Context) {
+	/* DeletePermission is a function to delete permission by id
+	 * @param c is gin context
+	 * @return void
+	 */
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program delete permission")
 
@@ -122,17 +143,16 @@ func (p PermissionServiceImpl) DeletePermission(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	err = p.permissionRepository.DeletePermissionById(permissionID)
+	err = p.PermissionRepository.DeletePermissionById(permissionID)
 	if err != nil {
-		slog.Error("Error when deleting data from database", err)
+		slog.Error("Error when deleting data from database", "error", err)
 		pkg.PanicException(constant.DatabaseError)
 	}
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, pkg.Null()))
 }
 
-func PermissionServiceInit(permissionRepository repository.PermissionRepository) *PermissionServiceImpl {
-	return &PermissionServiceImpl{
-		permissionRepository: permissionRepository,
-	}
-}
+var permissionServiceSet = wire.NewSet(
+	wire.Struct(new(PermissionServiceImpl), "*"),
+	wire.Bind(new(PermissionService), new(*PermissionServiceImpl)),
+)

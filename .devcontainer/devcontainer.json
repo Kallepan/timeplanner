@@ -18,7 +18,15 @@
   // Features to add to the dev container. More info: https://containers.dev/features.
   // "features": {},
   // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  "forwardPorts": [4200, 5432, 7474, 7687, 8000, 8080, 9876],
+  "forwardPorts": [
+    4200,
+    5432,
+    7474,
+    7687,
+    8080,
+    8081,
+    9876
+  ],
   // Use 'postCreateCommand' to run commands after the container is created.
   "postCreateCommand": "bash .devcontainer/post-create.sh",
   // Configure tool-specific properties.
@@ -55,10 +63,8 @@
           "editor.defaultFormatter": "golang.go",
           "editor.formatOnSave": true,
           "editor.insertSpaces": true,
-
           "go.formatTool": "fmt",
           "go.lintOnSave": "package",
-
           "gopls": {
             "formatting.gofumpt": true,
             "ui.semanticTokens": true

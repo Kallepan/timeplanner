@@ -5,9 +5,9 @@ import (
 	"log/slog"
 
 	"github.com/google/uuid"
+	"github.com/google/wire"
 	"gorm.io/gorm"
 )
-
 
 type DepartmentRepository interface {
 	FindAllDepartments() ([]dao.Department, error)
@@ -23,7 +23,7 @@ type DepartmentRepositoryImpl struct {
 func (r DepartmentRepositoryImpl) FindAllDepartments() ([]dao.Department, error) {
 	var Departments []dao.Department
 
-	var err = r.db.Preload("Departments").Find(&Departments).Error
+	var err = r.db.Find(&Departments).Error
 	if err != nil {
 		slog.Error("Got an error finding all couples.", "error", err)
 		return nil, err
@@ -38,7 +38,7 @@ func (r DepartmentRepositoryImpl) FindDepartmentById(id uuid.UUID) (dao.Departme
 			ID: id,
 		},
 	}
-	err := r.db.Preload("Departments").First(&Department).Error
+	err := r.db.First(&Department).Error
 	if err != nil {
 		slog.Error("Got and error when find Department by id.", "error", err)
 		return dao.Department{}, err
@@ -70,3 +70,8 @@ func DepartmentRepositoryInit(db *gorm.DB) *DepartmentRepositoryImpl {
 		db: db,
 	}
 }
+
+var departmentRepositorySet = wire.NewSet(
+	DepartmentRepositoryInit,
+	wire.Bind(new(DepartmentRepository), new(*DepartmentRepositoryImpl)),
+)

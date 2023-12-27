@@ -10,8 +10,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/google/wire"
 )
-
 
 type DepartmentService interface {
 	GetAllDepartments(c *gin.Context)
@@ -22,17 +22,20 @@ type DepartmentService interface {
 }
 
 type DepartmentServiceImpl struct {
-	departmentRepository repository.DepartmentRepository
+	DepartmentRepository repository.DepartmentRepository
 }
 
-
 func (d DepartmentServiceImpl) GetAllDepartments(c *gin.Context) {
+	/* GetAllDepartments is a function to get all departments
+	 * @param c is gin context
+	 * @return void
+	 */
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program get all departments")
 
-	data, err := d.departmentRepository.FindAllDepartments()
+	data, err := d.DepartmentRepository.FindAllDepartments()
 	if err != nil {
-		slog.Error("Error when fetching data from database", err)
+		slog.Error("Error when fetching data from database", "error", err)
 		pkg.PanicException(constant.DatabaseError)
 	}
 
@@ -40,6 +43,10 @@ func (d DepartmentServiceImpl) GetAllDepartments(c *gin.Context) {
 }
 
 func (d DepartmentServiceImpl) GetDepartmentById(c *gin.Context) {
+	/* GetDepartmentById is a function to get department by id
+	 * @param c is gin context
+	 * @return void
+	 */
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program get department by id")
 
@@ -49,29 +56,34 @@ func (d DepartmentServiceImpl) GetDepartmentById(c *gin.Context) {
 		slog.Error("Error when parsing uuid. Error", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	
-	data, err := d.departmentRepository.FindDepartmentById(departmentID)
+
+	data, err := d.DepartmentRepository.FindDepartmentById(departmentID)
 	if err != nil {
-		slog.Error("Error when fetching data from database", err)
-		pkg.PanicException(constant.DatabaseError)
+		slog.Error("Error when fetching data from database", "error", err)
+		pkg.PanicException(constant.DataNotFound)
 	}
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
 }
 
 func (d DepartmentServiceImpl) AddDepartment(c *gin.Context) {
+	/* AddDepartment is a function to add new department to database
+	 * @param c is gin context
+	 * @return void
+	 */
+
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program add department")
 
 	var request dao.Department
 	if err := c.ShouldBindJSON(&request); err != nil {
-		slog.Error("Happened error when mapping request from FE. Error", "error", err)
+		slog.Error("Error happened: when mapping request from FE. Error", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	data, err := d.departmentRepository.Save(&request)
+	data, err := d.DepartmentRepository.Save(&request)
 	if err != nil {
-		slog.Error("Error when saving data to database", err)
+		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.DatabaseError)
 	}
 
@@ -79,6 +91,10 @@ func (d DepartmentServiceImpl) AddDepartment(c *gin.Context) {
 }
 
 func (d DepartmentServiceImpl) UpdateDepartment(c *gin.Context) {
+	/* UpdateDepartment is a function to update department by id
+	 * @param c is gin context
+	 * @return void
+	 */
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program update department")
 
@@ -91,20 +107,20 @@ func (d DepartmentServiceImpl) UpdateDepartment(c *gin.Context) {
 
 	var request dao.Department
 	if err := c.ShouldBindJSON(&request); err != nil {
-		slog.Error("Happened error when mapping request from FE. Error", "error", err)
+		slog.Error("Error happened: when mapping request from FE. Error", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	data, err := d.departmentRepository.FindDepartmentById(departmentID)
+	data, err := d.DepartmentRepository.FindDepartmentById(departmentID)
 	if err != nil {
-		slog.Error("Error when fetching data from database", err)
-		pkg.PanicException(constant.DatabaseError)
+		slog.Error("Error when fetching data from database", "error", err)
+		pkg.PanicException(constant.DataNotFound)
 	}
 
 	data.Name = request.Name
-	data, err = d.departmentRepository.Save(&data)
+	data, err = d.DepartmentRepository.Save(&data)
 	if err != nil {
-		slog.Error("Error when updating data to database", err)
+		slog.Error("Error when updating data to database", "error", err)
 		pkg.PanicException(constant.DatabaseError)
 	}
 
@@ -113,6 +129,10 @@ func (d DepartmentServiceImpl) UpdateDepartment(c *gin.Context) {
 }
 
 func (d DepartmentServiceImpl) DeleteDepartment(c *gin.Context) {
+	/* DeleteDepartment is a function to delete department by id
+	 * @param c is gin context
+	 * @return void
+	 */
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program delete department")
 
@@ -123,17 +143,16 @@ func (d DepartmentServiceImpl) DeleteDepartment(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	err = d.departmentRepository.DeleteDepartmentById(departmentID)
+	err = d.DepartmentRepository.DeleteDepartmentById(departmentID)
 	if err != nil {
-		slog.Error("Error when deleting data from database", err)
+		slog.Error("Error when deleting data from database", "error", err)
 		pkg.PanicException(constant.DatabaseError)
 	}
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, pkg.Null()))
 }
 
-func DepartmentServiceInit(departmentRepository repository.DepartmentRepository) *DepartmentServiceImpl {
-	return &DepartmentServiceImpl{
-		departmentRepository: departmentRepository,
-	}
-}
+var departmentServiceSet = wire.NewSet(
+	wire.Struct(new(DepartmentServiceImpl), "*"),
+	wire.Bind(new(DepartmentService), new(*DepartmentServiceImpl)),
+)

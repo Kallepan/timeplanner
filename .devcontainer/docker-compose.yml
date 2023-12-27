@@ -18,6 +18,8 @@ services:
     env_file:
       - .env
     image: postgres:16
+    ports:
+      - 5432:5432
     restart: unless-stopped
     volumes:
       - auth-db-data:/var/lib/postgresql/data
@@ -29,6 +31,9 @@ services:
     env_file:
       - .env
     restart: unless-stopped
+    ports:
+      - 7474:7474
+      - 7687:7687
     volumes:
       - planner-db-data:/data
     networks:

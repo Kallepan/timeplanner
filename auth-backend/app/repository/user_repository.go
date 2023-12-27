@@ -5,6 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/google/uuid"
+	"github.com/google/wire"
 	"gorm.io/gorm"
 )
 
@@ -12,7 +13,7 @@ type UserRepository interface {
 	FindAllUsers() ([]dao.User, error)
 	FindUserById(id uuid.UUID) (dao.User, error)
 	Save(user *dao.User) (dao.User, error)
-	DeleteUserById(id uuid.UUID) error
+	DeleteUser(id uuid.UUID) error
 
 	AddPermissionToUser(userID uuid.UUID, permissionID uuid.UUID) error
 	DeletePermissionFromUser(userID uuid.UUID, permissionID uuid.UUID) error
@@ -25,7 +26,7 @@ type UserRepositoryImpl struct {
 func (u UserRepositoryImpl) FindAllUsers() ([]dao.User, error) {
 	var users []dao.User
 
-	var err = u.db.Preload("Permission").Find(&users).Error
+	var err = u.db.Preload("Permissions").Find(&users).Error
 	if err != nil {
 		slog.Error("Got an error finding all couples.", "error", err)
 		return nil, err
@@ -40,7 +41,7 @@ func (u UserRepositoryImpl) FindUserById(id uuid.UUID) (dao.User, error) {
 			ID: id,
 		},
 	}
-	err := u.db.Preload("Permission").First(&user).Error
+	err := u.db.Preload("Permissions").First(&user).Error
 	if err != nil {
 		slog.Error("Got and error when find user by id.", "error", err)
 		return dao.User{}, err
@@ -57,7 +58,7 @@ func (u UserRepositoryImpl) Save(user *dao.User) (dao.User, error) {
 	return *user, nil
 }
 
-func (u UserRepositoryImpl) DeleteUserById(id uuid.UUID) error {
+func (u UserRepositoryImpl) DeleteUser(id uuid.UUID) error {
 	err := u.db.Delete(&dao.User{}, id).Error
 	if err != nil {
 		slog.Error("Got an error when delete user.", "error", err)
@@ -106,8 +107,12 @@ func (u UserRepositoryImpl) DeletePermissionFromUser(userID uuid.UUID, permissio
 
 func UserRepositoryInit(db *gorm.DB) *UserRepositoryImpl {
 	db.AutoMigrate(&dao.User{})
-
 	return &UserRepositoryImpl{
 		db: db,
 	}
 }
+
+var userRepositorySet = wire.NewSet(
+	UserRepositoryInit,
+	wire.Bind(new(UserRepository), new(*UserRepositoryImpl)),
+)

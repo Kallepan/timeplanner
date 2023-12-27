@@ -3,6 +3,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Launch Auth Backend",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/auth-backend/cmd/main.go"
+    },
+    {
       "name": "ng serve",
       "type": "chrome",
       "request": "launch",

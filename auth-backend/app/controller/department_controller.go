@@ -4,6 +4,7 @@ import (
 	"auth-backend/app/service"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/wire"
 )
 
 type DepartmentController interface {
@@ -15,31 +16,30 @@ type DepartmentController interface {
 }
 
 type DepartmentControllerImpl struct {
-	svc service.DepartmentService
+	DepartmentService service.DepartmentService
 }
 
 func (u DepartmentControllerImpl) GetAll(ctx *gin.Context) {
-	u.svc.GetAllDepartments(ctx)
+	u.DepartmentService.GetAllDepartments(ctx)
 }
 
 func (u DepartmentControllerImpl) Get(ctx *gin.Context) {
-	u.svc.GetDepartmentById(ctx)
+	u.DepartmentService.GetDepartmentById(ctx)
 }
 
 func (u DepartmentControllerImpl) Create(ctx *gin.Context) {
-	u.svc.AddDepartment(ctx)
+	u.DepartmentService.AddDepartment(ctx)
 }
 
 func (u DepartmentControllerImpl) Update(ctx *gin.Context) {
-	u.svc.UpdateDepartment(ctx)
+	u.DepartmentService.UpdateDepartment(ctx)
 }
 
 func (u DepartmentControllerImpl) Delete(ctx *gin.Context) {
-	u.svc.DeleteDepartment(ctx)
+	u.DepartmentService.DeleteDepartment(ctx)
 }
 
-func DepartmentControllerInit(departmentService service.DepartmentService) *DepartmentControllerImpl {
-	return &DepartmentControllerImpl{
-		svc: departmentService,
-	}
-}
+var departmentControllerSet = wire.NewSet(
+	wire.Struct(new(DepartmentControllerImpl), "*"),
+	wire.Bind(new(DepartmentController), new(*DepartmentControllerImpl)),
+)

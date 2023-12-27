@@ -4,6 +4,7 @@ import (
 	"auth-backend/app/service"
 
 	"github.com/gin-gonic/gin"
+	"github.com/google/wire"
 )
 
 type PermissionController interface {
@@ -15,31 +16,30 @@ type PermissionController interface {
 }
 
 type PermissionControllerImpl struct {
-	svc service.PermissionService
+	PermissionService service.PermissionService
 }
 
 func (u PermissionControllerImpl) GetAll(ctx *gin.Context) {
-	u.svc.GetAllPermissions(ctx)
+	u.PermissionService.GetAllPermissions(ctx)
 }
 
 func (u PermissionControllerImpl) Get(ctx *gin.Context) {
-	u.svc.GetPermissionById(ctx)
+	u.PermissionService.GetPermissionById(ctx)
 }
 
 func (u PermissionControllerImpl) Create(ctx *gin.Context) {
-	u.svc.AddPermission(ctx)
+	u.PermissionService.AddPermission(ctx)
 }
 
 func (u PermissionControllerImpl) Update(ctx *gin.Context) {
-	u.svc.UpdatePermission(ctx)
+	u.PermissionService.UpdatePermission(ctx)
 }
 
 func (u PermissionControllerImpl) Delete(ctx *gin.Context) {
-	u.svc.DeletePermission(ctx)
+	u.PermissionService.DeletePermission(ctx)
 }
 
-func PermissionControllerInit(permissionService service.PermissionService) *PermissionControllerImpl {
-	return &PermissionControllerImpl{
-		svc: permissionService,
-	}
-}
+var permissionControllerSet = wire.NewSet(
+	wire.Struct(new(PermissionControllerImpl), "*"),
+	wire.Bind(new(PermissionController), new(*PermissionControllerImpl)),
+)

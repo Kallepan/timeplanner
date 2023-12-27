@@ -6,7 +6,7 @@
       "label": "wire gen auth-backend",
       "type": "shell",
       "command": "sh",
-      "args": ["-c", "cd auth-backend && wire gen auth-backend/config"],
+      "args": ["-c", "cd auth-backend && wire gen auth-backend/app"],
       "group": {
         "kind": "build",
         "isDefault": false

@@ -5,6 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/google/uuid"
+	"github.com/google/wire"
 	"gorm.io/gorm"
 )
 
@@ -22,7 +23,7 @@ type PermissionRepositoryImpl struct {
 func (r PermissionRepositoryImpl) FindAllPermissions() ([]dao.Permission, error) {
 	var Permissions []dao.Permission
 
-	var err = r.db.Preload("Permissions").Find(&Permissions).Error
+	var err = r.db.Find(&Permissions).Error
 	if err != nil {
 		slog.Error("Got an error finding all couples.", "error", err)
 		return nil, err
@@ -37,7 +38,7 @@ func (r PermissionRepositoryImpl) FindPermissionById(id uuid.UUID) (dao.Permissi
 			ID: id,
 		},
 	}
-	err := r.db.Preload("Permissions").First(&Permission).Error
+	err := r.db.First(&Permission).Error
 	if err != nil {
 		slog.Error("Got and error when find Permission by id.", "error", err)
 		return dao.Permission{}, err
@@ -69,3 +70,8 @@ func PermissionRepositoryInit(db *gorm.DB) *PermissionRepositoryImpl {
 		db: db,
 	}
 }
+
+var permissionRepositorySet = wire.NewSet(
+	PermissionRepositoryInit,
+	wire.Bind(new(PermissionRepository), new(*PermissionRepositoryImpl)),
+)
