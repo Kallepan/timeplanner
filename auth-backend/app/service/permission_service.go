@@ -5,6 +5,7 @@ import (
 	"auth-backend/app/domain/dao"
 	"auth-backend/app/pkg"
 	"auth-backend/app/repository"
+	"database/sql"
 	"log/slog"
 	"net/http"
 
@@ -36,7 +37,7 @@ func (p PermissionServiceImpl) GetAllPermissions(c *gin.Context) {
 	data, err := p.PermissionRepository.FindAllPermissions()
 	if err != nil {
 		slog.Error("Error when fetching data from database", "error", err)
-		pkg.PanicException(constant.DatabaseError)
+		pkg.PanicException(constant.UnknownError)
 	}
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
@@ -58,9 +59,15 @@ func (p PermissionServiceImpl) GetPermissionById(c *gin.Context) {
 	}
 
 	data, err := p.PermissionRepository.FindPermissionById(permissionID)
-	if err != nil {
+	switch err {
+	case nil:
+		break
+	case sql.ErrNoRows:
 		slog.Error("Error when fetching data from database", "error", err)
-		pkg.PanicException(constant.DatabaseError)
+		pkg.PanicException(constant.DataNotFound)
+	default:
+		slog.Error("Error when fetching data from database", "error", err)
+		pkg.PanicException(constant.UnknownError)
 	}
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
@@ -76,17 +83,17 @@ func (p PermissionServiceImpl) AddPermission(c *gin.Context) {
 
 	var request dao.Permission
 	if err := c.ShouldBindJSON(&request); err != nil {
-		slog.Error("Error when binding json", err)
+		slog.Error("Error when binding json", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
 	data, err := p.PermissionRepository.Save(&request)
 	if err != nil {
 		slog.Error("Error when saving data to database", "error", err)
-		pkg.PanicException(constant.DatabaseError)
+		pkg.PanicException(constant.UnknownError)
 	}
 
-	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
+	c.JSON(http.StatusCreated, pkg.BuildResponse(constant.Success, data))
 }
 
 func (p PermissionServiceImpl) UpdatePermission(c *gin.Context) {
@@ -122,7 +129,7 @@ func (p PermissionServiceImpl) UpdatePermission(c *gin.Context) {
 	data, err = p.PermissionRepository.Save(&data)
 	if err != nil {
 		slog.Error("Error when saving data to database", "error", err)
-		pkg.PanicException(constant.DatabaseError)
+		pkg.PanicException(constant.UnknownError)
 	}
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
@@ -146,7 +153,7 @@ func (p PermissionServiceImpl) DeletePermission(c *gin.Context) {
 	err = p.PermissionRepository.DeletePermissionById(permissionID)
 	if err != nil {
 		slog.Error("Error when deleting data from database", "error", err)
-		pkg.PanicException(constant.DatabaseError)
+		pkg.PanicException(constant.UnknownError)
 	}
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, pkg.Null()))

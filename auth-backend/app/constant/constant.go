@@ -11,7 +11,6 @@ const (
 	Unauthorized
 	DataNotFound
 	UnknownError
-	DatabaseError
 )
 
 func (r ResponseStatus) GetResponseStatus() string {
@@ -21,7 +20,6 @@ func (r ResponseStatus) GetResponseStatus() string {
 		"Unauthorized",
 		"Data Not Found",
 		"Unknown Error",
-		"Database Error",
 	}[r-1]
 }
 
@@ -32,6 +30,5 @@ func (r ResponseStatus) GetResponseMessage() string {
 		"Unauthorized: Please check your credentials",
 		"Data Not Found: Data not found",
 		"Unknown Error: Unknown error",
-		"Database Error: Error when executing query to database",
 	}[r-1]
 }

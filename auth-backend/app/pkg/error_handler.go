@@ -4,6 +4,7 @@ import (
 	"auth-backend/app/constant"
 	"errors"
 	"fmt"
+	"log/slog"
 	"net/http"
 	"strings"
 
@@ -25,16 +26,20 @@ func PanicException(responseKey constant.ResponseStatus) {
 
 func PanicHandler(ctx *gin.Context) {
 	if err := recover(); err != nil {
+		// get error message
 		str := fmt.Sprint(err)
 		strArr := strings.Split(str, ":")
-
 		key := strArr[0]
 		msg := strings.Trim(strArr[1], " ")
 
+		// log error
+		slog.Error("Error when executing program", "error", err)
+
+		// handle error
 		switch key {
 		case
 			constant.DataNotFound.GetResponseStatus():
-			ctx.JSON(http.StatusBadRequest, BuildResponse_(key, msg, Null()))
+			ctx.JSON(http.StatusNotFound, BuildResponse_(key, msg, Null()))
 			ctx.Abort()
 		case
 			constant.Unauthorized.GetResponseStatus():

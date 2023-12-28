@@ -5,6 +5,7 @@ import (
 	"auth-backend/app/domain/dao"
 	"auth-backend/app/pkg"
 	"auth-backend/app/repository"
+	"database/sql"
 	"log/slog"
 	"net/http"
 
@@ -36,7 +37,7 @@ func (d DepartmentServiceImpl) GetAllDepartments(c *gin.Context) {
 	data, err := d.DepartmentRepository.FindAllDepartments()
 	if err != nil {
 		slog.Error("Error when fetching data from database", "error", err)
-		pkg.PanicException(constant.DatabaseError)
+		pkg.PanicException(constant.UnknownError)
 	}
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
@@ -58,9 +59,15 @@ func (d DepartmentServiceImpl) GetDepartmentById(c *gin.Context) {
 	}
 
 	data, err := d.DepartmentRepository.FindDepartmentById(departmentID)
-	if err != nil {
-		slog.Error("Error when fetching data from database", "error", err)
-		pkg.PanicException(constant.DataNotFound)
+	switch err {
+		case nil:
+			break
+		case sql.ErrNoRows:
+			slog.Error("Error when fetching data from database", "error", err)
+			pkg.PanicException(constant.DataNotFound)
+		default:
+			slog.Error("Error when fetching data from database", "error", err)
+			pkg.PanicException(constant.UnknownError)
 	}
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
@@ -84,10 +91,10 @@ func (d DepartmentServiceImpl) AddDepartment(c *gin.Context) {
 	data, err := d.DepartmentRepository.Save(&request)
 	if err != nil {
 		slog.Error("Error when saving data to database", "error", err)
-		pkg.PanicException(constant.DatabaseError)
+		pkg.PanicException(constant.UnknownError)
 	}
 
-	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
+	c.JSON(http.StatusCreated, pkg.BuildResponse(constant.Success, data))
 }
 
 func (d DepartmentServiceImpl) UpdateDepartment(c *gin.Context) {
@@ -121,7 +128,7 @@ func (d DepartmentServiceImpl) UpdateDepartment(c *gin.Context) {
 	data, err = d.DepartmentRepository.Save(&data)
 	if err != nil {
 		slog.Error("Error when updating data to database", "error", err)
-		pkg.PanicException(constant.DatabaseError)
+		pkg.PanicException(constant.UnknownError)
 	}
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
@@ -146,7 +153,7 @@ func (d DepartmentServiceImpl) DeleteDepartment(c *gin.Context) {
 	err = d.DepartmentRepository.DeleteDepartmentById(departmentID)
 	if err != nil {
 		slog.Error("Error when deleting data from database", "error", err)
-		pkg.PanicException(constant.DatabaseError)
+		pkg.PanicException(constant.UnknownError)
 	}
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, pkg.Null()))
