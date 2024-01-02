@@ -9,16 +9,43 @@ package service
  * @param expectedStatusCode int --> Expected status code to be returned by service
  */
 type ServiceTestGET struct {
+	// mock value to be returned by repository
 	mockValue interface{}
+	// mock error to be returned by repository
 	mockError error
+
+	// expected value to be returned by service
 	expectedValue interface{}
+	// expected status code to be returned by service
 	expectedStatusCode int
 }
 
 type ServiceTestPOST struct {
+	// data to be used for update
 	data map[string]interface{}
+	// mock value to be returned by repository
+
 	mockValue interface{}
+	// mock error to be returned by repository
 	mockError error
+
+	// expected value to be returned by service
 	expectedValue interface{}
+	// expected status code to be returned by service
+	expectedStatusCode int
+}
+
+type ServiceTestPUT struct {
+	// data to be used for update
+	data map[string]interface{}
+
+	// mock value to be returned by repository
+	mockValue interface{}
+	// mock error to be returned by repository
+	mockError error
+
+	// expected value to be returned by service
+	expectedValue interface{}
+	// expected status code to be returned by service
 	expectedStatusCode int
 }

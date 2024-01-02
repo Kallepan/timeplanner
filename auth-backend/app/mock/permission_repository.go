@@ -8,9 +8,9 @@ import (
 )
 
 type PermissionRepositoryMock struct {
-	dataContainer  map[string]interface{}
-	errorContainer map[string]error
-	primedFunctionName   string
+	dataContainer      map[string]interface{}
+	errorContainer     map[string]error
+	primedFunctionName string
 }
 
 /* Mock interface implementations */
@@ -18,7 +18,7 @@ func (r *PermissionRepositoryMock) On(functionName string) Mock {
 	// set default value
 	r.dataContainer[functionName] = nil
 	r.errorContainer[functionName] = nil
-	
+
 	// Set primed function name
 	r.primedFunctionName = functionName
 
@@ -31,7 +31,6 @@ func (r *PermissionRepositoryMock) Return(mockData interface{}, errorData error)
 
 	return r
 }
-
 
 /* Repostory interface implementations */
 func (r *PermissionRepositoryMock) FindAllPermissions() ([]dao.Permission, error) {
@@ -49,7 +48,6 @@ func (r *PermissionRepositoryMock) Save(Permission *dao.Permission) (dao.Permiss
 func (r *PermissionRepositoryMock) DeletePermissionById(id uuid.UUID) error {
 	return r.errorContainer["DeletePermissionById"]
 }
-
 
 /**
  * Function to create new PermissionRepositoryMock

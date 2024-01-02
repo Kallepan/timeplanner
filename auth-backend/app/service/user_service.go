@@ -5,6 +5,7 @@ import (
 	"auth-backend/app/domain/dao"
 	"auth-backend/app/pkg"
 	"auth-backend/app/repository"
+	"database/sql"
 	"log/slog"
 	"net/http"
 
@@ -48,9 +49,14 @@ func (u UserServiceImpl) UpdateUser(c *gin.Context) {
 	}
 
 	data, err := u.UserRepository.FindUserById(userID)
-	if err != nil {
-		slog.Error("Error happened: when get data from database", "error", err)
+	switch err {
+	case nil:
+		break
+	case sql.ErrNoRows:
 		pkg.PanicException(constant.DataNotFound)
+	default:
+		slog.Error("Error happened: when get data from database", "error", err)
+		pkg.PanicException(constant.UnknownError)
 	}
 
 	// Foreign keys
@@ -62,8 +68,13 @@ func (u UserServiceImpl) UpdateUser(c *gin.Context) {
 
 	// Save to database
 	data, err = u.UserRepository.Save(&data)
-	if err != nil {
-		slog.Error("Error happened: when updating data to database", "error", err)
+	switch err {
+	case nil:
+		break
+	case sql.ErrNoRows:
+		pkg.PanicException(constant.DataNotFound)
+	default:
+		slog.Error("Error happened: when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
 
@@ -78,14 +89,19 @@ func (u UserServiceImpl) GetUserById(c *gin.Context) {
 	id := c.Param("userID")
 	userID, err := uuid.Parse(id)
 	if err != nil {
-		slog.Error("Error happened: when parsing uuid", "error", err)
+		slog.Error("Error happened when parsing uuid", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
 	data, err := u.UserRepository.FindUserById(userID)
-	if err != nil {
-		slog.Error("Error happened: when get data from database", "error", err)
+	switch err {
+	case nil:
+		break
+	case sql.ErrNoRows:
 		pkg.PanicException(constant.DataNotFound)
+	default:
+		slog.Error("Error happened: when get data from database", "error", err)
+		pkg.PanicException(constant.UnknownError)
 	}
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
@@ -110,7 +126,7 @@ func (u UserServiceImpl) AddUser(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
+	c.JSON(http.StatusCreated, pkg.BuildResponse(constant.Success, data))
 }
 
 func (u UserServiceImpl) GetAllUsers(c *gin.Context) {
@@ -139,8 +155,13 @@ func (u UserServiceImpl) DeleteUser(c *gin.Context) {
 	}
 
 	err = u.UserRepository.DeleteUser(userID)
-	if err != nil {
-		slog.Error("Error happened: when try delete data user from DB", "error", err)
+	switch err {
+	case nil:
+		break
+	case sql.ErrNoRows:
+		pkg.PanicException(constant.DataNotFound)
+	default:
+		slog.Error("Error happened: when delete data user from DB", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
 
@@ -167,12 +188,17 @@ func (u UserServiceImpl) AddPermission(c *gin.Context) {
 	}
 
 	err = u.UserRepository.AddPermissionToUser(userID, permissionID)
-	if err != nil {
+	switch err {
+	case nil:
+		break
+	case sql.ErrNoRows:
+		pkg.PanicException(constant.InvalidRequest)
+	default:
 		slog.Error("Error happened: when add permission to user", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, pkg.Null()))
+	c.JSON(http.StatusCreated, pkg.BuildResponse(constant.Success, pkg.Null()))
 }
 
 func (u UserServiceImpl) DeletePermission(c *gin.Context) {
@@ -195,7 +221,12 @@ func (u UserServiceImpl) DeletePermission(c *gin.Context) {
 	}
 
 	err = u.UserRepository.DeletePermissionFromUser(userID, permissionID)
-	if err != nil {
+	switch err {
+	case nil:
+		break
+	case sql.ErrNoRows:
+		pkg.PanicException(constant.InvalidRequest)
+	default:
 		slog.Error("Error happened: when delete permission to user", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}

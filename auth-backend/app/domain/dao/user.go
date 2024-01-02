@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"encoding/json"
+
 	"github.com/google/uuid"
 )
 
@@ -25,7 +27,7 @@ type User struct {
 
 	Username string `gorm:"type:varchar(255);column:username;not null;index:idx_username,unique" json:"username" binding:"required,alpha,len=4,excludesall=!@#$%^&*()_+-="`
 	// ->:false read-only field
-	Password string `gorm:"type:varchar(255);column:password;->:false;<-:create" json:"-" binding:"required"`
+	Password string `gorm:"type:varchar(255);column:password;->:false;<-:create" json:"password" binding:"required"`
 	Email    string `gorm:"type:varchar(255);column:email;not null" json:"email" binding:"required,email"`
 
 	// Each User belongs to a department
@@ -34,4 +36,19 @@ type User struct {
 
 	// Each User has multiple permissions
 	Permissions []Permission `gorm:"many2many:user_permissions;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;" json:"permissions"`
+}
+
+func (u User) MarshalJSON() ([]byte, error) {
+	/**
+	 * This method is used to marshall user data to json
+	 * It is used to hide password field
+	 */
+
+	// Alias to prevent infinite loop
+	type Alias User
+	x := Alias(u)
+
+	// Hide password field
+	x.Password = ""
+	return json.Marshal(x)
 }

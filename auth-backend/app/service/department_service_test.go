@@ -22,7 +22,7 @@ func TestUpdateDepartment(t *testing.T) {
 		DepartmentRepository: &mockDepartmentRepository,
 	}
 
-	var testSteps = []ServiceTestPOST{
+	testSteps := []ServiceTestPOST{
 		{
 			data: map[string]interface{}{
 				"name": "Department 3",
@@ -39,21 +39,21 @@ func TestUpdateDepartment(t *testing.T) {
 				},
 				Name: "Department 3",
 			},
-			mockError: nil,
+			mockError:          nil,
 			expectedStatusCode: 200,
 		},
 		{
 			data: map[string]interface{}{
 				"name": "Department 1",
-			},			
+			},
 			mockValue: dao.Department{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
 				Name: "Department 1",
 			},
-			expectedValue: nil,
-			mockError: sql.ErrNoRows,
+			expectedValue:      nil,
+			mockError:          sql.ErrNoRows,
 			expectedStatusCode: 404,
 		},
 	}
@@ -68,7 +68,7 @@ func TestUpdateDepartment(t *testing.T) {
 		ctx := mock.GetGinTestContextWithBody(w, "PUT", gin.Params{
 			{Key: "departmentID", Value: testStep.mockValue.(dao.Department).ID.String()},
 		}, testStep.data)
-	
+
 		// Test function
 		departmentService.UpdateDepartment(ctx)
 
@@ -109,7 +109,7 @@ func TestDeleteDepartment(t *testing.T) {
 		DepartmentRepository: &mockDepartmentRepository,
 	}
 
-	var testSteps = []ServiceTestGET{
+	testSteps := []ServiceTestGET{
 		{
 			mockValue: dao.Department{
 				BaseModel: dao.BaseModel{
@@ -123,7 +123,7 @@ func TestDeleteDepartment(t *testing.T) {
 				},
 				Name: "Department 1",
 			},
-			mockError: nil,
+			mockError:          nil,
 			expectedStatusCode: 200,
 		},
 		{
@@ -133,15 +133,15 @@ func TestDeleteDepartment(t *testing.T) {
 				},
 				Name: "Department 1",
 			},
-			expectedValue: nil,
-			mockError: sql.ErrNoRows,
-			expectedStatusCode: 200, // if data is not found, it will return 200 as well
+			expectedValue:      nil,
+			mockError:          sql.ErrNoRows,
+			expectedStatusCode: 404,
 		},
 	}
 
 	for _, testStep := range testSteps {
 		// Set mock data
-		mockDepartmentRepository.On("Delete").Return(testStep.expectedValue, testStep.mockError)
+		mockDepartmentRepository.On("DeleteDepartmentById").Return(testStep.expectedValue, testStep.mockError)
 
 		// get GIN context
 		w := httptest.NewRecorder()
@@ -160,11 +160,6 @@ func TestDeleteDepartment(t *testing.T) {
 		if response.StatusCode != testStep.expectedStatusCode {
 			t.Errorf("Expected status code %d, but got %d", testStep.expectedStatusCode, response.StatusCode)
 		}
-
-		// continue the loop if expectedData is nil
-		if testStep.expectedValue == nil {
-			continue
-		}
 	}
 }
 
@@ -177,7 +172,7 @@ func TestAddDepartment(t *testing.T) {
 		DepartmentRepository: &mockDepartmentRepository,
 	}
 
-	var testSteps = []ServiceTestPOST{
+	testSteps := []ServiceTestPOST{
 		{
 			data: map[string]interface{}{
 				"name": "Department 1",
@@ -194,7 +189,7 @@ func TestAddDepartment(t *testing.T) {
 				},
 				Name: "Department 1",
 			},
-			mockError: nil,
+			mockError:          nil,
 			expectedStatusCode: 201,
 		},
 	}
@@ -206,7 +201,7 @@ func TestAddDepartment(t *testing.T) {
 		// get GIN context
 		w := httptest.NewRecorder()
 		ctx := mock.GetGinTestContextWithBody(w, "POST", gin.Params{}, testStep.data)
-	
+
 		// Test function
 		departmentService.AddDepartment(ctx)
 
@@ -238,7 +233,6 @@ func TestAddDepartment(t *testing.T) {
 	}
 }
 
-
 func TestGetAllDepartments(t *testing.T) {
 	// Create mock object
 	mockDepartmentRepository := mock.NewDepartmentRepositoryMock()
@@ -248,7 +242,7 @@ func TestGetAllDepartments(t *testing.T) {
 		DepartmentRepository: &mockDepartmentRepository,
 	}
 
-	var testSteps = []ServiceTestGET{
+	testSteps := []ServiceTestGET{
 		{
 			mockValue: []dao.Department{
 				{
@@ -278,13 +272,13 @@ func TestGetAllDepartments(t *testing.T) {
 					Name: "Department 2",
 				},
 			},
-			mockError: nil,
+			mockError:          nil,
 			expectedStatusCode: 200,
 		},
 		{
-			mockValue: []dao.Department{},
-			expectedValue: nil,
-			mockError: nil,
+			mockValue:          []dao.Department{},
+			expectedValue:      nil,
+			mockError:          nil,
 			expectedStatusCode: 200,
 		},
 	}
@@ -343,7 +337,7 @@ func TestGetDepartmentById(t *testing.T) {
 		DepartmentRepository: &mockDepartmentRepository,
 	}
 
-	var testSteps = []ServiceTestGET{
+	testSteps := []ServiceTestGET{
 		{
 			mockValue: dao.Department{
 				BaseModel: dao.BaseModel{
@@ -357,7 +351,7 @@ func TestGetDepartmentById(t *testing.T) {
 				},
 				Name: "Department 1",
 			},
-			mockError: nil,
+			mockError:          nil,
 			expectedStatusCode: 200,
 		},
 		{
@@ -367,8 +361,8 @@ func TestGetDepartmentById(t *testing.T) {
 				},
 				Name: "Department 1",
 			},
-			expectedValue: nil,
-			mockError: sql.ErrNoRows,
+			expectedValue:      nil,
+			mockError:          sql.ErrNoRows,
 			expectedStatusCode: 404,
 		},
 	}
@@ -399,7 +393,7 @@ func TestGetDepartmentById(t *testing.T) {
 		if testStep.expectedValue == nil {
 			continue
 		}
-		
+
 		// Assert response body
 		var responseBody dto.APIResponse[dao.Department]
 		if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {

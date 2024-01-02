@@ -151,7 +151,12 @@ func (p PermissionServiceImpl) DeletePermission(c *gin.Context) {
 	}
 
 	err = p.PermissionRepository.DeletePermissionById(permissionID)
-	if err != nil {
+	switch err {
+	case nil:
+		break
+	case sql.ErrNoRows:
+		pkg.PanicException(constant.DataNotFound)
+	default:
 		slog.Error("Error when deleting data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}

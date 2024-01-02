@@ -60,14 +60,14 @@ func (d DepartmentServiceImpl) GetDepartmentById(c *gin.Context) {
 
 	data, err := d.DepartmentRepository.FindDepartmentById(departmentID)
 	switch err {
-		case nil:
-			break
-		case sql.ErrNoRows:
-			slog.Error("Error when fetching data from database", "error", err)
-			pkg.PanicException(constant.DataNotFound)
-		default:
-			slog.Error("Error when fetching data from database", "error", err)
-			pkg.PanicException(constant.UnknownError)
+	case nil:
+		break
+	case sql.ErrNoRows:
+		slog.Error("Error when fetching data from database", "error", err)
+		pkg.PanicException(constant.DataNotFound)
+	default:
+		slog.Error("Error when fetching data from database", "error", err)
+		pkg.PanicException(constant.UnknownError)
 	}
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
@@ -151,7 +151,12 @@ func (d DepartmentServiceImpl) DeleteDepartment(c *gin.Context) {
 	}
 
 	err = d.DepartmentRepository.DeleteDepartmentById(departmentID)
-	if err != nil {
+	switch err {
+	case nil:
+		break
+	case sql.ErrNoRows:
+		pkg.PanicException(constant.DataNotFound)
+	default:
 		slog.Error("Error when deleting data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}

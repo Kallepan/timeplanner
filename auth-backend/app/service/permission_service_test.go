@@ -13,58 +13,58 @@ import (
 	"github.com/google/uuid"
 )
 
-func TestUpdatePermission(t *testing.T)	{
-	// Create mock object	
+func TestUpdatePermission(t *testing.T) {
+	// Create mock object
 	permissionRepositoryMock := mock.NewPermissionRepositoryMock()
 	permissionService := PermissionServiceImpl{
 		PermissionRepository: &permissionRepositoryMock,
 	}
-	
+
 	// Set mock data
-	var testSteps = []ServiceTestPOST{
+	var testSteps = []ServiceTestPUT{
 		{
 			data: map[string]interface{}{
-				"name": "name_new",
+				"name":        "name_new",
 				"description": "description_new",
 			},
 			mockValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
-				Name: "name_old",
+				Name:        "name_old",
 				Description: new(string),
 			},
 			expectedValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
-				Name: "name_new",
+				Name:        "name_new",
 				Description: new(string),
 			},
-			mockError: nil,
+			mockError:          nil,
 			expectedStatusCode: 200,
 		},
 		{
 			// update with nil description
 			data: map[string]interface{}{
-				"name": "name_new",
+				"name":        "name_new",
 				"description": nil,
 			},
 			mockValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
-				Name: "name_old",
+				Name:        "name_old",
 				Description: new(string),
 			},
 			expectedValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
-				Name: "name_new",
+				Name:        "name_new",
 				Description: nil,
 			},
-			mockError: nil,
+			mockError:          nil,
 			expectedStatusCode: 200,
 		},
 		{
@@ -76,17 +76,17 @@ func TestUpdatePermission(t *testing.T)	{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
-				Name: "name_old",
+				Name:        "name_old",
 				Description: new(string),
 			},
 			expectedValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
-				Name: "name_new",
+				Name:        "name_new",
 				Description: nil,
 			},
-			mockError: nil,
+			mockError:          nil,
 			expectedStatusCode: 200,
 		},
 	}
@@ -115,14 +115,14 @@ func TestUpdatePermission(t *testing.T)	{
 		if response.StatusCode != testStep.expectedStatusCode {
 			t.Errorf("Expected status code %d but got %d", testStep.expectedStatusCode, response.StatusCode)
 		}
-	
+
 		if testStep.expectedValue == nil {
 			continue
 		}
 
 		// Check mock data
 		var responseBody dto.APIResponse[dao.Permission]
-		if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {	
+		if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
 			t.Errorf("Error when unmarshalling response body: %s", err.Error())
 		}
 		if responseBody.Data.Name != testStep.expectedValue.(dao.Permission).Name {
@@ -132,12 +132,12 @@ func TestUpdatePermission(t *testing.T)	{
 		if testStep.expectedValue.(dao.Permission).Description != nil {
 			expectedDescription = *testStep.expectedValue.(dao.Permission).Description
 		}
-		
+
 		responseDescription := "nil"
 		if responseBody.Data.Description != nil {
 			responseDescription = *responseBody.Data.Description
 		}
-		
+
 		if responseDescription != expectedDescription {
 			t.Errorf("Expected description %s but got %s", expectedDescription, responseDescription)
 		}
@@ -145,28 +145,28 @@ func TestUpdatePermission(t *testing.T)	{
 }
 
 func TestGetAllPermissions(t *testing.T) {
-	// Create mock object	
+	// Create mock object
 	permissionRepositoryMock := mock.NewPermissionRepositoryMock()
 	permissionService := PermissionServiceImpl{
 		PermissionRepository: &permissionRepositoryMock,
 	}
-	
+
 	// Set mock data
-	var testSteps = []ServiceTestGET{
+	testSteps := []ServiceTestGET{
 		{
 			mockValue: []dao.Permission{
 				{
 					BaseModel: dao.BaseModel{
 						ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 					},
-					Name: "name_1",
+					Name:        "name_1",
 					Description: new(string),
 				},
 				{
 					BaseModel: dao.BaseModel{
 						ID: uuid.MustParse("00000000-0000-0000-0000-000000000002"),
 					},
-					Name: "name_2",
+					Name:        "name_2",
 					Description: new(string),
 				},
 			},
@@ -175,24 +175,24 @@ func TestGetAllPermissions(t *testing.T) {
 					BaseModel: dao.BaseModel{
 						ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 					},
-					Name: "name_1",
+					Name:        "name_1",
 					Description: new(string),
 				},
 				{
 					BaseModel: dao.BaseModel{
 						ID: uuid.MustParse("00000000-0000-0000-0000-000000000002"),
 					},
-					Name: "name_2",
+					Name:        "name_2",
 					Description: new(string),
 				},
 			},
-			mockError: nil,
+			mockError:          nil,
 			expectedStatusCode: 200,
 		},
 		{
-			mockValue: []dao.Permission{},
-			expectedValue: nil,
-			mockError: nil,
+			mockValue:          []dao.Permission{},
+			expectedValue:      nil,
+			mockError:          nil,
 			expectedStatusCode: 200,
 		},
 	}
@@ -239,12 +239,12 @@ func TestGetAllPermissions(t *testing.T) {
 			if testStep.expectedValue.([]dao.Permission)[i].Description != nil {
 				expectedDescription = *testStep.expectedValue.([]dao.Permission)[i].Description
 			}
-			
+
 			responseDescription := "nil"
 			if permission.Description != nil {
 				responseDescription = *permission.Description
 			}
-			
+
 			if responseDescription != expectedDescription {
 				t.Errorf("Expected description %s but got %s", expectedDescription, responseDescription)
 			}
@@ -253,31 +253,31 @@ func TestGetAllPermissions(t *testing.T) {
 }
 
 func TestGetPermissionById(t *testing.T) {
-	// Create mock object	
+	// Create mock object
 	permissionRepositoryMock := mock.NewPermissionRepositoryMock()
 	permissionService := PermissionServiceImpl{
 		PermissionRepository: &permissionRepositoryMock,
 	}
-	
+
 	// Set mock data
-	var testSteps = []ServiceTestGET{
+	testSteps := []ServiceTestGET{
 		{
 
 			mockValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
-				Name: "name_1",
+				Name:        "name_1",
 				Description: new(string),
 			},
 			expectedValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
-				Name: "name_1",
+				Name:        "name_1",
 				Description: new(string),
 			},
-			mockError: nil,
+			mockError:          nil,
 			expectedStatusCode: 200,
 		},
 		{
@@ -285,11 +285,11 @@ func TestGetPermissionById(t *testing.T) {
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
-				Name: "name_1",
+				Name:        "name_1",
 				Description: new(string),
 			},
-			expectedValue: nil,
-			mockError: sql.ErrNoRows,
+			expectedValue:      nil,
+			mockError:          sql.ErrNoRows,
 			expectedStatusCode: 404,
 		},
 	}
@@ -350,30 +350,30 @@ func TestGetPermissionById(t *testing.T) {
 }
 
 func TestDeletePermissionById(t *testing.T) {
-	// Create mock object	
+	// Create mock object
 	permissionRepositoryMock := mock.NewPermissionRepositoryMock()
 	permissionService := PermissionServiceImpl{
 		PermissionRepository: &permissionRepositoryMock,
 	}
-	
+
 	// Set mock data
-	var testSteps = []ServiceTestGET{
+	testSteps := []ServiceTestGET{
 		{
 			mockValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
-				Name: "name_1",
+				Name:        "name_1",
 				Description: new(string),
 			},
 			expectedValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
-				Name: "name_1",
+				Name:        "name_1",
 				Description: new(string),
 			},
-			mockError: nil,
+			mockError:          nil,
 			expectedStatusCode: 200,
 		},
 		{
@@ -381,12 +381,12 @@ func TestDeletePermissionById(t *testing.T) {
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
-				Name: "name_1",
+				Name:        "name_1",
 				Description: new(string),
 			},
-			expectedValue: nil,
-			mockError: sql.ErrNoRows,
-			expectedStatusCode: 200, // Delete should return 200 even if data is not found
+			expectedValue:      nil,
+			mockError:          sql.ErrNoRows,
+			expectedStatusCode: 404,
 		},
 	}
 
@@ -399,7 +399,7 @@ func TestDeletePermissionById(t *testing.T) {
 	for _, testStep := range testSteps {
 		// Set mock data
 		permissionRepositoryMock.On("FindPermissionById").Return(testStep.mockValue, testStep.mockError)
-		permissionRepositoryMock.On("Delete").Return(testStep.expectedValue, testStep.mockError)
+		permissionRepositoryMock.On("DeletePermissionById").Return(testStep.expectedValue, testStep.mockError)
 
 		// get GIN context
 		w := httptest.NewRecorder()
@@ -411,7 +411,7 @@ func TestDeletePermissionById(t *testing.T) {
 		permissionService.DeletePermission(c)
 
 		// Check result
-		response :=	w.Result()
+		response := w.Result()
 		if response.StatusCode != testStep.expectedStatusCode {
 			t.Errorf("Expected status code %d but got %d", testStep.expectedStatusCode, response.StatusCode)
 		}
@@ -424,17 +424,17 @@ func TestDeletePermissionById(t *testing.T) {
 }
 
 func TestAddPermission(t *testing.T) {
-	// Create mock object	
+	// Create mock object
 	permissionRepositoryMock := mock.NewPermissionRepositoryMock()
 	permissionService := PermissionServiceImpl{
 		PermissionRepository: &permissionRepositoryMock,
 	}
-	
+
 	// Set mock data
-	var testSteps = []ServiceTestPOST{
+	testSteps := []ServiceTestPOST{
 		{
 			data: map[string]interface{}{
-				"name": "name_1",
+				"name":        "name_1",
 				"description": "description_1",
 			},
 			mockValue: dao.Permission{
@@ -445,23 +445,22 @@ func TestAddPermission(t *testing.T) {
 			expectedValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
-				},	
+				},
 			},
-			mockError: nil,
+			mockError:          nil,
 			expectedStatusCode: 201,
 		},
 		{
-			data: map[string]interface{}{
-			},
+			data: map[string]interface{}{},
 			mockValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
-				Name: "name_1",
+				Name:        "name_1",
 				Description: new(string),
 			},
-			expectedValue: nil,
-			mockError: sql.ErrNoRows,
+			expectedValue:      nil,
+			mockError:          sql.ErrNoRows,
 			expectedStatusCode: 400,
 		},
 		{
@@ -472,17 +471,17 @@ func TestAddPermission(t *testing.T) {
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
-				Name: "name_1",
+				Name:        "name_1",
 				Description: new(string),
 			},
 			expectedValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
-				Name: "name_1",
+				Name:        "name_1",
 				Description: new(string),
 			},
-			mockError: nil,
+			mockError:          nil,
 			expectedStatusCode: 201,
 		},
 	}
