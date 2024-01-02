@@ -1,6 +1,7 @@
 package router
 
 import (
+	"auth-backend/app/middleware"
 	"auth-backend/config"
 
 	"github.com/gin-gonic/gin"
@@ -8,8 +9,13 @@ import (
 
 func Init(init *config.Injector) *gin.Engine {
 	router := gin.New()
+
+	// gin Middlewares
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
+
+	// insert middlewares here
+	router.Use(middleware.Cors())
 
 	api := router.Group("/api/v1")
 	{
