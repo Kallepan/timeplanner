@@ -18,6 +18,9 @@ type ServiceTestGET struct {
 	expectedValue interface{}
 	// expected status code to be returned by service
 	expectedStatusCode int
+
+	// description
+	description string
 }
 
 type ServiceTestPOST struct {
@@ -33,6 +36,9 @@ type ServiceTestPOST struct {
 	expectedValue interface{}
 	// expected status code to be returned by service
 	expectedStatusCode int
+
+	// description
+	description string
 }
 
 type ServiceTestPUT struct {
@@ -48,4 +54,7 @@ type ServiceTestPUT struct {
 	expectedValue interface{}
 	// expected status code to be returned by service
 	expectedStatusCode int
+
+	// description
+	description string
 }

@@ -30,6 +30,9 @@ type User struct {
 	Password string `gorm:"type:varchar(255);column:password;->:false;<-:create" json:"password" binding:"required"`
 	Email    string `gorm:"type:varchar(255);column:email;not null" json:"email" binding:"required,email"`
 
+	// boolean field
+	IsAdmin bool `gorm:"type:boolean;column:is_admin;not null;default:false" json:"is_admin"`
+
 	// Each User belongs to a department
 	DepartmentID uuid.UUID  `gorm:"type:uuid;column:department_id;not null" json:"department_id" binding:"required"`
 	Department   Department `gorm:"foreignKey:DepartmentID;references:ID" json:"department" binding:"-"`
@@ -48,7 +51,15 @@ func (u User) MarshalJSON() ([]byte, error) {
 	type Alias User
 	x := Alias(u)
 
-	// Hide password field
+	// Remove password field
 	x.Password = ""
+
+	// Ensure boolean field is returned as boolean
+	if x.IsAdmin {
+		x.IsAdmin = true
+	} else {
+		x.IsAdmin = false
+	}
+
 	return json.Marshal(x)
 }

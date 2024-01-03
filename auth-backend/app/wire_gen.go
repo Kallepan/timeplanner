@@ -40,6 +40,7 @@ func BuildInjector() (*config.Injector, func(), error) {
 		PermissionService: permissionServiceImpl,
 	}
 	injector := &config.Injector{
+		DB:             gormDB,
 		UserCtrl:       userControllerImpl,
 		DepartmentCtrl: departmentControllerImpl,
 		PermissionCtrl: permissionControllerImpl,

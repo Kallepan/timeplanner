@@ -18,5 +18,8 @@ func main() {
 	init, _, _ := app.BuildInjector()
 	router := router.Init(init)
 
+	// run migration
+	config.Migrate(init.DB)
+
 	router.Run(":" + port)
 }

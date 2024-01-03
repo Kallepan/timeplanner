@@ -34,6 +34,7 @@ func TestGetUser(t *testing.T) {
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				Password:     "asdasd",
+				IsAdmin:      true,
 			},
 			expectedValue: dao.User{
 				BaseModel: dao.BaseModel{
@@ -43,15 +44,42 @@ func TestGetUser(t *testing.T) {
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				Password:     "",
+				IsAdmin:      true,
 			},
 			mockError:          nil,
 			expectedStatusCode: 200,
+			description:        "Test Get User, hide password",
+		},
+		{
+			mockValue: dao.User{
+				BaseModel: dao.BaseModel{
+					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				},
+				Username:     "testuser",
+				Email:        "test@example.com",
+				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				Password:     "asdasd",
+			},
+			expectedValue: dao.User{
+				BaseModel: dao.BaseModel{
+					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				},
+				Username:     "testuser",
+				Email:        "test@example.com",
+				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				Password:     "",
+				IsAdmin:      false,
+			},
+			mockError:          nil,
+			expectedStatusCode: 200,
+			description:        "Test Get User, admin false",
 		},
 		{
 			mockValue:          dao.User{},
 			expectedValue:      nil,
 			mockError:          sql.ErrNoRows,
 			expectedStatusCode: 404,
+			description:        "Test Get User, not found",
 		},
 		{
 			mockValue: dao.User{
@@ -84,6 +112,7 @@ func TestGetUser(t *testing.T) {
 			},
 			mockError:          nil,
 			expectedStatusCode: 200,
+			description:        "Test Get User, with permissions",
 		},
 	}
 
@@ -142,6 +171,16 @@ func TestGetAllUsers(t *testing.T) {
 					Email:        "test@example.com",
 					DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 					Password:     "asdasd",
+					IsAdmin:      true,
+				},
+				{
+					BaseModel: dao.BaseModel{
+						ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+					},
+					Username:     "testuser",
+					Email:        "test@example.com",
+					DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+					Password:     "asdasd",
 				},
 				{
 					BaseModel: dao.BaseModel{
@@ -160,7 +199,17 @@ func TestGetAllUsers(t *testing.T) {
 					Username:     "testuser",
 					Email:        "test@example.com",
 					DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+					IsAdmin:      true,
+				},
+				{
+					BaseModel: dao.BaseModel{
+						ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+					},
+					Username:     "testuser",
+					Email:        "test@example.com",
+					DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 					Password:     "",
+					IsAdmin:      false,
 				},
 				{
 					BaseModel: dao.BaseModel{
@@ -169,10 +218,12 @@ func TestGetAllUsers(t *testing.T) {
 					Username:     "testuser2",
 					Email:        "test2@example.com",
 					DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+					IsAdmin:      false,
 				},
 			},
 			mockError:          nil,
 			expectedStatusCode: 200,
+			description:        "Test Get All Users",
 		},
 	}
 
@@ -223,14 +274,52 @@ func TestAddUser(t *testing.T) {
 				"email":         "test@example.com",
 				"password":      "testpassword",
 				"department_id": "00000000-0000-0000-0000-000000000001",
+				"is_admin":      true,
 			},
 			expectedValue: dao.User{
 				Username:     "TEST",
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				IsAdmin:      true,
 			},
 			mockError:          nil,
 			expectedStatusCode: 201,
+			description:        "Test Add User, admin true",
+		},
+		{
+			data: map[string]interface{}{
+				"username":      "TEST",
+				"email":         "test@example.com",
+				"password":      "testpassword",
+				"department_id": "00000000-0000-0000-0000-000000000001",
+			},
+			expectedValue: dao.User{
+				Username:     "TEST",
+				Email:        "test@example.com",
+				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				IsAdmin:      false,
+			},
+			mockError:          nil,
+			expectedStatusCode: 201,
+			description:        "Test Add User, admin false implicit",
+		},
+		{
+			data: map[string]interface{}{
+				"username":      "TEST",
+				"email":         "test@example.com",
+				"password":      "testpassword",
+				"department_id": "00000000-0000-0000-0000-000000000001",
+				"is_admin":      false,
+			},
+			expectedValue: dao.User{
+				Username:     "TEST",
+				Email:        "test@example.com",
+				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				IsAdmin:      false,
+			},
+			mockError:          nil,
+			expectedStatusCode: 201,
+			description:        "Test Add User, admin false explicit",
 		},
 		{
 			data: map[string]interface{}{
@@ -242,6 +331,7 @@ func TestAddUser(t *testing.T) {
 			expectedValue:      dao.User{},
 			mockError:          pkg.NewException(constant.InvalidRequest),
 			expectedStatusCode: 400,
+			description:        "Test Add User, invalid request email",
 		},
 		{
 			data: map[string]interface{}{
@@ -249,14 +339,16 @@ func TestAddUser(t *testing.T) {
 				"email":         "testmail@example.com",
 				"password":      "testpassword",
 				"department_id": uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				"is_admin":      false,
 			},
 			expectedValue:      dao.User{},
 			mockError:          pkg.NewException(constant.InvalidRequest),
 			expectedStatusCode: 400,
+			description:        "Test Add User, invalid request username",
 		},
 	}
 
-	for _, testStep := range testSteps {
+	for i, testStep := range testSteps {
 		// Prime mock
 		userRepoMock.On("Save").Return(testStep.expectedValue, testStep.mockError)
 
@@ -269,7 +361,7 @@ func TestAddUser(t *testing.T) {
 
 		response := w.Result()
 		if response.StatusCode != testStep.expectedStatusCode {
-			t.Errorf("Expected status code %d, but got %d", testStep.expectedStatusCode, response.StatusCode)
+			t.Errorf("Step: %d. Expected status code %d, but got %d", i, testStep.expectedStatusCode, response.StatusCode)
 		}
 
 		if testStep.expectedValue == nil {
@@ -279,12 +371,12 @@ func TestAddUser(t *testing.T) {
 		// Read response body
 		var responseBody dto.APIResponse[dao.User]
 		if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
-			t.Errorf("Error when decoding response body: %s", err.Error())
+			t.Errorf("Step: %d. Error when decoding response body: %s", i, err.Error())
 		}
 
 		// Compare response body
 		if !reflect.DeepEqual(responseBody.Data, testStep.expectedValue) {
-			t.Errorf("Expected response body %v, but got %v", testStep.expectedValue, responseBody.Data)
+			t.Errorf("Step: %d. Expected response body %v, but got %v", i, testStep.expectedValue, responseBody.Data)
 		}
 
 	}
@@ -305,6 +397,102 @@ func TestUpdateUser(t *testing.T) {
 				"email":         "test@example.com",
 				"password":      "testpassword",
 				"department_id": "00000000-0000-0000-0000-000000000001",
+				"is_admin":      true,
+			},
+			mockValue: dao.User{
+				Username:     "TEST",
+				Email:        "test@example.com",
+				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				IsAdmin:      false,
+			},
+			expectedValue: dao.User{
+				Username:     "TEST",
+				Email:        "test@example.com",
+				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				IsAdmin:      true,
+			},
+			mockError:          nil,
+			expectedStatusCode: 200,
+			description:        "Test Update User, make admin true",
+		},
+		{
+			data: map[string]interface{}{
+				"username":      "TEST",
+				"email":         "test@example.com",
+				"password":      "testpassword",
+				"department_id": "00000000-0000-0000-0000-000000000001",
+				"is_admin":      false,
+			},
+			mockValue: dao.User{
+				Username:     "TEST",
+				Email:        "test@example.com",
+				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				IsAdmin:      false,
+			},
+			expectedValue: dao.User{
+				Username:     "TEST",
+				Email:        "test@example.com",
+				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				IsAdmin:      false,
+			},
+			mockError:          nil,
+			expectedStatusCode: 200,
+			description:        "Test Update User, keep admin false",
+		},
+		{
+			data: map[string]interface{}{
+				"username":      "TEST",
+				"email":         "test@example.com",
+				"password":      "testpassword",
+				"department_id": "00000000-0000-0000-0000-000000000001",
+				"is_admin":      false,
+			},
+			mockValue: dao.User{
+				Username:     "TEST",
+				Email:        "test@example.com",
+				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				IsAdmin:      false,
+			},
+			expectedValue: dao.User{
+				Username:     "TEST",
+				Email:        "test@example.com",
+				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				IsAdmin:      false,
+			},
+			mockError:          nil,
+			expectedStatusCode: 200,
+			description:        "Test Update User, keep admin false",
+		},
+		{
+			data: map[string]interface{}{
+				"username":      "TEST",
+				"email":         "test@example.com",
+				"password":      "testpassword",
+				"department_id": "00000000-0000-0000-0000-000000000001",
+				"is_admin":      false,
+			},
+			mockValue: dao.User{
+				Username:     "TEST",
+				Email:        "test@example.com",
+				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				IsAdmin:      true,
+			},
+			expectedValue: dao.User{
+				Username:     "TEST",
+				Email:        "test@example.com",
+				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				IsAdmin:      false,
+			},
+			mockError:          nil,
+			expectedStatusCode: 200,
+			description:        "Test Update User, remove admin",
+		},
+		{
+			data: map[string]interface{}{
+				"username":      "TEST",
+				"email":         "test@example.com",
+				"password":      "testpassword",
+				"department_id": "00000000-0000-0000-0000-000000000001",
 			},
 			mockValue: dao.User{
 				Username:     "TEST",
@@ -318,6 +506,7 @@ func TestUpdateUser(t *testing.T) {
 			},
 			mockError:          nil,
 			expectedStatusCode: 200,
+			description:        "Test Update User",
 		},
 		{
 			data: map[string]interface{}{
@@ -329,6 +518,7 @@ func TestUpdateUser(t *testing.T) {
 			expectedValue:      dao.User{},
 			mockError:          pkg.NewException(constant.InvalidRequest),
 			expectedStatusCode: 400,
+			description:        "Test Update User, invalid request email",
 		},
 	}
 
@@ -381,18 +571,14 @@ func TestDeleteUser(t *testing.T) {
 			expectedValue:      nil,
 			mockError:          nil,
 			expectedStatusCode: 200,
-		},
-		{
-			mockValue:          dao.User{},
-			mockError:          nil,
-			expectedValue:      nil,
-			expectedStatusCode: 200,
+			description:        "Test Delete User",
 		},
 		{
 			mockValue:          nil,
 			expectedValue:      nil,
 			mockError:          sql.ErrNoRows,
 			expectedStatusCode: 404,
+			description:        "Test Delete User, not found",
 		},
 	}
 
@@ -433,6 +619,7 @@ func TestAddPermissionToUser(t *testing.T) {
 			expectedValue:      pkg.Null(),
 			mockError:          nil,
 			expectedStatusCode: 201,
+			description:        "Test Add Permission",
 		},
 		{
 			data: map[string]interface{}{
@@ -442,6 +629,7 @@ func TestAddPermissionToUser(t *testing.T) {
 			expectedValue:      pkg.Null(),
 			mockError:          sql.ErrNoRows,
 			expectedStatusCode: 400, // Here we expect 400 because the user or permission do not exist
+			description:        "Test Add Permission, not found",
 		},
 	}
 
@@ -480,12 +668,14 @@ func TestDeletePermissionFromUser(t *testing.T) {
 			expectedValue:      nil,
 			mockError:          nil,
 			expectedStatusCode: 200,
+			description:        "Test Delete Permission",
 		},
 		{
 			mockValue:          nil,
 			expectedValue:      nil,
 			mockError:          sql.ErrNoRows,
 			expectedStatusCode: 400,
+			description:        "Test Delete Permission, not found",
 		},
 	}
 
