@@ -1,5 +1,7 @@
 package service
 
+import "github.com/gin-gonic/gin"
+
 /**
  * Struct to be used for testing service
  * @param queryParams map[string]string --> Query params to be used for testing
@@ -15,20 +17,14 @@ type ServiceTestGET struct {
 	mockError error
 
 	// expected value to be returned by service
-	expectedValue interface{}
+	expectedResponse interface{}
 	// expected status code to be returned by service
 	expectedStatusCode int
-
-	// description
-	description string
 }
 
 type ServiceTestPOST struct {
 	// data to be used for update
-	data map[string]interface{}
-	// mock value to be returned by repository
-
-	mockValue interface{}
+	mockRequestData map[string]interface{}
 	// mock error to be returned by repository
 	mockError error
 
@@ -36,14 +32,11 @@ type ServiceTestPOST struct {
 	expectedValue interface{}
 	// expected status code to be returned by service
 	expectedStatusCode int
-
-	// description
-	description string
 }
 
 type ServiceTestPUT struct {
 	// data to be used for update
-	data map[string]interface{}
+	mockRequestData map[string]interface{}
 
 	// mock value to be returned by repository
 	mockValue interface{}
@@ -55,6 +48,39 @@ type ServiceTestPUT struct {
 	// expected status code to be returned by service
 	expectedStatusCode int
 
-	// description
-	description string
+	queryParams map[string]string
+}
+
+func (s *ServiceTestPUT) QueryParamsToGinParams() gin.Params {
+	var params gin.Params
+	for key, value := range s.queryParams {
+		params = append(params, gin.Param{Key: key, Value: value})
+	}
+	return params
+}
+
+type ServiceTestDELETE struct {
+	/**
+	 * Struct to be used for testing service
+	 * It is used for testing service with DELETE method
+	 * It has a mockValue and mockError to be returned by repository
+	 * It has an expectedStatusCode to be returned by service
+	 **/
+	// mock value to be returned by repository
+	mockValue interface{}
+	// mock error to be returned by repository
+	mockError error
+
+	// expected status code to be returned by service
+	expectedStatusCode int
+
+	queryParams map[string]string
+}
+
+func (s *ServiceTestDELETE) QueryParamsToGinParams() gin.Params {
+	var params gin.Params
+	for key, value := range s.queryParams {
+		params = append(params, gin.Param{Key: key, Value: value})
+	}
+	return params
 }

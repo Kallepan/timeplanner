@@ -3,8 +3,10 @@ package service
 import (
 	"auth-backend/app/constant"
 	"auth-backend/app/domain/dao"
+	"auth-backend/app/domain/dco"
 	"auth-backend/app/pkg"
 	"auth-backend/app/repository"
+	"database/sql"
 	"log/slog"
 	"net/http"
 
@@ -34,11 +36,13 @@ func (p PermissionServiceImpl) GetAllPermissions(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program get all permissions")
 
-	data, err := p.PermissionRepository.FindAllPermissions()
+	rawData, err := p.PermissionRepository.FindAllPermissions()
 	if err != nil {
 		slog.Error("Error when fetching data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
+
+	data := mapPermissionListToPermissionResponseList(rawData)
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
 }
@@ -58,7 +62,7 @@ func (p PermissionServiceImpl) GetPermissionById(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	data, err := p.PermissionRepository.FindPermissionById(permissionID)
+	rawData, err := p.PermissionRepository.FindPermissionById(permissionID)
 	switch err {
 	case nil:
 		break
@@ -69,6 +73,8 @@ func (p PermissionServiceImpl) GetPermissionById(c *gin.Context) {
 		slog.Error("Error when fetching data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
+
+	data := mapPermissionToPermissionResponse(rawData)
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
 }
@@ -81,17 +87,21 @@ func (p PermissionServiceImpl) AddPermission(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program add permission")
 
-	var request dao.Permission
-	if err := c.ShouldBindJSON(&request); err != nil {
+	var rawRequest dco.PermissionRequest
+	if err := c.ShouldBindJSON(&rawRequest); err != nil {
 		slog.Error("Error when binding json", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	data, err := p.PermissionRepository.Save(&request)
+	request := mapPermissionRequestToPermission(rawRequest)
+
+	rawData, err := p.PermissionRepository.Save(&request)
 	if err != nil {
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
+
+	data := mapPermissionToPermissionResponse(rawData)
 
 	c.JSON(http.StatusCreated, pkg.BuildResponse(constant.Success, data))
 }
@@ -111,26 +121,40 @@ func (p PermissionServiceImpl) UpdatePermission(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	var request dao.Permission
-	if err := c.ShouldBindJSON(&request); err != nil {
+	var rawRequest dco.PermissionRequest
+	if err := c.ShouldBindJSON(&rawRequest); err != nil {
 		slog.Error("Error when binding json", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	data, err := p.PermissionRepository.FindPermissionById(permissionID)
-	if err != nil {
-		slog.Error("Error when fetching data from database", "error", err)
+	request := mapPermissionRequestToPermission(rawRequest)
+
+	oldData, err := p.PermissionRepository.FindPermissionById(permissionID)
+	switch err {
+	case nil:
+		break
+	case gorm.ErrRecordNotFound:
 		pkg.PanicException(constant.DataNotFound)
+	default:
+		slog.Error("Error when fetching data from database", "error", err)
+		pkg.PanicException(constant.UnknownError)
 	}
 
-	data.Name = request.Name
-	data.Description = request.Description
+	oldData.Name = request.Name
+	oldData.Description = request.Description
 
-	data, err = p.PermissionRepository.Save(&data)
-	if err != nil {
+	rawData, err := p.PermissionRepository.Save(&oldData)
+	switch err {
+	case nil:
+		break
+	case gorm.ErrRecordNotFound:
+		pkg.PanicException(constant.DataNotFound)
+	default:
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
+
+	data := mapPermissionToPermissionResponse(rawData)
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
 }
@@ -168,3 +192,59 @@ var permissionServiceSet = wire.NewSet(
 	wire.Struct(new(PermissionServiceImpl), "*"),
 	wire.Bind(new(PermissionService), new(*PermissionServiceImpl)),
 )
+
+func mapPermissionToPermissionResponse(permission dao.Permission) dco.PermissionResponse {
+	/* mapPermissionToPermissionResponse is a function to map permission to permission response
+	 * @param permission is dao.Permission
+	 * @return dao.PermissionResponse
+	 */
+
+	var permissionDescription string
+	if permission.Description.Valid {
+		permissionDescription = permission.Description.String
+	}
+
+	return dco.PermissionResponse{
+		BaseModel: dco.BaseModel{
+			ID:        permission.ID,
+			CreatedAt: permission.CreatedAt,
+			UpdatedAt: permission.UpdatedAt,
+		},
+		Name:        permission.Name,
+		Description: &permissionDescription,
+	}
+}
+
+func mapPermissionListToPermissionResponseList(permissions []dao.Permission) []dco.PermissionResponse {
+	/* mapPermissionsToPermissionResponseList is a function to map permissions to permission response list
+	 * @param permissions is []dao.Permission
+	 * @return []dao.PermissionResponse
+	 */
+
+	var permissionResponseList []dco.PermissionResponse
+	for _, permission := range permissions {
+		permissionResponseList = append(permissionResponseList, mapPermissionToPermissionResponse(permission))
+	}
+
+	return permissionResponseList
+}
+
+func mapPermissionRequestToPermission(req dco.PermissionRequest) dao.Permission {
+	/* mapPermissionRequestToPermission is a function to map permission request to permission
+	 * @param req is dco.PermissionRequest
+	 * @return dao.Permission
+	 */
+
+	var permissionDescription sql.NullString
+	if req.Description != nil {
+		permissionDescription = sql.NullString{
+			String: *req.Description,
+			Valid:  true,
+		}
+	}
+
+	return dao.Permission{
+		Name:        req.Name,
+		Description: permissionDescription,
+	}
+}

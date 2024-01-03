@@ -3,6 +3,7 @@ package service
 import (
 	"auth-backend/app/constant"
 	"auth-backend/app/domain/dao"
+	"auth-backend/app/domain/dco"
 	"auth-backend/app/pkg"
 	"auth-backend/app/repository"
 	"log/slog"
@@ -42,13 +43,14 @@ func (u UserServiceImpl) UpdateUser(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	var request dao.User
-	if err := c.ShouldBindJSON(&request); err != nil {
+	var rawRequest dco.UserRequest
+	if err := c.ShouldBindJSON(&rawRequest); err != nil {
 		slog.Error("Error happened: when mapping request", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
+	request := mapUserRequestToUser(rawRequest)
 
-	data, err := u.UserRepository.FindUserById(userID)
+	oldData, err := u.UserRepository.FindUserById(userID)
 	switch err {
 	case nil:
 		break
@@ -60,14 +62,14 @@ func (u UserServiceImpl) UpdateUser(c *gin.Context) {
 	}
 
 	// Foreign keys
-	data.DepartmentID = request.DepartmentID
+	oldData.DepartmentID = request.DepartmentID
 
 	// Data
-	data.Email = request.Email
-	data.Username = request.Username
+	oldData.Email = request.Email
+	oldData.Username = request.Username
 
 	// Save to database
-	data, err = u.UserRepository.Save(&data)
+	rawData, err := u.UserRepository.Save(&oldData)
 	switch err {
 	case nil:
 		break
@@ -77,6 +79,7 @@ func (u UserServiceImpl) UpdateUser(c *gin.Context) {
 		slog.Error("Error happened: when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
+	data := mapUserToUserResponse(rawData)
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
 }
@@ -93,7 +96,7 @@ func (u UserServiceImpl) GetUserById(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	data, err := u.UserRepository.FindUserById(userID)
+	rawData, err := u.UserRepository.FindUserById(userID)
 	switch err {
 	case nil:
 		break
@@ -103,6 +106,7 @@ func (u UserServiceImpl) GetUserById(c *gin.Context) {
 		slog.Error("Error happened: when get data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
+	data := mapUserToUserResponse(rawData)
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
 }
@@ -111,20 +115,30 @@ func (u UserServiceImpl) AddUser(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program add data user")
 
-	var request dao.User
-	if err := c.ShouldBindJSON(&request); err != nil {
+	var rawRequest dco.UserRequest
+	if err := c.ShouldBindJSON(&rawRequest); err != nil {
 		slog.Error("Error happened: when mapping request", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
+	request := mapUserRequestToUser(rawRequest)
 
-	hash, _ := bcrypt.GenerateFromPassword([]byte(request.Password), 15)
-	request.Password = string(hash)
-
-	data, err := u.UserRepository.Save(&request)
-	if err != nil {
-		slog.Error("Error happened: when saving data to database", "error", err)
+	if hash, err := bcrypt.GenerateFromPassword([]byte(rawRequest.Password), 15); err != nil {
+		slog.Error("Error happened: when hashing password", "error", err)
 		pkg.PanicException(constant.UnknownError)
+	} else {
+		request.Password = string(hash)
 	}
+
+	rawData, err := u.UserRepository.Save(&request)
+	switch err {
+	case nil:
+		break
+	case gorm.ErrRecordNotFound:
+		pkg.PanicException(constant.DataNotFound)
+	default:
+		slog.Error("Error happened: when saving data to database", "error", err)
+	}
+	data := mapUserToUserResponse(rawData)
 
 	c.JSON(http.StatusCreated, pkg.BuildResponse(constant.Success, data))
 }
@@ -134,11 +148,12 @@ func (u UserServiceImpl) GetAllUsers(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute get all data user")
 
-	data, err := u.UserRepository.FindAllUsers()
+	rawData, err := u.UserRepository.FindAllUsers()
 	if err != nil {
 		slog.Error("Error happened: when find all user data", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
+	data := mapUserListToUserResponseList(rawData)
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
 }
@@ -238,3 +253,54 @@ var userServiceSet = wire.NewSet(
 	wire.Struct(new(UserServiceImpl), "*"),
 	wire.Bind(new(UserService), new(*UserServiceImpl)),
 )
+
+func mapUserToUserResponse(user dao.User) dco.UserResponse {
+	/* mapUserToUserResponse is a function to map user to user response
+	 * @param user is dao.User
+	 * @return dco.UserResponse
+	 */
+	return dco.UserResponse{
+		BaseModel: dco.BaseModel{
+			ID:        user.BaseModel.ID,
+			CreatedAt: user.CreatedAt,
+			UpdatedAt: user.UpdatedAt,
+		},
+		Username: user.Username,
+		Email:    user.Email,
+		IsAdmin:  user.IsAdmin,
+		Department: dco.DepartmentResponse{
+			BaseModel: dco.BaseModel{
+				ID:        user.Department.BaseModel.ID,
+				CreatedAt: user.Department.CreatedAt,
+				UpdatedAt: user.Department.UpdatedAt,
+			},
+			Name: user.Department.Name,
+		},
+	}
+}
+
+func mapUserListToUserResponseList(users []dao.User) []dco.UserResponse {
+	/* mapUserListToUserResponseList is a function to map user list to user response list
+	 * @param users is []dao.User
+	 * @return []dco.UserResponse
+	 */
+	var result []dco.UserResponse
+	for _, user := range users {
+		result = append(result, mapUserToUserResponse(user))
+	}
+	return result
+}
+
+func mapUserRequestToUser(req dco.UserRequest) dao.User {
+	/* mapUserRequestToUser is a function to map user request to user
+	 * @param req is dco.UserRequest
+	 * @return dao.User
+	 */
+	return dao.User{
+		Username:     req.Username,
+		Email:        req.Email,
+		Password:     req.Password,
+		DepartmentID: req.DepartmentID,
+		IsAdmin:      req.IsAdmin,
+	}
+}

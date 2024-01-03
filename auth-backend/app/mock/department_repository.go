@@ -34,14 +34,24 @@ func (r *DepartmentRepositoryMock) Return(mockData interface{}, errorData error)
 
 /* Repostory interface implementations */
 func (r *DepartmentRepositoryMock) FindAllDepartments() ([]dao.Department, error) {
+	if r.dataContainer[r.primedFunctionName] == nil {
+		return nil, r.errorContainer[r.primedFunctionName]
+	}
 	return r.dataContainer["FindAllDepartments"].([]dao.Department), r.errorContainer[r.primedFunctionName]
 }
 
 func (r *DepartmentRepositoryMock) FindDepartmentById(id uuid.UUID) (dao.Department, error) {
+	if r.dataContainer[r.primedFunctionName] == nil {
+		return dao.Department{}, r.errorContainer[r.primedFunctionName]
+	}
+
 	return r.dataContainer["FindDepartmentById"].(dao.Department), r.errorContainer[r.primedFunctionName]
 }
 
 func (r *DepartmentRepositoryMock) Save(Department *dao.Department) (dao.Department, error) {
+	if r.dataContainer[r.primedFunctionName] == nil {
+		return dao.Department{}, r.errorContainer[r.primedFunctionName]
+	}
 	return r.dataContainer["Save"].(dao.Department), r.errorContainer[r.primedFunctionName]
 }
 

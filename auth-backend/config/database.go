@@ -24,6 +24,19 @@ func ConnectToDB() *gorm.DB {
 		panic(err)
 	}
 
+	// Ping to database
+	sqlDB, err := db.DB()
+	if err != nil {
+		slog.Error("Failed to connect to database", "error", err)
+		panic(err)
+
+	}
+	err = sqlDB.Ping()
+	if err != nil {
+		slog.Error("Failed to connect to database", "error", err)
+		panic(err)
+	}
+
 	return db
 }
 
@@ -68,11 +81,11 @@ func Migrate(db *gorm.DB) {
 	}
 
 	user := dao.User{
-		Username:     username,
-		Password:     password,
-		Email:        email,
-		DepartmentID: department.ID,
-		IsAdmin:      true,
+		Username:   username,
+		Password:   password,
+		Email:      email,
+		Department: department,
+		IsAdmin:    true,
 	}
 
 	// create instances

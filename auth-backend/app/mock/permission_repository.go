@@ -34,14 +34,25 @@ func (r *PermissionRepositoryMock) Return(mockData interface{}, errorData error)
 
 /* Repostory interface implementations */
 func (r *PermissionRepositoryMock) FindAllPermissions() ([]dao.Permission, error) {
+	if r.dataContainer[r.primedFunctionName] == nil {
+		return nil, r.errorContainer[r.primedFunctionName]
+	}
+
 	return r.dataContainer["FindAllPermissions"].([]dao.Permission), r.errorContainer[r.primedFunctionName]
 }
 
 func (r *PermissionRepositoryMock) FindPermissionById(id uuid.UUID) (dao.Permission, error) {
+	if r.dataContainer[r.primedFunctionName] == nil {
+		return dao.Permission{}, r.errorContainer[r.primedFunctionName]
+	}
+
 	return r.dataContainer["FindPermissionById"].(dao.Permission), r.errorContainer[r.primedFunctionName]
 }
 
 func (r *PermissionRepositoryMock) Save(Permission *dao.Permission) (dao.Permission, error) {
+	if r.dataContainer[r.primedFunctionName] == nil {
+		return dao.Permission{}, r.errorContainer[r.primedFunctionName]
+	}
 	return r.dataContainer["Save"].(dao.Permission), r.errorContainer[r.primedFunctionName]
 }
 

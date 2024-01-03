@@ -25,6 +25,25 @@ func (r *UserRepositoryMock) On(functionName string) Mock {
 }
 
 func (r *UserRepositoryMock) Return(mockData interface{}, errorData error) Mock {
+	if _, ok := mockData.([]dao.User); ok {
+		formattedData := mockData.([]dao.User)
+		for i := range formattedData {
+			formattedData[i].Department = dao.Department{
+				BaseModel: dao.BaseModel{
+					ID: mockData.([]dao.User)[i].DepartmentID,
+				},
+			}
+		}
+	} else if _, ok := mockData.(dao.User); ok {
+		formattedData := mockData.(dao.User)
+		formattedData.Department = dao.Department{
+			BaseModel: dao.BaseModel{
+				ID: mockData.(dao.User).DepartmentID,
+			},
+		}
+		mockData = formattedData
+	}
+
 	r.dataContainer[r.primedFunctionName] = mockData
 	r.errorContainer[r.primedFunctionName] = errorData
 
@@ -33,14 +52,26 @@ func (r *UserRepositoryMock) Return(mockData interface{}, errorData error) Mock 
 
 /* Repostory interface implementations */
 func (r *UserRepositoryMock) FindAllUsers() ([]dao.User, error) {
+	if r.dataContainer[r.primedFunctionName] == nil {
+		return nil, r.errorContainer[r.primedFunctionName]
+	}
+
 	return r.dataContainer["FindAllUsers"].([]dao.User), r.errorContainer[r.primedFunctionName]
 }
 
 func (r *UserRepositoryMock) FindUserById(id uuid.UUID) (dao.User, error) {
+	if r.dataContainer[r.primedFunctionName] == nil {
+		return dao.User{}, r.errorContainer[r.primedFunctionName]
+	}
+
 	return r.dataContainer["FindUserById"].(dao.User), r.errorContainer[r.primedFunctionName]
 }
 
 func (r *UserRepositoryMock) Save(user *dao.User) (dao.User, error) {
+	if r.dataContainer[r.primedFunctionName] == nil {
+		return dao.User{}, r.errorContainer[r.primedFunctionName]
+	}
+
 	return r.dataContainer["Save"].(dao.User), r.errorContainer[r.primedFunctionName]
 }
 
