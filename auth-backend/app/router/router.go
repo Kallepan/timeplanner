@@ -26,8 +26,8 @@ func Init(init *config.Injector) *gin.Engine {
 		user.PUT("/:userID", init.UserCtrl.Update)
 		user.DELETE("/:userID", init.UserCtrl.Delete)
 		userPermission := user.Group("/:userID/permission")
-		userPermission.POST("/:userID/permission/:permissionId", init.UserCtrl.AddPermission)
-		userPermission.DELETE("/:userID/permission/:permissionId", init.UserCtrl.DeletePermission)
+		userPermission.POST("/:permissionId", init.UserCtrl.AddPermission)
+		userPermission.DELETE("/:permissionId", init.UserCtrl.DeletePermission)
 
 		department := api.Group("/department")
 		department.GET("", init.DepartmentCtrl.GetAll)
