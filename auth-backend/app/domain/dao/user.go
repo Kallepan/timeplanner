@@ -27,7 +27,7 @@ type User struct {
 
 	Username string `gorm:"type:varchar(255);column:username;not null;index:idx_username,unique" json:"username" binding:"required,alpha,len=4,excludesall=!@#$%^&*()_+-="`
 	// ->:false read-only field
-	Password string `gorm:"type:varchar(255);column:password;->:false;<-:create" json:"password" binding:"required"`
+	Password string `gorm:"type:varchar(255);column:password;->:false;<-:create" json:"password,omitempty" binding:"required"`
 	Email    string `gorm:"type:varchar(255);column:email;not null" json:"email" binding:"required,email"`
 
 	// boolean field
