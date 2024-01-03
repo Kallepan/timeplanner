@@ -36,11 +36,13 @@ services:
       - 7687:7687
     volumes:
       - planner-db-data:/data
+      - planner-db-log:/logs
     networks:
       - default
 
 volumes:
   planner-db-data:
+  planner-db-log:
   auth-db-data:
 
 networks:
