@@ -5,7 +5,6 @@ import (
 	"auth-backend/app/domain/dao"
 	"auth-backend/app/pkg"
 	"auth-backend/app/repository"
-	"database/sql"
 	"log/slog"
 	"net/http"
 
@@ -13,6 +12,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/google/wire"
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 )
 
 type UserService interface {
@@ -52,7 +52,7 @@ func (u UserServiceImpl) UpdateUser(c *gin.Context) {
 	switch err {
 	case nil:
 		break
-	case sql.ErrNoRows:
+	case gorm.ErrRecordNotFound:
 		pkg.PanicException(constant.DataNotFound)
 	default:
 		slog.Error("Error happened: when get data from database", "error", err)
@@ -71,7 +71,7 @@ func (u UserServiceImpl) UpdateUser(c *gin.Context) {
 	switch err {
 	case nil:
 		break
-	case sql.ErrNoRows:
+	case gorm.ErrRecordNotFound:
 		pkg.PanicException(constant.DataNotFound)
 	default:
 		slog.Error("Error happened: when saving data to database", "error", err)
@@ -97,7 +97,7 @@ func (u UserServiceImpl) GetUserById(c *gin.Context) {
 	switch err {
 	case nil:
 		break
-	case sql.ErrNoRows:
+	case gorm.ErrRecordNotFound:
 		pkg.PanicException(constant.DataNotFound)
 	default:
 		slog.Error("Error happened: when get data from database", "error", err)
@@ -158,7 +158,7 @@ func (u UserServiceImpl) DeleteUser(c *gin.Context) {
 	switch err {
 	case nil:
 		break
-	case sql.ErrNoRows:
+	case gorm.ErrRecordNotFound:
 		pkg.PanicException(constant.DataNotFound)
 	default:
 		slog.Error("Error happened: when delete data user from DB", "error", err)
@@ -191,7 +191,7 @@ func (u UserServiceImpl) AddPermission(c *gin.Context) {
 	switch err {
 	case nil:
 		break
-	case sql.ErrNoRows:
+	case gorm.ErrRecordNotFound:
 		pkg.PanicException(constant.InvalidRequest)
 	default:
 		slog.Error("Error happened: when add permission to user", "error", err)
@@ -224,7 +224,7 @@ func (u UserServiceImpl) DeletePermission(c *gin.Context) {
 	switch err {
 	case nil:
 		break
-	case sql.ErrNoRows:
+	case gorm.ErrRecordNotFound:
 		pkg.PanicException(constant.InvalidRequest)
 	default:
 		slog.Error("Error happened: when delete permission to user", "error", err)

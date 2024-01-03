@@ -4,13 +4,13 @@ import (
 	"auth-backend/app/domain/dao"
 	"auth-backend/app/domain/dto"
 	"auth-backend/app/mock"
-	"database/sql"
 	"encoding/json"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func TestUpdateDepartment(t *testing.T) {
@@ -53,7 +53,7 @@ func TestUpdateDepartment(t *testing.T) {
 				Name: "Department 1",
 			},
 			expectedValue:      nil,
-			mockError:          sql.ErrNoRows,
+			mockError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 404,
 		},
 	}
@@ -134,7 +134,7 @@ func TestDeleteDepartment(t *testing.T) {
 				Name: "Department 1",
 			},
 			expectedValue:      nil,
-			mockError:          sql.ErrNoRows,
+			mockError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 404,
 		},
 	}
@@ -362,7 +362,7 @@ func TestGetDepartmentById(t *testing.T) {
 				Name: "Department 1",
 			},
 			expectedValue:      nil,
-			mockError:          sql.ErrNoRows,
+			mockError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 404,
 		},
 	}

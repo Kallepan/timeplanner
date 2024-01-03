@@ -4,13 +4,13 @@ import (
 	"auth-backend/app/domain/dao"
 	"auth-backend/app/domain/dto"
 	"auth-backend/app/mock"
-	"database/sql"
 	"encoding/json"
 	"net/http/httptest"
 	"testing"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func TestUpdatePermission(t *testing.T) {
@@ -289,7 +289,7 @@ func TestGetPermissionById(t *testing.T) {
 				Description: new(string),
 			},
 			expectedValue:      nil,
-			mockError:          sql.ErrNoRows,
+			mockError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 404,
 		},
 	}
@@ -385,7 +385,7 @@ func TestDeletePermissionById(t *testing.T) {
 				Description: new(string),
 			},
 			expectedValue:      nil,
-			mockError:          sql.ErrNoRows,
+			mockError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 404,
 		},
 	}
@@ -460,7 +460,7 @@ func TestAddPermission(t *testing.T) {
 				Description: new(string),
 			},
 			expectedValue:      nil,
-			mockError:          sql.ErrNoRows,
+			mockError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 400,
 		},
 		{

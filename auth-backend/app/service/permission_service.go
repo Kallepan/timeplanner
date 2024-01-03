@@ -5,13 +5,13 @@ import (
 	"auth-backend/app/domain/dao"
 	"auth-backend/app/pkg"
 	"auth-backend/app/repository"
-	"database/sql"
 	"log/slog"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/google/wire"
+	"gorm.io/gorm"
 )
 
 type PermissionService interface {
@@ -62,7 +62,7 @@ func (p PermissionServiceImpl) GetPermissionById(c *gin.Context) {
 	switch err {
 	case nil:
 		break
-	case sql.ErrNoRows:
+	case gorm.ErrRecordNotFound:
 		slog.Error("Error when fetching data from database", "error", err)
 		pkg.PanicException(constant.DataNotFound)
 	default:
@@ -154,7 +154,7 @@ func (p PermissionServiceImpl) DeletePermission(c *gin.Context) {
 	switch err {
 	case nil:
 		break
-	case sql.ErrNoRows:
+	case gorm.ErrRecordNotFound:
 		pkg.PanicException(constant.DataNotFound)
 	default:
 		slog.Error("Error when deleting data from database", "error", err)

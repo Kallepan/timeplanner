@@ -6,7 +6,6 @@ import (
 	"auth-backend/app/domain/dto"
 	"auth-backend/app/mock"
 	"auth-backend/app/pkg"
-	"database/sql"
 	"encoding/json"
 	"net/http/httptest"
 	"reflect"
@@ -14,6 +13,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 func TestGetUser(t *testing.T) {
@@ -77,7 +77,7 @@ func TestGetUser(t *testing.T) {
 		{
 			mockValue:          dao.User{},
 			expectedValue:      nil,
-			mockError:          sql.ErrNoRows,
+			mockError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 404,
 			description:        "Test Get User, not found",
 		},
@@ -576,7 +576,7 @@ func TestDeleteUser(t *testing.T) {
 		{
 			mockValue:          nil,
 			expectedValue:      nil,
-			mockError:          sql.ErrNoRows,
+			mockError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 404,
 			description:        "Test Delete User, not found",
 		},
@@ -627,7 +627,7 @@ func TestAddPermissionToUser(t *testing.T) {
 				"permissionID": "00000000-0000-0000-0000-000000000001",
 			},
 			expectedValue:      pkg.Null(),
-			mockError:          sql.ErrNoRows,
+			mockError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 400, // Here we expect 400 because the user or permission do not exist
 			description:        "Test Add Permission, not found",
 		},
@@ -673,7 +673,7 @@ func TestDeletePermissionFromUser(t *testing.T) {
 		{
 			mockValue:          nil,
 			expectedValue:      nil,
-			mockError:          sql.ErrNoRows,
+			mockError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 400,
 			description:        "Test Delete Permission, not found",
 		},
