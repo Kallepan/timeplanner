@@ -27,7 +27,63 @@ func TestUpdateUser(t *testing.T) {
 
 	testSteps := []ServiceTestPUT{
 		{
-			// TODO: Test add update department
+			// Test Update Department without finding one
+			mockRequestData: map[string]interface{}{
+				"username":      "TEST",
+				"email":         "test@example.com",
+				"password":      "testpassword",
+				"department_id": "00000000-0000-0000-0000-000000000003",
+			},
+			mockValue: dao.User{
+				BaseModel: dao.BaseModel{
+					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				},
+				Username:     "TEST",
+				Email:        "test@example.com",
+				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+			},
+			expectedValue:      nil,
+			mockError:          gorm.ErrRecordNotFound,
+			expectedStatusCode: 404,
+			queryParams: map[string]string{
+				"userID": "00000000-0000-0000-0000-000000000001",
+			},
+		},
+		{
+			// Test Update Department
+			mockRequestData: map[string]interface{}{
+				"username":      "TEST",
+				"email":         "test@example.com",
+				"password":      "testpassword",
+				"department_id": "00000000-0000-0000-0000-000000000003",
+			},
+			mockValue: dao.User{
+				BaseModel: dao.BaseModel{
+					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				},
+				Username:     "TEST",
+				Email:        "test@example.com",
+				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+			},
+			expectedValue: dao.User{
+				BaseModel: dao.BaseModel{
+					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				},
+				Username: "TEST",
+				Email:    "test@example.com",
+				Department: dao.Department{
+					BaseModel: dao.BaseModel{
+						ID: uuid.MustParse("00000000-0000-0000-0000-000000000003"),
+					},
+				},
+			},
+			mockError:          nil,
+			expectedStatusCode: 200,
+			queryParams: map[string]string{
+				"userID": "00000000-0000-0000-0000-000000000001",
+			},
+		},
+		{
 			// update admin to true
 			mockRequestData: map[string]interface{}{
 				"username":      "TEST",
