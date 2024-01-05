@@ -34,7 +34,7 @@ func TestCompareOrigin(t *testing.T) {
 		ctx.Request.Header.Set("Origin", testStep.origin)
 
 		// set the allowed origins
-		os.Setenv("ALLOWED_ORIGINS", testStep.allowedOrigins)
+		os.Setenv("AUTH_ALLOWED_ORIGINS", testStep.allowedOrigins)
 
 		// compare the origin
 		origin := compareOrigin(ctx)
@@ -76,7 +76,7 @@ func TestCors(t *testing.T) {
 		ctx.Request.Header.Set("Origin", testStep.origin)
 
 		// set the allowed origins
-		os.Setenv("ALLOWED_ORIGINS", testStep.allowedOrigins)
+		os.Setenv("AUTH_ALLOWED_ORIGINS", testStep.allowedOrigins)
 
 		// call the cors middleware
 		Cors()(ctx)
