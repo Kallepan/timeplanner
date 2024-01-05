@@ -11,7 +11,7 @@ func compareOrigin(c *gin.Context) string {
 	/* Compares the origin of the request with the allowed origins */
 	origin := c.Request.Header.Get("Origin")
 
-	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
+	allowedOrigins := os.Getenv("AUTH_ALLOWED_ORIGINS")
 
 	// If allowedOrigins is empty, allow all origins
 	if allowedOrigins == "" {
