@@ -17,14 +17,14 @@ func Init(init *config.Injector) *gin.Engine {
 	// insert middlewares here
 	router.Use(middleware.Cors())
 
-	api := router.Group("/api/v1")
-	{
-		auth := api.Group("/auth")
-		auth.POST("/login", init.UserCtrl.Login)
-		auth.GET("/me", init.UserCtrl.Me)
-		auth.POST("/logout", init.UserCtrl.Logout)
+	auth := router.Group("/auth")
+	auth.POST("/login", init.UserCtrl.Login)
+	auth.GET("/me", init.UserCtrl.Me)
+	auth.POST("/logout", init.UserCtrl.Logout)
 
-		user := api.Group("/user")
+	apiV1 := router.Group("/api/v1")
+	{
+		user := apiV1.Group("/user")
 		user.GET("", init.UserCtrl.GetAll)
 		user.GET("/:userID", init.UserCtrl.Get)
 		user.POST("", init.UserCtrl.Create)
@@ -34,14 +34,14 @@ func Init(init *config.Injector) *gin.Engine {
 		userPermission.POST("/:permissionId", init.UserCtrl.AddPermission)
 		userPermission.DELETE("/:permissionId", init.UserCtrl.DeletePermission)
 
-		department := api.Group("/department")
+		department := apiV1.Group("/department")
 		department.GET("", init.DepartmentCtrl.GetAll)
 		department.GET("/:departmentID", init.DepartmentCtrl.Get)
 		department.POST("", init.DepartmentCtrl.Create)
 		department.PUT("/:departmentID", init.DepartmentCtrl.Update)
 		department.DELETE("/:departmentID", init.DepartmentCtrl.Delete)
 
-		permission := api.Group("/permission")
+		permission := apiV1.Group("/permission")
 		permission.GET("", init.PermissionCtrl.GetAll)
 		permission.GET("/:permissionID", init.PermissionCtrl.Get)
 		permission.POST("", init.PermissionCtrl.Create)

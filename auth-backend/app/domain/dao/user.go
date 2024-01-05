@@ -14,6 +14,11 @@ type Permission struct {
 	Description sql.NullString `gorm:"type:varchar(255);column:description;default:null"`
 }
 
+func (p *Permission) ConvertToID() string {
+	// Helper function to convert a permission to a string
+	return p.BaseModel.ID.String()
+}
+
 type Department struct {
 	// This is a simple department model
 	BaseModel
@@ -27,7 +32,7 @@ type User struct {
 
 	Username string `gorm:"type:varchar(255);column:username;not null;index:idx_username,unique"`
 	// ->:false read-only field
-	Password string `gorm:"type:varchar(255);column:password;->:false;<-:create"`
+	Password string `gorm:"type:varchar(255);column:password;not null"`
 	Email    string `gorm:"type:varchar(255);column:email;not null"`
 
 	// boolean field

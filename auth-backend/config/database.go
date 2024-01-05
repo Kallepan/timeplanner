@@ -5,6 +5,7 @@ import (
 	"log/slog"
 	"os"
 
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -75,6 +76,12 @@ func Migrate(db *gorm.DB) {
 	if password == "" {
 		password = "admin"
 	}
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		slog.Error("Failed to hash password", "error", err)
+		panic(err)
+	}
+
 	email := os.Getenv("AUTH_ADMIN_EMAIL")
 	if email == "" {
 		email = "admin@example.com"
@@ -82,7 +89,7 @@ func Migrate(db *gorm.DB) {
 
 	user := dao.User{
 		Username:   username,
-		Password:   password,
+		Password:   string(hash),
 		Email:      email,
 		Department: department,
 		IsAdmin:    true,
