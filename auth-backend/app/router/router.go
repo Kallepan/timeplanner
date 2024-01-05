@@ -19,10 +19,12 @@ func Init(init *config.Injector) *gin.Engine {
 
 	auth := router.Group("/auth")
 	auth.POST("/login", init.UserCtrl.Login)
-	auth.GET("/me", init.UserCtrl.Me)
 	auth.POST("/logout", init.UserCtrl.Logout)
+	auth.Use(middleware.RequiredAuth())
+	auth.GET("/me", init.UserCtrl.Me)
 
 	apiV1 := router.Group("/api/v1")
+	// TODO: apiV1.Use(middleware.RequiredAuth())
 	{
 		user := apiV1.Group("/user")
 		user.GET("", init.UserCtrl.GetAll)
@@ -37,6 +39,7 @@ func Init(init *config.Injector) *gin.Engine {
 		department := apiV1.Group("/department")
 		department.GET("", init.DepartmentCtrl.GetAll)
 		department.GET("/:departmentID", init.DepartmentCtrl.Get)
+
 		department.POST("", init.DepartmentCtrl.Create)
 		department.PUT("/:departmentID", init.DepartmentCtrl.Update)
 		department.DELETE("/:departmentID", init.DepartmentCtrl.Delete)

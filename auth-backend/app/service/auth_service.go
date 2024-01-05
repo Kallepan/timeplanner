@@ -104,35 +104,15 @@ func (a AuthServiceImpl) Me(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program me")
 
-	cookie, err := c.Cookie("Authorization")
-	if err != nil {
-		slog.Error("Error happened: when get cookie", "error", err)
-		pkg.PanicException(constant.Unauthorized)
-	}
-
-	token, err := jwt.ParseWithClaims(cookie, &dco.JWTClaim{}, func(token *jwt.Token) (interface{}, error) {
-		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			slog.Error("Error happened: when parse token", "error", err)
-			pkg.PanicException(constant.Unauthorized)
-		}
-
-		return dco.JWTSigningKey, nil
-	})
-
-	claims, ok := token.Claims.(*dco.JWTClaim)
-	if !ok || !token.Valid {
-		slog.Error("Error happened: when parse token", "error", err)
-		pkg.PanicException(constant.Unauthorized)
-	}
-
-	// check if the token is expired
-	if claims.ExpiresAt.Time.Before(time.Now()) {
-		slog.Error("Error happened: when parse token", "error", err)
+	// get the token from the cookie
+	claim, exists := c.Get("retrievedToken")
+	if !exists {
+		slog.Error("Error happened: when get token from cookie", "error", "token not found")
 		pkg.PanicException(constant.Unauthorized)
 	}
 
 	// find the user data from the database
-	rawData, err := a.UserRepository.FindUserByUsername(claims.Username)
+	rawData, err := a.UserRepository.FindUserByUsername(claim.(*dco.JWTClaim).Username)
 	switch err {
 	case nil:
 		break

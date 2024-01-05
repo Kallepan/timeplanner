@@ -4,6 +4,7 @@ import (
 	"auth-backend/app/domain/dao"
 	"auth-backend/app/domain/dco"
 	"auth-backend/app/domain/dto"
+	"auth-backend/app/middleware"
 	"auth-backend/app/mock"
 	"encoding/json"
 	"errors"
@@ -192,7 +193,7 @@ func TestMe(t *testing.T) {
 		},
 	}
 
-	for _, testStep := range testSteps {
+	for i, testStep := range testSteps {
 		// Set mock data
 		mockUserRepository.On("FindUserByUsername").Return(testStep.expectedValue, testStep.mockError)
 
@@ -200,19 +201,21 @@ func TestMe(t *testing.T) {
 		ctx := mock.GetGinTestContextWithBody(w, "GET", gin.Params{}, nil)
 
 		// generate mock token
-		token, err := mock.GenerateMockToken(testStep.expectedValue)
-		if err != nil {
-			t.Error("Error happened: when generate mock token", "error", err)
-		}
-		// set the token in the cookie
 		if testStep.setCookie {
-			ctx.Request.Header.Set("Cookie", "Authorization="+token)
+			token, err := mock.GenerateMockToken(testStep.expectedValue)
+			if err != nil {
+				t.Error("Error happened: when generate mock token", "error", err)
+			}
+			claim, _ := middleware.DecodeToken(token)
+			ctx.Set("retrievedToken", claim)
 		}
 
+		// send request
 		authService.Me(ctx)
 
+		// check status code
 		if w.Code != testStep.expectedStatusCode {
-			t.Errorf("Expected status code %d but got %d", testStep.expectedStatusCode, w.Code)
+			t.Errorf("Step %d. Expected status code %d but got %d", i, testStep.expectedStatusCode, w.Code)
 		}
 
 		// check if user is returned in the response
