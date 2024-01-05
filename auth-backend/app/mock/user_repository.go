@@ -59,6 +59,14 @@ func (r *UserRepositoryMock) FindAllUsers() ([]dao.User, error) {
 	return r.dataContainer["FindAllUsers"].([]dao.User), r.errorContainer[r.primedFunctionName]
 }
 
+func (r *UserRepositoryMock) FindUserByUsername(username string) (dao.User, error) {
+	if r.dataContainer[r.primedFunctionName] == nil {
+		return dao.User{}, r.errorContainer[r.primedFunctionName]
+	}
+
+	return r.dataContainer["FindUserByUsername"].(dao.User), r.errorContainer[r.primedFunctionName]
+}
+
 func (r *UserRepositoryMock) FindUserById(id uuid.UUID) (dao.User, error) {
 	if r.dataContainer[r.primedFunctionName] == nil {
 		return dao.User{}, r.errorContainer[r.primedFunctionName]

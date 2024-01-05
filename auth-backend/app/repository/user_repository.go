@@ -14,6 +14,7 @@ type UserRepository interface {
 	FindUserById(id uuid.UUID) (dao.User, error)
 	Save(user *dao.User) (dao.User, error)
 	DeleteUser(id uuid.UUID) error
+	FindUserByUsername(username string) (dao.User, error)
 
 	AddPermissionToUser(userID uuid.UUID, permissionID uuid.UUID) error
 	DeletePermissionFromUser(userID uuid.UUID, permissionID uuid.UUID) error
@@ -26,12 +27,24 @@ type UserRepositoryImpl struct {
 func (u UserRepositoryImpl) FindAllUsers() ([]dao.User, error) {
 	var users []dao.User
 
-	if err := u.db.Preload("Permissions").Find(&users).Error; err != nil {
+	if err := u.db.Preload("Permissions").Preload("Department").Find(&users).Error; err != nil {
 		slog.Error("Got an error finding all couples.", "error", err)
 		return nil, err
 	}
 
 	return users, nil
+}
+
+func (u UserRepositoryImpl) FindUserByUsername(username string) (dao.User, error) {
+	user := dao.User{
+		Username: username,
+	}
+	err := u.db.Preload("Permissions").Preload("Department").First(&user).Error
+	if err != nil {
+		slog.Error("Got and error when find user by username.", "error", err)
+		return dao.User{}, err
+	}
+	return user, nil
 }
 
 func (u UserRepositoryImpl) FindUserById(id uuid.UUID) (dao.User, error) {
@@ -40,7 +53,7 @@ func (u UserRepositoryImpl) FindUserById(id uuid.UUID) (dao.User, error) {
 			ID: id,
 		},
 	}
-	err := u.db.Preload("Permissions").First(&user).Error
+	err := u.db.Preload("Permissions").Preload("Department").First(&user).Error
 	if err != nil {
 		slog.Error("Got and error when find user by id.", "error", err)
 		return dao.User{}, err
