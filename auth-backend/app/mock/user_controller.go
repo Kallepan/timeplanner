@@ -32,3 +32,15 @@ func (m *UserControllerMock) AddPermission(ctx *gin.Context) {
 func (m *UserControllerMock) DeletePermission(ctx *gin.Context) {
 	ctx.JSON(200, gin.H{"message": "DeletePermission"})
 }
+
+func (m *UserControllerMock) Login(ctx *gin.Context) {
+	ctx.JSON(200, gin.H{"message": "Login"})
+}
+
+func (m *UserControllerMock) Me(ctx *gin.Context) {
+	ctx.JSON(200, gin.H{"message": "Me"})
+}
+
+func (m *UserControllerMock) Logout(ctx *gin.Context) {
+	ctx.JSON(200, gin.H{"message": "Logout"})
+}

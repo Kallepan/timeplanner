@@ -19,10 +19,14 @@ import (
 func BuildInjector() (*config.Injector, func(), error) {
 	gormDB := config.ConnectToDB()
 	userRepositoryImpl := repository.UserRepositoryInit(gormDB)
+	authServiceImpl := &service.AuthServiceImpl{
+		UserRepository: userRepositoryImpl,
+	}
 	userServiceImpl := &service.UserServiceImpl{
 		UserRepository: userRepositoryImpl,
 	}
 	userControllerImpl := &controller.UserControllerImpl{
+		AuthService: authServiceImpl,
 		UserService: userServiceImpl,
 	}
 	departmentRepositoryImpl := repository.DepartmentRepositoryInit(gormDB)

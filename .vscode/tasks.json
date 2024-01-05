@@ -13,6 +13,16 @@
       }
     },
     {
+      "label": "test auth-backend",
+      "type": "shell",
+      "command": "sh",
+      "args": ["-c", "cd auth-backend && go test ./..."],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      }
+    },
+    {
       "type": "npm",
       "script": "start",
       "isBackground": true,

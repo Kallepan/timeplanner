@@ -19,6 +19,11 @@ func Init(init *config.Injector) *gin.Engine {
 
 	api := router.Group("/api/v1")
 	{
+		auth := api.Group("/auth")
+		auth.POST("/login", init.UserCtrl.Login)
+		auth.GET("/me", init.UserCtrl.Me)
+		auth.POST("/logout", init.UserCtrl.Logout)
+
 		user := api.Group("/user")
 		user.GET("", init.UserCtrl.GetAll)
 		user.GET("/:userID", init.UserCtrl.Get)

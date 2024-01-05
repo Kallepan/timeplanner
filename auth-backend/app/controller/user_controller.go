@@ -16,9 +16,15 @@ type UserController interface {
 
 	AddPermission(ctx *gin.Context)
 	DeletePermission(ctx *gin.Context)
+
+	// Auth
+	Login(ctx *gin.Context)
+	Me(ctx *gin.Context)
+	Logout(ctx *gin.Context)
 }
 
 type UserControllerImpl struct {
+	AuthService service.AuthService
 	UserService service.UserService
 }
 
@@ -48,6 +54,18 @@ func (u UserControllerImpl) AddPermission(ctx *gin.Context) {
 
 func (u UserControllerImpl) DeletePermission(ctx *gin.Context) {
 	u.UserService.DeletePermission(ctx)
+}
+
+func (u UserControllerImpl) Login(ctx *gin.Context) {
+	u.AuthService.Login(ctx)
+}
+
+func (u UserControllerImpl) Me(ctx *gin.Context) {
+	u.AuthService.Me(ctx)
+}
+
+func (u UserControllerImpl) Logout(ctx *gin.Context) {
+	u.AuthService.Logout(ctx)
 }
 
 var userControllerSet = wire.NewSet(
