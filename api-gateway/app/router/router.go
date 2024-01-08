@@ -14,7 +14,7 @@ func Init(init *config.Injector) *gin.Engine {
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
 
-	// insert middlewares here
+	// insert custom middlewares here
 	router.Use(middleware.Cors())
 
 	auth := router.Group("/auth")
