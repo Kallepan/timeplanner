@@ -3,20 +3,30 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "wire gen auth-backend",
+      "label": "wire gen api-gateway",
       "type": "shell",
       "command": "sh",
-      "args": ["-c", "cd auth-backend && wire gen auth-backend/app"],
+      "args": ["-c", "cd api-gateway && wire gen api-gateway/app"],
       "group": {
         "kind": "build",
         "isDefault": false
       }
     },
     {
-      "label": "test auth-backend",
+      "label": "wire gen planner-backend",
       "type": "shell",
       "command": "sh",
-      "args": ["-c", "cd auth-backend && go test ./..."],
+      "args": ["-c", "cd planner-backend && wire gen planner-backend/app"],
+      "group": {
+        "kind": "build",
+        "isDefault": false
+      }
+    },
+    {
+      "label": "test api-gateway",
+      "type": "shell",
+      "command": "sh",
+      "args": ["-c", "cd api-gateway && go test ./..."],
       "group": {
         "kind": "test",
         "isDefault": false
