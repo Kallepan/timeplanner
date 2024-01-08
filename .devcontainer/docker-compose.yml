@@ -7,14 +7,14 @@ services:
     image: mcr.microsoft.com/devcontainers/base:jammy
     command: sleep infinity
     depends_on:
-      - auth-db
+      - gateway-db
       - planner-db
     volumes:
       - ../../:/workspaces:cached
     networks:
       - default
 
-  auth-db:
+  gateway-db:
     env_file:
       - .env
     image: postgres:16
@@ -22,7 +22,7 @@ services:
       - 5432:5432
     restart: unless-stopped
     volumes:
-      - auth-db-data:/var/lib/postgresql/data
+      - gateway-db-data:/var/lib/postgresql/data
     networks:
       - default
 
@@ -43,7 +43,7 @@ services:
 volumes:
   planner-db-data:
   planner-db-log:
-  auth-db-data:
+  gateway-db-data:
 
 networks:
   default:

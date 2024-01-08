@@ -33,6 +33,16 @@
       }
     },
     {
+      "label": "test planner-backend",
+      "type": "shell",
+      "command": "sh",
+      "args": ["-c", "cd planner-backend && go test ./..."],
+      "group": {
+        "kind": "test",
+        "isDefault": false
+      }
+    },
+    {
       "type": "npm",
       "script": "start",
       "isBackground": true,
