@@ -12,7 +12,7 @@ type LoginRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
-var JWTSigningKey = []byte(os.Getenv("AUTH_JWT_SIGNING_KEY"))
+var JWTSigningKey = []byte(os.Getenv("GATEWAY_JWT_SIGNING_KEY"))
 var JWTExpirationTime = 12 * time.Hour
 
 type JWTClaim struct {

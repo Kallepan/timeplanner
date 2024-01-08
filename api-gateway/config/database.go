@@ -11,7 +11,7 @@ import (
 )
 
 func ConnectToDB() *gorm.DB {
-	dsn := os.Getenv("AUTH_DB_DSN")
+	dsn := os.Getenv("GATEWAY_DB_DSN")
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		// Do not use transaction for each writes
@@ -68,11 +68,11 @@ func Migrate(db *gorm.DB) {
 	}
 
 	// create user
-	username := os.Getenv("AUTH_ADMIN_USERNAME")
+	username := os.Getenv("GATEWAY_ADMIN_USERNAME")
 	if username == "" {
 		username = "admin"
 	}
-	password := os.Getenv("AUTH_ADMIN_PASSWORD")
+	password := os.Getenv("GATEWAY_ADMIN_PASSWORD")
 	if password == "" {
 		password = "admin"
 	}
@@ -82,7 +82,7 @@ func Migrate(db *gorm.DB) {
 		panic(err)
 	}
 
-	email := os.Getenv("AUTH_ADMIN_EMAIL")
+	email := os.Getenv("GATEWAY_ADMIN_EMAIL")
 	if email == "" {
 		email = "admin@example.com"
 	}

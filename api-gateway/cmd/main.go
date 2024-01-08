@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	port := os.Getenv("AUTH_BACKEND_PORT")
+	port := os.Getenv("GATEWAY_BACKEND_PORT")
 	if port == "" {
 		port = "8081"
 	}
