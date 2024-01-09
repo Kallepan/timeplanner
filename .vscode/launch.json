@@ -11,7 +11,7 @@
       "output": "${workspaceFolder}/api-gateway/bin/main"
     },
     {
-      "name": "ng serve",
+      "name": "Launch Frontend",
       "type": "chrome",
       "request": "launch",
       "preLaunchTask": "npm: start",
@@ -19,7 +19,7 @@
       "webRoot": "${workspaceFolder}/frontend"
     },
     {
-      "name": "ng test",
+      "name": "Test frontend",
       "type": "chrome",
       "request": "launch",
       "preLaunchTask": "npm: test",
