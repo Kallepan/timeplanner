@@ -12,7 +12,7 @@ type Department struct {
 	Base
 }
 
-func (d *Department) ParseDepartmentFromDBRecord(record *neo4j.Record) error {
+func (d *Department) ParseFromDB(record *neo4j.Record) error {
 	/**
 	 * Parses a department from a neo4j record and sets the values on this department
 	 */

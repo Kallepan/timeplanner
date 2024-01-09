@@ -43,7 +43,7 @@ func (d DepartmentRepositoryImpl) FindAllDepartments() ([]dao.Department, error)
 
 	for _, record := range result.Records {
 		department := dao.Department{}
-		if err := department.ParseDepartmentFromDBRecord(record); err != nil {
+		if err := department.ParseFromDB(record); err != nil {
 			return nil, err
 		}
 
@@ -79,7 +79,7 @@ func (d DepartmentRepositoryImpl) FindDepartmentByName(departmentName string) (d
 		return department, pkg.ErrNoRows
 	}
 
-	if err := department.ParseDepartmentFromDBRecord(result.Records[0]); err != nil {
+	if err := department.ParseFromDB(result.Records[0]); err != nil {
 		return department, err
 	}
 
@@ -117,7 +117,7 @@ func (d DepartmentRepositoryImpl) Save(department *dao.Department) (dao.Departme
 		return *department, pkg.ErrNoRows
 	}
 
-	if err := department.ParseDepartmentFromDBRecord(result.Records[0]); err != nil {
+	if err := department.ParseFromDB(result.Records[0]); err != nil {
 		return *department, err
 	}
 

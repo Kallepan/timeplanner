@@ -12,7 +12,7 @@ type Workplace struct {
 	Base
 }
 
-func (w *Workplace) ParseWorkplaceFromDBRecord(record *neo4j.Record) error {
+func (w *Workplace) ParseFromDBRecord(record *neo4j.Record) error {
 	/**
 	 * Parses a workplace from a neo4j record and sets the values on this workplace
 	 */

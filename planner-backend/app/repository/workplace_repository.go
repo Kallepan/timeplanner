@@ -46,7 +46,7 @@ func (w WorkplaceRepositoryImpl) FindAllWorkplaces(departmentName string) ([]dao
 
 	for _, record := range result.Records {
 		workplace := dao.Workplace{}
-		if err := workplace.ParseWorkplaceFromDBRecord(record); err != nil {
+		if err := workplace.ParseFromDBRecord(record); err != nil {
 			return nil, err
 		}
 
@@ -83,7 +83,7 @@ func (w WorkplaceRepositoryImpl) FindWorkplaceByName(departmentName string, work
 		return dao.Workplace{}, pkg.ErrNoRows
 	}
 
-	if err := workplace.ParseWorkplaceFromDBRecord(result.Records[0]); err != nil {
+	if err := workplace.ParseFromDBRecord(result.Records[0]); err != nil {
 		return dao.Workplace{}, err
 	}
 
@@ -120,7 +120,7 @@ func (w WorkplaceRepositoryImpl) Save(departmentName string, workplace *dao.Work
 		return dao.Workplace{}, pkg.ErrNoRows
 	}
 
-	if err := workplace.ParseWorkplaceFromDBRecord(result.Records[0]); err != nil {
+	if err := workplace.ParseFromDBRecord(result.Records[0]); err != nil {
 		return dao.Workplace{}, err
 	}
 
