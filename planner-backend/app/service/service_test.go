@@ -20,6 +20,17 @@ type ServiceTestGET struct {
 	expectedResponse interface{}
 	// expected status code to be returned by service
 	expectedStatusCode int
+
+	queryParams map[string]string
+}
+
+func (s *ServiceTestGET) QueryParamsToGinParams() gin.Params {
+	var params gin.Params
+	for key, value := range s.queryParams {
+		params = append(params, gin.Param{Key: key, Value: value})
+	}
+
+	return params
 }
 
 type ServiceTestPOST struct {
@@ -32,6 +43,17 @@ type ServiceTestPOST struct {
 	saveValue interface{}
 	findError error
 	saveError error
+
+	queryParams map[string]string
+}
+
+func (s *ServiceTestPOST) QueryParamsToGinParams() gin.Params {
+	var params gin.Params
+	for key, value := range s.queryParams {
+		params = append(params, gin.Param{Key: key, Value: value})
+	}
+
+	return params
 }
 
 type ServiceTestPUT struct {
