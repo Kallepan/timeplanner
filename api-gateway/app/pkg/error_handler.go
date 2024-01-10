@@ -54,6 +54,9 @@ func PanicHandler(ctx *gin.Context) {
 			constant.InvalidRequest.GetResponseStatus():
 			ctx.JSON(http.StatusBadRequest, BuildResponse_(key, msg, Null()))
 			ctx.Abort()
+		case constant.Conflict.GetResponseStatus():
+			ctx.JSON(http.StatusConflict, BuildResponse_(key, msg, Null()))
+			ctx.Abort()
 		default:
 			ctx.JSON(http.StatusInternalServerError, BuildResponse_(key, msg, Null()))
 			ctx.Abort()

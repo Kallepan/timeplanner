@@ -28,20 +28,21 @@ func TestUpdateDepartment(t *testing.T) {
 			mockRequestData: map[string]interface{}{
 				"name": "Department 2",
 			},
-			mockValue: dao.Department{
+			expectedStatusCode: 200,
+			findValue: dao.Department{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
 				Name: "Department 1",
 			},
-			expectedValue: dao.Department{
+			saveValue: dao.Department{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
 				Name: "Department 2",
 			},
-			mockError:          nil,
-			expectedStatusCode: 200,
+			findError: nil,
+			saveError: nil,
 			queryParams: map[string]string{
 				"departmentID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -50,9 +51,10 @@ func TestUpdateDepartment(t *testing.T) {
 			mockRequestData: map[string]interface{}{
 				"name": "Department 1",
 			},
-			mockValue:          nil,
-			expectedValue:      nil,
-			mockError:          gorm.ErrRecordNotFound,
+			findValue:          nil,
+			saveValue:          nil,
+			findError:          gorm.ErrRecordNotFound,
+			saveError:          nil,
 			expectedStatusCode: 404,
 			queryParams: map[string]string{
 				"departmentID": "00000000-0000-0000-0000-000000000001",
@@ -62,8 +64,8 @@ func TestUpdateDepartment(t *testing.T) {
 
 	for i, testStep := range testSteps {
 		// Set mock data
-		mockDepartmentRepository.On("FindDepartmentById").Return(testStep.mockValue, testStep.mockError)
-		mockDepartmentRepository.On("Save").Return(testStep.expectedValue, testStep.mockError)
+		mockDepartmentRepository.On("FindDepartmentById").Return(testStep.findValue, testStep.findError)
+		mockDepartmentRepository.On("Save").Return(testStep.saveValue, testStep.saveError)
 
 		// get GIN context
 		w := httptest.NewRecorder()
@@ -82,7 +84,7 @@ func TestUpdateDepartment(t *testing.T) {
 		}
 
 		// continue the loop if expectedData is nil
-		if testStep.expectedValue == nil {
+		if testStep.saveValue == nil {
 			continue
 		}
 
@@ -91,11 +93,11 @@ func TestUpdateDepartment(t *testing.T) {
 		if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
 			t.Errorf("Error when decoding response body. Error: %s", err)
 		}
-		if responseBody.Data.ID != testStep.expectedValue.(dao.Department).ID {
-			t.Errorf("Expected ID %s, but got %s", testStep.expectedValue.(dao.Department).ID.String(), responseBody.Data.ID.String())
+		if responseBody.Data.ID != testStep.saveValue.(dao.Department).ID {
+			t.Errorf("Expected ID %s, but got %s", testStep.saveValue.(dao.Department).ID.String(), responseBody.Data.ID.String())
 		}
-		if responseBody.Data.Name != testStep.expectedValue.(dao.Department).Name {
-			t.Errorf("Expected Name %s, but got %s", testStep.expectedValue.(dao.Department).Name, responseBody.Data.Name)
+		if responseBody.Data.Name != testStep.saveValue.(dao.Department).Name {
+			t.Errorf("Expected Name %s, but got %s", testStep.saveValue.(dao.Department).Name, responseBody.Data.Name)
 		}
 	}
 }
@@ -169,26 +171,44 @@ func TestAddDepartment(t *testing.T) {
 			mockRequestData: map[string]interface{}{
 				"name": "Department 1",
 			},
-			expectedValue: dao.Department{
+			findValue: nil,
+			saveValue: dao.Department{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
 				Name: "Department 1",
 			},
-			mockError:          nil,
+			findError:          gorm.ErrRecordNotFound,
+			saveError:          nil,
 			expectedStatusCode: 201,
 		},
 		{
 			mockRequestData:    map[string]interface{}{},
-			expectedValue:      nil,
-			mockError:          nil,
+			findValue:          nil,
+			saveValue:          nil,
 			expectedStatusCode: 400,
+		},
+		{
+			mockRequestData: map[string]interface{}{
+				"name": "Department 1",
+			},
+			findValue: dao.Department{
+				BaseModel: dao.BaseModel{
+					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
+				},
+				Name: "Department 1",
+			},
+			saveValue:          nil,
+			findError:          nil,
+			saveError:          nil,
+			expectedStatusCode: 409,
 		},
 	}
 
 	for _, testStep := range testSteps {
 		// Set mock data
-		mockDepartmentRepository.On("Save").Return(testStep.expectedValue, testStep.mockError)
+		mockDepartmentRepository.On("FindDepartmentByName").Return(testStep.findValue, testStep.findError)
+		mockDepartmentRepository.On("Save").Return(testStep.saveValue, testStep.saveError)
 
 		// get GIN context
 		w := httptest.NewRecorder()
@@ -207,7 +227,7 @@ func TestAddDepartment(t *testing.T) {
 		}
 
 		// continue the loop if expectedData is nil
-		if testStep.expectedValue == nil {
+		if testStep.saveValue == nil {
 			continue
 		}
 
@@ -216,11 +236,11 @@ func TestAddDepartment(t *testing.T) {
 		if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
 			t.Errorf("Error when decoding response body. Error: %s", err)
 		}
-		if responseBody.Data.ID != testStep.expectedValue.(dao.Department).ID {
-			t.Errorf("Expected ID %s, but got %s", testStep.expectedValue.(dao.Department).ID.String(), responseBody.Data.ID.String())
+		if responseBody.Data.ID != testStep.saveValue.(dao.Department).ID {
+			t.Errorf("Expected ID %s, but got %s", testStep.saveValue.(dao.Department).ID.String(), responseBody.Data.ID.String())
 		}
-		if responseBody.Data.Name != testStep.expectedValue.(dao.Department).Name {
-			t.Errorf("Expected Name %s, but got %s", testStep.expectedValue.(dao.Department).Name, responseBody.Data.Name)
+		if responseBody.Data.Name != testStep.saveValue.(dao.Department).Name {
+			t.Errorf("Expected Name %s, but got %s", testStep.saveValue.(dao.Department).Name, responseBody.Data.Name)
 		}
 	}
 }

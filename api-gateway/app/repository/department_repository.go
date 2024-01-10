@@ -11,6 +11,7 @@ import (
 
 type DepartmentRepository interface {
 	FindAllDepartments() ([]dao.Department, error)
+	FindDepartmentByName(name string) (dao.Department, error)
 	FindDepartmentById(id uuid.UUID) (dao.Department, error)
 	Save(Department *dao.Department) (dao.Department, error)
 	DeleteDepartmentById(id uuid.UUID) error
@@ -30,6 +31,18 @@ func (r DepartmentRepositoryImpl) FindAllDepartments() ([]dao.Department, error)
 	}
 
 	return Departments, nil
+}
+
+func (r DepartmentRepositoryImpl) FindDepartmentByName(name string) (dao.Department, error) {
+	Department := dao.Department{
+		Name: name,
+	}
+	err := r.db.First(&Department).Error
+	if err != nil {
+		slog.Error("Got and error when find Department by name.", "error", err)
+		return dao.Department{}, err
+	}
+	return Department, nil
 }
 
 func (r DepartmentRepositoryImpl) FindDepartmentById(id uuid.UUID) (dao.Department, error) {

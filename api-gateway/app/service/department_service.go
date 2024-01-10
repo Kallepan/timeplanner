@@ -92,8 +92,20 @@ func (d DepartmentServiceImpl) AddDepartment(c *gin.Context) {
 		slog.Error("Error happened: when mapping request from FE. Error", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
-
 	request := mapDepartmentRequestToDepartment(rawRequest)
+
+	// check if department already exist
+	_, err := d.DepartmentRepository.FindDepartmentByName(request.Name)
+	switch err {
+	case nil:
+		slog.Error("Error when fetching data from database", "error", err)
+		pkg.PanicException(constant.Conflict)
+	case gorm.ErrRecordNotFound:
+		break
+	default:
+		slog.Error("Error when fetching data from database", "error", err)
+		pkg.PanicException(constant.UnknownError)
+	}
 
 	rawData, err := d.DepartmentRepository.Save(&request)
 	if err != nil {
