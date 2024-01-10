@@ -37,7 +37,7 @@ func (r PermissionRepositoryImpl) FindPermissionByName(name string) (dao.Permiss
 	Permission := dao.Permission{
 		Name: name,
 	}
-	err := r.db.First(&Permission).Error
+	err := r.db.First(&Permission, "name = ?", name).Error
 	if err != nil {
 		slog.Error("Got and error when find Permission by name.", "error", err)
 		return dao.Permission{}, err

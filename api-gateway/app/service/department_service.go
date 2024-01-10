@@ -98,7 +98,6 @@ func (d DepartmentServiceImpl) AddDepartment(c *gin.Context) {
 	_, err := d.DepartmentRepository.FindDepartmentByName(request.Name)
 	switch err {
 	case nil:
-		slog.Error("Error when fetching data from database", "error", err)
 		pkg.PanicException(constant.Conflict)
 	case gorm.ErrRecordNotFound:
 		break

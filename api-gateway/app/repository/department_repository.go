@@ -37,11 +37,12 @@ func (r DepartmentRepositoryImpl) FindDepartmentByName(name string) (dao.Departm
 	Department := dao.Department{
 		Name: name,
 	}
-	err := r.db.First(&Department).Error
+	err := r.db.First(&Department, "name = ?", name).Error
 	if err != nil {
 		slog.Error("Got and error when find Department by name.", "error", err)
 		return dao.Department{}, err
 	}
+
 	return Department, nil
 }
 
