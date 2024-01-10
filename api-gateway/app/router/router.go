@@ -3,6 +3,9 @@ package router
 import (
 	"api-gateway/app/middleware"
 	"api-gateway/config"
+	"net/http/httputil"
+	"net/url"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -53,6 +56,17 @@ func Init(init *config.Injector) *gin.Engine {
 		permission.POST("", init.PermissionCtrl.Create)
 		permission.PUT("/:permissionID", init.PermissionCtrl.Update)
 		permission.DELETE("/:permissionID", init.PermissionCtrl.Delete)
+	}
+
+	/** These API requests are forwarded to planner-backend service */
+	plannerAPI := router.Group("/api/v1/planner")
+	{
+		targetStr := os.Getenv("PLANNER_BACKEND_TARGET")
+		url, _ := url.Parse(targetStr)
+		proxy := httputil.NewSingleHostReverseProxy(url)
+		plannerAPI.Any("/*any", func(c *gin.Context) {
+			proxy.ServeHTTP(c.Writer, c.Request)
+		})
 	}
 
 	return router

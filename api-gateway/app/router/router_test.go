@@ -3,8 +3,10 @@ package router
 import (
 	"api-gateway/app/mock"
 	"api-gateway/config"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -130,4 +132,54 @@ func TestPing(t *testing.T) {
 		t.Errorf("Expected body to be {\"message\":\"pong\"}, got %v", w.Body.String())
 	}
 
+}
+
+type ResponseRecorder struct {
+	*httptest.ResponseRecorder
+	closeNotify chan bool
+}
+
+func NewResponseRecorder() *ResponseRecorder {
+	return &ResponseRecorder{
+		httptest.NewRecorder(),
+		make(chan bool, 1),
+	}
+}
+
+func (r *ResponseRecorder) CloseNotify() <-chan bool {
+	return r.closeNotify
+}
+func TestPlannerProxy(t *testing.T) {
+	// crate mock server
+	mockServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w, "{\"message\":\"mock server response\"}")
+	}))
+	defer mockServer.Close()
+
+	// set proxy url
+	os.Setenv("PLANNER_BACKEND_TARGET", mockServer.URL)
+
+	// prepare routes
+	gin.SetMode(gin.TestMode)
+	init := &config.Injector{
+		DB:             nil,
+		SystemCtrl:     &mock.SystemControllerMock{},
+		DepartmentCtrl: &mock.DepartmentControllerMock{},
+		UserCtrl:       &mock.UserControllerMock{},
+		PermissionCtrl: &mock.PermissionControllerMock{},
+	}
+	router := Init(init)
+
+	// proxy to planner
+	w := NewResponseRecorder()
+	req, _ := http.NewRequest("GET", "/api/v1/planner/test", nil)
+	router.ServeHTTP(w, req)
+
+	if w.Code != 200 {
+		t.Errorf("Expected status code 200, got %v", w.Code)
+	}
+
+	if w.Body.String() != "{\"message\":\"mock server response\"}\n" {
+		t.Errorf("Expected body to be {\"message\":\"mock server response\"}, got %v", w.Body.String())
+	}
 }

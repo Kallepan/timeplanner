@@ -8,6 +8,7 @@ import (
 
 type Injector struct {
 	DB             *gorm.DB
+	SystemCtrl     controller.SystemController
 	UserCtrl       controller.UserController
 	DepartmentCtrl controller.DepartmentController
 	PermissionCtrl controller.PermissionController
