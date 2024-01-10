@@ -62,7 +62,7 @@ func (u UserRepositoryImpl) FindUserById(id uuid.UUID) (dao.User, error) {
 }
 
 func (u UserRepositoryImpl) Save(user *dao.User) (dao.User, error) {
-	if err := u.db.Save(user).Error; err != nil {
+	if err := u.db.Preload("Department").Preload("Permissions").Save(user).Error; err != nil {
 		slog.Error("Got an error when save user.", "error", err)
 		return dao.User{}, err
 	}

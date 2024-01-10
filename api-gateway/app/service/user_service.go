@@ -122,6 +122,19 @@ func (u UserServiceImpl) AddUser(c *gin.Context) {
 	}
 	request := mapUserRequestToUser(rawRequest)
 
+	// Check if username already exist
+	_, err := u.UserRepository.FindUserByUsername(request.Username)
+	switch err {
+	case nil:
+		pkg.PanicException(constant.Conflict)
+	case gorm.ErrRecordNotFound:
+		break
+	default:
+		slog.Error("Error happened: when get data from database", "error", err)
+		pkg.PanicException(constant.UnknownError)
+	}
+
+	// Hash password
 	if hash, err := bcrypt.GenerateFromPassword([]byte(rawRequest.Password), 15); err != nil {
 		slog.Error("Error happened: when hashing password", "error", err)
 		pkg.PanicException(constant.UnknownError)
@@ -133,10 +146,9 @@ func (u UserServiceImpl) AddUser(c *gin.Context) {
 	switch err {
 	case nil:
 		break
-	case gorm.ErrRecordNotFound:
-		pkg.PanicException(constant.DataNotFound)
 	default:
 		slog.Error("Error happened: when saving data to database", "error", err)
+		pkg.PanicException(constant.UnknownError)
 	}
 	data := mapUserToUserResponse(rawData)
 

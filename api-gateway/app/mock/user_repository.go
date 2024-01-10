@@ -52,35 +52,35 @@ func (r *UserRepositoryMock) Return(mockData interface{}, errorData error) Mock 
 
 /* Repostory interface implementations */
 func (r *UserRepositoryMock) FindAllUsers() ([]dao.User, error) {
-	if r.dataContainer[r.primedFunctionName] == nil {
-		return nil, r.errorContainer[r.primedFunctionName]
+	if r.dataContainer["FindAllUsers"] == nil {
+		return nil, r.errorContainer["FindAllUsers"]
 	}
 
-	return r.dataContainer["FindAllUsers"].([]dao.User), r.errorContainer[r.primedFunctionName]
+	return r.dataContainer["FindAllUsers"].([]dao.User), r.errorContainer["FindAllUsers"]
 }
 
 func (r *UserRepositoryMock) FindUserByUsername(username string) (dao.User, error) {
-	if r.dataContainer[r.primedFunctionName] == nil {
-		return dao.User{}, r.errorContainer[r.primedFunctionName]
+	if r.dataContainer["FindUserByUsername"] == nil {
+		return dao.User{}, r.errorContainer["FindUserByUsername"]
 	}
 
-	return r.dataContainer["FindUserByUsername"].(dao.User), r.errorContainer[r.primedFunctionName]
+	return r.dataContainer["FindUserByUsername"].(dao.User), r.errorContainer["FindUserByUsername"]
 }
 
 func (r *UserRepositoryMock) FindUserById(id uuid.UUID) (dao.User, error) {
-	if r.dataContainer[r.primedFunctionName] == nil {
-		return dao.User{}, r.errorContainer[r.primedFunctionName]
+	if r.dataContainer["FindUserById"] == nil {
+		return dao.User{}, r.errorContainer["FindUserById"]
 	}
 
-	return r.dataContainer["FindUserById"].(dao.User), r.errorContainer[r.primedFunctionName]
+	return r.dataContainer["FindUserById"].(dao.User), r.errorContainer["FindUserById"]
 }
 
 func (r *UserRepositoryMock) Save(user *dao.User) (dao.User, error) {
-	if r.dataContainer[r.primedFunctionName] == nil {
-		return dao.User{}, r.errorContainer[r.primedFunctionName]
+	if r.dataContainer["Save"] == nil {
+		return dao.User{}, r.errorContainer["Save"]
 	}
 
-	return r.dataContainer["Save"].(dao.User), r.errorContainer[r.primedFunctionName]
+	return r.dataContainer["Save"].(dao.User), r.errorContainer["Save"]
 }
 
 func (r *UserRepositoryMock) DeleteUser(id uuid.UUID) error {

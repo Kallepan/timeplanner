@@ -1,12 +1,10 @@
 package service
 
 import (
-	"api-gateway/app/constant"
 	"api-gateway/app/domain/dao"
 	"api-gateway/app/domain/dco"
 	"api-gateway/app/domain/dto"
 	"api-gateway/app/mock"
-	"api-gateway/app/pkg"
 	"database/sql"
 	"encoding/json"
 	"net/http/httptest"
@@ -34,16 +32,9 @@ func TestUpdateUser(t *testing.T) {
 				"password":      "testpassword",
 				"department_id": "00000000-0000-0000-0000-000000000003",
 			},
-			mockValue: dao.User{
-				BaseModel: dao.BaseModel{
-					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
-				},
-				Username:     "TEST",
-				Email:        "test@example.com",
-				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
-			},
-			expectedValue:      nil,
-			mockError:          gorm.ErrRecordNotFound,
+			findValue:          nil,
+			saveValue:          nil,
+			findError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 404,
 			queryParams: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
@@ -57,7 +48,7 @@ func TestUpdateUser(t *testing.T) {
 				"password":      "testpassword",
 				"department_id": "00000000-0000-0000-0000-000000000003",
 			},
-			mockValue: dao.User{
+			findValue: dao.User{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
@@ -65,7 +56,7 @@ func TestUpdateUser(t *testing.T) {
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 			},
-			expectedValue: dao.User{
+			saveValue: dao.User{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
@@ -77,7 +68,8 @@ func TestUpdateUser(t *testing.T) {
 					},
 				},
 			},
-			mockError:          nil,
+			findError:          nil,
+			saveError:          nil,
 			expectedStatusCode: 200,
 			queryParams: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
@@ -92,19 +84,20 @@ func TestUpdateUser(t *testing.T) {
 				"department_id": "00000000-0000-0000-0000-000000000001",
 				"is_admin":      true,
 			},
-			mockValue: dao.User{
+			findValue: dao.User{
 				Username:     "TEST",
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				IsAdmin:      false,
 			},
-			expectedValue: dao.User{
+			saveValue: dao.User{
 				Username:     "TEST",
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				IsAdmin:      true,
 			},
-			mockError:          nil,
+			findError:          nil,
+			saveError:          nil,
 			expectedStatusCode: 200,
 			queryParams: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
@@ -119,19 +112,20 @@ func TestUpdateUser(t *testing.T) {
 				"department_id": "00000000-0000-0000-0000-000000000001",
 				"is_admin":      false,
 			},
-			mockValue: dao.User{
+			findValue: dao.User{
 				Username:     "TEST",
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				IsAdmin:      false,
 			},
-			expectedValue: dao.User{
+			saveValue: dao.User{
 				Username:     "TEST",
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				IsAdmin:      false,
 			},
-			mockError:          nil,
+			findError:          nil,
+			saveError:          nil,
 			expectedStatusCode: 200,
 			queryParams: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
@@ -145,19 +139,20 @@ func TestUpdateUser(t *testing.T) {
 				"department_id": "00000000-0000-0000-0000-000000000001",
 				"is_admin":      false,
 			},
-			mockValue: dao.User{
+			findValue: dao.User{
 				Username:     "TEST",
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				IsAdmin:      false,
 			},
-			expectedValue: dao.User{
+			saveValue: dao.User{
 				Username:     "TEST",
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				IsAdmin:      false,
 			},
-			mockError:          nil,
+			findError:          nil,
+			saveError:          nil,
 			expectedStatusCode: 200,
 			queryParams: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
@@ -172,19 +167,20 @@ func TestUpdateUser(t *testing.T) {
 				"department_id": "00000000-0000-0000-0000-000000000001",
 				"is_admin":      false,
 			},
-			mockValue: dao.User{
+			findValue: dao.User{
 				Username:     "TEST",
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				IsAdmin:      true,
 			},
-			expectedValue: dao.User{
+			saveValue: dao.User{
 				Username:     "TEST",
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				IsAdmin:      false,
 			},
-			mockError:          nil,
+			findError:          nil,
+			saveError:          nil,
 			expectedStatusCode: 200,
 			queryParams: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
@@ -198,17 +194,18 @@ func TestUpdateUser(t *testing.T) {
 				"password":      "testpassword",
 				"department_id": "00000000-0000-0000-0000-000000000001",
 			},
-			mockValue: dao.User{
+			findValue: dao.User{
 				Username:     "TEST",
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 			},
-			expectedValue: dao.User{
+			saveValue: dao.User{
 				Username:     "TEST",
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 			},
-			mockError:          nil,
+			findError:          nil,
+			saveError:          nil,
 			expectedStatusCode: 200,
 			queryParams: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
@@ -222,16 +219,16 @@ func TestUpdateUser(t *testing.T) {
 				"password":      "testpassword",
 				"department_id": uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 			},
-			expectedValue:      dao.User{},
-			mockError:          nil,
+			findValue:          dao.User{},
+			saveValue:          dao.User{},
 			expectedStatusCode: 400,
 		},
 	}
 
 	for i, testStep := range testSteps {
 		// Set mock data
-		userRepoMock.On("FindUserById").Return(testStep.mockValue, testStep.mockError)
-		userRepoMock.On("Save").Return(testStep.expectedValue, testStep.mockError)
+		userRepoMock.On("FindUserById").Return(testStep.findValue, testStep.findError)
+		userRepoMock.On("Save").Return(testStep.saveValue, testStep.saveError)
 
 		// get GIN context
 		w := httptest.NewRecorder()
@@ -245,7 +242,7 @@ func TestUpdateUser(t *testing.T) {
 			t.Errorf("Step: %d. Expected status code %d, but got %d", i, testStep.expectedStatusCode, response.StatusCode)
 		}
 
-		if testStep.expectedValue == nil {
+		if testStep.saveValue == nil {
 			continue
 		}
 
@@ -256,16 +253,16 @@ func TestUpdateUser(t *testing.T) {
 		}
 
 		// compare attributes
-		if responseBody.Data.Username != testStep.expectedValue.(dao.User).Username {
-			t.Errorf("Step: %d. Expected username %s, but got %s", i, testStep.expectedValue.(dao.User).Username, responseBody.Data.Username)
+		if responseBody.Data.Username != testStep.saveValue.(dao.User).Username {
+			t.Errorf("Step: %d. Expected username %s, but got %s", i, testStep.saveValue.(dao.User).Username, responseBody.Data.Username)
 		}
 
-		if responseBody.Data.Email != testStep.expectedValue.(dao.User).Email {
-			t.Errorf("Step: %d. Expected email %s, but got %s", i, testStep.expectedValue.(dao.User).Email, responseBody.Data.Email)
+		if responseBody.Data.Email != testStep.saveValue.(dao.User).Email {
+			t.Errorf("Step: %d. Expected email %s, but got %s", i, testStep.saveValue.(dao.User).Email, responseBody.Data.Email)
 		}
 
-		if responseBody.Data.IsAdmin != testStep.expectedValue.(dao.User).IsAdmin {
-			t.Errorf("Step: %d. Expected is_admin %t, but got %t", i, testStep.expectedValue.(dao.User).IsAdmin, responseBody.Data.IsAdmin)
+		if responseBody.Data.IsAdmin != testStep.saveValue.(dao.User).IsAdmin {
+			t.Errorf("Step: %d. Expected is_admin %t, but got %t", i, testStep.saveValue.(dao.User).IsAdmin, responseBody.Data.IsAdmin)
 		}
 	}
 }
@@ -339,13 +336,15 @@ func TestAddUser(t *testing.T) {
 				"department_id": "00000000-0000-0000-0000-000000000001",
 				"is_admin":      true,
 			},
-			expectedValue: dao.User{
+			findValue: nil,
+			saveValue: dao.User{
 				Username:     "TEST",
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				IsAdmin:      true,
 			},
-			mockError:          nil,
+			findError:          gorm.ErrRecordNotFound,
+			saveError:          nil,
 			expectedStatusCode: 201,
 		},
 		{
@@ -356,13 +355,15 @@ func TestAddUser(t *testing.T) {
 				"password":      "testpassword",
 				"department_id": "00000000-0000-0000-0000-000000000001",
 			},
-			expectedValue: dao.User{
+			findValue: nil,
+			saveValue: dao.User{
 				Username:     "TEST",
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				IsAdmin:      false,
 			},
-			mockError:          nil,
+			findError:          gorm.ErrRecordNotFound,
+			saveError:          nil,
 			expectedStatusCode: 201,
 		},
 		{
@@ -374,13 +375,15 @@ func TestAddUser(t *testing.T) {
 				"department_id": "00000000-0000-0000-0000-000000000001",
 				"is_admin":      false,
 			},
-			expectedValue: dao.User{
+			findValue: nil,
+			saveValue: dao.User{
 				Username:     "TEST",
 				Email:        "test@example.com",
 				DepartmentID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				IsAdmin:      false,
 			},
-			mockError:          nil,
+			findError:          gorm.ErrRecordNotFound,
+			saveError:          nil,
 			expectedStatusCode: 201,
 		},
 		{
@@ -391,8 +394,10 @@ func TestAddUser(t *testing.T) {
 				"password":      "testpassword",
 				"department_id": uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 			},
-			expectedValue:      nil,
-			mockError:          nil,
+			findValue:          dao.User{},
+			saveValue:          nil,
+			findError:          gorm.ErrRecordNotFound,
+			saveError:          nil,
 			expectedStatusCode: 400,
 		},
 		{
@@ -404,15 +409,18 @@ func TestAddUser(t *testing.T) {
 				"department_id": uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				"is_admin":      false,
 			},
-			expectedValue:      nil,
-			mockError:          pkg.NewException(constant.InvalidRequest),
+			findValue:          nil,
+			saveValue:          nil,
+			findError:          gorm.ErrRecordNotFound,
+			saveError:          nil,
 			expectedStatusCode: 400,
 		},
 	}
 
 	for i, testStep := range testSteps {
 		// Prime mock
-		userRepoMock.On("Save").Return(testStep.expectedValue, testStep.mockError)
+		userRepoMock.On("FindUserByUsername").Return(testStep.findValue, testStep.findError)
+		userRepoMock.On("Save").Return(testStep.saveValue, testStep.saveError)
 
 		// get GIN context
 		w := httptest.NewRecorder()
@@ -426,7 +434,7 @@ func TestAddUser(t *testing.T) {
 			t.Errorf("Step: %d. Expected status code %d, but got %d", i, testStep.expectedStatusCode, response.StatusCode)
 		}
 
-		if testStep.expectedValue == nil {
+		if testStep.saveValue == nil {
 			continue
 		}
 
@@ -437,20 +445,20 @@ func TestAddUser(t *testing.T) {
 		}
 
 		// Compare response body
-		if responseBody.Data.Username != testStep.expectedValue.(dao.User).Username {
-			t.Errorf("Step: %d. Expected username %s, but got %s", i, testStep.expectedValue.(dao.User).Username, responseBody.Data.Username)
+		if responseBody.Data.Username != testStep.saveValue.(dao.User).Username {
+			t.Errorf("Step: %d. Expected username %s, but got %s", i, testStep.saveValue.(dao.User).Username, responseBody.Data.Username)
 		}
 
-		if responseBody.Data.Email != testStep.expectedValue.(dao.User).Email {
-			t.Errorf("Step: %d. Expected email %s, but got %s", i, testStep.expectedValue.(dao.User).Email, responseBody.Data.Email)
+		if responseBody.Data.Email != testStep.saveValue.(dao.User).Email {
+			t.Errorf("Step: %d. Expected email %s, but got %s", i, testStep.saveValue.(dao.User).Email, responseBody.Data.Email)
 		}
 
-		if responseBody.Data.IsAdmin != testStep.expectedValue.(dao.User).IsAdmin {
-			t.Errorf("Step: %d. Expected is_admin %t, but got %t", i, testStep.expectedValue.(dao.User).IsAdmin, responseBody.Data.IsAdmin)
+		if responseBody.Data.IsAdmin != testStep.saveValue.(dao.User).IsAdmin {
+			t.Errorf("Step: %d. Expected is_admin %t, but got %t", i, testStep.saveValue.(dao.User).IsAdmin, responseBody.Data.IsAdmin)
 		}
 
-		if responseBody.Data.Department.ID != testStep.expectedValue.(dao.User).DepartmentID {
-			t.Errorf("Step: %d. Expected department_id %s, but got %s", i, testStep.expectedValue.(dao.User).DepartmentID, responseBody.Data.Department.ID)
+		if responseBody.Data.Department.ID != testStep.saveValue.(dao.User).DepartmentID {
+			t.Errorf("Step: %d. Expected department_id %s, but got %s", i, testStep.saveValue.(dao.User).DepartmentID, responseBody.Data.Department.ID)
 		}
 	}
 }
@@ -738,8 +746,9 @@ func TestAddPermissionToUser(t *testing.T) {
 				"userID":       "TEST",
 				"permissionID": "00000000-0000-0000-0000-000000000001",
 			},
-			expectedValue:      nil,
-			mockError:          nil,
+
+			saveValue:          nil,
+			saveError:          nil,
 			expectedStatusCode: 201,
 		},
 		{
@@ -748,15 +757,15 @@ func TestAddPermissionToUser(t *testing.T) {
 				"userID":       "TEST",
 				"permissionID": "00000000-0000-0000-0000-000000000001",
 			},
-			expectedValue:      nil,
-			mockError:          gorm.ErrRecordNotFound,
+			saveValue:          nil,
+			saveError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 400, // Here we expect 400 because the user or permission do not exist
 		},
 	}
 
 	for i, testStep := range testSteps {
 		// Prime mock
-		userRepoMock.On("AddPermissionToUser").Return(testStep.expectedValue, testStep.mockError)
+		userRepoMock.On("AddPermissionToUser").Return(testStep.saveValue, testStep.saveError)
 
 		// get GIN context
 		w := httptest.NewRecorder()
