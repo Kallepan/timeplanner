@@ -18,6 +18,7 @@ import (
 
 func BuildInjector() (*config.Injector, func(), error) {
 	gormDB := config.ConnectToDB()
+	systemControllerImpl := &controller.SystemControllerImpl{}
 	userRepositoryImpl := repository.UserRepositoryInit(gormDB)
 	authServiceImpl := &service.AuthServiceImpl{
 		UserRepository: userRepositoryImpl,
@@ -45,6 +46,7 @@ func BuildInjector() (*config.Injector, func(), error) {
 	}
 	injector := &config.Injector{
 		DB:             gormDB,
+		SystemCtrl:     systemControllerImpl,
 		UserCtrl:       userControllerImpl,
 		DepartmentCtrl: departmentControllerImpl,
 		PermissionCtrl: permissionControllerImpl,

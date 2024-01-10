@@ -6,4 +6,5 @@ var ControllerSet = wire.NewSet(
 	userControllerSet,
 	permissionControllerSet,
 	departmentControllerSet,
+	systemControllerSet,
 )

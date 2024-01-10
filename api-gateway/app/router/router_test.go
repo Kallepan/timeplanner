@@ -20,6 +20,7 @@ func TestRouter(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	init := &config.Injector{
 		DB:             nil,
+		SystemCtrl:     &mock.SystemControllerMock{},
 		DepartmentCtrl: &mock.DepartmentControllerMock{},
 		UserCtrl:       &mock.UserControllerMock{},
 		PermissionCtrl: &mock.PermissionControllerMock{},
@@ -104,4 +105,29 @@ func TestRouter(t *testing.T) {
 			t.Logf("Test %v passed", i)
 		}
 	})
+}
+
+func TestPing(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+	init := &config.Injector{
+		DB:             nil,
+		SystemCtrl:     &mock.SystemControllerMock{},
+		DepartmentCtrl: &mock.DepartmentControllerMock{},
+		UserCtrl:       &mock.UserControllerMock{},
+		PermissionCtrl: &mock.PermissionControllerMock{},
+	}
+
+	router := Init(init)
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest("GET", "/api/v1/ping", nil)
+	router.ServeHTTP(w, req)
+
+	if w.Code != 200 {
+		t.Errorf("Expected status code 200, got %v", w.Code)
+	}
+
+	if w.Body.String() != "{\"message\":\"pong\"}" {
+		t.Errorf("Expected body to be {\"message\":\"pong\"}, got %v", w.Body.String())
+	}
+
 }
