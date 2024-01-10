@@ -30,10 +30,11 @@ func TestUpdatePermission(t *testing.T) {
 				"name":        "name_new",
 				"description": "description_new",
 			},
-			mockValue:          nil,
-			expectedValue:      nil,
-			mockError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 404,
+			findValue:          nil,
+			saveValue:          nil,
+			findError:          gorm.ErrRecordNotFound,
+			saveError:          nil,
 			queryParams: map[string]string{
 				"permissionID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -43,21 +44,22 @@ func TestUpdatePermission(t *testing.T) {
 				"name":        "name_new",
 				"description": "description_new",
 			},
-			mockValue: dao.Permission{
+			findValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
 				Name:        "name_old",
 				Description: sql.NullString{String: dummyDescription, Valid: true},
 			},
-			expectedValue: dao.Permission{
+			saveValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
 				Name:        "name_new",
 				Description: sql.NullString{String: "description_new", Valid: true},
 			},
-			mockError:          nil,
+			findError:          nil,
+			saveError:          nil,
 			expectedStatusCode: 200,
 			queryParams: map[string]string{
 				"permissionID": "00000000-0000-0000-0000-000000000001",
@@ -69,21 +71,22 @@ func TestUpdatePermission(t *testing.T) {
 				"name":        "name_new",
 				"description": nil,
 			},
-			mockValue: dao.Permission{
+			findValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
 				Name:        "name_old",
 				Description: sql.NullString{String: "description_old", Valid: true},
 			},
-			expectedValue: dao.Permission{
+			saveValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
 				Name:        "name_new",
 				Description: sql.NullString{String: "", Valid: false},
 			},
-			mockError:          nil,
+			findError:          nil,
+			saveError:          nil,
 			expectedStatusCode: 200,
 			queryParams: map[string]string{
 				"permissionID": "00000000-0000-0000-0000-000000000001",
@@ -94,21 +97,22 @@ func TestUpdatePermission(t *testing.T) {
 			mockRequestData: map[string]interface{}{
 				"name": "name_new",
 			},
-			mockValue: dao.Permission{
+			findValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
 				Name:        "name_old",
 				Description: sql.NullString{String: "description_old", Valid: true},
 			},
-			expectedValue: dao.Permission{
+			saveValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
 				Name:        "name_new",
 				Description: sql.NullString{String: "", Valid: false},
 			},
-			mockError:          nil,
+			findError:          nil,
+			saveError:          nil,
 			expectedStatusCode: 200,
 			queryParams: map[string]string{
 				"permissionID": "00000000-0000-0000-0000-000000000001",
@@ -119,8 +123,8 @@ func TestUpdatePermission(t *testing.T) {
 	// Run test
 	for i, testStep := range testSteps {
 		// Set mock data
-		permissionRepositoryMock.On("FindPermissionById").Return(testStep.mockValue, testStep.mockError)
-		permissionRepositoryMock.On("Save").Return(testStep.expectedValue, testStep.mockError)
+		permissionRepositoryMock.On("FindPermissionById").Return(testStep.findValue, testStep.findError)
+		permissionRepositoryMock.On("Save").Return(testStep.saveValue, testStep.saveError)
 
 		// get GIN context
 		w := httptest.NewRecorder()
@@ -135,7 +139,7 @@ func TestUpdatePermission(t *testing.T) {
 			t.Errorf("Step: %d. Expected status code %d but got %d", i, testStep.expectedStatusCode, response.StatusCode)
 		}
 
-		if testStep.expectedValue == nil {
+		if testStep.saveValue == nil {
 			continue
 		}
 
@@ -146,12 +150,12 @@ func TestUpdatePermission(t *testing.T) {
 		}
 
 		// compare name
-		if responseBody.Data.Name != testStep.expectedValue.(dao.Permission).Name {
-			t.Errorf("Step: %d. Expected name %s but got %s", i, testStep.expectedValue.(dao.Permission).Name, responseBody.Data.Name)
+		if responseBody.Data.Name != testStep.saveValue.(dao.Permission).Name {
+			t.Errorf("Step: %d. Expected name %s but got %s", i, testStep.saveValue.(dao.Permission).Name, responseBody.Data.Name)
 		}
 		// compare description
-		if *responseBody.Data.Description != testStep.expectedValue.(dao.Permission).Description.String {
-			t.Errorf("Step: %d. Expected description %s but got %s", i, testStep.expectedValue.(dao.Permission).Description.String, *responseBody.Data.Description)
+		if *responseBody.Data.Description != testStep.saveValue.(dao.Permission).Description.String {
+			t.Errorf("Step: %d. Expected description %s but got %s", i, testStep.saveValue.(dao.Permission).Description.String, *responseBody.Data.Description)
 		}
 	}
 }
@@ -231,42 +235,62 @@ func TestAddPermission(t *testing.T) {
 				"name":        "name_1",
 				"description": "description_1",
 			},
-			expectedValue: dao.Permission{
+			findValue: nil,
+			saveValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
 				Name:        "name_1",
 				Description: sql.NullString{String: "description_1", Valid: true},
 			},
-			mockError:          nil,
 			expectedStatusCode: 201,
+			findError:          gorm.ErrRecordNotFound,
+			saveError:          nil,
 		},
 		{
 			mockRequestData:    map[string]interface{}{},
-			expectedValue:      nil,
-			mockError:          nil, // validation error does not need to be mocked
 			expectedStatusCode: 400,
 		},
 		{
 			mockRequestData: map[string]interface{}{
 				"name": "name_1",
 			},
-			expectedValue: dao.Permission{
+			findValue: nil,
+			saveValue: dao.Permission{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
 				},
 				Name:        "name_1",
 				Description: sql.NullString{String: "", Valid: false},
 			},
-			mockError:          nil,
 			expectedStatusCode: 201,
+			findError:          gorm.ErrRecordNotFound,
+			saveError:          nil,
+		},
+		{
+			mockRequestData: map[string]interface{}{
+				"name":        "name_1",
+				"description": nil,
+			},
+			findValue: dao.Permission{
+				BaseModel: dao.BaseModel{
+					ID: uuid.MustParse("00000000-0000-0000-0000-000000000002"),
+				},
+				Name:        "name_1",
+				Description: sql.NullString{String: "description_1", Valid: true},
+			},
+			saveValue:          nil,
+			findError:          nil,
+			saveError:          nil,
+			expectedStatusCode: 409,
 		},
 	}
 
 	// Run test
 	for i, testStep := range testSteps {
 		// Set mock data
-		permissionRepositoryMock.On("Save").Return(testStep.expectedValue, testStep.mockError)
+		permissionRepositoryMock.On("FindPermissionByName").Return(testStep.findValue, testStep.findError)
+		permissionRepositoryMock.On("Save").Return(testStep.saveValue, testStep.saveError)
 
 		// get GIN context
 		w := httptest.NewRecorder()
@@ -281,7 +305,7 @@ func TestAddPermission(t *testing.T) {
 			t.Errorf("Step: %d. Expected status code %d but got %d", i, testStep.expectedStatusCode, response.StatusCode)
 		}
 
-		if testStep.expectedValue == nil {
+		if testStep.saveValue == nil {
 			continue
 		}
 
@@ -292,12 +316,12 @@ func TestAddPermission(t *testing.T) {
 		}
 
 		// compare name
-		if responseBody.Data.Name != testStep.expectedValue.(dao.Permission).Name {
-			t.Errorf("Step: %d. Expected name %s but got %s", i, testStep.expectedValue.(dao.Permission).Name, responseBody.Data.Name)
+		if responseBody.Data.Name != testStep.saveValue.(dao.Permission).Name {
+			t.Errorf("Step: %d. Expected name %s but got %s", i, testStep.saveValue.(dao.Permission).Name, responseBody.Data.Name)
 		}
 		// compare description
-		if *responseBody.Data.Description != testStep.expectedValue.(dao.Permission).Description.String {
-			t.Errorf("Step: %d. Expected description %s but got %s", i, testStep.expectedValue.(dao.Permission).Description.String, *responseBody.Data.Description)
+		if *responseBody.Data.Description != testStep.saveValue.(dao.Permission).Description.String {
+			t.Errorf("Step: %d. Expected description %s but got %s", i, testStep.saveValue.(dao.Permission).Description.String, *responseBody.Data.Description)
 		}
 	}
 }

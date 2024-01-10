@@ -20,33 +20,52 @@ type ServiceTestGET struct {
 	expectedResponse interface{}
 	// expected status code to be returned by service
 	expectedStatusCode int
+
+	queryParams map[string]string
+}
+
+func (s *ServiceTestGET) QueryParamsToGinParams() gin.Params {
+	var params gin.Params
+	for key, value := range s.queryParams {
+		params = append(params, gin.Param{Key: key, Value: value})
+	}
+
+	return params
 }
 
 type ServiceTestPOST struct {
 	// data to be used for update
 	mockRequestData map[string]interface{}
-	// mock error to be returned by repository
-	mockError error
-
-	// expected value to be returned by service
-	expectedValue interface{}
 	// expected status code to be returned by service
 	expectedStatusCode int
+
+	findValue interface{}
+	saveValue interface{}
+	findError error
+	saveError error
+
+	queryParams map[string]string
+}
+
+func (s *ServiceTestPOST) QueryParamsToGinParams() gin.Params {
+	var params gin.Params
+	for key, value := range s.queryParams {
+		params = append(params, gin.Param{Key: key, Value: value})
+	}
+
+	return params
 }
 
 type ServiceTestPUT struct {
 	// data to be used for update
 	mockRequestData map[string]interface{}
-
-	// mock value to be returned by repository
-	mockValue interface{}
-	// mock error to be returned by repository
-	mockError error
-
-	// expected value to be returned by service
-	expectedValue interface{}
 	// expected status code to be returned by service
 	expectedStatusCode int
+
+	findValue interface{}
+	saveValue interface{}
+	findError error
+	saveError error
 
 	queryParams map[string]string
 }

@@ -11,6 +11,7 @@ import (
 
 type PermissionRepository interface {
 	FindAllPermissions() ([]dao.Permission, error)
+	FindPermissionByName(name string) (dao.Permission, error)
 	FindPermissionById(id uuid.UUID) (dao.Permission, error)
 	Save(Permission *dao.Permission) (dao.Permission, error)
 	DeletePermissionById(id uuid.UUID) error
@@ -30,6 +31,18 @@ func (r PermissionRepositoryImpl) FindAllPermissions() ([]dao.Permission, error)
 	}
 
 	return Permissions, nil
+}
+
+func (r PermissionRepositoryImpl) FindPermissionByName(name string) (dao.Permission, error) {
+	Permission := dao.Permission{
+		Name: name,
+	}
+	err := r.db.First(&Permission).Error
+	if err != nil {
+		slog.Error("Got and error when find Permission by name.", "error", err)
+		return dao.Permission{}, err
+	}
+	return Permission, nil
 }
 
 func (r PermissionRepositoryImpl) FindPermissionById(id uuid.UUID) (dao.Permission, error) {

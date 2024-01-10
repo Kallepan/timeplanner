@@ -92,8 +92,19 @@ func (p PermissionServiceImpl) AddPermission(c *gin.Context) {
 		slog.Error("Error when binding json", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
-
 	request := mapPermissionRequestToPermission(rawRequest)
+
+	// Check if permission name already exist
+	_, err := p.PermissionRepository.FindPermissionByName(request.Name)
+	switch err {
+	case nil:
+		pkg.PanicException(constant.Conflict)
+	case gorm.ErrRecordNotFound:
+		break
+	default:
+		slog.Error("Error when fetching data from database", "error", err)
+		pkg.PanicException(constant.UnknownError)
+	}
 
 	rawData, err := p.PermissionRepository.Save(&request)
 	if err != nil {
