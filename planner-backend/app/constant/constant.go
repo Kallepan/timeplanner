@@ -4,6 +4,11 @@ type ResponseStatus int
 type Headers int
 type General int
 
+// App Constant
+const (
+	TimeFormat string = "15:04"
+)
+
 // Constant API
 const (
 	Success ResponseStatus = iota + 1

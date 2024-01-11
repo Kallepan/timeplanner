@@ -35,11 +35,19 @@ func BuildInjector() (*config.Injector, func(), error) {
 	workplaceControllerImpl := &controller.WorkplaceControllerImpl{
 		WorkplaceService: workplaceServiceImpl,
 	}
+	timeslotRepositoryImpl := repository.TimeslotRepositoryInit(driverWithContext)
+	timeslotServiceImpl := &service.TimeslotServiceImpl{
+		TimeslotRepository: timeslotRepositoryImpl,
+	}
+	timeslotControllerImpl := &controller.TimeslotControllerImpl{
+		TimeslotService: timeslotServiceImpl,
+	}
 	injector := &config.Injector{
 		DB:             driverWithContext,
 		SystemCtrl:     systemControllerImpl,
 		DepartmentCtrl: departmentControllerImpl,
 		WorkplaceCtrl:  workplaceControllerImpl,
+		TimeslotCtrl:   timeslotControllerImpl,
 	}
 	return injector, func() {
 	}, nil

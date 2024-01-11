@@ -23,6 +23,7 @@ func TestRouter(t *testing.T) {
 		SystemCtrl:     &mock.SystemControllerMock{},
 		DepartmentCtrl: &mock.DepartmentControllerMock{},
 		WorkplaceCtrl:  &mock.WorkplaceControllerMock{},
+		TimeslotCtrl:   &mock.TimeslotControllerMock{},
 	}
 
 	t.Run("Test System Routes", func(t *testing.T) {

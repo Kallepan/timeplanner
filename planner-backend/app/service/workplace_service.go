@@ -216,6 +216,7 @@ func mapWorkplaceToWorkplaceResponse(workplace dao.Workplace) dco.WorkplaceRespo
 		Base: dco.Base{
 			CreatedAt: workplace.Base.CreatedAt,
 			UpdatedAt: workplace.Base.UpdatedAt,
+			DeletedAt: workplace.Base.DeletedAt,
 		},
 	}
 }

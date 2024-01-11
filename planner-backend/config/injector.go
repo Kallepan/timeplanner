@@ -11,4 +11,5 @@ type Injector struct {
 	SystemCtrl     controller.SystemController
 	DepartmentCtrl controller.DepartmentController
 	WorkplaceCtrl  controller.WorkplaceController
+	TimeslotCtrl   controller.TimeslotController
 }

@@ -193,6 +193,7 @@ func mapDepartmentToDepartmentResponse(department dao.Department) dco.Department
 		Base: dco.Base{
 			CreatedAt: department.CreatedAt,
 			UpdatedAt: department.UpdatedAt,
+			DeletedAt: department.DeletedAt,
 		},
 		Name: department.Name,
 	}

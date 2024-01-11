@@ -34,6 +34,13 @@ func Init(init *config.Injector) *gin.Engine {
 			workplace.POST("/", init.WorkplaceCtrl.Create)
 			workplace.PUT("/:workplaceName", init.WorkplaceCtrl.Update)
 			workplace.DELETE("/:workplaceName", init.WorkplaceCtrl.Delete)
+
+			timeslot := workplace.Group("/:workplaceName/timeslot")
+			timeslot.GET("/", init.TimeslotCtrl.GetAll)
+			timeslot.GET("/:timeslotName", init.TimeslotCtrl.Get)
+			timeslot.POST("/", init.TimeslotCtrl.Create)
+			timeslot.PUT("/:timeslotName", init.TimeslotCtrl.Update)
+			timeslot.DELETE("/:timeslotName", init.TimeslotCtrl.Delete)
 		}
 	}
 

@@ -6,4 +6,5 @@ var ControllerSet = wire.NewSet(
 	systemControllerSet,
 	workplaceControllerSet,
 	departmentControllerSet,
+	timeslotControllerSet,
 )
