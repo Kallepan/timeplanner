@@ -52,42 +52,6 @@ func (w *Weekday) ParseFromMap(data map[string]interface{}) error {
 	return nil
 }
 
-func (w *Weekday) ParseFromDB(record *neo4j.Record) error {
-	weekdayNode, _, err := neo4j.GetRecordValue[neo4j.Node](record, "w")
-	if err != nil {
-		return err
-	}
-
-	id, err := neo4j.GetProperty[string](weekdayNode, "id")
-	if err != nil {
-		return err
-	}
-
-	name, err := neo4j.GetProperty[string](weekdayNode, "name")
-	if err != nil {
-		return err
-	}
-
-	startTime, err := neo4j.GetProperty[neo4j.Time](weekdayNode, "start_time")
-	if err != nil {
-		return err
-	}
-	startTimeFormatted := startTime.Time()
-
-	endTime, err := neo4j.GetProperty[neo4j.Time](weekdayNode, "end_time")
-	if err != nil {
-		return err
-	}
-	endTimeFormatted := endTime.Time()
-
-	w.ID = id
-	w.Name = name
-	w.StartTime = startTimeFormatted
-	w.EndTime = endTimeFormatted
-
-	return nil
-}
-
 func (t *Timeslot) ParseFromDB(record *neo4j.Record, departmentName string, workplaceName string) error {
 	timelotNode, _, err := neo4j.GetRecordValue[neo4j.Node](record, "t")
 	if err != nil {
@@ -128,31 +92,27 @@ func (t *Timeslot) ParseFromDB(record *neo4j.Record, departmentName string, work
 	t.Base.UpdatedAt = updatedAt
 	t.Base.DeletedAt = deletedAt
 
-	weekdays, ok, err := neo4j.GetRecordValue[[]any](record, "weekdays")
+	weekdaysInterface, _, err := neo4j.GetRecordValue[[]any](record, "weekdays")
 	if err != nil {
 		return err
 	}
-	if !ok {
-		return nil
-	}
 
 	var weekdaysParsed []Weekday
-	for _, weekdayInterface := range weekdays {
-		weekday, ok := weekdayInterface.(map[string]interface{})
+	for _, weekdayInterface := range weekdaysInterface {
+		weekdayMap, ok := weekdayInterface.(map[string]interface{})
 		if !ok {
-			return errors.New("could not parse weekday")
+			return err
 		}
 
-		var weekdayParsed Weekday
-		err := weekdayParsed.ParseFromMap(weekday)
-		if err != nil {
-			// This is due to the structure of the database
-			// If the weekday is not found, it will be null
-			// So we just skip it
+		weekday := Weekday{}
+		if err := weekday.ParseFromMap(weekdayMap); err != nil {
+			// due to the way neo4j handles null values, we need to skip the null values
 			continue
 		}
-		weekdaysParsed = append(weekdaysParsed, weekdayParsed)
+
+		weekdaysParsed = append(weekdaysParsed, weekday)
 	}
+
 	t.Weekdays = weekdaysParsed
 
 	return nil

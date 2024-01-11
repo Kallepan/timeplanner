@@ -2,6 +2,7 @@ package dco
 
 /** Responses **/
 type WeekdayResponse struct {
+	ID   string `json:"id"`
 	Name string `json:"name"`
 
 	// We use string here because we only need the time like "08:00"
@@ -20,9 +21,9 @@ type TimeslotResponse struct {
 
 /** Requests **/
 type WeekdayRequest struct {
-	Name      string `json:"name" binding:"required"`
-	StartTime string `json:"start_time" binding:"required"`
-	EndTime   string `json:"end_time" binding:"required"`
+	ID        string  `json:"id" binding:"required"`
+	StartTime *string `json:"start_time" binding:"omitempty"`
+	EndTime   *string `json:"end_time" binding:"omitempty"`
 }
 
 type TimeslotRequest struct {

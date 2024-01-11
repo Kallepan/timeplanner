@@ -41,6 +41,10 @@ func Init(init *config.Injector) *gin.Engine {
 			timeslot.POST("/", init.TimeslotCtrl.Create)
 			timeslot.PUT("/:timeslotName", init.TimeslotCtrl.Update)
 			timeslot.DELETE("/:timeslotName", init.TimeslotCtrl.Delete)
+
+			weekday := timeslot.Group("/:timeslotName/weekday")
+			weekday.POST("/", init.WeekdayCtrl.AddWeekdayToTimeslot)
+			weekday.DELETE("/", init.WeekdayCtrl.RemoveWeekdayFromTimeslot)
 		}
 	}
 

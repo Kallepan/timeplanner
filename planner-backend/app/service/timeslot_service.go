@@ -263,33 +263,6 @@ func mapTimeslotRequestToTimeslot(timeslot dco.TimeslotRequest) dao.Timeslot {
 	}
 }
 
-func mapWeekdayToWeekdayResponse(weekday dao.Weekday) dco.WeekdayResponse {
-	/* mapWeekdayToWeekdayResponse is a function to map weekday to weekday response
-	 * @param weekday is dao.Weekday
-	 * @return dco.WeekdayResponse
-	 */
-
-	return dco.WeekdayResponse{
-		Name:      weekday.Name,
-		StartTime: weekday.StartTime.Format(constant.TimeFormat),
-		EndTime:   weekday.EndTime.Format(constant.TimeFormat),
-	}
-}
-
-func mapWeekdayListToWeekdayResponseList(weekdays []dao.Weekday) []dco.WeekdayResponse {
-	/* mapWeekdayListToWeekdayResponseList is a function to map weekday list to weekday response list
-	 * @param weekdays is []dao.Weekday
-	 * @return []dco.WeekdayResponse
-	 */
-
-	weekdayResponseList := []dco.WeekdayResponse{}
-	for _, weekday := range weekdays {
-		weekdayResponseList = append(weekdayResponseList, mapWeekdayToWeekdayResponse(weekday))
-	}
-
-	return weekdayResponseList
-}
-
 var timeslotServiceSet = wire.NewSet(
 	wire.Struct(new(TimeslotServiceImpl), "*"),
 	wire.Bind(new(TimeslotService), new(*TimeslotServiceImpl)),

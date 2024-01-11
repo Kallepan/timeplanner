@@ -42,12 +42,21 @@ func BuildInjector() (*config.Injector, func(), error) {
 	timeslotControllerImpl := &controller.TimeslotControllerImpl{
 		TimeslotService: timeslotServiceImpl,
 	}
+	weekdayRepositoryImpl := repository.WeekdayRepositoryInit(driverWithContext)
+	weekdayServiceImpl := &service.WeekdayServiceImpl{
+		WeekdayRepository:  weekdayRepositoryImpl,
+		TimeslotRepository: timeslotRepositoryImpl,
+	}
+	weekdayControllerImpl := &controller.WeekdayControllerImpl{
+		WeekdayService: weekdayServiceImpl,
+	}
 	injector := &config.Injector{
 		DB:             driverWithContext,
 		SystemCtrl:     systemControllerImpl,
 		DepartmentCtrl: departmentControllerImpl,
 		WorkplaceCtrl:  workplaceControllerImpl,
 		TimeslotCtrl:   timeslotControllerImpl,
+		WeekdayCtrl:    weekdayControllerImpl,
 	}
 	return injector, func() {
 	}, nil

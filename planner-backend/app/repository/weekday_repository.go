@@ -17,7 +17,6 @@ import (
 type WeekdayRepository interface {
 	AddWeekdayToTimeslot(timeslot *dao.Timeslot, weekday *dao.Weekday) ([]dao.Weekday, error)
 	DeleteWeekdayFromTimeslot(timeslot *dao.Timeslot, weekday *dao.Weekday) error
-	UpdateWeekdayForTimeslot(timeslot *dao.Timeslot, weekday *dao.Weekday) ([]dao.Weekday, error)
 }
 
 type WeekdayRepositoryImpl struct {
@@ -35,7 +34,12 @@ func (w WeekdayRepositoryImpl) AddWeekdayToTimeslot(timeslot *dao.Timeslot, week
     ON MATCH SET r.start_time = time($startTime), r.end_time = time($endTime)
     WITH t
     MATCH (t)-[r:OFFERED_ON]->(wd:Weekday)
-    RETURN wd`
+    RETURN COLLECT({
+		id: wd.id,
+		name: wd.name,
+		start_time: r.start_time,
+		end_time: r.end_time
+	}) AS weekdays`
 	params := map[string]interface{}{
 		"departmentName": timeslot.DepartmentName,
 		"workplaceName":  timeslot.WorkplaceName,
@@ -56,10 +60,25 @@ func (w WeekdayRepositoryImpl) AddWeekdayToTimeslot(timeslot *dao.Timeslot, week
 		return nil, err
 	}
 
-	weekdays := []dao.Weekday{}
-	for _, record := range result.Records {
+	var weekdays []dao.Weekday
+	// get the returned record
+	record := result.Records[0]
+
+	// get the weekdays collection
+	weekdaysCollection, _, err := neo4j.GetRecordValue[[]any](record, "weekdays")
+	if err != nil {
+		return nil, err
+	}
+
+	// parse the collection into a list of weekdays
+	for _, weekdayInterface := range weekdaysCollection {
+		weekdayMap, ok := weekdayInterface.(map[string]interface{})
+		if !ok {
+			return nil, err
+		}
+
 		weekday := dao.Weekday{}
-		if err := weekday.ParseFromDB(record); err != nil {
+		if err := weekday.ParseFromMap(weekdayMap); err != nil {
 			return nil, err
 		}
 
@@ -99,50 +118,53 @@ func (w WeekdayRepositoryImpl) DeleteWeekdayFromTimeslot(timeslot *dao.Timeslot,
 	return nil
 }
 
+/*
 func (w WeekdayRepositoryImpl) UpdateWeekdayForTimeslot(timeslot *dao.Timeslot, weekday *dao.Weekday) ([]dao.Weekday, error) {
-	/* Updates a weekday for a timeslot */
-	ctx := context.Background()
-	query := `
-    MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(wp:Workplace {name: $workplaceName})-[:HAS_TIMESLOT]->(t:Timeslot {name: $timeslotName})
-    MATCH (wd:Weekday {id: $weekdayID})
-    MATCH (t)-[r:OFFERED_ON]->(wd)
-    SET r.start_time = time($startTime), r.end_time = time($endTime)
-    WITH t
-    MATCH (t)-[r:OFFERED_ON]->(wd:Weekday)
-    RETURN wd
-    `
-	params := map[string]interface{}{
-		"departmentName": timeslot.DepartmentName,
-		"workplaceName":  timeslot.WorkplaceName,
-		"timeslotName":   timeslot.Name,
-		"weekdayID":      weekday.ID,
-		"startTime":      weekday.StartTime,
-		"endTime":        weekday.EndTime,
-	}
 
-	result, err := neo4j.ExecuteQuery(
-		ctx,
-		*w.db,
-		query,
-		params,
-		neo4j.EagerResultTransformer,
-	)
-	if err != nil {
-		return nil, err
-	}
+		ctx := context.Background()
+		query := `
+	    MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(wp:Workplace {name: $workplaceName})-[:HAS_TIMESLOT]->(t:Timeslot {name: $timeslotName})
+	    MATCH (wd:Weekday {id: $weekdayID})
+	    MATCH (t)-[r:OFFERED_ON]->(wd)
+	    SET r.start_time = time($startTime), r.end_time = time($endTime)
+	    WITH t
+	    MATCH (t)-[r:OFFERED_ON]->(wd:Weekday)
+	    RETURN wd
+	    `
+		params := map[string]interface{}{
+			"departmentName": timeslot.DepartmentName,
+			"workplaceName":  timeslot.WorkplaceName,
+			"timeslotName":   timeslot.Name,
+			"weekdayID":      weekday.ID,
+			"startTime":      weekday.StartTime,
+			"endTime":        weekday.EndTime,
+		}
 
-	weekdays := []dao.Weekday{}
-	for _, record := range result.Records {
-		weekday := dao.Weekday{}
-		if err := weekday.ParseFromDB(record); err != nil {
+		result, err := neo4j.ExecuteQuery(
+			ctx,
+			*w.db,
+			query,
+			params,
+			neo4j.EagerResultTransformer,
+		)
+		if err != nil {
 			return nil, err
 		}
 
-		weekdays = append(weekdays, weekday)
+		weekdays := []dao.Weekday{}
+		for _, record := range result.Records {
+			weekday := dao.Weekday{}
+			if err := weekday.ParseFromDB(record); err != nil {
+				return nil, err
+			}
+
+			weekdays = append(weekdays, weekday)
+		}
+
+		return weekdays, nil
 	}
 
-	return weekdays, nil
-}
+*/
 
 func WeekdayRepositoryInit(db *neo4j.DriverWithContext) *WeekdayRepositoryImpl {
 	return &WeekdayRepositoryImpl{db: db}
