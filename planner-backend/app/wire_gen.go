@@ -10,6 +10,8 @@ import (
 	"context"
 	"github.com/google/wire"
 	"planner-backend/app/controller"
+	"planner-backend/app/repository"
+	"planner-backend/app/service"
 	"planner-backend/config"
 )
 
@@ -19,9 +21,25 @@ func BuildInjector() (*config.Injector, func(), error) {
 	contextContext := context.Background()
 	driverWithContext := config.ConnectToDB(contextContext)
 	systemControllerImpl := &controller.SystemControllerImpl{}
+	departmentRepositoryImpl := repository.DepartmentRepositoryInit(driverWithContext)
+	departmentServiceImpl := &service.DepartmentServiceImpl{
+		DepartmentRepository: departmentRepositoryImpl,
+	}
+	departmentControllerImpl := &controller.DepartmentControllerImpl{
+		DepartmentService: departmentServiceImpl,
+	}
+	workplaceRepositoryImpl := repository.WorkplaceRepositoryInit(driverWithContext)
+	workplaceServiceImpl := &service.WorkplaceServiceImpl{
+		WorkplaceRepository: workplaceRepositoryImpl,
+	}
+	workplaceControllerImpl := &controller.WorkplaceControllerImpl{
+		WorkplaceService: workplaceServiceImpl,
+	}
 	injector := &config.Injector{
-		DB:         driverWithContext,
-		SystemCtrl: systemControllerImpl,
+		DB:             driverWithContext,
+		SystemCtrl:     systemControllerImpl,
+		DepartmentCtrl: departmentControllerImpl,
+		WorkplaceCtrl:  workplaceControllerImpl,
 	}
 	return injector, func() {
 	}, nil

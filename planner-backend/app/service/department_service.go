@@ -23,7 +23,7 @@ type DepartmentService interface {
 }
 
 type DepartmentServiceImpl struct {
-	departmentRepository repository.DepartmentRepository
+	DepartmentRepository repository.DepartmentRepository
 }
 
 func (d DepartmentServiceImpl) GetAllDepartments(c *gin.Context) {
@@ -35,7 +35,7 @@ func (d DepartmentServiceImpl) GetAllDepartments(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program get all departments")
 
-	rawData, err := d.departmentRepository.FindAllDepartments()
+	rawData, err := d.DepartmentRepository.FindAllDepartments()
 	if err != nil {
 		slog.Error("Error when fetching data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
@@ -56,7 +56,7 @@ func (d DepartmentServiceImpl) GetDepartmentByName(c *gin.Context) {
 	slog.Info("start to execute program get department by name")
 
 	name := c.Param("departmentName")
-	rawData, err := d.departmentRepository.FindDepartmentByName(name)
+	rawData, err := d.DepartmentRepository.FindDepartmentByName(name)
 	switch err {
 	case nil:
 		break
@@ -89,7 +89,7 @@ func (d DepartmentServiceImpl) AddDepartment(c *gin.Context) {
 
 	department := mapDepartmentRequestToDepartment(departmentRequest)
 
-	_, err := d.departmentRepository.FindDepartmentByName(department.Name)
+	_, err := d.DepartmentRepository.FindDepartmentByName(department.Name)
 	switch err {
 	case nil:
 		pkg.PanicException(constant.Conflict)
@@ -100,7 +100,7 @@ func (d DepartmentServiceImpl) AddDepartment(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	rawData, err := d.departmentRepository.Save(&department)
+	rawData, err := d.DepartmentRepository.Save(&department)
 	if err != nil {
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
@@ -120,7 +120,7 @@ func (d DepartmentServiceImpl) UpdateDepartment(c *gin.Context) {
 	slog.Info("start to execute program update department")
 
 	name := c.Param("departmentName")
-	department, err := d.departmentRepository.FindDepartmentByName(name)
+	department, err := d.DepartmentRepository.FindDepartmentByName(name)
 	switch err {
 	case nil:
 		break
@@ -138,7 +138,7 @@ func (d DepartmentServiceImpl) UpdateDepartment(c *gin.Context) {
 	}
 
 	department.Name = departmentRequest.Name
-	rawData, err := d.departmentRepository.Save(&department)
+	rawData, err := d.DepartmentRepository.Save(&department)
 	if err != nil {
 		slog.Error("Error when updating data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
@@ -159,7 +159,7 @@ func (d DepartmentServiceImpl) DeleteDepartment(c *gin.Context) {
 	slog.Info("start to execute program delete department")
 
 	name := c.Param("departmentName")
-	department, err := d.departmentRepository.FindDepartmentByName(name)
+	department, err := d.DepartmentRepository.FindDepartmentByName(name)
 	switch err {
 	case nil:
 		break
@@ -170,7 +170,7 @@ func (d DepartmentServiceImpl) DeleteDepartment(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	err = d.departmentRepository.Delete(&department)
+	err = d.DepartmentRepository.Delete(&department)
 	switch err {
 	case nil:
 		break

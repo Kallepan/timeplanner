@@ -10,7 +10,7 @@ import (
 func main() {
 	port := os.Getenv("PLANNER_BACKEND_PORT")
 	if port == "" {
-		port = "8080"
+		port = "8081"
 	}
 
 	config.InitLogger()

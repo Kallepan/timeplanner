@@ -127,13 +127,39 @@ func (w WorkplaceRepositoryImpl) Save(departmentName string, workplace *dao.Work
 	return *workplace, nil
 }
 
+func (w WorkplaceRepositoryImpl) Delete(departmentName string, workplace *dao.Workplace) error {
+	/* Deletes a department */
+	ctx := context.Background()
+	query := `
+	MATCH  (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(w:Workplace {name: $workplaceName})
+	WHERE d.name = $name
+	SET d.deleted_at = datetime()`
+	params := map[string]interface{}{
+		"departmentName": departmentName,
+		"workplaceName":  workplace.Name,
+	}
+
+	_, err := neo4j.ExecuteQuery(
+		ctx,
+		*w.db,
+		query,
+		params,
+		neo4j.EagerResultTransformer,
+	)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func WorkplaceRepositoryInit(db *neo4j.DriverWithContext) *WorkplaceRepositoryImpl {
 	return &WorkplaceRepositoryImpl{
 		db: db,
 	}
 }
 
-var workplaceRepositorySet = wire.NewSet(
+var WorkplaceRepositorySet = wire.NewSet(
 	WorkplaceRepositoryInit,
 	wire.Bind(new(WorkplaceRepository), new(*WorkplaceRepositoryImpl)),
 )

@@ -6,6 +6,8 @@ package app
 import (
 	"context"
 	"planner-backend/app/controller"
+	"planner-backend/app/repository"
+	"planner-backend/app/service"
 	"planner-backend/config"
 
 	"github.com/google/wire"
@@ -19,6 +21,8 @@ var InjectorSet = wire.NewSet(
 func BuildInjector() (*config.Injector, func(), error) {
 	wire.Build(
 		db,
+		repository.RepositorySet,
+		service.ServiceSet,
 		controller.ControllerSet,
 		InjectorSet,
 	)

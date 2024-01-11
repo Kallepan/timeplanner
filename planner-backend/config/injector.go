@@ -7,6 +7,8 @@ import (
 )
 
 type Injector struct {
-	DB         *neo4j.DriverWithContext
-	SystemCtrl controller.SystemController
+	DB             *neo4j.DriverWithContext
+	SystemCtrl     controller.SystemController
+	DepartmentCtrl controller.DepartmentController
+	WorkplaceCtrl  controller.WorkplaceController
 }

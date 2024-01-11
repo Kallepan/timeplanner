@@ -17,7 +17,7 @@ import (
 func TestDeleteDepartment(t *testing.T) {
 	departmentMockRepo := mock.NewDepartmentRepositoryMock()
 	departmentService := DepartmentServiceImpl{
-		departmentRepository: departmentMockRepo,
+		DepartmentRepository: departmentMockRepo,
 	}
 
 	testSteps := []ServiceTestDELETE{
@@ -63,7 +63,7 @@ func TestDeleteDepartment(t *testing.T) {
 func TestUpdateDepartment(t *testing.T) {
 	departmentMockRepo := mock.NewDepartmentRepositoryMock()
 	departmentService := DepartmentServiceImpl{
-		departmentRepository: departmentMockRepo,
+		DepartmentRepository: departmentMockRepo,
 	}
 
 	testSteps := []ServiceTestPUT{
@@ -148,7 +148,7 @@ func TestUpdateDepartment(t *testing.T) {
 func TestAddDepartment(t *testing.T) {
 	departmentMockRepo := mock.NewDepartmentRepositoryMock()
 	departmentService := DepartmentServiceImpl{
-		departmentRepository: departmentMockRepo,
+		DepartmentRepository: departmentMockRepo,
 	}
 
 	testSteps := []ServiceTestPOST{
@@ -162,6 +162,19 @@ func TestAddDepartment(t *testing.T) {
 			},
 			expectedStatusCode: 201,
 			findError:          pkg.ErrNoRows,
+			saveError:          nil,
+		},
+		{
+			// conflict
+			mockRequestData: map[string]interface{}{
+				"name": "test",
+			},
+			findValue: dao.Department{
+				Name: "test",
+			},
+			saveValue:          nil,
+			expectedStatusCode: 409,
+			findError:          nil,
 			saveError:          nil,
 		},
 		{
@@ -227,7 +240,7 @@ func TestAddDepartment(t *testing.T) {
 func TestGetAllDepartments(t *testing.T) {
 	departmentMockRepo := mock.NewDepartmentRepositoryMock()
 	departmentService := DepartmentServiceImpl{
-		departmentRepository: departmentMockRepo,
+		DepartmentRepository: departmentMockRepo,
 	}
 
 	testSteps := []ServiceTestGET{
@@ -295,7 +308,7 @@ func TestGetAllDepartments(t *testing.T) {
 func TestGetDepartmentByName(t *testing.T) {
 	departmentMockRepo := mock.NewDepartmentRepositoryMock()
 	departmentService := DepartmentServiceImpl{
-		departmentRepository: departmentMockRepo,
+		DepartmentRepository: departmentMockRepo,
 	}
 
 	testSteps := []ServiceTestGET{

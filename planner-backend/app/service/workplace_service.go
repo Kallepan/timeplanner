@@ -13,7 +13,7 @@ import (
 	"github.com/google/wire"
 )
 
-type workplaceService interface {
+type WorkplaceService interface {
 	// Function Used by the controller
 	GetAllWorkplaces(c *gin.Context)
 	GetWorkplaceByName(c *gin.Context)
@@ -22,11 +22,11 @@ type workplaceService interface {
 	DeleteWorkplace(c *gin.Context)
 }
 
-type workplaceServiceImpl struct {
-	workplaceRepository repository.WorkplaceRepository
+type WorkplaceServiceImpl struct {
+	WorkplaceRepository repository.WorkplaceRepository
 }
 
-func (w workplaceServiceImpl) GetAllWorkplaces(c *gin.Context) {
+func (w WorkplaceServiceImpl) GetAllWorkplaces(c *gin.Context) {
 	/* GetAllWorkplaces is a function to get all workplaces
 	 * @param c is gin context
 	 * @return void
@@ -40,7 +40,7 @@ func (w workplaceServiceImpl) GetAllWorkplaces(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	rawData, err := w.workplaceRepository.FindAllWorkplaces(departmentName)
+	rawData, err := w.WorkplaceRepository.FindAllWorkplaces(departmentName)
 	switch err {
 	case nil:
 		break
@@ -56,7 +56,7 @@ func (w workplaceServiceImpl) GetAllWorkplaces(c *gin.Context) {
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
 }
 
-func (w workplaceServiceImpl) GetWorkplaceByName(c *gin.Context) {
+func (w WorkplaceServiceImpl) GetWorkplaceByName(c *gin.Context) {
 	/* GetWorkplaceById is a function to get workplace by name
 	 * @param c is gin context
 	 * @return void
@@ -71,7 +71,7 @@ func (w workplaceServiceImpl) GetWorkplaceByName(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	rawData, err := w.workplaceRepository.FindWorkplaceByName(departmentName, workplaceName)
+	rawData, err := w.WorkplaceRepository.FindWorkplaceByName(departmentName, workplaceName)
 	switch err {
 	case nil:
 		break
@@ -87,7 +87,7 @@ func (w workplaceServiceImpl) GetWorkplaceByName(c *gin.Context) {
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
 }
 
-func (w workplaceServiceImpl) AddWorkplace(c *gin.Context) {
+func (w WorkplaceServiceImpl) AddWorkplace(c *gin.Context) {
 	/* AddWorkplace is a function to add a workplace
 	 * @param c is gin context
 	 * @return void
@@ -101,14 +101,23 @@ func (w workplaceServiceImpl) AddWorkplace(c *gin.Context) {
 		slog.Error("Error when binding json", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
-
-	workplace := mapWorkplaceRequestToWorkplace(workplaceRequest)
-
 	departmentName := c.Param("departmentName")
 	if departmentName == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	rawData, err := w.workplaceRepository.Save(departmentName, &workplace)
+	_, err := w.WorkplaceRepository.FindWorkplaceByName(departmentName, workplaceRequest.Name)
+	switch err {
+	case nil:
+		pkg.PanicException(constant.Conflict)
+	case pkg.ErrNoRows:
+		break
+	default:
+		slog.Error("Error when fetching data from database", "error", err)
+		pkg.PanicException(constant.UnknownError)
+	}
+
+	workplace := mapWorkplaceRequestToWorkplace(workplaceRequest)
+	rawData, err := w.WorkplaceRepository.Save(departmentName, &workplace)
 	if err != nil {
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
@@ -119,7 +128,7 @@ func (w workplaceServiceImpl) AddWorkplace(c *gin.Context) {
 	c.JSON(http.StatusCreated, pkg.BuildResponse(constant.Success, data))
 }
 
-func (w workplaceServiceImpl) UpdateWorkplace(c *gin.Context) {
+func (w WorkplaceServiceImpl) UpdateWorkplace(c *gin.Context) {
 	/* UpdateWorkplace is a function to update a workplace
 	 * @param c is gin context
 	 * @return void
@@ -134,7 +143,7 @@ func (w workplaceServiceImpl) UpdateWorkplace(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	workplace, err := w.workplaceRepository.FindWorkplaceByName(departmentName, workplaceName)
+	workplace, err := w.WorkplaceRepository.FindWorkplaceByName(departmentName, workplaceName)
 	switch err {
 	case nil:
 		break
@@ -152,7 +161,7 @@ func (w workplaceServiceImpl) UpdateWorkplace(c *gin.Context) {
 	}
 
 	workplace.Name = workplaceRequest.Name
-	rawData, err := w.workplaceRepository.Save(departmentName, &workplace)
+	rawData, err := w.WorkplaceRepository.Save(departmentName, &workplace)
 	if err != nil {
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
@@ -163,7 +172,7 @@ func (w workplaceServiceImpl) UpdateWorkplace(c *gin.Context) {
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
 }
 
-func (w workplaceServiceImpl) DeleteWorkplace(c *gin.Context) {
+func (w WorkplaceServiceImpl) DeleteWorkplace(c *gin.Context) {
 	/* DeleteWorkplace is a function to delete a workplace
 	 * @param c is gin context
 	 * @return void
@@ -178,7 +187,7 @@ func (w workplaceServiceImpl) DeleteWorkplace(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	workplace, err := w.workplaceRepository.FindWorkplaceByName(departmentName, workplaceName)
+	workplace, err := w.WorkplaceRepository.FindWorkplaceByName(departmentName, workplaceName)
 	switch err {
 	case nil:
 		break
@@ -188,7 +197,7 @@ func (w workplaceServiceImpl) DeleteWorkplace(c *gin.Context) {
 		slog.Error("Error when fetching data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
-	if err := w.workplaceRepository.Delete(departmentName, &workplace); err != nil {
+	if err := w.WorkplaceRepository.Delete(departmentName, &workplace); err != nil {
 		slog.Error("Error when deleting data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
@@ -237,6 +246,6 @@ func mapWorkplaceRequestToWorkplace(workplace dco.WorkplaceRequest) dao.Workplac
 }
 
 var workplaceServiceSet = wire.NewSet(
-	wire.Struct(new(workplaceServiceImpl), "*"),
-	wire.Bind(new(workplaceService), new(*workplaceServiceImpl)),
+	wire.Struct(new(WorkplaceServiceImpl), "*"),
+	wire.Bind(new(WorkplaceService), new(*WorkplaceServiceImpl)),
 )

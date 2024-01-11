@@ -34,7 +34,8 @@ func (w *Workplace) ParseFromDBRecord(record *neo4j.Record) error {
 	if err != nil {
 		return err
 	}
-	deletedAt, err := neo4j.GetProperty[time.Time](workplaceNode, "deleted_at")
+	deletedAtInterface, _ := neo4j.GetProperty[[]any](workplaceNode, "deleted_at")
+	deletedAt, err := ConvertNullableValueToTime(deletedAtInterface)
 	if err != nil {
 		return err
 	}

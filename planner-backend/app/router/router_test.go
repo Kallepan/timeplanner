@@ -19,13 +19,15 @@ type RouterTest struct {
 func TestRouter(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 	init := &config.Injector{
-		DB:         nil,
-		SystemCtrl: &mock.SystemControllerMock{},
+		DB:             nil,
+		SystemCtrl:     &mock.SystemControllerMock{},
+		DepartmentCtrl: &mock.DepartmentControllerMock{},
+		WorkplaceCtrl:  &mock.WorkplaceControllerMock{},
 	}
 
 	t.Run("Test System Routes", func(t *testing.T) {
 		var testSteps = []RouterTest{
-			{httpMethod: "GET", url: "/api/v1/ping", result: "{\"message\":\"pong\"}"},
+			{httpMethod: "GET", url: "/api/v1/planner/ping", result: "{\"message\":\"pong\"}"},
 		}
 
 		for i, testStep := range testSteps {
