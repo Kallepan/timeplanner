@@ -33,7 +33,7 @@ func (t TimeslotRepositoryImpl) FindAllTimeslots(departmentName string, workplac
             name: wd.name,
             start_time: r.start_time,
             end_time: r.end_time
-        }) AS weekdays
+	}) AS weekdays
     `
 	params := map[string]interface{}{
 		"departmentName": departmentName,
@@ -112,6 +112,7 @@ func (t TimeslotRepositoryImpl) Save(departmentName string, workplaceName string
 	MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(wp:Workplace {name: $workplaceName})
 	MERGE (t:Timeslot {name: $timeslotName}) <-[:HAS_TIMESLOT]- (wp)
 	ON CREATE SET t.created_at = datetime(), t.active = $active, t.updated_at = datetime(), t.deleted_at = NULL
+	ON MATCH SET t.updated_at = datetime(), t.active = $active, t.deleted_at = NULL
 	WITH t
 	OPTIONAL MATCH (t)-[r:OFFERED_ON]->(wd:Weekday)
 	RETURN t, COLLECT({
@@ -119,7 +120,7 @@ func (t TimeslotRepositoryImpl) Save(departmentName string, workplaceName string
 		name: wd.name,
 		start_time: r.start_time,
 		end_time: r.end_time
-		}) as weekdays
+	}) as weekdays
 	`
 	params := map[string]interface{}{
 		"departmentName": departmentName,
