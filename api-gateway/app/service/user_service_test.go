@@ -36,7 +36,7 @@ func TestUpdateUser(t *testing.T) {
 			saveValue:          nil,
 			findError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 404,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -71,7 +71,7 @@ func TestUpdateUser(t *testing.T) {
 			findError:          nil,
 			saveError:          nil,
 			expectedStatusCode: 200,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -99,7 +99,7 @@ func TestUpdateUser(t *testing.T) {
 			findError:          nil,
 			saveError:          nil,
 			expectedStatusCode: 200,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -127,7 +127,7 @@ func TestUpdateUser(t *testing.T) {
 			findError:          nil,
 			saveError:          nil,
 			expectedStatusCode: 200,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -154,7 +154,7 @@ func TestUpdateUser(t *testing.T) {
 			findError:          nil,
 			saveError:          nil,
 			expectedStatusCode: 200,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -182,7 +182,7 @@ func TestUpdateUser(t *testing.T) {
 			findError:          nil,
 			saveError:          nil,
 			expectedStatusCode: 200,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -207,7 +207,7 @@ func TestUpdateUser(t *testing.T) {
 			findError:          nil,
 			saveError:          nil,
 			expectedStatusCode: 200,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -232,7 +232,7 @@ func TestUpdateUser(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContextWithBody(w, "PUT", testStep.QueryParamsToGinParams(), testStep.mockRequestData)
+		c := mock.GetGinTestContext(w, "PUT", testStep.ParamsToGinParams(), testStep.mockRequestData)
 
 		// Call function
 		userService.UpdateUser(c)
@@ -286,7 +286,7 @@ func TestDeleteUser(t *testing.T) {
 			},
 			mockError:          nil,
 			expectedStatusCode: 200,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -294,7 +294,7 @@ func TestDeleteUser(t *testing.T) {
 			mockValue:          nil,
 			mockError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 404,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -306,7 +306,7 @@ func TestDeleteUser(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "DELETE", testStep.QueryParamsToGinParams())
+		c := mock.GetGinTestContext(w, "DELETE", testStep.ParamsToGinParams(), nil)
 
 		// Call function
 		userService.DeleteUser(c)
@@ -424,7 +424,7 @@ func TestAddUser(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContextWithBody(w, "POST", gin.Params{}, testStep.mockRequestData)
+		c := mock.GetGinTestContext(w, "POST", gin.Params{}, testStep.mockRequestData)
 
 		// Call function
 		userService.AddUser(c)
@@ -544,7 +544,7 @@ func TestGetAllUsers(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "GET", gin.Params{})
+		c := mock.GetGinTestContext(w, "GET", gin.Params{}, nil)
 
 		// Call function
 		userService.GetAllUsers(c)
@@ -692,7 +692,7 @@ func TestGetUser(t *testing.T) {
 		w := httptest.NewRecorder()
 		c := mock.GetGinTestContext(w, "GET", gin.Params{
 			{Key: "userID", Value: "00000000-0000-0000-0000-000000000001"},
-		})
+		}, nil)
 
 		// Call function
 		userService.GetUserById(c)
@@ -769,7 +769,7 @@ func TestAddPermissionToUser(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContextWithBody(w, "POST", gin.Params{
+		c := mock.GetGinTestContext(w, "POST", gin.Params{
 			{Key: "userID", Value: "00000000-0000-0000-0000-000000000001"},
 			{Key: "permissionID", Value: "00000000-0000-0000-0000-000000000001"},
 		}, testStep.mockRequestData)
@@ -818,7 +818,7 @@ func TestDeletePermissionFromUser(t *testing.T) {
 		c := mock.GetGinTestContext(w, "DELETE", gin.Params{
 			{Key: "userID", Value: "00000000-0000-0000-0000-000000000001"},
 			{Key: "permissionID", Value: "00000000-0000-0000-0000-000000000001"},
-		})
+		}, nil)
 
 		// Call function
 		userService.DeletePermission(c)

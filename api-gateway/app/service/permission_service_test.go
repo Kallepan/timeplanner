@@ -35,7 +35,7 @@ func TestUpdatePermission(t *testing.T) {
 			saveValue:          nil,
 			findError:          gorm.ErrRecordNotFound,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"permissionID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -61,7 +61,7 @@ func TestUpdatePermission(t *testing.T) {
 			findError:          nil,
 			saveError:          nil,
 			expectedStatusCode: 200,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"permissionID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -88,7 +88,7 @@ func TestUpdatePermission(t *testing.T) {
 			findError:          nil,
 			saveError:          nil,
 			expectedStatusCode: 200,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"permissionID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -114,7 +114,7 @@ func TestUpdatePermission(t *testing.T) {
 			findError:          nil,
 			saveError:          nil,
 			expectedStatusCode: 200,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"permissionID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -128,7 +128,7 @@ func TestUpdatePermission(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContextWithBody(w, "PUT", testStep.QueryParamsToGinParams(), testStep.mockRequestData)
+		c := mock.GetGinTestContext(w, "PUT", testStep.ParamsToGinParams(), testStep.mockRequestData)
 
 		// Run function
 		permissionService.UpdatePermission(c)
@@ -179,7 +179,7 @@ func TestDeletePermission(t *testing.T) {
 			},
 			mockError:          nil,
 			expectedStatusCode: 200,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"permissionID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -193,7 +193,7 @@ func TestDeletePermission(t *testing.T) {
 			},
 			mockError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 404,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"permissionID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -208,7 +208,7 @@ func TestDeletePermission(t *testing.T) {
 		w := httptest.NewRecorder()
 		c := mock.GetGinTestContext(w, "DELETE", gin.Params{
 			{Key: "permissionID", Value: testStep.mockValue.(dao.Permission).ID.String()},
-		})
+		}, nil)
 
 		// Run function
 		permissionService.DeletePermission(c)
@@ -294,7 +294,7 @@ func TestAddPermission(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContextWithBody(w, "POST", gin.Params{}, testStep.mockRequestData)
+		c := mock.GetGinTestContext(w, "POST", gin.Params{}, testStep.mockRequestData)
 
 		// Run function
 		permissionService.AddPermission(c)
@@ -387,7 +387,7 @@ func TestGetAllPermissions(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "GET", gin.Params{})
+		c := mock.GetGinTestContext(w, "GET", gin.Params{}, nil)
 
 		// Run function
 		permissionService.GetAllPermissions(c)
@@ -473,7 +473,7 @@ func TestGetPermissionById(t *testing.T) {
 		w := httptest.NewRecorder()
 		c := mock.GetGinTestContext(w, "GET", gin.Params{
 			{Key: "permissionID", Value: testStep.mockValue.(dao.Permission).ID.String()},
-		})
+		}, nil)
 
 		// Run function
 		permissionService.GetPermissionById(c)

@@ -28,7 +28,7 @@ func TestCompareOrigin(t *testing.T) {
 	for _, testStep := range compareOriginTests {
 		// prepare the necessary variables
 		w := httptest.NewRecorder()
-		ctx := mock.GetGinTestContext(w, "GET", gin.Params{})
+		ctx := mock.GetGinTestContext(w, "GET", gin.Params{}, nil)
 
 		// set the origin
 		ctx.Request.Header.Set("Origin", testStep.origin)
@@ -67,7 +67,7 @@ func TestCors(t *testing.T) {
 	for _, testStep := range corsTests {
 		// prepare the necessary variables
 		w := httptest.NewRecorder()
-		ctx := mock.GetGinTestContext(w, "GET", gin.Params{})
+		ctx := mock.GetGinTestContext(w, "GET", gin.Params{}, nil)
 
 		// set the method
 		ctx.Request.Method = testStep.method

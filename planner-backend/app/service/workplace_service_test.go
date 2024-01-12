@@ -23,7 +23,7 @@ func TestDeleteWorkplace(t *testing.T) {
 			mockValue: dao.Workplace{
 				Name: "test",
 			},
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 			},
@@ -34,7 +34,7 @@ func TestDeleteWorkplace(t *testing.T) {
 			mockValue: dao.Workplace{
 				Name: "test",
 			},
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test,",
 			},
 			mockError:          pkg.ErrNoRows,
@@ -44,7 +44,7 @@ func TestDeleteWorkplace(t *testing.T) {
 			mockValue: dao.Workplace{
 				Name: "test",
 			},
-			queryParams: map[string]string{
+			params: map[string]string{
 				"workplaceName": "test,",
 			},
 			mockError:          pkg.ErrNoRows,
@@ -57,7 +57,7 @@ func TestDeleteWorkplace(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "DELETE", testStep.QueryParamsToGinParams())
+		c := mock.GetGinTestContext(w, "DELETE", testStep.ParamsToGinParams(), nil)
 
 		workplaceService.DeleteWorkplace(c)
 		response := w.Result()
@@ -89,7 +89,7 @@ func TestUpdateWorkplace(t *testing.T) {
 			expectedStatusCode: 200,
 			findError:          nil,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "oldName",
 			},
@@ -134,7 +134,7 @@ func TestUpdateWorkplace(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContextWithBody(w, "PUT", testStep.QueryParamsToGinParams(), testStep.mockRequestData)
+		c := mock.GetGinTestContext(w, "PUT", testStep.ParamsToGinParams(), testStep.mockRequestData)
 
 		workplaceService.UpdateWorkplace(c)
 		response := w.Result()
@@ -176,7 +176,7 @@ func TestAddWorkplace(t *testing.T) {
 			expectedStatusCode: 201,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 			},
 		},
@@ -191,7 +191,7 @@ func TestAddWorkplace(t *testing.T) {
 			expectedStatusCode: 409,
 			findError:          nil,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 			},
 		},
@@ -214,7 +214,7 @@ func TestAddWorkplace(t *testing.T) {
 			expectedStatusCode: 400,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 			},
 		},
@@ -227,7 +227,7 @@ func TestAddWorkplace(t *testing.T) {
 			expectedStatusCode: 500,
 			findError:          pkg.ErrNoRows,
 			saveError:          pkg.ErrNoRows,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 			},
 		},
@@ -248,7 +248,7 @@ func TestAddWorkplace(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContextWithBody(w, "POST", testStep.QueryParamsToGinParams(), testStep.mockRequestData)
+			c := mock.GetGinTestContext(w, "POST", testStep.ParamsToGinParams(), testStep.mockRequestData)
 
 			workplaceService.AddWorkplace(c)
 			response := w.Result()
@@ -293,7 +293,7 @@ func TestGetAllWorkplaces(t *testing.T) {
 			},
 			expectedStatusCode: 200,
 			mockError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 			},
 		},
@@ -308,7 +308,7 @@ func TestGetAllWorkplaces(t *testing.T) {
 			expectedResponse:   nil,
 			expectedStatusCode: 200,
 			mockError:          pkg.ErrNoRows,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 			},
 		},
@@ -320,7 +320,7 @@ func TestGetAllWorkplaces(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "GET", testStep.QueryParamsToGinParams())
+			c := mock.GetGinTestContext(w, "GET", testStep.ParamsToGinParams(), nil)
 
 			workplaceService.GetAllWorkplaces(c)
 			response := w.Result()
@@ -363,7 +363,7 @@ func TestGetWorkplaceByName(t *testing.T) {
 			},
 			expectedStatusCode: 200,
 			mockError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"workplaceName":  "test",
 				"departmentName": "test",
 			},
@@ -377,7 +377,7 @@ func TestGetWorkplaceByName(t *testing.T) {
 			},
 			expectedStatusCode: 400,
 			mockError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 			},
 		},
@@ -390,7 +390,7 @@ func TestGetWorkplaceByName(t *testing.T) {
 			},
 			expectedStatusCode: 400,
 			mockError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"workplaceName": "test",
 			},
 		},
@@ -399,14 +399,14 @@ func TestGetWorkplaceByName(t *testing.T) {
 			expectedResponse:   nil,
 			expectedStatusCode: 400,
 			mockError:          nil,
-			queryParams:        map[string]string{},
+			params:             map[string]string{},
 		},
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
 			expectedStatusCode: 404,
 			mockError:          pkg.ErrNoRows,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"workplaceName":  "test",
 				"departmentName": "test",
 			},
@@ -419,7 +419,7 @@ func TestGetWorkplaceByName(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "GET", testStep.QueryParamsToGinParams())
+			c := mock.GetGinTestContext(w, "GET", testStep.ParamsToGinParams(), nil)
 
 			workplaceService.GetWorkplaceByName(c)
 			response := w.Result()

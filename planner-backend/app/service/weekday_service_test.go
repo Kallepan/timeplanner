@@ -37,7 +37,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			expectedStatusCode: 200,
 			findError:          nil,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 				"timeslotName":   "test",
@@ -54,7 +54,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			expectedStatusCode: 400,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 				"timeslotName":   "test",
@@ -83,7 +83,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			expectedStatusCode: 400,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 				"timeslotName":   "test",
@@ -106,7 +106,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContextWithBody(w, "POST", testStep.QueryParamsToGinParams(), testStep.mockRequestData)
+			c := mock.GetGinTestContext(w, "POST", testStep.ParamsToGinParams(), testStep.mockRequestData)
 
 			weekdayService.AddWeekdayToTimeslot(c)
 			response := w.Result()
@@ -149,7 +149,7 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 				ID: "test",
 			},
 			findError: nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 				"timeslotName":   "test",
@@ -161,7 +161,7 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 			expectedStatusCode: 400,
 			findValue:          nil,
 			findError:          pkg.ErrNoRows,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 				"timeslotName":   "test",
@@ -172,7 +172,7 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 			expectedStatusCode: 400,
 			findValue:          nil,
 			findError:          pkg.ErrNoRows,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 				"timeslotName":   "test",
@@ -187,7 +187,7 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContextWithBody(w, "DELETE", testStep.QueryParamsToGinParams(), testStep.mockRequestData)
+			c := mock.GetGinTestContext(w, "DELETE", testStep.ParamsToGinParams(), testStep.mockRequestData)
 
 			weekdayService.DeleteWeekdayFromTimeslot(c)
 			response := w.Result()

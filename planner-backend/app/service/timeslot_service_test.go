@@ -23,7 +23,7 @@ func TestDeleteTimeslot(t *testing.T) {
 			mockValue: dao.Timeslot{
 				Name: "test",
 			},
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 				"timeslotName":   "test",
@@ -35,7 +35,7 @@ func TestDeleteTimeslot(t *testing.T) {
 			mockValue: dao.Timeslot{
 				Name: "test",
 			},
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 			},
@@ -46,7 +46,7 @@ func TestDeleteTimeslot(t *testing.T) {
 			mockValue: dao.Timeslot{
 				Name: "test",
 			},
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"timeslotName":   "test",
 			},
@@ -60,7 +60,7 @@ func TestDeleteTimeslot(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "DELETE", testStep.QueryParamsToGinParams())
+		c := mock.GetGinTestContext(w, "DELETE", testStep.ParamsToGinParams(), nil)
 
 		timeslotService.DeleteTimeslot(c)
 		response := w.Result()
@@ -92,7 +92,7 @@ func TestUpdateTimeslot(t *testing.T) {
 			expectedStatusCode: 200,
 			findError:          nil,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 				"timeslotName":   "oldName",
@@ -112,7 +112,7 @@ func TestUpdateTimeslot(t *testing.T) {
 			expectedStatusCode: 200,
 			findError:          nil,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 				"timeslotName":   "oldName",
@@ -131,7 +131,7 @@ func TestUpdateTimeslot(t *testing.T) {
 			expectedStatusCode: 400,
 			findError:          nil,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 				"timeslotName":   "oldName",
@@ -146,7 +146,7 @@ func TestUpdateTimeslot(t *testing.T) {
 			expectedStatusCode: 404,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 				"timeslotName":   "oldName",
@@ -182,7 +182,7 @@ func TestUpdateTimeslot(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContextWithBody(w, "PUT", testStep.QueryParamsToGinParams(), testStep.mockRequestData)
+		c := mock.GetGinTestContext(w, "PUT", testStep.ParamsToGinParams(), testStep.mockRequestData)
 
 		timeslotService.UpdateTimeslot(c)
 		response := w.Result()
@@ -225,7 +225,7 @@ func TestAddTimeslot(t *testing.T) {
 			expectedStatusCode: 201,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 			},
@@ -242,7 +242,7 @@ func TestAddTimeslot(t *testing.T) {
 			expectedStatusCode: 201,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 			},
@@ -258,7 +258,7 @@ func TestAddTimeslot(t *testing.T) {
 			expectedStatusCode: 400,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 			},
@@ -275,7 +275,7 @@ func TestAddTimeslot(t *testing.T) {
 			expectedStatusCode: 409,
 			findError:          nil,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 			},
@@ -300,7 +300,7 @@ func TestAddTimeslot(t *testing.T) {
 			expectedStatusCode: 400,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 			},
@@ -315,7 +315,7 @@ func TestAddTimeslot(t *testing.T) {
 			expectedStatusCode: 500,
 			findError:          pkg.ErrNoRows,
 			saveError:          pkg.ErrNoRows,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 			},
@@ -337,7 +337,7 @@ func TestAddTimeslot(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContextWithBody(w, "POST", testStep.QueryParamsToGinParams(), testStep.mockRequestData)
+			c := mock.GetGinTestContext(w, "POST", testStep.ParamsToGinParams(), testStep.mockRequestData)
 
 			timeslotService.AddTimeslot(c)
 			response := w.Result()
@@ -382,7 +382,7 @@ func TestGetAllTimeslots(t *testing.T) {
 			},
 			expectedStatusCode: 200,
 			mockError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 			},
@@ -398,7 +398,7 @@ func TestGetAllTimeslots(t *testing.T) {
 			expectedResponse:   nil,
 			expectedStatusCode: 200,
 			mockError:          pkg.ErrNoRows,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 			},
@@ -411,7 +411,7 @@ func TestGetAllTimeslots(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "GET", testStep.QueryParamsToGinParams())
+			c := mock.GetGinTestContext(w, "GET", testStep.ParamsToGinParams(), nil)
 
 			timeslotService.GetAllTimeslots(c)
 			response := w.Result()
@@ -454,7 +454,7 @@ func TestGetTimeslotByName(t *testing.T) {
 			},
 			expectedStatusCode: 200,
 			mockError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"timeslotName":   "test",
 				"departmentName": "test",
 				"workplaceName":  "test",
@@ -469,7 +469,7 @@ func TestGetTimeslotByName(t *testing.T) {
 			},
 			expectedStatusCode: 400,
 			mockError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 				"workplaceName":  "test",
 			},
@@ -483,7 +483,7 @@ func TestGetTimeslotByName(t *testing.T) {
 			},
 			expectedStatusCode: 400,
 			mockError:          nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"timeslotName":   "test",
 				"departmentName": "test",
 			},
@@ -493,14 +493,14 @@ func TestGetTimeslotByName(t *testing.T) {
 			expectedResponse:   nil,
 			expectedStatusCode: 400,
 			mockError:          nil,
-			queryParams:        map[string]string{},
+			params:             map[string]string{},
 		},
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
 			expectedStatusCode: 404,
 			mockError:          pkg.ErrNoRows,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"timeslotName":   "test",
 				"departmentName": "test",
 				"workplaceName":  "test",
@@ -514,7 +514,7 @@ func TestGetTimeslotByName(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "GET", testStep.QueryParamsToGinParams())
+			c := mock.GetGinTestContext(w, "GET", testStep.ParamsToGinParams(), nil)
 
 			timeslotService.GetTimeslotByName(c)
 			response := w.Result()

@@ -25,7 +25,7 @@ func TestDeleteDepartment(t *testing.T) {
 			mockValue: dao.Department{
 				Name: "test",
 			},
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 			},
 			mockError:          nil,
@@ -35,7 +35,7 @@ func TestDeleteDepartment(t *testing.T) {
 			mockValue: dao.Department{
 				Name: "test",
 			},
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentName": "test",
 			},
 			mockError:          pkg.ErrNoRows,
@@ -48,7 +48,7 @@ func TestDeleteDepartment(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "DELETE", gin.Params{})
+		c := mock.GetGinTestContext(w, "DELETE", gin.Params{}, nil)
 
 		departmentService.DeleteDepartment(c)
 		response := w.Result()
@@ -121,7 +121,7 @@ func TestUpdateDepartment(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContextWithBody(w, "PUT", gin.Params{}, testStep.mockRequestData)
+		c := mock.GetGinTestContext(w, "PUT", gin.Params{}, testStep.mockRequestData)
 
 		departmentService.UpdateDepartment(c)
 		response := w.Result()
@@ -212,7 +212,7 @@ func TestAddDepartment(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContextWithBody(w, "POST", gin.Params{}, testStep.mockRequestData)
+			c := mock.GetGinTestContext(w, "POST", gin.Params{}, testStep.mockRequestData)
 
 			departmentService.AddDepartment(c)
 			response := w.Result()
@@ -278,7 +278,7 @@ func TestGetAllDepartments(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "GET", gin.Params{})
+			c := mock.GetGinTestContext(w, "GET", gin.Params{}, nil)
 
 			departmentService.GetAllDepartments(c)
 			response := w.Result()
@@ -321,12 +321,18 @@ func TestGetDepartmentByName(t *testing.T) {
 			},
 			expectedStatusCode: 200,
 			mockError:          nil,
+			params: map[string]string{
+				"departmentName": "test",
+			},
 		},
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
 			expectedStatusCode: 404,
 			mockError:          pkg.ErrNoRows,
+			params: map[string]string{
+				"departmentName": "test",
+			},
 		},
 	}
 
@@ -336,9 +342,7 @@ func TestGetDepartmentByName(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "GET", gin.Params{
-				{Key: "departmentName", Value: "test"},
-			})
+			c := mock.GetGinTestContext(w, "GET", testStep.ParamsToGinParams(), nil)
 
 			departmentService.GetDepartmentByName(c)
 			response := w.Result()

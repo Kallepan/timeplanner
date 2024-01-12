@@ -92,7 +92,7 @@ func TestLoginSimple(t *testing.T) {
 		mockUserRepository.On("FindUserByUsername").Return(testStep.expectedValue, testStep.mockError)
 
 		w := httptest.NewRecorder()
-		ctx := mock.GetGinTestContextWithBody(w, "POST", gin.Params{}, testStep.mockRequestData)
+		ctx := mock.GetGinTestContext(w, "POST", gin.Params{}, testStep.mockRequestData)
 
 		authService.Login(ctx)
 
@@ -118,7 +118,7 @@ func TestLoginSimple(t *testing.T) {
 func TestMe(t *testing.T) {
 	// define test struct
 	type authMeTest struct {
-		queryParams        map[string]string
+		params             map[string]string
 		expectedStatusCode int
 		expectedValue      dao.User
 		setCookie          bool
@@ -134,7 +134,7 @@ func TestMe(t *testing.T) {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("test"), bcrypt.DefaultCost)
 	testSteps := []authMeTest{
 		{
-			queryParams: map[string]string{
+			params: map[string]string{
 				"username": "test",
 			},
 			expectedValue: dao.User{
@@ -154,7 +154,7 @@ func TestMe(t *testing.T) {
 			expectedStatusCode: 200,
 		},
 		{
-			queryParams: map[string]string{
+			params: map[string]string{
 				"username": "test",
 			},
 			expectedValue: dao.User{
@@ -175,7 +175,7 @@ func TestMe(t *testing.T) {
 			mockError:          gorm.ErrRecordNotFound,
 		},
 		{
-			queryParams: map[string]string{
+			params: map[string]string{
 				"username": "test",
 			},
 			expectedValue:      dao.User{},
@@ -183,7 +183,7 @@ func TestMe(t *testing.T) {
 			setCookie:          false,
 		},
 		{
-			queryParams: map[string]string{
+			params: map[string]string{
 				"username": "test",
 			},
 			expectedValue:      dao.User{},
@@ -198,7 +198,7 @@ func TestMe(t *testing.T) {
 		mockUserRepository.On("FindUserByUsername").Return(testStep.expectedValue, testStep.mockError)
 
 		w := httptest.NewRecorder()
-		ctx := mock.GetGinTestContextWithBody(w, "GET", gin.Params{}, nil)
+		ctx := mock.GetGinTestContext(w, "GET", gin.Params{}, nil)
 
 		// generate mock token
 		if testStep.setCookie {
@@ -252,7 +252,7 @@ func TestLogoutSimple(t *testing.T) {
 
 	for _, testStep := range testSteps {
 		w := httptest.NewRecorder()
-		ctx := mock.GetGinTestContextWithBody(w, "POST", gin.Params{}, nil)
+		ctx := mock.GetGinTestContext(w, "POST", gin.Params{}, nil)
 
 		authService.Logout(ctx)
 

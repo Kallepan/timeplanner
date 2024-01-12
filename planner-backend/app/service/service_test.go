@@ -4,7 +4,7 @@ import "github.com/gin-gonic/gin"
 
 /**
  * Struct to be used for testing service
- * @param queryParams map[string]string --> Query params to be used for testing
+ * @param params map[string]string --> Query params to be used for testing
  * @param mockValue interface{} --> Mock value to be returned by repository
  * @param mockError error --> Mock Error to be returned by repository
  * @param expectedValue interface{} --> Expected value to be returned by service
@@ -21,12 +21,13 @@ type ServiceTestGET struct {
 	// expected status code to be returned by service
 	expectedStatusCode int
 
-	queryParams map[string]string
+	params  map[string]string
+	queries map[string]string
 }
 
-func (s *ServiceTestGET) QueryParamsToGinParams() gin.Params {
+func (s *ServiceTestGET) ParamsToGinParams() gin.Params {
 	var params gin.Params
-	for key, value := range s.queryParams {
+	for key, value := range s.params {
 		params = append(params, gin.Param{Key: key, Value: value})
 	}
 
@@ -44,12 +45,12 @@ type ServiceTestPOST struct {
 	findError error
 	saveError error
 
-	queryParams map[string]string
+	params map[string]string
 }
 
-func (s *ServiceTestPOST) QueryParamsToGinParams() gin.Params {
+func (s *ServiceTestPOST) ParamsToGinParams() gin.Params {
 	var params gin.Params
-	for key, value := range s.queryParams {
+	for key, value := range s.params {
 		params = append(params, gin.Param{Key: key, Value: value})
 	}
 
@@ -67,12 +68,12 @@ type ServiceTestPUT struct {
 	findError error
 	saveError error
 
-	queryParams map[string]string
+	params map[string]string
 }
 
-func (s *ServiceTestPUT) QueryParamsToGinParams() gin.Params {
+func (s *ServiceTestPUT) ParamsToGinParams() gin.Params {
 	var params gin.Params
-	for key, value := range s.queryParams {
+	for key, value := range s.params {
 		params = append(params, gin.Param{Key: key, Value: value})
 	}
 	return params
@@ -93,12 +94,12 @@ type ServiceTestDELETE struct {
 	// expected status code to be returned by service
 	expectedStatusCode int
 
-	queryParams map[string]string
+	params map[string]string
 }
 
-func (s *ServiceTestDELETE) QueryParamsToGinParams() gin.Params {
+func (s *ServiceTestDELETE) ParamsToGinParams() gin.Params {
 	var params gin.Params
-	for key, value := range s.queryParams {
+	for key, value := range s.params {
 		params = append(params, gin.Param{Key: key, Value: value})
 	}
 	return params

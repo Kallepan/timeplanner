@@ -43,7 +43,7 @@ func TestUpdateDepartment(t *testing.T) {
 			},
 			findError: nil,
 			saveError: nil,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -56,7 +56,7 @@ func TestUpdateDepartment(t *testing.T) {
 			findError:          gorm.ErrRecordNotFound,
 			saveError:          nil,
 			expectedStatusCode: 404,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -69,7 +69,7 @@ func TestUpdateDepartment(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		ctx := mock.GetGinTestContextWithBody(w, "PUT", testStep.QueryParamsToGinParams(), testStep.mockRequestData)
+		ctx := mock.GetGinTestContext(w, "PUT", testStep.ParamsToGinParams(), testStep.mockRequestData)
 
 		// Test function
 		departmentService.UpdateDepartment(ctx)
@@ -121,7 +121,7 @@ func TestDeleteDepartment(t *testing.T) {
 			},
 			mockError:          nil,
 			expectedStatusCode: 200,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -129,7 +129,7 @@ func TestDeleteDepartment(t *testing.T) {
 			mockValue:          nil,
 			mockError:          gorm.ErrRecordNotFound,
 			expectedStatusCode: 404,
-			queryParams: map[string]string{
+			params: map[string]string{
 				"departmentID": "00000000-0000-0000-0000-000000000001",
 			},
 		},
@@ -141,7 +141,7 @@ func TestDeleteDepartment(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		ctx := mock.GetGinTestContext(w, "DELETE", testStep.QueryParamsToGinParams())
+		ctx := mock.GetGinTestContext(w, "DELETE", testStep.ParamsToGinParams(), nil)
 
 		// Test function
 		departmentService.DeleteDepartment(ctx)
@@ -212,7 +212,7 @@ func TestAddDepartment(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		ctx := mock.GetGinTestContextWithBody(w, "POST", gin.Params{}, testStep.mockRequestData)
+		ctx := mock.GetGinTestContext(w, "POST", gin.Params{}, testStep.mockRequestData)
 
 		// Test function
 		departmentService.AddDepartment(ctx)
@@ -301,7 +301,7 @@ func TestGetAllDepartments(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		ctx := mock.GetGinTestContext(w, "GET", gin.Params{})
+		ctx := mock.GetGinTestContext(w, "GET", gin.Params{}, nil)
 
 		// Test function
 		departmentService.GetAllDepartments(ctx)
@@ -380,7 +380,7 @@ func TestGetDepartmentById(t *testing.T) {
 		w := httptest.NewRecorder()
 		ctx := mock.GetGinTestContext(w, "GET", gin.Params{
 			{Key: "departmentID", Value: testStep.mockValue.(dao.Department).ID.String()},
-		})
+		}, nil)
 
 		// Test function
 		departmentService.GetDepartmentById(ctx)
