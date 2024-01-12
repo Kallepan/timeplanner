@@ -156,7 +156,7 @@ func (w WeekdayServiceImpl) DeleteWeekdayFromTimeslot(c *gin.Context) {
 
 *
 */
-func mapWeekdayRequestToWeekday(weekdayRequest dco.WeekdayRequest) (*dao.Weekday, error) {
+func mapWeekdayRequestToWeekday(weekdayRequest dco.WeekdayRequest) (*dao.OnWeekday, error) {
 	/* Maps a WeekdayRequest to a Weekday */
 
 	// Convert the start and end time (string like: "08:00") to time.Time
@@ -181,16 +181,16 @@ func mapWeekdayRequestToWeekday(weekdayRequest dco.WeekdayRequest) (*dao.Weekday
 		return nil, err
 	}
 
-	return &dao.Weekday{
+	return &dao.OnWeekday{
 		ID:        weekdayRequest.ID,
 		StartTime: startTime,
 		EndTime:   endTime,
 	}, nil
 }
 
-func mapWeekdayToWeekdayResponse(weekday dao.Weekday) dco.WeekdayResponse {
+func mapWeekdayToWeekdayResponse(weekday dao.OnWeekday) dco.WeekdayResponse {
 	/* mapWeekdayToWeekdayResponse is a function to map weekday to weekday response
-	 * @param weekday is dao.Weekday
+	 * @param weekday is dao.OnWeekday
 	 * @return dco.WeekdayResponse
 	 */
 
@@ -202,9 +202,9 @@ func mapWeekdayToWeekdayResponse(weekday dao.Weekday) dco.WeekdayResponse {
 	}
 }
 
-func mapWeekdayListToWeekdayResponseList(weekdays []dao.Weekday) []dco.WeekdayResponse {
+func mapWeekdayListToWeekdayResponseList(weekdays []dao.OnWeekday) []dco.WeekdayResponse {
 	/* mapWeekdayListToWeekdayResponseList is a function to map weekday list to weekday response list
-	 * @param weekdays is []dao.Weekday
+	 * @param weekdays is []dao.OnWeekday
 	 * @return []dco.WeekdayResponse
 	 */
 

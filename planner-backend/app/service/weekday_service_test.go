@@ -29,7 +29,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			findValue: dao.Timeslot{
 				Name: "test",
 			},
-			saveValue: []dao.Weekday{
+			saveValue: []dao.OnWeekday{
 				{
 					ID: "MON",
 				},
@@ -67,7 +67,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 				"end_time":   "09:00",
 			},
 			findValue: nil,
-			saveValue: []dao.Weekday{
+			saveValue: []dao.OnWeekday{
 				{
 					ID: "MON",
 				},
@@ -124,7 +124,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 				t.Errorf("Test Step %d: Error when decoding response body", i)
 			}
 
-			if responseBody.Data.ID != testStep.saveValue.(dao.Weekday).ID {
+			if responseBody.Data.ID != testStep.saveValue.(dao.OnWeekday).ID {
 				t.Errorf("Test Step %d: Expected response body %v, got %v", i, testStep.saveValue, responseBody.Data)
 			}
 		})
@@ -145,7 +145,7 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 				"name": "test",
 			},
 			expectedStatusCode: 200,
-			findValue: dao.Weekday{
+			findValue: dao.OnWeekday{
 				ID: "test",
 			},
 			findError: nil,

@@ -7,7 +7,7 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
-type Weekday struct {
+type OnWeekday struct {
 	ID        string
 	Name      string
 	StartTime time.Time
@@ -19,11 +19,11 @@ type Timeslot struct {
 	Active         bool
 	DepartmentName string
 	WorkplaceName  string
-	Weekdays       []Weekday
+	Weekdays       []OnWeekday
 	Base
 }
 
-func (w *Weekday) ParseFromMap(data map[string]interface{}) error {
+func (w *OnWeekday) ParseFromMap(data map[string]interface{}) error {
 	id, ok := data["id"].(string)
 	if !ok {
 		return errors.New("could not parse id")
@@ -97,14 +97,14 @@ func (t *Timeslot) ParseFromDB(record *neo4j.Record, departmentName string, work
 		return err
 	}
 
-	var weekdaysParsed []Weekday
+	var weekdaysParsed []OnWeekday
 	for _, weekdayInterface := range weekdaysInterface {
 		weekdayMap, ok := weekdayInterface.(map[string]interface{})
 		if !ok {
 			return err
 		}
 
-		weekday := Weekday{}
+		weekday := OnWeekday{}
 		if err := weekday.ParseFromMap(weekdayMap); err != nil {
 			// due to the way neo4j handles null values, we need to skip the null values
 			continue

@@ -30,14 +30,14 @@ func (r *WeekdayRepositoryMock) Return(mockData interface{}, errorData error) Mo
 }
 
 /* Repository interface implementations */
-func (r *WeekdayRepositoryMock) AddWeekdayToTimeslot(timeslot *dao.Timeslot, weekday *dao.Weekday) ([]dao.Weekday, error) {
+func (r *WeekdayRepositoryMock) AddWeekdayToTimeslot(timeslot *dao.Timeslot, weekday *dao.OnWeekday) ([]dao.OnWeekday, error) {
 	if r.dataContainer["AddWeekdayToTimeslot"] == nil {
 		return nil, r.errorContainer["AddWeekdayToTimeslot"]
 	}
-	return r.dataContainer["AddWeekdayToTimeslot"].([]dao.Weekday), r.errorContainer["AddWeekdayToTimeslot"]
+	return r.dataContainer["AddWeekdayToTimeslot"].([]dao.OnWeekday), r.errorContainer["AddWeekdayToTimeslot"]
 }
 
-func (r *WeekdayRepositoryMock) DeleteWeekdayFromTimeslot(timeslot *dao.Timeslot, weekday *dao.Weekday) error {
+func (r *WeekdayRepositoryMock) DeleteWeekdayFromTimeslot(timeslot *dao.Timeslot, weekday *dao.OnWeekday) error {
 	return r.errorContainer["DeleteWeekdayFromTimeslot"]
 }
 

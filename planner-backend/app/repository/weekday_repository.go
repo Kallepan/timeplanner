@@ -15,15 +15,15 @@ import (
 **/
 
 type WeekdayRepository interface {
-	AddWeekdayToTimeslot(timeslot *dao.Timeslot, weekday *dao.Weekday) ([]dao.Weekday, error)
-	DeleteWeekdayFromTimeslot(timeslot *dao.Timeslot, weekday *dao.Weekday) error
+	AddWeekdayToTimeslot(timeslot *dao.Timeslot, weekday *dao.OnWeekday) ([]dao.OnWeekday, error)
+	DeleteWeekdayFromTimeslot(timeslot *dao.Timeslot, weekday *dao.OnWeekday) error
 }
 
 type WeekdayRepositoryImpl struct {
 	db *neo4j.DriverWithContext
 }
 
-func (w WeekdayRepositoryImpl) AddWeekdayToTimeslot(timeslot *dao.Timeslot, weekday *dao.Weekday) ([]dao.Weekday, error) {
+func (w WeekdayRepositoryImpl) AddWeekdayToTimeslot(timeslot *dao.Timeslot, weekday *dao.OnWeekday) ([]dao.OnWeekday, error) {
 	/* Adds a weekday to a timeslot */
 	ctx := context.Background()
 	query := `
@@ -60,7 +60,7 @@ func (w WeekdayRepositoryImpl) AddWeekdayToTimeslot(timeslot *dao.Timeslot, week
 		return nil, err
 	}
 
-	var weekdays []dao.Weekday
+	var weekdays []dao.OnWeekday
 	// get the returned record
 	record := result.Records[0]
 
@@ -77,7 +77,7 @@ func (w WeekdayRepositoryImpl) AddWeekdayToTimeslot(timeslot *dao.Timeslot, week
 			return nil, err
 		}
 
-		weekday := dao.Weekday{}
+		weekday := dao.OnWeekday{}
 		if err := weekday.ParseFromMap(weekdayMap); err != nil {
 			return nil, err
 		}
@@ -88,7 +88,7 @@ func (w WeekdayRepositoryImpl) AddWeekdayToTimeslot(timeslot *dao.Timeslot, week
 	return weekdays, nil
 }
 
-func (w WeekdayRepositoryImpl) DeleteWeekdayFromTimeslot(timeslot *dao.Timeslot, weekday *dao.Weekday) error {
+func (w WeekdayRepositoryImpl) DeleteWeekdayFromTimeslot(timeslot *dao.Timeslot, weekday *dao.OnWeekday) error {
 	/* Deletes a weekday from a timeslot */
 	ctx := context.Background()
 	query := `
@@ -119,7 +119,7 @@ func (w WeekdayRepositoryImpl) DeleteWeekdayFromTimeslot(timeslot *dao.Timeslot,
 }
 
 /*
-func (w WeekdayRepositoryImpl) UpdateWeekdayForTimeslot(timeslot *dao.Timeslot, weekday *dao.Weekday) ([]dao.Weekday, error) {
+func (w WeekdayRepositoryImpl) UpdateWeekdayForTimeslot(timeslot *dao.Timeslot, weekday *dao.OnWeekday) ([]dao.OnWeekday, error) {
 
 		ctx := context.Background()
 		query := `
@@ -151,9 +151,9 @@ func (w WeekdayRepositoryImpl) UpdateWeekdayForTimeslot(timeslot *dao.Timeslot, 
 			return nil, err
 		}
 
-		weekdays := []dao.Weekday{}
+		weekdays := []dao.OnWeekday{}
 		for _, record := range result.Records {
-			weekday := dao.Weekday{}
+			weekday := dao.OnWeekday{}
 			if err := weekday.ParseFromDB(record); err != nil {
 				return nil, err
 			}
