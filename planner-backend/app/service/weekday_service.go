@@ -1,3 +1,9 @@
+/** Note that in contrast to the other services, the weekday service does not have a
+ * Update function. Furthermore, the weekday service always requires a request body
+ * to be sent to the server. This is because the weekday service is used to add or
+ * delete a weekday from a timeslot. The weekday service is not used to update a
+ * weekday for a timeslot.
+ */
 package service
 
 import (
