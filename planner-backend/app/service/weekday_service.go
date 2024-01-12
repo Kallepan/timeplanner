@@ -43,7 +43,9 @@ func (w WeekdayServiceImpl) AddWeekdayToTimeslot(c *gin.Context) {
 
 	var weekdayRequest dco.WeekdayRequest
 	if err := c.ShouldBindJSON(&weekdayRequest); err != nil {
-		slog.Error("Error when binding json", "error", err)
+		pkg.PanicException(constant.InvalidRequest)
+	}
+	if err := weekdayRequest.Validate(); err != nil {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
@@ -87,6 +89,9 @@ func (w WeekdayServiceImpl) DeleteWeekdayFromTimeslot(c *gin.Context) {
 	var weekdayRequest dco.WeekdayRequest
 	if err := c.ShouldBindJSON(&weekdayRequest); err != nil {
 		slog.Error("Error when binding json", "error", err)
+		pkg.PanicException(constant.InvalidRequest)
+	}
+	if err := weekdayRequest.Validate(); err != nil {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 

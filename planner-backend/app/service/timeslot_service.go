@@ -167,6 +167,8 @@ func (t TimeslotServiceImpl) UpdateTimeslot(c *gin.Context) {
 	}
 
 	timeslot.Name = timeslotRequest.Name
+	timeslot.Active = *timeslotRequest.Active
+
 	rawData, err := t.TimeslotRepository.Save(departmentName, workplaceName, &timeslot)
 	if err != nil {
 		slog.Error("Error when saving data to database", "error", err)

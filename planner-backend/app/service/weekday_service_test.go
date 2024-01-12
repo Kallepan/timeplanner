@@ -22,7 +22,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 	testSteps := []ServiceTestPOST{
 		{
 			mockRequestData: map[string]interface{}{
-				"name":       "test",
+				"id":         "MON",
 				"start_time": "08:00",
 				"end_time":   "09:00",
 			},
@@ -45,7 +45,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"name":       "test",
+				"id":         "MON",
 				"start_time": "08:00",
 				"end_time":   "09:00",
 			},
@@ -62,7 +62,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"name":       "test",
+				"id":         "MON",
 				"start_time": "08:00",
 				"end_time":   "09:00",
 			},
@@ -142,7 +142,7 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 	testSteps := []ServiceTestPOST{
 		{ // Test 1
 			mockRequestData: map[string]interface{}{
-				"name": "test",
+				"id": "MON",
 			},
 			expectedStatusCode: 200,
 			findValue: dao.OnWeekday{
