@@ -50,6 +50,23 @@ func BuildInjector() (*config.Injector, func(), error) {
 	weekdayControllerImpl := &controller.WeekdayControllerImpl{
 		WeekdayService: weekdayServiceImpl,
 	}
+	personRepositoryImpl := repository.PersonRepositoryInit(driverWithContext)
+	personServiceImpl := &service.PersonServiceImpl{
+		PersonRepository: personRepositoryImpl,
+	}
+	personControllerImpl := &controller.PersonControllerImpl{
+		PersonService: personServiceImpl,
+	}
+	personRelRepositoryImpl := repository.PersonRelRepositoryInit(driverWithContext)
+	personRelServiceImpl := service.PersonRelServiceImpl{
+		PersonRelRepository:  personRelRepositoryImpl,
+		PersonRepository:     personRepositoryImpl,
+		DepartmentRepository: departmentRepositoryImpl,
+		WorkplaceRepository:  workplaceRepositoryImpl,
+	}
+	personRelControllerImpl := &controller.PersonRelControllerImpl{
+		PersonRelService: personRelServiceImpl,
+	}
 	injector := &config.Injector{
 		DB:             driverWithContext,
 		SystemCtrl:     systemControllerImpl,
@@ -57,6 +74,8 @@ func BuildInjector() (*config.Injector, func(), error) {
 		WorkplaceCtrl:  workplaceControllerImpl,
 		TimeslotCtrl:   timeslotControllerImpl,
 		WeekdayCtrl:    weekdayControllerImpl,
+		PersonCtrl:     personControllerImpl,
+		PersonRelCtrl:  personRelControllerImpl,
 	}
 	return injector, func() {
 	}, nil

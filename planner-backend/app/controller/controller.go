@@ -8,4 +8,6 @@ var ControllerSet = wire.NewSet(
 	departmentControllerSet,
 	timeslotControllerSet,
 	weekdayControllerSet,
+	personControllerSet,
+	personRelControllerSet,
 )

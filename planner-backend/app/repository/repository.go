@@ -7,4 +7,6 @@ var RepositorySet = wire.NewSet(
 	WorkplaceRepositorySet,
 	timeslotRepositorySet,
 	weekdayRepositorySet,
+	personRepositorySet,
+	personRelRepositorySet,
 )

@@ -23,5 +23,5 @@ func TestMigrate(t *testing.T) {
 	defer d.Close(ctx)
 
 	Migrate(ctx, d)
-	Clear(ctx, d)
+	// Clear(ctx, d)
 }

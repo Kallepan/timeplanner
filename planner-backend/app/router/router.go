@@ -16,11 +16,11 @@ func Init(init *config.Injector) *gin.Engine {
 	// insert custom middlewares here
 	// router.Use()
 
-	apiV1 := router.Group("/api/v1/planner")
+	plannerAPI := router.Group("/api/v1/planner")
 	{
-		apiV1.GET("/ping", init.SystemCtrl.Ping)
+		plannerAPI.GET("/ping", init.SystemCtrl.Ping)
 
-		department := apiV1.Group("/department")
+		department := plannerAPI.Group("/department")
 		{
 			department.GET("/", init.DepartmentCtrl.GetAll)
 			department.GET("/:departmentName", init.DepartmentCtrl.Get)
@@ -45,6 +45,31 @@ func Init(init *config.Injector) *gin.Engine {
 			weekday := timeslot.Group("/:timeslotName/weekday")
 			weekday.POST("/", init.WeekdayCtrl.AddWeekdayToTimeslot)
 			weekday.DELETE("/", init.WeekdayCtrl.RemoveWeekdayFromTimeslot)
+
+		}
+		person := plannerAPI.Group("/person")
+		{
+			person.GET("/", init.PersonCtrl.GetAll)
+			person.GET("/:personID", init.PersonCtrl.Get)
+			person.POST("/", init.PersonCtrl.Create)
+			person.PUT("/:personID", init.PersonCtrl.Update)
+			person.DELETE("/:personID", init.PersonCtrl.Delete)
+
+			personRel := person.Group("/:personID")
+			{
+				personRel.POST("/absency", init.PersonRelCtrl.AddAbsency)
+				personRel.DELETE("/absency/:date", init.PersonRelCtrl.RemoveAbsency)
+				personRel.GET("/absency/:date", init.PersonRelCtrl.FindAbsencyForPerson)
+
+				personRel.POST("/department", init.PersonRelCtrl.AddDepartment)
+				personRel.DELETE("/department/:departmentName", init.PersonRelCtrl.RemoveDepartment)
+
+				personRel.POST("/workplace", init.PersonRelCtrl.AddWorkplace)
+				personRel.DELETE("/workplace/:workplaceName", init.PersonRelCtrl.RemoveWorkplace)
+
+				personRel.POST("/weekday", init.PersonRelCtrl.AddWeekday)
+				personRel.DELETE("/weekday/:weekdayID", init.PersonRelCtrl.RemoveWeekday)
+			}
 		}
 	}
 
