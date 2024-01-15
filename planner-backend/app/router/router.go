@@ -65,7 +65,7 @@ func Init(init *config.Injector) *gin.Engine {
 				personRel.DELETE("/department/:departmentName", init.PersonRelCtrl.RemoveDepartment)
 
 				personRel.POST("/workplace", init.PersonRelCtrl.AddWorkplace)
-				personRel.DELETE("/workplace/:workplaceName", init.PersonRelCtrl.RemoveWorkplace)
+				personRel.DELETE("/workplace", init.PersonRelCtrl.RemoveWorkplace)
 
 				personRel.POST("/weekday", init.PersonRelCtrl.AddWeekday)
 				personRel.DELETE("/weekday/:weekdayID", init.PersonRelCtrl.RemoveWeekday)

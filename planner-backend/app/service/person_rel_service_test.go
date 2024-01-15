@@ -675,28 +675,35 @@ func TestRemoveWorkplaceFromPerson(t *testing.T) {
 
 	testSteps := []serviceTestPersonRel{
 		{
+			mockRequest: map[string]interface{}{
+				"department_name": "department1",
+				"workplace_name":  "workplace1",
+			},
 			findValue: dao.Person{
 				ID: "TEST",
 			},
 			findError: nil,
 			params: map[string]string{
-				"personID":      "test",
-				"workplaceName": "workplace1",
+				"personID": "test",
 			},
 			expectedStatusCode: 200,
 		},
 		{
+			mockRequest: map[string]interface{}{
+				"department_name": "department1",
+				"workplace_name":  "workplace1",
+			},
 			findValue: dao.Person{
 				ID: "test",
 			},
 			findError: nil,
 			params: map[string]string{
-				"personID":      "test",
-				"workplaceName": "workplace1",
+				"personID": "test",
 			},
 			expectedStatusCode: 200,
 		},
 		{
+			mockRequest: map[string]interface{}{},
 			findValue: dao.Person{
 				ID: "test",
 			},
@@ -707,30 +714,38 @@ func TestRemoveWorkplaceFromPerson(t *testing.T) {
 			expectedStatusCode: 400,
 		},
 		{
+			mockRequest: map[string]interface{}{
+				"department_name": "department1",
+				"workplace_name":  "workplace1",
+			},
 			findValue: nil,
 			findError: pkg.ErrNoRows,
 			params: map[string]string{
-				"personID":      "test",
-				"workplaceName": "workplace1",
+				"personID": "test",
 			},
 			expectedStatusCode: 400,
 		},
 		{
-			findValue: nil,
-			findError: nil,
-			params: map[string]string{
-				"workplaceName": "workplace1",
+			mockRequest: map[string]interface{}{
+				"department_name": "department1",
+				"workplace_name":  "workplace1",
 			},
+			findValue:          nil,
+			findError:          nil,
+			params:             map[string]string{},
 			expectedStatusCode: 400,
 		},
 		{
+			mockRequest: map[string]interface{}{
+				"department_name": "department1",
+				"workplace_name":  "workplace1",
+			},
 			findValue: dao.Person{
 				ID: "test",
 			},
 			findError: nil,
 			params: map[string]string{
-				"personID":      "test",
-				"workplaceName": "workplace1",
+				"personID": "test",
 			},
 			mockError:          errors.New("test"),
 			expectedStatusCode: 500,
@@ -744,7 +759,7 @@ func TestRemoveWorkplaceFromPerson(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c, err := mock.NewTestContextBuilder(w).WithMethod("DELETE").WithParamsRaw(testStep.params).Build()
+			c, err := mock.NewTestContextBuilder(w).WithMethod("DELETE").WithParamsRaw(testStep.params).WithBody(testStep.mockRequest).Build()
 			if err != nil {
 				t.Errorf("Test Step %d: Error while building context: %s", i, err)
 			}

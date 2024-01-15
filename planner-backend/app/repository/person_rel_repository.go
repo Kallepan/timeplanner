@@ -18,8 +18,8 @@ type PersonRelRepository interface {
 	AddDepartmentToPerson(person dao.Person, departmentName string) error
 	RemoveDepartmentFromPerson(person dao.Person, departmentName string) error
 
-	AddWorkplaceToPerson(person dao.Person, workplaceName string) error
-	RemoveWorkplaceFromPerson(person dao.Person, workplaceName string) error
+	AddWorkplaceToPerson(person dao.Person, departmentName string, workplaceName string) error
+	RemoveWorkplaceFromPerson(person dao.Person, departmentName string, workplaceName string) error
 
 	AddWeekdayToPerson(person dao.Person, weekdayID string) error
 	RemoveWeekdayFromPerson(person dao.Person, weekdayID string) error
@@ -196,7 +196,7 @@ func (p PersonRelRepositoryImpl) RemoveDepartmentFromPerson(person dao.Person, d
 	return nil
 }
 
-func (p PersonRelRepositoryImpl) AddWorkplaceToPerson(person dao.Person, workplaceName string) error {
+func (p PersonRelRepositoryImpl) AddWorkplaceToPerson(person dao.Person, departmentName string, workplaceName string) error {
 	/* Adds a workplace to a person
 	   @param person: The person to add the workplace to
 	   @param workplaceName: The name of the workplace to add
@@ -205,14 +205,15 @@ func (p PersonRelRepositoryImpl) AddWorkplaceToPerson(person dao.Person, workpla
 	ctx := context.Background()
 	query := `
 	MATCH (p: Person {id: $personID})
-	MATCH (w: Workplace {name: $workplaceName})
+	MATCH (d: Department {name: $departmentName}) -[:HAS_WORKPLACE]-> (w: Workplace {name: $workplaceName})
 	MERGE (p) -[r:QUALIFIED_FOR]-> (w)
 	ON CREATE SET r.created_at = timestamp()
 	`
 
 	params := map[string]interface{}{
-		"personID":      person.ID,
-		"workplaceName": workplaceName,
+		"personID":       person.ID,
+		"departmentName": departmentName,
+		"workplaceName":  workplaceName,
 	}
 
 	_, err := neo4j.ExecuteQuery(
@@ -229,7 +230,7 @@ func (p PersonRelRepositoryImpl) AddWorkplaceToPerson(person dao.Person, workpla
 	return nil
 }
 
-func (p PersonRelRepositoryImpl) RemoveWorkplaceFromPerson(person dao.Person, workplaceName string) error {
+func (p PersonRelRepositoryImpl) RemoveWorkplaceFromPerson(person dao.Person, departmentName string, workplaceName string) error {
 	/* Removes a workplace from a person
 	   @param person: The person to remove the workplace from
 	   @param workplaceName: The name of the workplace to remove
@@ -237,12 +238,13 @@ func (p PersonRelRepositoryImpl) RemoveWorkplaceFromPerson(person dao.Person, wo
 
 	ctx := context.Background()
 	query := `
-	MATCH (p: Person {id: $personID}) -[r:QUALIFIED_FOR]-> (w: Workplace {name: $workplaceName})
+	MATCH (p: Person {id: $personID}) -[r:QUALIFIED_FOR]-> (w: Workplace {name: $workplaceName}) <-[:HAS_WORKPLACE]- (d: Department {name: $departmentName})
 	DELETE r
 	`
 	params := map[string]interface{}{
-		"personID":      person.ID,
-		"workplaceName": workplaceName,
+		"personID":       person.ID,
+		"departmentName": departmentName,
+		"workplaceName":  workplaceName,
 	}
 
 	_, err := neo4j.ExecuteQuery(

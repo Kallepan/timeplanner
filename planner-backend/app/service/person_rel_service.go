@@ -317,7 +317,7 @@ func (p PersonRelServiceImpl) AddWorkplaceToPerson(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	if err := p.PersonRelRepository.AddWorkplaceToPerson(person, request.WorkplaceName); err != nil {
+	if err := p.PersonRelRepository.AddWorkplaceToPerson(person, request.DepartmentName, request.WorkplaceName); err != nil {
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
@@ -339,8 +339,8 @@ func (p PersonRelServiceImpl) RemoveWorkplaceFromPerson(c *gin.Context) {
 	}
 	personID = strings.ToUpper(personID)
 
-	workplaceName := c.Param("workplaceName")
-	if workplaceName == "" {
+	request := dco.RelRemoveWorkplaceRequest{}
+	if err := c.ShouldBindJSON(&request); err != nil {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
@@ -355,7 +355,7 @@ func (p PersonRelServiceImpl) RemoveWorkplaceFromPerson(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	if err := p.PersonRelRepository.RemoveWorkplaceFromPerson(person, workplaceName); err != nil {
+	if err := p.PersonRelRepository.RemoveWorkplaceFromPerson(person, request.DepartmentName, request.WorkplaceName); err != nil {
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}

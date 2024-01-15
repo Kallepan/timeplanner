@@ -28,6 +28,11 @@ type RelAddWorkplaceRequest struct {
 	DepartmentName string `json:"department_name" binding:"required"`
 }
 
+type RelRemoveWorkplaceRequest struct {
+	WorkplaceName  string `json:"workplace_name" binding:"required"`
+	DepartmentName string `json:"department_name" binding:"required"`
+}
+
 type RelAddWeekdayRequest struct {
 	WeekdayID string `json:"weekday_id" binding:"required"`
 }
