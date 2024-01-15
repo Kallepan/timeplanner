@@ -19,5 +19,7 @@ func main() {
 
 	router := router.Init(init)
 
+	app.InitalizeSynchronization(init)
+
 	router.Run(":" + port)
 }

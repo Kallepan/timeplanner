@@ -67,15 +67,17 @@ func BuildInjector() (*config.Injector, func(), error) {
 	personRelControllerImpl := &controller.PersonRelControllerImpl{
 		PersonRelService: personRelServiceImpl,
 	}
+	synchronizeRepositoryImpl := repository.SynchronizeRepositoryInit(driverWithContext)
 	injector := &config.Injector{
-		DB:             driverWithContext,
-		SystemCtrl:     systemControllerImpl,
-		DepartmentCtrl: departmentControllerImpl,
-		WorkplaceCtrl:  workplaceControllerImpl,
-		TimeslotCtrl:   timeslotControllerImpl,
-		WeekdayCtrl:    weekdayControllerImpl,
-		PersonCtrl:     personControllerImpl,
-		PersonRelCtrl:  personRelControllerImpl,
+		DB:              driverWithContext,
+		SystemCtrl:      systemControllerImpl,
+		DepartmentCtrl:  departmentControllerImpl,
+		WorkplaceCtrl:   workplaceControllerImpl,
+		TimeslotCtrl:    timeslotControllerImpl,
+		WeekdayCtrl:     weekdayControllerImpl,
+		PersonCtrl:      personControllerImpl,
+		PersonRelCtrl:   personRelControllerImpl,
+		SynchronizeRepo: synchronizeRepositoryImpl,
 	}
 	return injector, func() {
 	}, nil
