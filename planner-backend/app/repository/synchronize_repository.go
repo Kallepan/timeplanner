@@ -50,9 +50,27 @@ func (d SynchronizeRepositoryImpl) Synchronize(datesInAdvance int) error {
 }
 
 func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date string, weekdayID string) error {
-	/*
-		Idempotent function to create a Workday node.
-	*/
+	/**
+	 * Create Workday Nodes for Given Weekday and Date
+	 *
+	 * This Cypher query retrieves all timeslots offered on a given weekday, loops through them,
+	 * and creates a Workday node for each of them. It assumes that the date and week nodes for
+	 * the specified date already exist.
+	 *
+	 * @param {string} $weekdayID - The ID of the target weekday.
+	 * @param {string} $date - The target date in "YYYY-MM-DD" format.
+	 *
+	 * Query Steps:
+	 * 1. Matches departments having workplaces with associated timeslots offered on the specified weekday.
+	 * 2. Collects relevant information about workplaces, departments, timeslots, and time details.
+	 * 3. Unwinds the collection for further processing.
+	 * 4. Matches the existing Date node for the specified date and week.
+	 * 5. Creates Workday nodes for each collected data, setting properties on node creation.
+	 * 6. Creates relationships between Workday nodes and Timeslot, Date nodes.
+	 *
+	 * Example Usage:
+	 * CALL yourProcedureName($weekdayID, $date)
+	 */
 	query := `
 	// Get all timeslots offered on the given weekday, loop through them and create a Workday node for each of them.
 	MATCH  (d:Department) -[:HAS_WORKPLACE]-> (w:Workplace) -[:HAS_TIMESLOT]-> (t:Timeslot) -[r:OFFERED_ON]-> (wd:Weekday {id: $weekdayID})
