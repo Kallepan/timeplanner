@@ -85,7 +85,8 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date strin
 	ON CREATE SET
 		wkd.start_time = c.start_time,
 		wkd.end_time = c.end_time,
-		wkd.active = true
+		wkd.active = true,
+		wkd.created_at = timestamp()
 		
 	// Create the relationships
 	WITH wkd, c.timeslot AS t, d
