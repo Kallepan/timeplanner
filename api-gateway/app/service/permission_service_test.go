@@ -7,6 +7,7 @@ import (
 	"api-gateway/app/mock"
 	"database/sql"
 	"encoding/json"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -30,7 +31,7 @@ func TestUpdatePermission(t *testing.T) {
 				"name":        "name_new",
 				"description": "description_new",
 			},
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 			findValue:          nil,
 			saveValue:          nil,
 			findError:          gorm.ErrRecordNotFound,
@@ -60,7 +61,7 @@ func TestUpdatePermission(t *testing.T) {
 			},
 			findError:          nil,
 			saveError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			params: map[string]string{
 				"permissionID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -87,7 +88,7 @@ func TestUpdatePermission(t *testing.T) {
 			},
 			findError:          nil,
 			saveError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			params: map[string]string{
 				"permissionID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -113,7 +114,7 @@ func TestUpdatePermission(t *testing.T) {
 			},
 			findError:          nil,
 			saveError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			params: map[string]string{
 				"permissionID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -178,7 +179,7 @@ func TestDeletePermission(t *testing.T) {
 				Description: sql.NullString{String: "description_1", Valid: true},
 			},
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			params: map[string]string{
 				"permissionID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -192,7 +193,7 @@ func TestDeletePermission(t *testing.T) {
 				Description: sql.NullString{String: "description_1", Valid: true},
 			},
 			mockError:          gorm.ErrRecordNotFound,
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 			params: map[string]string{
 				"permissionID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -243,13 +244,13 @@ func TestAddPermission(t *testing.T) {
 				Name:        "name_1",
 				Description: sql.NullString{String: "description_1", Valid: true},
 			},
-			expectedStatusCode: 201,
+			expectedStatusCode: http.StatusCreated,
 			findError:          gorm.ErrRecordNotFound,
 			saveError:          nil,
 		},
 		{
 			mockRequestData:    map[string]interface{}{},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			mockRequestData: map[string]interface{}{
@@ -263,7 +264,7 @@ func TestAddPermission(t *testing.T) {
 				Name:        "name_1",
 				Description: sql.NullString{String: "", Valid: false},
 			},
-			expectedStatusCode: 201,
+			expectedStatusCode: http.StatusCreated,
 			findError:          gorm.ErrRecordNotFound,
 			saveError:          nil,
 		},
@@ -282,7 +283,7 @@ func TestAddPermission(t *testing.T) {
 			saveValue:          nil,
 			findError:          nil,
 			saveError:          nil,
-			expectedStatusCode: 409,
+			expectedStatusCode: http.StatusConflict,
 		},
 	}
 
@@ -370,13 +371,13 @@ func TestGetAllPermissions(t *testing.T) {
 				},
 			},
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			mockValue:          []dao.Permission{},
 			expectedResponse:   nil,
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 	}
 
@@ -448,7 +449,7 @@ func TestGetPermissionById(t *testing.T) {
 				Description: sql.NullString{String: dummyDescription, Valid: true},
 			},
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			mockValue: dao.Permission{
@@ -460,7 +461,7 @@ func TestGetPermissionById(t *testing.T) {
 			},
 			expectedResponse:   nil,
 			mockError:          gorm.ErrRecordNotFound,
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 		},
 	}
 

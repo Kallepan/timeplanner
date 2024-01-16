@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
 	"net/http/httptest"
 	"planner-backend/app/domain/dao"
 	"planner-backend/app/domain/dco"
@@ -29,7 +30,7 @@ func TestDeleteTimeslot(t *testing.T) {
 				"timeslotName":   "test",
 			},
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			mockValue: dao.Timeslot{
@@ -40,7 +41,7 @@ func TestDeleteTimeslot(t *testing.T) {
 				"workplaceName":  "test",
 			},
 			mockError:          pkg.ErrNoRows,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			mockValue: dao.Timeslot{
@@ -51,7 +52,7 @@ func TestDeleteTimeslot(t *testing.T) {
 				"timeslotName":   "test",
 			},
 			mockError:          pkg.ErrNoRows,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 	}
 
@@ -89,7 +90,7 @@ func TestUpdateTimeslot(t *testing.T) {
 			saveValue: dao.Timeslot{
 				Name: "newName",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
@@ -109,7 +110,7 @@ func TestUpdateTimeslot(t *testing.T) {
 			saveValue: dao.Timeslot{
 				Name: "newName",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
@@ -128,7 +129,7 @@ func TestUpdateTimeslot(t *testing.T) {
 			saveValue: dao.Timeslot{
 				Name: "newName",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
@@ -143,7 +144,7 @@ func TestUpdateTimeslot(t *testing.T) {
 			},
 			findValue:          nil,
 			saveValue:          nil,
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
@@ -170,7 +171,7 @@ func TestUpdateTimeslot(t *testing.T) {
 			mockRequestData:    map[string]interface{}{},
 			findValue:          nil,
 			saveValue:          nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          nil,
 			saveError:          nil,
 		},
@@ -191,7 +192,7 @@ func TestUpdateTimeslot(t *testing.T) {
 			t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
 		}
 
-		if response.StatusCode != 200 {
+		if response.StatusCode != http.StatusOK {
 			return
 		}
 
@@ -222,7 +223,7 @@ func TestAddTimeslot(t *testing.T) {
 			saveValue: dao.Timeslot{
 				Name: "test",
 			},
-			expectedStatusCode: 201,
+			expectedStatusCode: http.StatusCreated,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
@@ -239,7 +240,7 @@ func TestAddTimeslot(t *testing.T) {
 			saveValue: dao.Timeslot{
 				Name: "test",
 			},
-			expectedStatusCode: 201,
+			expectedStatusCode: http.StatusCreated,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
@@ -255,7 +256,7 @@ func TestAddTimeslot(t *testing.T) {
 			saveValue: dao.Timeslot{
 				Name: "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
@@ -272,7 +273,7 @@ func TestAddTimeslot(t *testing.T) {
 				Name: "test",
 			},
 			saveValue:          nil,
-			expectedStatusCode: 409,
+			expectedStatusCode: http.StatusConflict,
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
@@ -289,7 +290,7 @@ func TestAddTimeslot(t *testing.T) {
 			saveValue: dao.Timeslot{
 				Name: "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 		},
@@ -297,7 +298,7 @@ func TestAddTimeslot(t *testing.T) {
 			mockRequestData:    map[string]interface{}{},
 			findValue:          nil,
 			saveValue:          nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
@@ -324,7 +325,7 @@ func TestAddTimeslot(t *testing.T) {
 			mockRequestData:    map[string]interface{}{},
 			findValue:          nil,
 			saveValue:          nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          nil,
 			saveError:          pkg.ErrNoRows,
 		},
@@ -380,7 +381,7 @@ func TestGetAllTimeslots(t *testing.T) {
 					Name: "test",
 				},
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 			params: map[string]string{
 				"departmentName": "test",
@@ -390,13 +391,13 @@ func TestGetAllTimeslots(t *testing.T) {
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			mockError:          nil,
 		},
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          pkg.ErrNoRows,
 			params: map[string]string{
 				"departmentName": "test",
@@ -420,7 +421,7 @@ func TestGetAllTimeslots(t *testing.T) {
 				t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
 			}
 
-			if response.StatusCode != 200 {
+			if response.StatusCode != http.StatusOK {
 				return
 			}
 
@@ -452,7 +453,7 @@ func TestGetTimeslotByName(t *testing.T) {
 			expectedResponse: dao.Timeslot{
 				Name: "test",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 			params: map[string]string{
 				"timeslotName":   "test",
@@ -467,7 +468,7 @@ func TestGetTimeslotByName(t *testing.T) {
 			expectedResponse: dao.Timeslot{
 				Name: "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			mockError:          nil,
 			params: map[string]string{
 				"departmentName": "test",
@@ -481,7 +482,7 @@ func TestGetTimeslotByName(t *testing.T) {
 			expectedResponse: dao.Timeslot{
 				Name: "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			mockError:          nil,
 			params: map[string]string{
 				"timeslotName":   "test",
@@ -491,14 +492,14 @@ func TestGetTimeslotByName(t *testing.T) {
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			mockError:          nil,
 			params:             map[string]string{},
 		},
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 			mockError:          pkg.ErrNoRows,
 			params: map[string]string{
 				"timeslotName":   "test",
@@ -523,7 +524,7 @@ func TestGetTimeslotByName(t *testing.T) {
 				t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
 			}
 
-			if response.StatusCode != 200 {
+			if response.StatusCode != http.StatusOK {
 				return
 			}
 

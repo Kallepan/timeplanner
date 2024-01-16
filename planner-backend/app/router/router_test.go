@@ -42,8 +42,8 @@ func TestRouter(t *testing.T) {
 			req, _ := http.NewRequest(testStep.httpMethod, testStep.url, nil)
 
 			router.ServeHTTP(w, req)
-			if w.Code != 200 {
-				t.Errorf("Expected status code 200, got %v", w.Code)
+			if w.Code != http.StatusOK {
+				t.Errorf("Expected status code http.StatusOK got %v", w.Code)
 			}
 
 			if w.Body.String() != testStep.result {

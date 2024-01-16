@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"net/http"
 	"net/http/httptest"
 	"planner-backend/app/domain/dao"
 	"planner-backend/app/domain/dco"
@@ -34,7 +35,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 					ID: "MON",
 				},
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
@@ -51,7 +52,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			},
 			findValue:          nil,
 			saveValue:          nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
@@ -72,7 +73,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 					ID: "MON",
 				},
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 		},
@@ -80,7 +81,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			mockRequestData:    map[string]interface{}{},
 			findValue:          nil,
 			saveValue:          nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
@@ -93,7 +94,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			mockRequestData:    map[string]interface{}{},
 			findValue:          nil,
 			saveValue:          nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          nil,
 			saveError:          pkg.ErrNoRows,
 		},
@@ -144,7 +145,7 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 			mockRequestData: map[string]interface{}{
 				"id": "MON",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			findValue: dao.OnWeekday{
 				ID: "test",
 			},
@@ -158,7 +159,7 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 		},
 		{ // Test 2
 			mockRequestData:    map[string]interface{}{},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findValue:          nil,
 			findError:          pkg.ErrNoRows,
 			params: map[string]string{
@@ -169,7 +170,7 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 			},
 		},
 		{ // Test 3
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findValue:          nil,
 			findError:          pkg.ErrNoRows,
 			params: map[string]string{

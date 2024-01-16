@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"net/http"
 	"planner-backend/app/constant"
 	"planner-backend/app/pkg"
 
@@ -17,7 +18,7 @@ type SystemControllerImpl struct{}
 func (s SystemControllerImpl) Ping(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 
-	c.JSON(200, pkg.BuildResponse(constant.Success, pkg.Null()))
+	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, pkg.Null()))
 }
 
 var systemControllerSet = wire.NewSet(

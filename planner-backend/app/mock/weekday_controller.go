@@ -1,14 +1,18 @@
 package mock
 
-import "github.com/gin-gonic/gin"
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
 
 type WeekdayControllerMock struct {
 }
 
 func (m *WeekdayControllerMock) AddWeekdayToTimeslot(ctx *gin.Context) {
-	ctx.JSON(200, gin.H{"message": "AddWeekdayToTimeslot"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "AddWeekdayToTimeslot"})
 }
 
 func (m *WeekdayControllerMock) RemoveWeekdayFromTimeslot(ctx *gin.Context) {
-	ctx.JSON(200, gin.H{"message": "RemoveWeekdayFromTimeslot"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "RemoveWeekdayFromTimeslot"})
 }

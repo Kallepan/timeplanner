@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
 	"net/http/httptest"
 	"planner-backend/app/domain/dao"
 	"planner-backend/app/domain/dco"
@@ -29,7 +30,7 @@ func TestDeleteDepartment(t *testing.T) {
 				"departmentName": "test",
 			},
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			mockValue: dao.Department{
@@ -39,7 +40,7 @@ func TestDeleteDepartment(t *testing.T) {
 				"departmentName": "test",
 			},
 			mockError:          pkg.ErrNoRows,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 	}
 
@@ -77,7 +78,7 @@ func TestUpdateDepartment(t *testing.T) {
 			saveValue: dao.Department{
 				Name: "newName",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			findError:          nil,
 			saveError:          nil,
 		},
@@ -87,7 +88,7 @@ func TestUpdateDepartment(t *testing.T) {
 			},
 			findValue:          nil,
 			saveValue:          nil,
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 		},
@@ -101,7 +102,7 @@ func TestUpdateDepartment(t *testing.T) {
 			saveValue: dao.Department{
 				Name: "newName",
 			},
-			expectedStatusCode: 500,
+			expectedStatusCode: http.StatusInternalServerError,
 			findError:          nil,
 			saveError:          errors.New("Save error"),
 		},
@@ -109,7 +110,7 @@ func TestUpdateDepartment(t *testing.T) {
 			mockRequestData:    map[string]interface{}{},
 			findValue:          nil,
 			saveValue:          nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          nil,
 			saveError:          nil,
 		},
@@ -160,7 +161,7 @@ func TestAddDepartment(t *testing.T) {
 			saveValue: dao.Department{
 				Name: "test",
 			},
-			expectedStatusCode: 201,
+			expectedStatusCode: http.StatusCreated,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 		},
@@ -173,7 +174,7 @@ func TestAddDepartment(t *testing.T) {
 				Name: "test",
 			},
 			saveValue:          nil,
-			expectedStatusCode: 409,
+			expectedStatusCode: http.StatusConflict,
 			findError:          nil,
 			saveError:          nil,
 		},
@@ -181,7 +182,7 @@ func TestAddDepartment(t *testing.T) {
 			mockRequestData:    map[string]interface{}{},
 			findValue:          nil,
 			saveValue:          nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 		},
@@ -199,7 +200,7 @@ func TestAddDepartment(t *testing.T) {
 			mockRequestData:    map[string]interface{}{},
 			findValue:          nil,
 			saveValue:          nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          nil,
 			saveError:          pkg.ErrNoRows,
 		},
@@ -255,13 +256,13 @@ func TestGetAllDepartments(t *testing.T) {
 					Name: "test",
 				},
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 		},
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 		},
 		{
@@ -287,7 +288,7 @@ func TestGetAllDepartments(t *testing.T) {
 				t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
 			}
 
-			if response.StatusCode != 200 {
+			if response.StatusCode != http.StatusOK {
 				return
 			}
 
@@ -319,7 +320,7 @@ func TestGetDepartmentByName(t *testing.T) {
 			expectedResponse: dao.Department{
 				Name: "test",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 			params: map[string]string{
 				"departmentName": "test",
@@ -328,7 +329,7 @@ func TestGetDepartmentByName(t *testing.T) {
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 			mockError:          pkg.ErrNoRows,
 			params: map[string]string{
 				"departmentName": "test",
@@ -351,7 +352,7 @@ func TestGetDepartmentByName(t *testing.T) {
 				t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
 			}
 
-			if response.StatusCode != 200 {
+			if response.StatusCode != http.StatusOK {
 				return
 			}
 

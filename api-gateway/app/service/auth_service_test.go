@@ -8,6 +8,7 @@ import (
 	"api-gateway/app/mock"
 	"encoding/json"
 	"errors"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -45,7 +46,7 @@ func TestLoginSimple(t *testing.T) {
 				Username: "test",
 				Password: string(hashedPassword),
 			},
-			expectedStatusCode: 400, // Assuming 400 is the status code for bad request
+			expectedStatusCode: http.StatusBadRequest, // Assuming 400 is the status code for bad request
 			cookieExpected:     false,
 			mockError:          gorm.ErrRecordNotFound,
 		},
@@ -71,7 +72,7 @@ func TestLoginSimple(t *testing.T) {
 				Username: "test",
 				Password: string(hashedPassword),
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			cookieExpected:     true,
 			mockError:          nil,
 		},
@@ -81,7 +82,7 @@ func TestLoginSimple(t *testing.T) {
 				"password": "test",
 			},
 			expectedValue:      dao.User{},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			cookieExpected:     false,
 			mockError:          nil,
 		},
@@ -151,7 +152,7 @@ func TestMe(t *testing.T) {
 				},
 			},
 			setCookie:          true,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			params: map[string]string{
@@ -219,7 +220,7 @@ func TestMe(t *testing.T) {
 		}
 
 		// check if user is returned in the response
-		if testStep.expectedStatusCode == 200 {
+		if testStep.expectedStatusCode == http.StatusOK {
 			var responseBody dto.APIResponse[dco.UserResponse]
 			if err := json.Unmarshal(w.Body.Bytes(), &responseBody); err != nil {
 				t.Error("Error happened: when unmarshal response body", "error", err)
@@ -245,7 +246,7 @@ func TestLogoutSimple(t *testing.T) {
 	testSteps := []authLogoutTest{
 		// for now the logout function will always return 200
 		{
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			cookieExpected:     true,
 		},
 	}

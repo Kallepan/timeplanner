@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"net/http"
 	"net/http/httptest"
 	"planner-backend/app/domain/dao"
 	"planner-backend/app/mock"
@@ -48,7 +49,7 @@ func TestAddAbsencyToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			// small letters personID
@@ -63,7 +64,7 @@ func TestAddAbsencyToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			// no personID
@@ -76,7 +77,7 @@ func TestAddAbsencyToPerson(t *testing.T) {
 			},
 			findError:          nil,
 			params:             map[string]string{},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			// no date
@@ -85,14 +86,14 @@ func TestAddAbsencyToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			// no data in request
 			findValue:          nil,
 			findError:          nil,
 			params:             map[string]string{},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			// error in dao
@@ -153,7 +154,7 @@ func TestRemoveAbsencyFromPerson(t *testing.T) {
 				"personID": "test",
 				"date":     "2020-01-01",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			// small letters personID
@@ -165,7 +166,7 @@ func TestRemoveAbsencyFromPerson(t *testing.T) {
 				"personID": "test",
 				"date":     "2020-01-01",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			// no date
@@ -176,7 +177,7 @@ func TestRemoveAbsencyFromPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			// no person found
@@ -186,7 +187,7 @@ func TestRemoveAbsencyFromPerson(t *testing.T) {
 				"personID": "test",
 				"date":     "2020-01-01",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			// no personID
@@ -195,7 +196,7 @@ func TestRemoveAbsencyFromPerson(t *testing.T) {
 			params: map[string]string{
 				"date": "2020-01-01",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			// error in dao
@@ -254,7 +255,7 @@ func TestFindAbsencyForPerson(t *testing.T) {
 				Date:   "2020-01-01",
 			},
 			findError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			// small letters personID
@@ -263,7 +264,7 @@ func TestFindAbsencyForPerson(t *testing.T) {
 			},
 			findValue:          nil,
 			findError:          pkg.ErrNoRows,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			// no date
@@ -272,7 +273,7 @@ func TestFindAbsencyForPerson(t *testing.T) {
 			},
 			findValue:          nil,
 			findError:          pkg.ErrNoRows,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			// error in dao
@@ -329,7 +330,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode:  400,
+			expectedStatusCode:  http.StatusBadRequest,
 			additionalFindError: pkg.ErrNoRows,
 		},
 		{
@@ -344,7 +345,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			additionalFindValue: dao.Department{
 				Name: "department1",
 			},
@@ -362,7 +363,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			// no request body
@@ -373,7 +374,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			// no person found
@@ -385,7 +386,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			// incorrect request params
@@ -395,7 +396,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 			findValue:          nil,
 			findError:          nil,
 			params:             map[string]string{},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			// error in dao
@@ -456,7 +457,7 @@ func TestRemoveDepartmentFromPerson(t *testing.T) {
 				"personID":       "test",
 				"departmentName": "department1",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			// small letters personID
@@ -468,7 +469,7 @@ func TestRemoveDepartmentFromPerson(t *testing.T) {
 				"personID":       "test",
 				"departmentName": "department1",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			findValue: dao.Person{
@@ -478,7 +479,7 @@ func TestRemoveDepartmentFromPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			findValue: nil,
@@ -487,7 +488,7 @@ func TestRemoveDepartmentFromPerson(t *testing.T) {
 				"personID":       "test",
 				"departmentName": "department1",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			findValue: nil,
@@ -495,7 +496,7 @@ func TestRemoveDepartmentFromPerson(t *testing.T) {
 			params: map[string]string{
 				"departmentName": "department1",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			findValue: dao.Person{
@@ -557,7 +558,7 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode:  400,
+			expectedStatusCode:  http.StatusBadRequest,
 			additionalFindValue: nil,
 			additionalFindError: pkg.ErrNoRows,
 		},
@@ -573,7 +574,7 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			additionalFindValue: dao.Workplace{
 				Name: "workplace1",
 			},
@@ -591,7 +592,7 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			findValue: dao.Person{
@@ -601,7 +602,7 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			mockRequest: map[string]interface{}{
@@ -613,7 +614,7 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			mockRequest: map[string]interface{}{
@@ -623,7 +624,7 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 			findValue:          nil,
 			findError:          nil,
 			params:             map[string]string{},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			mockRequest: map[string]interface{}{
@@ -686,7 +687,7 @@ func TestRemoveWorkplaceFromPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			mockRequest: map[string]interface{}{
@@ -700,7 +701,7 @@ func TestRemoveWorkplaceFromPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			mockRequest: map[string]interface{}{},
@@ -711,7 +712,7 @@ func TestRemoveWorkplaceFromPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			mockRequest: map[string]interface{}{
@@ -723,7 +724,7 @@ func TestRemoveWorkplaceFromPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			mockRequest: map[string]interface{}{
@@ -733,7 +734,7 @@ func TestRemoveWorkplaceFromPerson(t *testing.T) {
 			findValue:          nil,
 			findError:          nil,
 			params:             map[string]string{},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			mockRequest: map[string]interface{}{
@@ -794,7 +795,7 @@ func TestAddWeekdayToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			mockRequest: map[string]interface{}{
@@ -807,7 +808,7 @@ func TestAddWeekdayToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			mockRequest: map[string]interface{}{
@@ -820,7 +821,7 @@ func TestAddWeekdayToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			findValue: dao.Person{
@@ -830,7 +831,7 @@ func TestAddWeekdayToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			mockRequest: map[string]interface{}{
@@ -841,7 +842,7 @@ func TestAddWeekdayToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			mockRequest: map[string]interface{}{
@@ -850,7 +851,7 @@ func TestAddWeekdayToPerson(t *testing.T) {
 			findValue:          nil,
 			findError:          nil,
 			params:             map[string]string{},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			mockRequest: map[string]interface{}{
@@ -908,7 +909,7 @@ func TestRemoveWeekdayFromPerson(t *testing.T) {
 				"personID":  "test",
 				"weekdayID": "INV",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			findValue: dao.Person{
@@ -919,7 +920,7 @@ func TestRemoveWeekdayFromPerson(t *testing.T) {
 				"personID":  "test",
 				"weekdayID": "MON",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			findValue: dao.Person{
@@ -930,7 +931,7 @@ func TestRemoveWeekdayFromPerson(t *testing.T) {
 				"personID":  "test",
 				"weekdayID": "MON",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			findValue: dao.Person{
@@ -940,7 +941,7 @@ func TestRemoveWeekdayFromPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			findValue: nil,
@@ -949,7 +950,7 @@ func TestRemoveWeekdayFromPerson(t *testing.T) {
 				"personID":  "test",
 				"weekdayID": "MON",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			findValue: nil,
@@ -957,7 +958,7 @@ func TestRemoveWeekdayFromPerson(t *testing.T) {
 			params: map[string]string{
 				"weekdayID": "MON",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			findValue: dao.Person{

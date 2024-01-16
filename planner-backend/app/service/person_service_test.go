@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"net/http/httptest"
 	"planner-backend/app/domain/dao"
 	"planner-backend/app/domain/dco"
@@ -27,7 +28,7 @@ func TestDeletePerson(t *testing.T) {
 				"personID": "test",
 			},
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			mockValue: dao.Person{
@@ -35,7 +36,7 @@ func TestDeletePerson(t *testing.T) {
 			},
 			params:             map[string]string{},
 			mockError:          pkg.ErrNoRows,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 	}
 
@@ -90,7 +91,7 @@ func TestUpdatePerson(t *testing.T) {
 				Active:       true,
 				WorkingHours: 8,
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
@@ -122,7 +123,7 @@ func TestUpdatePerson(t *testing.T) {
 				Active:       true,
 				WorkingHours: 8,
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
@@ -148,7 +149,7 @@ func TestUpdatePerson(t *testing.T) {
 				t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
 			}
 
-			if response.StatusCode != 200 {
+			if response.StatusCode != http.StatusOK {
 				return
 			}
 
@@ -205,7 +206,7 @@ func TestAddPerson(t *testing.T) {
 				Active:       true,
 				WorkingHours: 8,
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 		},
@@ -229,7 +230,7 @@ func TestAddPerson(t *testing.T) {
 				t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
 			}
 
-			if response.StatusCode != 200 {
+			if response.StatusCode != http.StatusOK {
 				return
 			}
 
@@ -291,7 +292,7 @@ func TestGetAllPersons(t *testing.T) {
 					WorkingHours: 8,
 				},
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 			queries: map[string]string{
 				"department": "test",
@@ -318,7 +319,7 @@ func TestGetAllPersons(t *testing.T) {
 					WorkingHours: 8,
 				},
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 			queries: map[string]string{
 				"department": "test",
@@ -327,20 +328,20 @@ func TestGetAllPersons(t *testing.T) {
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			mockError:          nil,
 		},
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			mockError:          pkg.ErrNoRows,
 			queries:            map[string]string{},
 		},
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          pkg.ErrNoRows,
 			queries: map[string]string{
 				"department": "test",
@@ -371,7 +372,7 @@ func TestGetAllPersons(t *testing.T) {
 				t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
 			}
 
-			if response.StatusCode != 200 {
+			if response.StatusCode != http.StatusOK {
 				return
 			}
 
@@ -432,7 +433,7 @@ func TestGetPerson(t *testing.T) {
 				Active:       &falseValue,
 				WorkingHours: 8,
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 			params: map[string]string{
 				"personID": "test",
@@ -456,7 +457,7 @@ func TestGetPerson(t *testing.T) {
 
 				WorkingHours: 8,
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 			params: map[string]string{
 				"personID": "test",
@@ -465,13 +466,13 @@ func TestGetPerson(t *testing.T) {
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			mockError:          nil,
 		},
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 			mockError:          pkg.ErrNoRows,
 			params: map[string]string{
 				"personID": "test",
@@ -494,7 +495,7 @@ func TestGetPerson(t *testing.T) {
 				t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
 			}
 
-			if response.StatusCode != 200 {
+			if response.StatusCode != http.StatusOK {
 				return
 			}
 

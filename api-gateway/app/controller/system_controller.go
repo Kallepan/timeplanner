@@ -3,6 +3,7 @@ package controller
 import (
 	"api-gateway/app/constant"
 	"api-gateway/app/pkg"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -17,7 +18,7 @@ type SystemControllerImpl struct{}
 func (s SystemControllerImpl) Ping(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 
-	c.JSON(200, pkg.BuildResponse(constant.Success, pkg.Null()))
+	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, pkg.Null()))
 }
 
 var systemControllerSet = wire.NewSet(

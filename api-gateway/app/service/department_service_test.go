@@ -5,6 +5,7 @@ import (
 	"api-gateway/app/domain/dto"
 	"api-gateway/app/mock"
 	"encoding/json"
+	"net/http"
 	"net/http/httptest"
 	"reflect"
 	"testing"
@@ -28,7 +29,7 @@ func TestUpdateDepartment(t *testing.T) {
 			mockRequestData: map[string]interface{}{
 				"name": "Department 2",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			findValue: dao.Department{
 				BaseModel: dao.BaseModel{
 					ID: uuid.MustParse("00000000-0000-0000-0000-000000000001"),
@@ -55,7 +56,7 @@ func TestUpdateDepartment(t *testing.T) {
 			saveValue:          nil,
 			findError:          gorm.ErrRecordNotFound,
 			saveError:          nil,
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 			params: map[string]string{
 				"departmentID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -120,7 +121,7 @@ func TestDeleteDepartment(t *testing.T) {
 				Name: "Department 1",
 			},
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			params: map[string]string{
 				"departmentID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -128,7 +129,7 @@ func TestDeleteDepartment(t *testing.T) {
 		{
 			mockValue:          nil,
 			mockError:          gorm.ErrRecordNotFound,
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 			params: map[string]string{
 				"departmentID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -180,13 +181,13 @@ func TestAddDepartment(t *testing.T) {
 			},
 			findError:          gorm.ErrRecordNotFound,
 			saveError:          nil,
-			expectedStatusCode: 201,
+			expectedStatusCode: http.StatusCreated,
 		},
 		{
 			mockRequestData:    map[string]interface{}{},
 			findValue:          nil,
 			saveValue:          nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			mockRequestData: map[string]interface{}{
@@ -201,7 +202,7 @@ func TestAddDepartment(t *testing.T) {
 			saveValue:          nil,
 			findError:          nil,
 			saveError:          nil,
-			expectedStatusCode: 409,
+			expectedStatusCode: http.StatusConflict,
 		},
 	}
 
@@ -285,13 +286,13 @@ func TestGetAllDepartments(t *testing.T) {
 				},
 			},
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			mockValue:          []dao.Department{},
 			expectedResponse:   nil,
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 	}
 
@@ -357,7 +358,7 @@ func TestGetDepartmentById(t *testing.T) {
 				Name: "Department 1",
 			},
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			mockValue: dao.Department{
@@ -368,7 +369,7 @@ func TestGetDepartmentById(t *testing.T) {
 			},
 			expectedResponse:   nil,
 			mockError:          gorm.ErrRecordNotFound,
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 		},
 	}
 

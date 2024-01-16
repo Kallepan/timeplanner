@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
 	"net/http/httptest"
 	"planner-backend/app/domain/dao"
 	"planner-backend/app/domain/dco"
@@ -29,7 +30,7 @@ func TestGetWorkdaysForDepartmentAndDate(t *testing.T) {
 		{
 			queries: map[string]string{
 				"department": "department1",
-				"date":           "2021-01-01",
+				"date":       "2021-01-01",
 			},
 			mockValue: []dao.Workday{
 				{
@@ -42,29 +43,29 @@ func TestGetWorkdaysForDepartmentAndDate(t *testing.T) {
 					Person:         nil,
 				},
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 		},
 		{
 			queries: map[string]string{
 				"department": "department1",
-				"date":           "2021-01-01",
+				"date":       "2021-01-01",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 		},
 		{
 			queries: map[string]string{
 				"department": "department1",
-				"date":           "2021-01-01",
+				"date":       "2021-01-01",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 		},
 		{
 			queries: map[string]string{
 				"department": "department1",
-				"date":           "2021-01-01",
+				"date":       "2021-01-01",
 			},
 			mockValue: []dao.Workday{
 				{
@@ -77,20 +78,20 @@ func TestGetWorkdaysForDepartmentAndDate(t *testing.T) {
 					Person:         &mockPerson,
 				},
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 		},
 		{
 			queries: map[string]string{
 				"department": "department1",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			queries: map[string]string{
 				"date": "2021-01-01",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 	}
 
@@ -186,7 +187,7 @@ func TestGetWorkday(t *testing.T) {
 				EndTime:        "16:00:00",
 				Person:         nil,
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 		},
 		{
@@ -197,7 +198,7 @@ func TestGetWorkday(t *testing.T) {
 				"date":       "2021-01-01",
 			},
 			mockValue:          nil,
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 			mockError:          pkg.ErrNoRows,
 		},
 		{
@@ -216,7 +217,7 @@ func TestGetWorkday(t *testing.T) {
 				EndTime:        "16:00:00",
 				Person:         &mockPerson,
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 		},
 		{
@@ -225,7 +226,7 @@ func TestGetWorkday(t *testing.T) {
 				"workplace":  "workplace1",
 				"timeslot":   "timeslot1",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			queries: map[string]string{
@@ -233,7 +234,7 @@ func TestGetWorkday(t *testing.T) {
 				"workplace":  "workplace1",
 				"date":       "2021-01-01",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			queries: map[string]string{
@@ -241,7 +242,7 @@ func TestGetWorkday(t *testing.T) {
 				"timeslot":   "timeslot1",
 				"date":       "2021-01-01",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			queries: map[string]string{
@@ -249,7 +250,7 @@ func TestGetWorkday(t *testing.T) {
 				"timeslot":  "timeslot1",
 				"date":      "2021-01-01",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 	}
 
@@ -326,7 +327,7 @@ func TestAssignPersonToWorkday(t *testing.T) {
 				"timeslot_name":   "timeslot1",
 				"date":            "2021-01-01",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			saveError:          nil,
 		},
 		{
@@ -337,7 +338,7 @@ func TestAssignPersonToWorkday(t *testing.T) {
 				"timeslot_name":   "timeslot1",
 				"date":            "2021-01-01",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 		},
 		{
@@ -348,7 +349,7 @@ func TestAssignPersonToWorkday(t *testing.T) {
 				"timeslot_name":  "timeslot1",
 				"date":           "2021-01-01",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 		},
 		{
@@ -359,7 +360,7 @@ func TestAssignPersonToWorkday(t *testing.T) {
 				"workplace_name":  "workplace1",
 				"timeslot_name":   "timeslot1",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 		},
 		{
@@ -415,7 +416,7 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 				"timeslot_name":   "timeslot1",
 				"date":            "2021-01-01",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			saveError:          nil,
 		},
 		{
@@ -426,7 +427,7 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 				"timeslot_name":   "timeslot1",
 				"date":            "2021-01-01",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 		},
 		{
@@ -437,7 +438,7 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 				"timeslot_name":  "timeslot1",
 				"date":           "2021-01-01",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 		},
 		{
@@ -448,7 +449,7 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 				"workplace_name":  "workplace1",
 				"timeslot_name":   "timeslot1",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 		},
 		{

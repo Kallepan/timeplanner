@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"errors"
+	"net/http"
 	"net/http/httptest"
 	"planner-backend/app/domain/dao"
 	"planner-backend/app/domain/dco"
@@ -28,7 +29,7 @@ func TestDeleteWorkplace(t *testing.T) {
 				"workplaceName":  "test",
 			},
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			mockValue: dao.Workplace{
@@ -38,7 +39,7 @@ func TestDeleteWorkplace(t *testing.T) {
 				"departmentName": "test,",
 			},
 			mockError:          pkg.ErrNoRows,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			mockValue: dao.Workplace{
@@ -48,7 +49,7 @@ func TestDeleteWorkplace(t *testing.T) {
 				"workplaceName": "test,",
 			},
 			mockError:          pkg.ErrNoRows,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 	}
 
@@ -86,7 +87,7 @@ func TestUpdateWorkplace(t *testing.T) {
 			saveValue: dao.Workplace{
 				Name: "newName",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
@@ -100,7 +101,7 @@ func TestUpdateWorkplace(t *testing.T) {
 			},
 			findValue:          nil,
 			saveValue:          nil,
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 		},
@@ -122,7 +123,7 @@ func TestUpdateWorkplace(t *testing.T) {
 			mockRequestData:    map[string]interface{}{},
 			findValue:          nil,
 			saveValue:          nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          nil,
 			saveError:          nil,
 		},
@@ -173,7 +174,7 @@ func TestAddWorkplace(t *testing.T) {
 			saveValue: dao.Workplace{
 				Name: "test",
 			},
-			expectedStatusCode: 201,
+			expectedStatusCode: http.StatusCreated,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
@@ -188,7 +189,7 @@ func TestAddWorkplace(t *testing.T) {
 				Name: "test",
 			},
 			saveValue:          nil,
-			expectedStatusCode: 409,
+			expectedStatusCode: http.StatusConflict,
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
@@ -203,7 +204,7 @@ func TestAddWorkplace(t *testing.T) {
 			saveValue: dao.Workplace{
 				Name: "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 		},
@@ -211,7 +212,7 @@ func TestAddWorkplace(t *testing.T) {
 			mockRequestData:    map[string]interface{}{},
 			findValue:          nil,
 			saveValue:          nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
@@ -235,7 +236,7 @@ func TestAddWorkplace(t *testing.T) {
 			mockRequestData:    map[string]interface{}{},
 			findValue:          nil,
 			saveValue:          nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			findError:          nil,
 			saveError:          pkg.ErrNoRows,
 		},
@@ -291,7 +292,7 @@ func TestGetAllWorkplaces(t *testing.T) {
 					Name: "test",
 				},
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 			params: map[string]string{
 				"departmentName": "test",
@@ -300,13 +301,13 @@ func TestGetAllWorkplaces(t *testing.T) {
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			mockError:          nil,
 		},
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          pkg.ErrNoRows,
 			params: map[string]string{
 				"departmentName": "test",
@@ -329,7 +330,7 @@ func TestGetAllWorkplaces(t *testing.T) {
 				t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
 			}
 
-			if response.StatusCode != 200 {
+			if response.StatusCode != http.StatusOK {
 				return
 			}
 
@@ -361,7 +362,7 @@ func TestGetWorkplaceByName(t *testing.T) {
 			expectedResponse: dao.Workplace{
 				Name: "test",
 			},
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 			params: map[string]string{
 				"workplaceName":  "test",
@@ -375,7 +376,7 @@ func TestGetWorkplaceByName(t *testing.T) {
 			expectedResponse: dao.Workplace{
 				Name: "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			mockError:          nil,
 			params: map[string]string{
 				"departmentName": "test",
@@ -388,7 +389,7 @@ func TestGetWorkplaceByName(t *testing.T) {
 			expectedResponse: dao.Workplace{
 				Name: "test",
 			},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			mockError:          nil,
 			params: map[string]string{
 				"workplaceName": "test",
@@ -397,14 +398,14 @@ func TestGetWorkplaceByName(t *testing.T) {
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 			mockError:          nil,
 			params:             map[string]string{},
 		},
 		{
 			mockValue:          nil,
 			expectedResponse:   nil,
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 			mockError:          pkg.ErrNoRows,
 			params: map[string]string{
 				"workplaceName":  "test",
@@ -428,7 +429,7 @@ func TestGetWorkplaceByName(t *testing.T) {
 				t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
 			}
 
-			if response.StatusCode != 200 {
+			if response.StatusCode != http.StatusOK {
 				return
 			}
 

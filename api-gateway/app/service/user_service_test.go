@@ -7,6 +7,7 @@ import (
 	"api-gateway/app/mock"
 	"database/sql"
 	"encoding/json"
+	"net/http"
 	"net/http/httptest"
 	"testing"
 
@@ -35,7 +36,7 @@ func TestUpdateUser(t *testing.T) {
 			findValue:          nil,
 			saveValue:          nil,
 			findError:          gorm.ErrRecordNotFound,
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -70,7 +71,7 @@ func TestUpdateUser(t *testing.T) {
 			},
 			findError:          nil,
 			saveError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -98,7 +99,7 @@ func TestUpdateUser(t *testing.T) {
 			},
 			findError:          nil,
 			saveError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -126,7 +127,7 @@ func TestUpdateUser(t *testing.T) {
 			},
 			findError:          nil,
 			saveError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -153,7 +154,7 @@ func TestUpdateUser(t *testing.T) {
 			},
 			findError:          nil,
 			saveError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -181,7 +182,7 @@ func TestUpdateUser(t *testing.T) {
 			},
 			findError:          nil,
 			saveError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -206,7 +207,7 @@ func TestUpdateUser(t *testing.T) {
 			},
 			findError:          nil,
 			saveError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -221,7 +222,7 @@ func TestUpdateUser(t *testing.T) {
 			},
 			findValue:          dao.User{},
 			saveValue:          dao.User{},
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 	}
 
@@ -285,7 +286,7 @@ func TestDeleteUser(t *testing.T) {
 				Email:    "test@example.com",
 			},
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -293,7 +294,7 @@ func TestDeleteUser(t *testing.T) {
 		{
 			mockValue:          nil,
 			mockError:          gorm.ErrRecordNotFound,
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 			params: map[string]string{
 				"userID": "00000000-0000-0000-0000-000000000001",
 			},
@@ -345,7 +346,7 @@ func TestAddUser(t *testing.T) {
 			},
 			findError:          gorm.ErrRecordNotFound,
 			saveError:          nil,
-			expectedStatusCode: 201,
+			expectedStatusCode: http.StatusCreated,
 		},
 		{
 			// Test Add User, admin false implicit
@@ -364,7 +365,7 @@ func TestAddUser(t *testing.T) {
 			},
 			findError:          gorm.ErrRecordNotFound,
 			saveError:          nil,
-			expectedStatusCode: 201,
+			expectedStatusCode: http.StatusCreated,
 		},
 		{
 			// Test Add User, admin false explicit
@@ -384,7 +385,7 @@ func TestAddUser(t *testing.T) {
 			},
 			findError:          gorm.ErrRecordNotFound,
 			saveError:          nil,
-			expectedStatusCode: 201,
+			expectedStatusCode: http.StatusCreated,
 		},
 		{
 			// Test Add User, invalid request email
@@ -398,7 +399,7 @@ func TestAddUser(t *testing.T) {
 			saveValue:          nil,
 			findError:          gorm.ErrRecordNotFound,
 			saveError:          nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 		{
 			// Test Add User, invalid request username
@@ -413,7 +414,7 @@ func TestAddUser(t *testing.T) {
 			saveValue:          nil,
 			findError:          gorm.ErrRecordNotFound,
 			saveError:          nil,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 	}
 
@@ -534,7 +535,7 @@ func TestGetAllUsers(t *testing.T) {
 				},
 			},
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 	}
 
@@ -616,7 +617,7 @@ func TestGetUser(t *testing.T) {
 				IsAdmin:      true,
 			},
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			// Test Get User, admin false
@@ -640,14 +641,14 @@ func TestGetUser(t *testing.T) {
 				IsAdmin:      false,
 			},
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			// Test Get User, admin true
 			mockValue:          dao.User{},
 			expectedResponse:   nil,
 			mockError:          gorm.ErrRecordNotFound,
-			expectedStatusCode: 404,
+			expectedStatusCode: http.StatusNotFound,
 		},
 		{
 			// Test Get User, with permissions
@@ -680,7 +681,7 @@ func TestGetUser(t *testing.T) {
 				},
 			},
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 	}
 
@@ -749,7 +750,7 @@ func TestAddPermissionToUser(t *testing.T) {
 
 			saveValue:          nil,
 			saveError:          nil,
-			expectedStatusCode: 201,
+			expectedStatusCode: http.StatusCreated,
 		},
 		{
 			// Test Add Permission, not found
@@ -759,7 +760,7 @@ func TestAddPermissionToUser(t *testing.T) {
 			},
 			saveValue:          nil,
 			saveError:          gorm.ErrRecordNotFound,
-			expectedStatusCode: 400, // Here we expect 400 because the user or permission do not exist
+			expectedStatusCode: http.StatusBadRequest, // Here we expect 400 because the user or permission do not exist
 		},
 	}
 
@@ -798,14 +799,14 @@ func TestDeletePermissionFromUser(t *testing.T) {
 			mockValue:          nil,
 			expectedResponse:   nil,
 			mockError:          nil,
-			expectedStatusCode: 200,
+			expectedStatusCode: http.StatusOK,
 		},
 		{
 			// Test Delete Permission, not found
 			mockValue:          nil,
 			expectedResponse:   nil,
 			mockError:          gorm.ErrRecordNotFound,
-			expectedStatusCode: 400,
+			expectedStatusCode: http.StatusBadRequest,
 		},
 	}
 
