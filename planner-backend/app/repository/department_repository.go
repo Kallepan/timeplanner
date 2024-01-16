@@ -155,7 +155,7 @@ func DepartmentRepositoryInit(db *neo4j.DriverWithContext) *DepartmentRepository
 	}
 }
 
-var DepartmentRepositorySet = wire.NewSet(
+var departmentRepositorySet = wire.NewSet(
 	DepartmentRepositoryInit,
 	wire.Bind(new(DepartmentRepository), new(*DepartmentRepositoryImpl)),
 )

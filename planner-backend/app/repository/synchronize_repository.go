@@ -145,7 +145,7 @@ func SynchronizeRepositoryInit(db *neo4j.DriverWithContext) *SynchronizeReposito
 	}
 }
 
-var SynchronizeRepositorySet = wire.NewSet(
+var synchronizeRepositorySet = wire.NewSet(
 	SynchronizeRepositoryInit,
 	wire.Bind(new(SynchronizeRepository), new(*SynchronizeRepositoryImpl)),
 )

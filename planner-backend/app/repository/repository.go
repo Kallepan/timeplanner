@@ -3,11 +3,12 @@ package repository
 import "github.com/google/wire"
 
 var RepositorySet = wire.NewSet(
-	DepartmentRepositorySet,
-	WorkplaceRepositorySet,
+	departmentRepositorySet,
+	workplaceRepositorySet,
 	timeslotRepositorySet,
 	weekdayRepositorySet,
 	personRepositorySet,
 	personRelRepositorySet,
-	SynchronizeRepositorySet,
+	synchronizeRepositorySet,
+	workdayRepositorySet,
 )

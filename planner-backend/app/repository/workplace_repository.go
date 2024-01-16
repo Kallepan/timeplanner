@@ -159,7 +159,7 @@ func WorkplaceRepositoryInit(db *neo4j.DriverWithContext) *WorkplaceRepositoryIm
 	}
 }
 
-var WorkplaceRepositorySet = wire.NewSet(
+var workplaceRepositorySet = wire.NewSet(
 	WorkplaceRepositoryInit,
 	wire.Bind(new(WorkplaceRepository), new(*WorkplaceRepositoryImpl)),
 )
