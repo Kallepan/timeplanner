@@ -16,5 +16,6 @@ type Injector struct {
 	WeekdayCtrl     controller.WeekdayController
 	PersonCtrl      controller.PersonController
 	PersonRelCtrl   controller.PersonRelController
+	WorkdayCtrl     controller.WorkdayController
 	SynchronizeRepo repository.SynchronizeRepository
 }

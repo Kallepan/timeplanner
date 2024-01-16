@@ -27,27 +27,21 @@ func (p *Person) ParseAdditionalFieldsFromDBRecord(record *neo4j.Record) error {
 	* Parses additional fields such as departments, workplaces, and weekdays from a neo4j record and sets the values on this person
 	**/
 
-	workplaces, ok, err := neo4j.GetRecordValue[[]interface{}](record, "workplaces")
-	if err != nil {
+	if workplaces, isNil, err := neo4j.GetRecordValue[[]interface{}](record, "workplaces"); err != nil {
 		return err
-	}
-	if ok {
+	} else if !isNil {
 		p.Workplaces = convertInterfaceSliceToStringSlice(workplaces)
 	}
 
-	departments, ok, err := neo4j.GetRecordValue[[]interface{}](record, "departments")
-	if err != nil {
+	if departments, isNil, err := neo4j.GetRecordValue[[]interface{}](record, "departments"); err != nil {
 		return err
-	}
-	if ok {
+	} else if !isNil {
 		p.Departments = convertInterfaceSliceToStringSlice(departments)
 	}
 
-	weekdays, ok, err := neo4j.GetRecordValue[[]interface{}](record, "weekdays")
-	if err != nil {
+	if weekdays, isNil, err := neo4j.GetRecordValue[[]interface{}](record, "weekdays"); err != nil {
 		return err
-	}
-	if ok {
+	} else if !isNil {
 		p.Weekdays = convertInterfaceSliceToStringSlice(weekdays)
 	}
 
@@ -59,9 +53,12 @@ func (p *Person) ParseFromDBRecord(record *neo4j.Record) error {
 	 * Parses a person from a neo4j record and sets the values on this person
 	 */
 
-	personNode, _, err := neo4j.GetRecordValue[neo4j.Node](record, "p")
+	personNode, isNil, err := neo4j.GetRecordValue[neo4j.Node](record, "p")
 	if err != nil {
 		return err
+	}
+	if isNil {
+		return nil
 	}
 
 	id, err := neo4j.GetProperty[string](personNode, "id")

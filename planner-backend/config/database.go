@@ -40,15 +40,19 @@ func ConnectToDB(ctx context.Context) *neo4j.DriverWithContext {
 /* Migrations */
 var queries = map[string]string{
 	// TODO: Implement a better way to handle these queries
-	"unique_department": `CREATE CONSTRAINT unique_department_name IF NOT EXISTS FOR (d:Department) REQUIRE d.name IS UNIQUE;`,
-	"unique_person":     `CREATE CONSTRAINT unique_person_id IF NOT EXISTS FOR (p:Person) REQUIRE p.id IS UNIQUE;`,
-	"create_monday":     `MERGE (:Weekday {name: 'Monday', id: "MON"});`,
-	"create_tuesday":    `MERGE (:Weekday {name: 'Tuesday', id: "TUE"});`,
-	"create_wednesday":  `MERGE (:Weekday {name: 'Wednesday', id: "WED"});`,
-	"create_thursday":   `MERGE (:Weekday {name: 'Thursday', id: "THU"});`,
-	"create_friday":     `MERGE (:Weekday {name: 'Friday', id: "FRI"});`,
-	"create_saturday":   `MERGE (:Weekday {name: 'Saturday', id: "SAT"});`,
-	"create_sunday":     `MERGE (:Weekday {name: 'Sunday', id: "SUN"});`,
+	"unique_department":        `CREATE CONSTRAINT unique_department_name IF NOT EXISTS FOR (d:Department) REQUIRE d.name IS UNIQUE;`,
+	"unique_person":            `CREATE CONSTRAINT unique_person_id IF NOT EXISTS FOR (p:Person) REQUIRE p.id IS UNIQUE;`,
+	"create_monday":            `MERGE (:Weekday {name: 'Monday', id: "MON"});`,
+	"create_tuesday":           `MERGE (:Weekday {name: 'Tuesday', id: "TUE"});`,
+	"create_wednesday":         `MERGE (:Weekday {name: 'Wednesday', id: "WED"});`,
+	"create_thursday":          `MERGE (:Weekday {name: 'Thursday', id: "THU"});`,
+	"create_friday":            `MERGE (:Weekday {name: 'Friday', id: "FRI"});`,
+	"create_saturday":          `MERGE (:Weekday {name: 'Saturday', id: "SAT"});`,
+	"create_sunday":            `MERGE (:Weekday {name: 'Sunday', id: "SUN"});`,
+	"index_workday_date":       `CREATE INDEX workday_date IF NOT EXISTS FOR (w:Workday) ON (w.date)`,
+	"index_workday_department": `CREATE INDEX workday_department IF NOT EXISTS FOR (w:Workday) ON (w.department)`,
+	"index_workday_workplace":  `CREATE INDEX workday_workplace IF NOT EXISTS FOR (w:Workday) ON (w.workplace)`,
+	"index_workday_timeslot":   `CREATE INDEX workday_timeslot IF NOT EXISTS FOR (w:Workday) ON (w.timeslot)`,
 }
 
 func Migrate(ctx context.Context, db neo4j.DriverWithContext) {

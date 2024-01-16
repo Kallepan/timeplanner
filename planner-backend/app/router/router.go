@@ -71,6 +71,13 @@ func Init(init *config.Injector) *gin.Engine {
 				personRel.DELETE("/weekday/:weekdayID", init.PersonRelCtrl.RemoveWeekday)
 			}
 		}
+		workday := plannerAPI.Group("/workday")
+		{
+			workday.GET("/", init.WorkdayCtrl.GetWorkdaysForDepartmentAndDate) // ?departmentName=...&date=...
+			workday.GET("/detail", init.WorkdayCtrl.GetWorkday)                // ?departmentName=...&date=...&workplaceName=...&timeslotName=...
+			workday.POST("/assign", init.WorkdayCtrl.AssignPersonToWorkday)
+			workday.DELETE("/assign", init.WorkdayCtrl.UnassignPersonFromWorkday)
+		}
 	}
 
 	return router

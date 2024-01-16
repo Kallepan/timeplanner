@@ -9,4 +9,5 @@ var ServiceSet = wire.NewSet(
 	weekDayServiceSet,
 	personServiceSet,
 	personRelServiceSet,
+	workDayServiceSet,
 )
