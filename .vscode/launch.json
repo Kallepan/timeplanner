@@ -3,15 +3,33 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "Launch Auth Backend",
+      "name": "Launch API Gateway",
       "type": "go",
       "request": "launch",
       "mode": "auto",
-      "program": "${workspaceFolder}/auth-backend/cmd/main.go",
-      "output": "${workspaceFolder}/auth-backend/bin/main"
+      "program": "${workspaceFolder}/api-gateway/cmd/main.go",
+      "output": "${workspaceFolder}/api-gateway/bin/main",
+      "presentation": {
+        "hidden": true,
+        "group": "",
+        "order": 1
+      }
     },
     {
-      "name": "ng serve",
+      "name": "Launch Planner Backend",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/planner-backend/cmd/main.go",
+      "output": "${workspaceFolder}/planner-backend/bin/main",
+      "presentation": {
+        "hidden": true,
+        "group": "",
+        "order": 1
+      }
+    },
+    {
+      "name": "Launch Frontend",
       "type": "chrome",
       "request": "launch",
       "preLaunchTask": "npm: start",
@@ -19,12 +37,18 @@
       "webRoot": "${workspaceFolder}/frontend"
     },
     {
-      "name": "ng test",
+      "name": "Test frontend",
       "type": "chrome",
       "request": "launch",
       "preLaunchTask": "npm: test",
       "url": "http://localhost:9876/debug.html",
       "webRoot": "${workspaceFolder}/frontend"
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Launch Backend",
+      "configurations": ["Launch API Gateway", "Launch Planner Backend"]
     }
   ]
 }

@@ -6,6 +6,8 @@
 - api-gateway: GoLang (directory: `api-gateway`)
 - Plan-Backend: GoLang (directory: `planner-backend`)
 
+postman tests for the backend can be found [here](tests/)
+
 ## TODOs
 
 ### Frontend

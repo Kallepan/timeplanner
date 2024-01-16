@@ -1,0 +1,1519 @@
+{
+	"info": {
+		"_postman_id": "7e782283-c911-4dbe-af31-1dd8c77aada5",
+		"name": "Timeplanner",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29375569"
+	},
+	"item": [
+		{
+			"name": "gateway",
+			"item": [
+				{
+					"name": "user",
+					"item": [
+						{
+							"name": "get all",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/user",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/user/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"user",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"TEST\",\n    \"password\": \"test\",\n    \"email\": \"test@example.com\",\n    \"department_id\": \"9d667007-7b18-4263-8295-ba242887e1a0\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/user",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"user"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "remove",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/user/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"user",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "department",
+					"item": [
+						{
+							"name": "get all",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/department",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"department"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/department/aa0095c8-3ad1-437f-8aea-1f5ad7305e48",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"department",
+										"aa0095c8-3ad1-437f-8aea-1f5ad7305e48"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"TEST\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/department",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"department"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "remove",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/department/aa0095c8-3ad1-437f-8aea-1f5ad7305e48",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"department",
+										"aa0095c8-3ad1-437f-8aea-1f5ad7305e48"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "permission",
+					"item": [
+						{
+							"name": "get all",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/permission",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"permission"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/department/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"department",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"TES252\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/permission",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"permission"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "remove",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/permission/aa0095c8-3ad1-437f-8aea-1f5ad7305e48",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"permission",
+										"aa0095c8-3ad1-437f-8aea-1f5ad7305e48"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "auth",
+					"item": [
+						{
+							"name": "login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"testserver123testserver123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/auth/login",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "logout",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"testserver123testserver123\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8081/auth/logout",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"auth",
+										"logout"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "New Request",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8081/auth/me",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8081",
+									"path": [
+										"auth",
+										"me"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "ping",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ping",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ping"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "planner",
+			"item": [
+				{
+					"name": "department",
+					"item": [
+						{
+							"name": "create BAK",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"BAK\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create Deleted",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"DELETED\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"BAK\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department/BAK",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"BAK"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department/Deleted",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"Deleted"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "workplace",
+					"item": [
+						{
+							"name": "create MALDI",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"MALDI\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department/BAK/workplace",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"BAK",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create VITEK",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"VITEK\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department/BAK/workplace",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"BAK",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"BAK\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department/BAK/workplace",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"BAK",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department/BAK/workplace/MALDI",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"BAK",
+										"workplace",
+										"MALDI"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department/Deleted",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"Deleted"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "timeslot",
+					"item": [
+						{
+							"name": "weekday",
+							"item": [
+								{
+									"name": "add V1 on mon",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"id\": \"MON\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/api/v1/planner/department/BAK/workplace/MALDI/timeslot/V1/weekday",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"v1",
+												"planner",
+												"department",
+												"BAK",
+												"workplace",
+												"MALDI",
+												"timeslot",
+												"V1",
+												"weekday"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "add V2 on mon",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"id\": \"MON\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/api/v1/planner/department/BAK/workplace/MALDI/timeslot/V2/weekday",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"v1",
+												"planner",
+												"department",
+												"BAK",
+												"workplace",
+												"MALDI",
+												"timeslot",
+												"V2",
+												"weekday"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "create V1",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"V1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department/BAK/workplace/MALDI/timeslot/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"BAK",
+										"workplace",
+										"MALDI",
+										"timeslot",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create V2",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"V2\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department/BAK/workplace/MALDI/timeslot/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"BAK",
+										"workplace",
+										"MALDI",
+										"timeslot",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create V3 inactive",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"V3\",\n    \"active\": false\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department/BAK/workplace/MALDI/timeslot/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"BAK",
+										"workplace",
+										"MALDI",
+										"timeslot",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"BAK\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department/BAK/workplace/MALDI/timeslot",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"BAK",
+										"workplace",
+										"MALDI",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department/BAK/workplace/MALDI/timeslot/V1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"BAK",
+										"workplace",
+										"MALDI",
+										"timeslot",
+										"V1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department/Deleted",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"Deleted"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "person",
+					"item": [
+						{
+							"name": "relations",
+							"item": [
+								{
+									"name": "add department",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"department_name\": \"BAK\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/api/v1/planner/person/kank/department",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"v1",
+												"planner",
+												"person",
+												"kank",
+												"department"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "add workplace",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"department_name\": \"BAK\",\n    \"workplace_name\": \"MALDI\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/api/v1/planner/person/kank/workplace",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"v1",
+												"planner",
+												"person",
+												"kank",
+												"workplace"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "add weekday MON",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"weekday_id\": \"MON\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/api/v1/planner/person/kank/weekday",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"v1",
+												"planner",
+												"person",
+												"kank",
+												"weekday"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "add weekday SUN",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"weekday_id\": \"SUN\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/api/v1/planner/person/kank/weekday",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"v1",
+												"planner",
+												"person",
+												"kank",
+												"weekday"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "delete department",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/api/v1/planner/person/kank/department/BAK",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"v1",
+												"planner",
+												"person",
+												"kank",
+												"department",
+												"BAK"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "delete workplace",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"department_name\": \"BAK\",\n    \"workplace_name\": \"MALDI\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/api/v1/planner/person/kank/workplace/MALDI",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"v1",
+												"planner",
+												"person",
+												"kank",
+												"workplace",
+												"MALDI"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "delete weekday",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/api/v1/planner/person/kank/weekday/MON",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"v1",
+												"planner",
+												"person",
+												"kank",
+												"weekday",
+												"MON"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"kank\",\n    \"first_name\": \"Kajeepan\",\n    \"last_name\": \"Kandeepan\",\n    \"email\": \"kandeepan@labmed.de\",\n    \"active\": true,\n    \"working_hours\": 40\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/person",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"person"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get all",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/person/?department=BAK",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"person",
+										""
+									],
+									"query": [
+										{
+											"key": "department",
+											"value": "BAK"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/person/kank",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"person",
+										"kank"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "workday",
+					"item": [
+						{
+							"name": "get all",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/workday?department=BAK&date=2024-02-12",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"workday"
+									],
+									"query": [
+										{
+											"key": "department",
+											"value": "BAK"
+										},
+										{
+											"key": "date",
+											"value": "2024-02-12"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one V1",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/workday/detail?department=BAK&date=2024-02-12&workplace=MALDI&timeslot=V1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"workday",
+										"detail"
+									],
+									"query": [
+										{
+											"key": "department",
+											"value": "BAK"
+										},
+										{
+											"key": "date",
+											"value": "2024-02-12"
+										},
+										{
+											"key": "workplace",
+											"value": "MALDI"
+										},
+										{
+											"key": "timeslot",
+											"value": "V1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "get one V2",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/workday/detail?department=BAK&date=2024-02-12&workplace=MALDI&timeslot=V2",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"workday",
+										"detail"
+									],
+									"query": [
+										{
+											"key": "department",
+											"value": "BAK"
+										},
+										{
+											"key": "date",
+											"value": "2024-02-12"
+										},
+										{
+											"key": "workplace",
+											"value": "MALDI"
+										},
+										{
+											"key": "timeslot",
+											"value": "V2"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "assign",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"person_id\": \"KANK\",\n    \"department_name\": \"BAK\",\n    \"workplace_name\": \"MALDI\",\n    \"timeslot_name\": \"V1\",\n    \"date\": \"2024-02-12\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/workday/assign",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"workday",
+										"assign"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "unassign",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"person_id\": \"KANK\",\n    \"department_name\": \"BAK\",\n    \"workplace_name\": \"MALDI\",\n    \"timeslot_name\": \"V1\",\n    \"date\": \"2024-02-12\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/workday/assign",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"workday",
+										"assign"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "ping",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v1/ping",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v1",
+								"ping"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

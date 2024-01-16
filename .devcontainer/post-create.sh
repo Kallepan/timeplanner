@@ -5,8 +5,8 @@ NODE_MODULES="@angular/cli"
 npm install -g ${NODE_MODULES} && \
     npm cache clean --force
 
-# install auth backend dependencies
-cd auth-backend
+# install api gateway dependencies
+cd api-gateway
 go mod download
 go mod tidy
 
