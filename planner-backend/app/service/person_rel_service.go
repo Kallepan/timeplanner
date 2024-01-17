@@ -151,7 +151,7 @@ func (p PersonRelServiceImpl) FindAbsencyForPerson(c *gin.Context) {
 	case nil:
 		break
 	case pkg.ErrNoRows:
-		break
+		pkg.PanicException(constant.DataNotFound)
 	default:
 		slog.Error("Error when fetching data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
@@ -166,6 +166,7 @@ func mapAbsenceToAbsenceResponse(absence dao.Absence) dco.AbsenceResponse {
 	/** Maps an absence to an absence response */
 
 	return dco.AbsenceResponse{
+		PersonID:  absence.PersonID,
 		Date:      absence.Date,
 		Reason:    absence.Reason,
 		CreatedAt: absence.CreatedAt,
