@@ -19,6 +19,7 @@ import (
 type UserService interface {
 	GetAllUsers(c *gin.Context)
 	GetUserById(c *gin.Context)
+	GetUserByUsername(c *gin.Context)
 	AddUser(c *gin.Context)
 	UpdateUser(c *gin.Context)
 	DeleteUser(c *gin.Context)
@@ -77,6 +78,31 @@ func (u UserServiceImpl) UpdateUser(c *gin.Context) {
 		pkg.PanicException(constant.DataNotFound)
 	default:
 		slog.Error("Error happened: when saving data to database", "error", err)
+		pkg.PanicException(constant.UnknownError)
+	}
+	data := mapUserToUserResponse(rawData)
+
+	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
+}
+
+func (u UserServiceImpl) GetUserByUsername(c *gin.Context) {
+	/* Method to get user data by username */
+	defer pkg.PanicHandler(c)
+	slog.Info("start to execute program get user by username")
+
+	username := c.Query("username")
+	if username == "" {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+
+	rawData, err := u.UserRepository.FindUserByUsername(username)
+	switch err {
+	case nil:
+		break
+	case gorm.ErrRecordNotFound:
+		pkg.PanicException(constant.DataNotFound)
+	default:
+		slog.Error("Error happened: when get data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
 	data := mapUserToUserResponse(rawData)

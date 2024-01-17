@@ -57,7 +57,7 @@ func TestRouter(t *testing.T) {
 	t.Run("Test User Routes", func(t *testing.T) {
 		var testSteps = []RouterTest{
 			{httpMethod: "GET", url: "/api/v1/user", result: "{\"message\":\"GetAll\"}"},
-			{httpMethod: "GET", url: "/api/v1/user/1", result: "{\"message\":\"Get\"}"},
+			{httpMethod: "GET", url: "/api/v1/user/detail", result: "{\"message\":\"Get\"}"},
 			{httpMethod: "POST", url: "/api/v1/user", result: "{\"message\":\"Create\"}"},
 			{httpMethod: "PUT", url: "/api/v1/user/1", result: "{\"message\":\"Update\"}"},
 			{httpMethod: "DELETE", url: "/api/v1/user/1", result: "{\"message\":\"Delete\"}"},
