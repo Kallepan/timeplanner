@@ -9,7 +9,7 @@ export type Workday = {
   start_time: string;
   end_time: string;
 
-  person: Person | null;
+  person: WorkdayPerson | null;
 };
 
 export type AssignPersonToWorkdayRequest = {
@@ -27,3 +27,8 @@ export type UnassignPersonFromWorkdayRequest = {
   timeslot_name: string;
   person_id: string;
 };
+
+export type WorkdayPerson = Pick<
+  Person,
+  'id' | 'first_name' | 'last_name' | 'email' | 'working_hours'
+>;

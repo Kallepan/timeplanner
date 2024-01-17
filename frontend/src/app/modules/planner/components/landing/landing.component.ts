@@ -42,6 +42,7 @@ export class LandingComponent implements OnInit {
      * Person.
      */
 
+    // TODO: implement
     console.log(event);
   }
 }
