@@ -1178,7 +1178,7 @@
 											}
 										},
 										"url": {
-											"raw": "http://localhost:8080/api/v1/planner/person/kank/workplace/MALDI",
+											"raw": "http://localhost:8080/api/v1/planner/person/kank/workplace",
 											"protocol": "http",
 											"host": [
 												"localhost"
@@ -1190,8 +1190,7 @@
 												"planner",
 												"person",
 												"kank",
-												"workplace",
-												"MALDI"
+												"workplace"
 											]
 										}
 									},
@@ -1217,6 +1216,94 @@
 												"kank",
 												"weekday",
 												"MON"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "absence",
+							"item": [
+								{
+									"name": "create absency",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"date\": \"2023-01-01\",\n    \"reason\": \"test\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "http://localhost:8080/api/v1/planner/person/kank/absency",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"v1",
+												"planner",
+												"person",
+												"kank",
+												"absency"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "get absency",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/api/v1/planner/person/kank/absency/2023-01-02",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"v1",
+												"planner",
+												"person",
+												"kank",
+												"absency",
+												"2023-01-02"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "delete absency",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "http://localhost:8080/api/v1/planner/person/kank/absency/2023-01-02",
+											"protocol": "http",
+											"host": [
+												"localhost"
+											],
+											"port": "8080",
+											"path": [
+												"api",
+												"v1",
+												"planner",
+												"person",
+												"kank",
+												"absency",
+												"2023-01-02"
 											]
 										}
 									},
@@ -1279,6 +1366,38 @@
 											"key": "department",
 											"value": "BAK"
 										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update Person",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"kank\",\n    \"first_name\": \"Kajeepan\",\n    \"last_name\": \"Kandeepan\",\n    \"email\": \"kandeepan@labmed.de\",\n    \"active\": true,\n    \"working_hours\": 40\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/person/kank",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"person",
+										"kank"
 									]
 								}
 							},
