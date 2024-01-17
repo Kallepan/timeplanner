@@ -142,6 +142,7 @@ func (p PersonServiceImpl) UpdatePerson(c *gin.Context) {
 	if personID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
+	personID = strings.ToUpper(personID)
 
 	person, err := p.PersonRepository.FindPersonByID(personID)
 	switch err {
@@ -192,6 +193,7 @@ func (p PersonServiceImpl) DeletePerson(c *gin.Context) {
 	if personID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
+	personID = strings.ToUpper(personID)
 
 	person, err := p.PersonRepository.FindPersonByID(personID)
 	switch err {
