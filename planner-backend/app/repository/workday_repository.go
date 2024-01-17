@@ -120,7 +120,7 @@ func (w WorkdayRepositoryImpl) AssignPersonToWorkday(personID string, department
 	MATCH (wkd:Workday {date: date($date), department: $departmentName, workplace: $workplaceName, timeslot: $timeslotName})
 	// create a relationship between the person and the workday
 	MERGE (p)-[r:ASSIGNED_TO]->(wkd)
-	ON CREATE SET r.created_at = timestamp()
+	ON CREATE SET r.created_at = datetime()
 	`
 	params := map[string]interface{}{
 		"personID":       personID,
