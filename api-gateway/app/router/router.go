@@ -21,10 +21,12 @@ func Init(init *config.Injector) *gin.Engine {
 	router.Use(middleware.Cors())
 
 	auth := router.Group("/auth")
-	auth.POST("/login", init.UserCtrl.Login)
-	auth.POST("/logout", init.UserCtrl.Logout)
-	auth.Use(middleware.RequiredAuth())
-	auth.GET("/me", init.UserCtrl.Me)
+	{
+		auth.POST("/login", init.UserCtrl.Login)
+		auth.POST("/logout", init.UserCtrl.Logout)
+		auth.Use(middleware.RequiredAuth())
+		auth.GET("/me", init.UserCtrl.Me)
+	}
 
 	/** These API requests stay here and are handled by api-gateway */
 	gatewayAPI := router.Group("/api/v1")
