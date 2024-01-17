@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
-	"strings"
 	"time"
 
 	"github.com/google/wire"
@@ -14,7 +13,6 @@ import (
 type SynchronizeRepository interface {
 	Synchronize(datesInAdvance int) error
 
-	createDate(ctx context.Context, date string, weekday string) error
 	createWorkday(ctx context.Context, date string, weekday string) error
 }
 
@@ -35,11 +33,12 @@ func (d SynchronizeRepositoryImpl) Synchronize(datesInAdvance int) error {
 	// Get all dates from now to 1 week from now
 	for n := now; n.Before(now.AddDate(0, 0, datesInAdvance)); n = n.AddDate(0, 0, 1) {
 		date := n.Format("2006-01-02")
-		weekday := strings.ToUpper(n.Weekday().String()[0:3])
+		weekday := TimeDateToWeekdayID(n)
 
-		if err := d.createDate(ctx, date, weekday); err != nil {
+		if err := EnsureDateExists(d.db, ctx, date); err != nil {
 			return err
 		}
+
 		if err := d.createWorkday(ctx, date, weekday); err != nil {
 			return err
 		}
@@ -86,7 +85,7 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date strin
 		wkd.start_time = c.start_time,
 		wkd.end_time = c.end_time,
 		wkd.active = true,
-		wkd.created_at = timestamp()
+		wkd.created_at = datetime()
 		
 	// Create the relationships
 	WITH wkd, c.timeslot AS t, d
@@ -97,36 +96,6 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date strin
 	params := map[string]interface{}{
 		"date":      date,
 		"weekdayID": weekdayID,
-	}
-
-	_, err := neo4j.ExecuteQuery(
-		ctx,
-		*d.db,
-		query,
-		params,
-		neo4j.EagerResultTransformer,
-	)
-	return err
-}
-
-func (d SynchronizeRepositoryImpl) createDate(ctx context.Context, date string, weekday string) error {
-	/*
-		Idempotent function to create a Date node.
-		Input:
-			- date: string in the format "YYYY-MM-DD"
-			- weekday: string in the format "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"
-	*/
-	query := `
-	// The weekday nodes are already created, so we can just match on them
-	MATCH (w:Weekday {id: $weekdayID})
-	// Create the date node if it doesn't exist yet
-	MERGE (d:Date {date: date($date), week: date($date).week})
-	// Create the relationship, if it doesn't exist yet
-	MERGE (d) -[:IS_WEEKDAY]-> (w)`
-
-	params := map[string]interface{}{
-		"weekdayID": weekday,
-		"date":      date,
 	}
 
 	_, err := neo4j.ExecuteQuery(

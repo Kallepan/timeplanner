@@ -36,12 +36,17 @@ func (p PersonRelRepositoryImpl) AddAbsencyToPerson(person dao.Person, absence d
 	   @param date: The date of the absency
 	*/
 
+	// Ensure that the date exists
+	if err := EnsureDateExists(p.db, context.Background(), absence.Date); err != nil {
+		return err
+	}
+
 	ctx := context.Background()
 	query := `
 	MATCH (p: Person {id: $personID})
-	MERGE (d: Date {date: date($date)})
+	MATCH (d: Date {date: date($date)})
 	MERGE (p) -[r:ABSENT_ON]-> (d)
-	ON CREATE SET r.created_at = timestamp()
+	ON CREATE SET r.created_at = datetime()
 	SET r.reason = $reason
 	`
 
@@ -145,7 +150,7 @@ func (p PersonRelRepositoryImpl) AddDepartmentToPerson(person dao.Person, depart
 	MATCH (p: Person {id: $personID})
 	MATCH (d: Department {name: $departmentName})
 	MERGE (p) -[r:WORKS_AT]-> (d)
-	ON CREATE SET r.created_at = timestamp()
+	ON CREATE SET r.created_at = datetime()
 	`
 	params := map[string]interface{}{
 		"personID":       person.ID,
@@ -207,7 +212,7 @@ func (p PersonRelRepositoryImpl) AddWorkplaceToPerson(person dao.Person, departm
 	MATCH (p: Person {id: $personID})
 	MATCH (d: Department {name: $departmentName}) -[:HAS_WORKPLACE]-> (w: Workplace {name: $workplaceName})
 	MERGE (p) -[r:QUALIFIED_FOR]-> (w)
-	ON CREATE SET r.created_at = timestamp()
+	ON CREATE SET r.created_at = datetime()
 	`
 
 	params := map[string]interface{}{
@@ -272,7 +277,7 @@ func (p PersonRelRepositoryImpl) AddWeekdayToPerson(person dao.Person, weekdayID
 	MATCH (p: Person {id: $personID})
 	MATCH (wd: Weekday {id: $weekdayID})
 	MERGE (p) -[r:AVAILABLE_ON]-> (wd)
-	ON CREATE SET r.created_at = timestamp()
+	ON CREATE SET r.created_at = datetime()
 	`
 	params := map[string]interface{}{
 		"personID":  person.ID,
