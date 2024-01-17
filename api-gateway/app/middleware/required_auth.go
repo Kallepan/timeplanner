@@ -20,15 +20,18 @@ func RequiredAuth() gin.HandlerFunc {
 		defer pkg.PanicHandler(c)
 
 		// Get the token from the header
-		tokenString := c.Request.Header.Get("Authorization")
+		tokenString, err := c.Request.Cookie("Authorization")
+		if err != nil {
+			pkg.PanicException(constant.Unauthorized)
+		}
 
 		// If the token is empty, return with status 401
-		if tokenString == "" {
+		if tokenString.Value == "" {
 			pkg.PanicException(constant.Unauthorized)
 		}
 
 		// decode and validate the token
-		token, err := DecodeToken(tokenString)
+		token, err := DecodeToken(tokenString.Value)
 		if err != nil {
 			pkg.PanicException(constant.Unauthorized)
 		}
