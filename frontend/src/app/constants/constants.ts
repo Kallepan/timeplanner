@@ -4,12 +4,7 @@ export class constants {
   public static APIS = {
     AUTH: environment.authUrl,
     BASE: environment.apiUrl,
-    BAK: {
-      BASE: environment.apiUrl + '/bak',
-    },
-    PCR: {
-      BASE: environment.apiUrl + '/pcr',
-    },
+    PLANNER: `${environment.apiUrl}/planner`,
   };
 
   public static JWT = {

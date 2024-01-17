@@ -49,7 +49,10 @@ describe('HttpErrorInterceptorModule', () => {
 
   it('should show a warning message when a 400 error occurs', fakeAsync(() => {
     // interceptor creates the error object
-    const expected = { message: messages.GENERAL.BAD_REQUEST, status: 400 };
+    const expected = {
+      message: messages.GENERAL.HTTP_ERROR.BAD_REQUEST,
+      status: 400,
+    };
     client.get(TEST_URL).subscribe({
       error: (error) => {
         expect(error.status).toEqual(expected.status);
