@@ -11,7 +11,12 @@ describe('HomeComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HomeComponent, RouterTestingModule, MatButtonModule, MatTooltipModule,]
+      imports: [
+        HomeComponent,
+        RouterTestingModule,
+        MatButtonModule,
+        MatTooltipModule,
+      ],
     });
     fixture = TestBed.createComponent(HomeComponent);
     component = fixture.componentInstance;
@@ -28,6 +33,6 @@ describe('HomeComponent', () => {
     const buttons = compiled.querySelectorAll('button');
 
     // Get number of links
-    expect(component.routes.length).toEqual(buttons.length);
+    expect(component.routeConfigurations.length).toEqual(buttons.length);
   });
 });
