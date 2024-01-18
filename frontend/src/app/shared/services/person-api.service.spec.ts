@@ -7,11 +7,7 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { APIResponse } from '@app/core/interfaces/response';
-import {
-  DetailedPersonWithMetadata,
-  SimplePerson,
-  SimplePersonWithMetadata,
-} from '../interfaces/person';
+import { PersonWithMetadata, CreatePerson } from '../interfaces/person';
 import { constants } from '@app/constants/constants';
 
 describe('PersonAPIService', () => {
@@ -36,7 +32,7 @@ describe('PersonAPIService', () => {
   });
 
   it('should fetch person details', () => {
-    const mockPerson: APIResponse<DetailedPersonWithMetadata> = {
+    const mockPerson: APIResponse<PersonWithMetadata> = {
       data: {
         id: '1',
         first_name: 'John',
@@ -70,7 +66,7 @@ describe('PersonAPIService', () => {
   });
 
   it('should fetch persons', () => {
-    const mockPerson: APIResponse<SimplePersonWithMetadata[]> = {
+    const mockPerson: APIResponse<PersonWithMetadata[]> = {
       data: [
         {
           id: '1',
@@ -82,6 +78,9 @@ describe('PersonAPIService', () => {
           created_at: new Date(),
           updated_at: new Date(),
           deleted_at: null,
+          workplaces: [],
+          departments: [],
+          weekdays: [],
         },
       ],
       status: 200,
@@ -109,7 +108,7 @@ describe('PersonAPIService', () => {
   });
 
   it('should create a person', () => {
-    const mockPerson: APIResponse<SimplePersonWithMetadata> = {
+    const mockPerson: APIResponse<PersonWithMetadata> = {
       data: {
         id: '1',
         first_name: 'John',
@@ -120,13 +119,15 @@ describe('PersonAPIService', () => {
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: null,
+        workplaces: [],
+        departments: [],
+        weekdays: [],
       },
       status: 201,
       message: 'created',
     };
 
-    const newPerson: SimplePerson = {
-      id: '1',
+    const newPerson: CreatePerson = {
       first_name: 'John',
       last_name: 'Doe',
       email: 'john.doe@example.com',
@@ -144,7 +145,7 @@ describe('PersonAPIService', () => {
   });
 
   it('should update a person', () => {
-    const mockPerson: APIResponse<SimplePersonWithMetadata> = {
+    const mockPerson: APIResponse<PersonWithMetadata> = {
       data: {
         id: '1',
         first_name: 'John',
@@ -155,26 +156,29 @@ describe('PersonAPIService', () => {
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: null,
+        workplaces: [],
+        departments: [],
+        weekdays: [],
       },
       status: 200,
       message: 'updated',
     };
 
-    const updatedPerson: SimplePerson = {
-      id: '1',
+    const updatedPerson: CreatePerson = {
       first_name: 'John',
       last_name: 'Doe',
       email: 'john.doe@example.com',
       active: true,
       working_hours: 8,
     };
+    const id = '1';
 
-    service.updatePerson(updatedPerson).subscribe((person) => {
+    service.updatePerson(updatedPerson, id).subscribe((person) => {
       expect(person).toEqual(mockPerson);
     });
 
     const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/person/${updatedPerson.id}`,
+      `${constants.APIS.PLANNER}/person/${id}`,
     );
     expect(req.request.method).toEqual('PUT');
     req.flush(mockPerson);

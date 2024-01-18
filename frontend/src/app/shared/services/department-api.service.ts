@@ -10,10 +10,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { APIResponse } from '@app/core/interfaces/response';
 import { Observable } from 'rxjs';
-import {
-  DetailedDepartmentWithMetadata,
-  Department,
-} from '../interfaces/department';
+import { DepartmentWithMetadata, Department } from '../interfaces/department';
 import { constants } from '@app/constants/constants';
 
 @Injectable({
@@ -22,7 +19,7 @@ import { constants } from '@app/constants/constants';
 export class DepartmentAPIService {
   private http = inject(HttpClient);
 
-  getDepartments(): Observable<APIResponse<DetailedDepartmentWithMetadata[]>> {
+  getDepartments(): Observable<APIResponse<DepartmentWithMetadata[]>> {
     const url = `${constants.APIS.PLANNER}/department`;
 
     const httpOptions = {
@@ -32,7 +29,7 @@ export class DepartmentAPIService {
       withCredentials: true,
     };
 
-    return this.http.get<APIResponse<DetailedDepartmentWithMetadata[]>>(
+    return this.http.get<APIResponse<DepartmentWithMetadata[]>>(
       url,
       httpOptions,
     );
@@ -40,7 +37,7 @@ export class DepartmentAPIService {
 
   getDepartment(
     departmentName: string,
-  ): Observable<APIResponse<DetailedDepartmentWithMetadata>> {
+  ): Observable<APIResponse<DepartmentWithMetadata>> {
     const url = `${constants.APIS.PLANNER}/department/${departmentName}`;
 
     const httpOptions = {
@@ -50,15 +47,12 @@ export class DepartmentAPIService {
       withCredentials: true,
     };
 
-    return this.http.get<APIResponse<DetailedDepartmentWithMetadata>>(
-      url,
-      httpOptions,
-    );
+    return this.http.get<APIResponse<DepartmentWithMetadata>>(url, httpOptions);
   }
 
   createDepartment(
     department: Department,
-  ): Observable<APIResponse<DetailedDepartmentWithMetadata>> {
+  ): Observable<APIResponse<DepartmentWithMetadata>> {
     const url = `${constants.APIS.PLANNER}/department`;
 
     const httpOptions = {
@@ -68,7 +62,7 @@ export class DepartmentAPIService {
       withCredentials: true,
     };
 
-    return this.http.post<APIResponse<DetailedDepartmentWithMetadata>>(
+    return this.http.post<APIResponse<DepartmentWithMetadata>>(
       url,
       department,
       httpOptions,

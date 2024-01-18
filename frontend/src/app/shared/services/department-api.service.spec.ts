@@ -7,10 +7,7 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { APIResponse } from '@app/core/interfaces/response';
-import {
-  Department,
-  DetailedDepartmentWithMetadata,
-} from '../interfaces/department';
+import { Department, DepartmentWithMetadata } from '../interfaces/department';
 import { constants } from '@app/constants/constants';
 
 describe('DepartmentAPIService', () => {
@@ -34,7 +31,7 @@ describe('DepartmentAPIService', () => {
   });
 
   it('should get all departments', () => {
-    const mockDepartment: APIResponse<DetailedDepartmentWithMetadata[]> = {
+    const mockDepartment: APIResponse<DepartmentWithMetadata[]> = {
       data: [
         {
           name: 'department1',
@@ -62,7 +59,7 @@ describe('DepartmentAPIService', () => {
   });
 
   it('should get a department', () => {
-    const mockDepartment: APIResponse<DetailedDepartmentWithMetadata> = {
+    const mockDepartment: APIResponse<DepartmentWithMetadata> = {
       data: {
         name: 'Engineering',
         created_at: new Date(),
@@ -90,7 +87,7 @@ describe('DepartmentAPIService', () => {
   });
 
   it('should create a department', () => {
-    const mockDepartment: APIResponse<DetailedDepartmentWithMetadata> = {
+    const mockDepartment: APIResponse<DepartmentWithMetadata> = {
       data: {
         name: 'Engineering',
         created_at: new Date(),

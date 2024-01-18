@@ -20,11 +20,7 @@ import { Injectable, inject } from '@angular/core';
 import { constants } from '@app/constants/constants';
 import { APIResponse } from '@app/core/interfaces/response';
 import { Observable } from 'rxjs';
-import {
-  DetailedPersonWithMetadata,
-  SimplePerson,
-  SimplePersonWithMetadata,
-} from '../interfaces/person';
+import { CreatePerson, PersonWithMetadata } from '../interfaces/person';
 
 @Injectable({
   providedIn: 'root',
@@ -32,9 +28,7 @@ import {
 export class PersonAPIService {
   private http = inject(HttpClient);
 
-  getPerson(
-    personID: string,
-  ): Observable<APIResponse<DetailedPersonWithMetadata>> {
+  getPerson(personID: string): Observable<APIResponse<PersonWithMetadata>> {
     const url = `${constants.APIS.PLANNER}/person/${personID}`;
 
     const httpOptions = {
@@ -44,15 +38,12 @@ export class PersonAPIService {
       withCredentials: true,
     };
 
-    return this.http.get<APIResponse<DetailedPersonWithMetadata>>(
-      url,
-      httpOptions,
-    );
+    return this.http.get<APIResponse<PersonWithMetadata>>(url, httpOptions);
   }
 
   getPersons(
     departmentName: string,
-  ): Observable<APIResponse<SimplePersonWithMetadata[]>> {
+  ): Observable<APIResponse<PersonWithMetadata[]>> {
     const url = `${constants.APIS.PLANNER}/person`;
 
     const httpOptions = {
@@ -65,15 +56,12 @@ export class PersonAPIService {
       withCredentials: true,
     };
 
-    return this.http.get<APIResponse<SimplePersonWithMetadata[]>>(
-      url,
-      httpOptions,
-    );
+    return this.http.get<APIResponse<PersonWithMetadata[]>>(url, httpOptions);
   }
 
   createPerson(
-    person: SimplePerson,
-  ): Observable<APIResponse<SimplePersonWithMetadata>> {
+    person: CreatePerson,
+  ): Observable<APIResponse<PersonWithMetadata>> {
     const url = `${constants.APIS.PLANNER}/person`;
 
     const httpOptions = {
@@ -83,7 +71,7 @@ export class PersonAPIService {
       withCredentials: true,
     };
 
-    return this.http.post<APIResponse<SimplePersonWithMetadata>>(
+    return this.http.post<APIResponse<PersonWithMetadata>>(
       url,
       JSON.stringify(person),
       httpOptions,
@@ -91,9 +79,10 @@ export class PersonAPIService {
   }
 
   updatePerson(
-    person: SimplePerson,
-  ): Observable<APIResponse<SimplePersonWithMetadata>> {
-    const url = `${constants.APIS.PLANNER}/person/${person.id}`;
+    person: CreatePerson,
+    id: string,
+  ): Observable<APIResponse<PersonWithMetadata>> {
+    const url = `${constants.APIS.PLANNER}/person/${id}`;
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -102,7 +91,7 @@ export class PersonAPIService {
       withCredentials: true,
     };
 
-    return this.http.put<APIResponse<SimplePersonWithMetadata>>(
+    return this.http.put<APIResponse<PersonWithMetadata>>(
       url,
       person,
       httpOptions,

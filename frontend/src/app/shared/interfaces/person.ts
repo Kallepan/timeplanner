@@ -1,8 +1,4 @@
-interface Metadata {
-  created_at: Date;
-  updated_at: Date;
-  deleted_at: Date | null;
-}
+import { Metadata } from './base';
 
 export interface Person {
   id: string;
@@ -16,11 +12,9 @@ export interface Person {
   weekdays: string[];
 }
 
-export type SimplePerson = Pick<
+export type PersonWithMetadata = Person & Metadata;
+
+export type CreatePerson = Pick<
   Person,
-  'id' | 'first_name' | 'last_name' | 'email' | 'active' | 'working_hours'
+  'first_name' | 'last_name' | 'email' | 'active' | 'working_hours'
 >;
-
-export type SimplePersonWithMetadata = SimplePerson & Metadata;
-
-export type DetailedPersonWithMetadata = Person & Metadata;
