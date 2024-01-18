@@ -1,19 +1,20 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterLink } from '@angular/router';
 import { constants } from '@app/constants/constants';
+import { RouteHandlerService } from '@app/core/services/route-handler.service';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatTooltipModule, RouterLink],
+  imports: [CommonModule, MatButtonModule, RouterLink],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
-  routes = constants.ROUTES;
-
   title = constants.TITLE_LONG;
+  private routeHandlerService = inject(RouteHandlerService);
+
+  routeConfigurations = this.routeHandlerService.routeConfigurations();
 }

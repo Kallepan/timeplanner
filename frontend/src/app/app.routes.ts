@@ -14,11 +14,9 @@ export const routes: Routes = [
     providers: [importProvidersFrom(PlannerModule)],
   },
   {
-    path: 'view',
+    path: 'viewer',
     loadChildren: () =>
       import('./modules/viewer/viewer.routes').then((m) => m.routes),
-    canActivate: [],
-    data: { featureFlag: 'viewer' },
     providers: [importProvidersFrom(ViewerModule)],
   },
   { path: '', component: HomeComponent, title: 'Home' },

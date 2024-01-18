@@ -1,18 +1,12 @@
 .container {
-    display: flex;
-    flex-direction: column;
-    margin: auto;
+  display: flex;
+  flex-direction: row;
+  margin: auto;
+  align-items: center;
+  justify-content: flex-start;
 
-    .row {
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        gap: 1rem;
-        margin: 10px 0;
-    }
-
-    .button {
-        width: 100%;
-        max-width: 300px;
-    }
+  .button {
+    width: 100%;
+    max-width: 300px;
+  }
 }
