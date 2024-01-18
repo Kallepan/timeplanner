@@ -27,6 +27,7 @@ func (t TimeslotRepositoryImpl) FindAllTimeslots(departmentName string, workplac
 	query := `
     MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(wp:Workplace {name: $workplaceName})-[:HAS_TIMESLOT]->(t:Timeslot)
     OPTIONAL MATCH (t)-[r:OFFERED_ON]->(wd:Weekday)
+	WHERE t.deleted_at IS NULL AND t.active = true
     RETURN t,
         COLLECT({
             id: wd.id,
@@ -70,6 +71,7 @@ func (t TimeslotRepositoryImpl) FindTimeslotByName(departmentName string, workpl
 	query := `
     MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(wp:Workplace {name: $workplaceName})-[:HAS_TIMESLOT]->(t:Timeslot {name: $timeslotName})
     OPTIONAL MATCH (t)-[r:OFFERED_ON]->(wd:Weekday)
+	WHERE t.deleted_at IS NULL AND t.active = true
     RETURN t, COLLECT({
         id: wd.id,
         name: wd.name,
@@ -111,8 +113,15 @@ func (t TimeslotRepositoryImpl) Save(departmentName string, workplaceName string
 	query := `
 	MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(wp:Workplace {name: $workplaceName})
 	MERGE (t:Timeslot {name: $timeslotName}) <-[:HAS_TIMESLOT]- (wp)
-	ON CREATE SET t.created_at = datetime(), t.active = $active, t.updated_at = datetime(), t.deleted_at = NULL
-	ON MATCH SET t.updated_at = datetime(), t.active = $active, t.deleted_at = NULL
+	ON CREATE SET 
+		t.created_at = datetime(), 
+		t.active = $active, 
+		t.updated_at = datetime(), 
+		t.deleted_at = NULL
+	ON MATCH SET 
+		t.updated_at = datetime(), 
+		t.active = $active, 
+		t.deleted_at = NULL
 	WITH t
 	OPTIONAL MATCH (t)-[r:OFFERED_ON]->(wd:Weekday)
 	RETURN t, COLLECT({

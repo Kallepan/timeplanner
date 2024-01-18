@@ -134,6 +134,7 @@ func (p PersonRepositoryImpl) FindPersonByID(personID string) (dao.Person, error
 	OPTIONAL MATCH (p)-[:WORKS_AT]->(d: Department)
 	OPTIONAL MATCH (p)-[:QUALIFIED_FOR]->(w: Workplace)
 	OPTIONAL MATCH (p)-[:AVAILABLE_ON]->(wd: Weekday)
+	WHERE p.deleted_at IS NULL AND p.active = true
 	RETURN p, COLLECT(DISTINCT d.name) AS departments, COLLECT(DISTINCT w.name) AS workplaces, COLLECT(DISTINCT wd.id) AS weekdays`
 	params := map[string]interface{}{
 		"personID": personID,
@@ -183,7 +184,8 @@ func (p PersonRepositoryImpl) Save(person *dao.Person) (dao.Person, error) {
         p.email = $email,
         p.active = $active,
         p.workingHours = $workingHours,
-        p.updated_at = datetime()
+        p.updated_at = datetime(),
+		p.deleted_at = NULL
     RETURN p`
 	params := map[string]interface{}{
 		"personID":     person.ID,

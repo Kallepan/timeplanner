@@ -60,7 +60,7 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date strin
 	 * @param {string} $date - The target date in "YYYY-MM-DD" format.
 	 *
 	 * Query Steps:
-	 * 1. Matches departments having workplaces with associated timeslots offered on the specified weekday.
+	 * 1. Matches departments having workplaces with associated ACTIVE timeslots offered on the specified weekday.
 	 * 2. Collects relevant information about workplaces, departments, timeslots, and time details.
 	 * 3. Unwinds the collection for further processing.
 	 * 4. Matches the existing Date node for the specified date and week.
@@ -73,6 +73,8 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date strin
 	query := `
 	// Get all timeslots offered on the given weekday, loop through them and create a Workday node for each of them.
 	MATCH  (d:Department) -[:HAS_WORKPLACE]-> (w:Workplace) -[:HAS_TIMESLOT]-> (t:Timeslot) -[r:OFFERED_ON]-> (wd:Weekday {id: $weekdayID})
+	WHERE t.deleted_at IS NULL AND t.active = true
+
 	WITH COLLECT({workplace:w.name, department: d.name, timeslot: t, start_time: r.start_time, end_time: r.end_time}) AS collection
 	UNWIND collection AS c
 	WITH c

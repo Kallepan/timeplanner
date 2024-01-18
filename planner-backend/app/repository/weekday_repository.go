@@ -30,8 +30,12 @@ func (w WeekdayRepositoryImpl) AddWeekdayToTimeslot(timeslot *dao.Timeslot, week
     MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(wp:Workplace {name: $workplaceName})-[:HAS_TIMESLOT]->(t:Timeslot {name: $timeslotName})
     MATCH (wd:Weekday {id: $weekdayID})
     MERGE (t)-[r:OFFERED_ON]->(wd)
-    ON CREATE SET r.start_time = time($startTime), r.end_time = time($endTime)
-    ON MATCH SET r.start_time = time($startTime), r.end_time = time($endTime)
+    ON CREATE SET 
+		r.start_time = time($startTime), 
+		r.end_time = time($endTime)
+    ON MATCH SET 
+		r.start_time = time($startTime), 
+		r.end_time = time($endTime)
     WITH t
     MATCH (t)-[r:OFFERED_ON]->(wd:Weekday)
     RETURN COLLECT({

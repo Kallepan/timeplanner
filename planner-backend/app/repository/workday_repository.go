@@ -16,8 +16,8 @@ type WorkdayRepository interface {
 	 */
 	GetWorkdaysForDepartmentAndDate(departmentName string, date string) ([]dao.Workday, error)
 	GetWorkday(departmentName string, workplaceName string, timeslotName string, date string) (dao.Workday, error)
-	// TODO:
 	// UpdateWorkday()
+	// DeleteWorkday()
 
 	// Main interface to Assign people to a given workday
 	AssignPersonToWorkday(personID string, departmentName string, workplaceName string, timeslotName string, date string) error
@@ -36,7 +36,7 @@ func (w WorkdayRepositoryImpl) GetWorkdaysForDepartmentAndDate(departmentName st
 	// fetch the person assigned to the workday
 	OPTIONAL MATCH (wkd)<-[:ASSIGNED_TO]-(p:Person)
 	// if workday is active
-	WHERE wkd.active = true
+	WHERE wkd.active = true AND wkd.deleted_at IS NULL
 	// return the workday and the person
 	RETURN wkd, p
 	`
@@ -77,7 +77,7 @@ func (w WorkdayRepositoryImpl) GetWorkday(departmentName string, workplaceName s
 	// fetch the person assigned to the workday
 	OPTIONAL MATCH (wkd)<-[:ASSIGNED_TO]-(p:Person)
 	// if workday is active
-	WHERE wkd.active = true
+	WHERE wkd.active = true AND wkd.deleted_at IS NULL
 	// return the workday and the person
 	RETURN wkd, p`
 

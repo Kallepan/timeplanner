@@ -62,7 +62,8 @@ func (w WorkplaceRepositoryImpl) FindWorkplaceByName(departmentName string, work
 	workplace := dao.Workplace{}
 	query := `
     MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(w:Workplace {name: $workplaceName})
-    RETURN w`
+    WHERE w.deleted_at IS NULL
+	RETURN w`
 	params := map[string]interface{}{
 		"departmentName": departmentName,
 		"workplaceName":  workplaceName,
@@ -95,10 +96,14 @@ func (w WorkplaceRepositoryImpl) Save(departmentName string, workplace *dao.Work
 	ctx := context.Background()
 	query := `
     MATCH (d:Department {name: $departmentName})
-    MERGE (d)-[:HAS_WORKPLACE]->(w:Workplace {name: $workplaceName})
+	MERGE (w:Workplace {name: $workplaceName}) <-[:HAS_WORKPLACE]- (d)
     ON CREATE SET
         w.created_at = datetime(),
-        w.updated_at = datetime()
+        w.updated_at = datetime(),
+		w.deleted_at = NULL
+	ON MATCH SET
+		w.updated_at = datetime(),
+		w.deleted_at = NULL
     RETURN w`
 	params := map[string]interface{}{
 		"departmentName": departmentName,
@@ -132,8 +137,7 @@ func (w WorkplaceRepositoryImpl) Delete(departmentName string, workplace *dao.Wo
 	ctx := context.Background()
 	query := `
 	MATCH  (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(w:Workplace {name: $workplaceName})
-	WHERE d.name = $name
-	SET d.deleted_at = datetime()`
+	SET w.deleted_at = datetime()`
 	params := map[string]interface{}{
 		"departmentName": departmentName,
 		"workplaceName":  workplace.Name,

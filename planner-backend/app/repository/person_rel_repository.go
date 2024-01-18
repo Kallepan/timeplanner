@@ -211,6 +211,7 @@ func (p PersonRelRepositoryImpl) AddWorkplaceToPerson(person dao.Person, departm
 	query := `
 	MATCH (p: Person {id: $personID})
 	MATCH (d: Department {name: $departmentName}) -[:HAS_WORKPLACE]-> (w: Workplace {name: $workplaceName})
+	MATCH (p) -[:WORKS_AT]-> (d)
 	MERGE (p) -[r:QUALIFIED_FOR]-> (w)
 	ON CREATE SET r.created_at = datetime()
 	`

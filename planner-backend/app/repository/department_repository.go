@@ -58,8 +58,8 @@ func (d DepartmentRepositoryImpl) FindDepartmentByName(departmentName string) (d
 	ctx := context.Background()
 	department := dao.Department{}
 	query := `
-	MATCH (d:Department)
-	WHERE d.name = $name AND d.deleted_at IS NULL
+	MATCH (d:Department {name: $name})
+	WHERE d.deleted_at IS NULL
 	RETURN d`
 	params := map[string]interface{}{
 		"name": departmentName,
