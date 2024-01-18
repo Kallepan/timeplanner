@@ -1,18 +1,20 @@
 import { Person } from './person';
 
-export type Workday = {
+export type WorkdayTimeslot = {
   department: string;
   workplace: string;
   timeslot: string;
   date: string;
 
+  weekday: string; // MON, TUE, WED, THU, FRI, SAT, SUN
+
   start_time: string;
   end_time: string;
 
-  person: WorkdayPerson | null;
+  person: WorkdayTimeslotPerson | null;
 };
 
-export type AssignPersonToWorkdayRequest = {
+export type AssignPersonToWorkdayTimeslotRequest = {
   date: string;
   department_name: string;
   workplace_name: string;
@@ -20,7 +22,7 @@ export type AssignPersonToWorkdayRequest = {
   person_id: string;
 };
 
-export type UnassignPersonFromWorkdayRequest = {
+export type UnassignPersonFromWorkdayTimeslotRequest = {
   date: string;
   department_name: string;
   workplace_name: string;
@@ -28,7 +30,7 @@ export type UnassignPersonFromWorkdayRequest = {
   person_id: string;
 };
 
-export type WorkdayPerson = Pick<
+export type WorkdayTimeslotPerson = Pick<
   Person,
   'id' | 'first_name' | 'last_name' | 'email' | 'working_hours'
 >;

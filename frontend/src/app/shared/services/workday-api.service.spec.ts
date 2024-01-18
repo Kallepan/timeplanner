@@ -6,21 +6,23 @@ import {
   provideHttpClientTesting,
 } from '@angular/common/http/testing';
 import { APIResponse } from '@app/core/interfaces/response';
-import {
-  AssignPersonToWorkdayRequest,
-  UnassignPersonFromWorkdayRequest,
-  Workday,
-} from '../interfaces/workday';
+
 import { constants } from '@app/constants/constants';
 import { provideHttpClient } from '@angular/common/http';
+import {
+  AssignPersonToWorkdayTimeslotRequest,
+  UnassignPersonFromWorkdayTimeslotRequest,
+  WorkdayTimeslot,
+} from '../interfaces/workday_timeslot';
 
-const MOCK_WORKDAY: Workday = {
+const MOCK_WORKDAY: WorkdayTimeslot = {
   department: 'department1',
   date: '2022-01-01',
   workplace: 'workplace1',
   timeslot: 'timeslot1',
   start_time: '09:00',
   end_time: '10:00',
+  weekday: 'MON',
 
   person: null,
 };
@@ -50,7 +52,7 @@ describe('WorkdayAPIService', () => {
   });
 
   it('should fetch workday details', async () => {
-    const mockWorkday: APIResponse<Workday> = {
+    const mockWorkday: APIResponse<WorkdayTimeslot> = {
       data: MOCK_WORKDAY,
       status: 200,
       message: 'success',
@@ -78,7 +80,7 @@ describe('WorkdayAPIService', () => {
   });
 
   it('should fetch workdays', () => {
-    const mockWorkdays: APIResponse<Workday[]> = {
+    const mockWorkdays: APIResponse<WorkdayTimeslot[]> = {
       data: [MOCK_WORKDAY, MOCK_WORKDAY], // replace with your actual mock workdays
       status: 200,
       message: 'success',
@@ -127,7 +129,7 @@ describe('WorkdayAPIService', () => {
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
 
-    const expectedBody: UnassignPersonFromWorkdayRequest = {
+    const expectedBody: UnassignPersonFromWorkdayTimeslotRequest = {
       department_name: departmentName,
       date: date,
       workplace_name: workplace,
@@ -165,7 +167,7 @@ describe('WorkdayAPIService', () => {
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
 
-    const expectedBody: AssignPersonToWorkdayRequest = {
+    const expectedBody: AssignPersonToWorkdayTimeslotRequest = {
       department_name: departmentName,
       date: date,
       workplace_name: workplace,

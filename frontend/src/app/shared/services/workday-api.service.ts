@@ -9,13 +9,13 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import {
-  AssignPersonToWorkdayRequest,
-  UnassignPersonFromWorkdayRequest,
-  Workday,
-} from '../interfaces/workday';
 import { constants } from '@app/constants/constants';
 import { APIResponse } from '@app/core/interfaces/response';
+import {
+  AssignPersonToWorkdayTimeslotRequest,
+  UnassignPersonFromWorkdayTimeslotRequest,
+  WorkdayTimeslot,
+} from '../interfaces/workday_timeslot';
 
 @Injectable({
   providedIn: null,
@@ -28,7 +28,7 @@ export class WorkdayAPIService {
     date: string,
     workplace: string,
     timeslot: string,
-  ): Observable<APIResponse<Workday>> {
+  ): Observable<APIResponse<WorkdayTimeslot>> {
     const url = `${constants.APIS.PLANNER}/workday/detail`;
 
     const httpOptions = {
@@ -46,13 +46,13 @@ export class WorkdayAPIService {
       withCredentials: true,
     };
 
-    return this.http.get<APIResponse<Workday>>(url, httpOptions);
+    return this.http.get<APIResponse<WorkdayTimeslot>>(url, httpOptions);
   }
 
   getWorkdays(
     departmentName: string,
     date: string,
-  ): Observable<APIResponse<Workday[]>> {
+  ): Observable<APIResponse<WorkdayTimeslot[]>> {
     const url = `${constants.APIS.PLANNER}/workday`;
 
     const httpOptions = {
@@ -68,7 +68,7 @@ export class WorkdayAPIService {
       withCredentials: true,
     };
 
-    return this.http.get<APIResponse<Workday[]>>(url, httpOptions);
+    return this.http.get<APIResponse<WorkdayTimeslot[]>>(url, httpOptions);
   }
 
   assignPerson(
@@ -87,7 +87,7 @@ export class WorkdayAPIService {
       withCredentials: true,
     };
 
-    const body: AssignPersonToWorkdayRequest = {
+    const body: AssignPersonToWorkdayTimeslotRequest = {
       department_name: departmentName,
       date: date,
       workplace_name: workplace,
@@ -114,7 +114,7 @@ export class WorkdayAPIService {
       withCredentials: true,
     };
 
-    const body: UnassignPersonFromWorkdayRequest = {
+    const body: UnassignPersonFromWorkdayTimeslotRequest = {
       department_name: departmentName,
       date: date,
       workplace_name: workplace,
