@@ -23,7 +23,7 @@ import { Observable } from 'rxjs';
 import { CreatePerson, PersonWithMetadata } from '../interfaces/person';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: null,
 })
 export class PersonAPIService {
   private http = inject(HttpClient);

@@ -16,7 +16,7 @@ import { constants } from '@app/constants/constants';
 import { Observable } from 'rxjs';
 import { CreateTimeslot, TimeslotWithMetadata } from '../interfaces/timeslot';
 @Injectable({
-  providedIn: 'root',
+  providedIn: null,
 })
 export class TimeslotAPIService {
   private http = inject(HttpClient);

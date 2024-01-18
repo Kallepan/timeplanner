@@ -17,7 +17,7 @@ import {
 import { constants } from '@app/constants/constants';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: null,
 })
 export class WorkplaceAPIService {
   private http = inject(HttpClient);

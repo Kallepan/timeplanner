@@ -18,7 +18,7 @@ import { constants } from '@app/constants/constants';
 import { APIResponse } from '@app/core/interfaces/response';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: null,
 })
 export class WorkdayAPIService {
   private http = inject(HttpClient);

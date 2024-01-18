@@ -14,7 +14,7 @@ import { DepartmentWithMetadata, Department } from '../interfaces/department';
 import { constants } from '@app/constants/constants';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: null,
 })
 export class DepartmentAPIService {
   private http = inject(HttpClient);
