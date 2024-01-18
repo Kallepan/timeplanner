@@ -17,6 +17,8 @@ type Workday struct {
 	// StartTime and EndTime
 	StartTime string
 	EndTime   string
+
+	Weekday string
 }
 
 func (w *Workday) ParseFromDBRecord(record *neo4j.Record, departmentName string, date string) error {
@@ -47,6 +49,11 @@ func (w *Workday) ParseFromDBRecord(record *neo4j.Record, departmentName string,
 		return err
 	}
 
+	weekday, err := neo4j.GetProperty[string](workdayNode, "weekday")
+	if err != nil {
+		return err
+	}
+
 	// get person Node
 	// If the person is not assigned to the workday, the person Node will be nil
 	// I am sorry for this ugly code
@@ -64,6 +71,7 @@ func (w *Workday) ParseFromDBRecord(record *neo4j.Record, departmentName string,
 	w.Date = date
 	w.StartTime = startTime.Time().Format("15:04:05")
 	w.EndTime = endTime.Time().Format("15:04:05")
+	w.Weekday = weekday
 
 	return nil
 }

@@ -81,8 +81,9 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date strin
 
 	// Date should already exist by now (created in the createDate function)
 	MATCH (d:Date {date: date($date), week: date($date).week})
+	MATCH (d) -[:IS_ON_WEEKDAY]-> (wd:Weekday {id: $weekdayID})
 
-	MERGE (wkd:Workday {date: date($date), department: c.department, workplace: c.workplace, timeslot: c.timeslot.name})
+	MERGE (wkd:Workday {date: date($date), department: c.department, workplace: c.workplace, timeslot: c.timeslot.name, weekday: wd.id})
 	ON CREATE SET
 		wkd.start_time = c.start_time,
 		wkd.end_time = c.end_time,

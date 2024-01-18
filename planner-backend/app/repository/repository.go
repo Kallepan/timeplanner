@@ -46,7 +46,7 @@ func EnsureDateExists(db *neo4j.DriverWithContext, ctx context.Context, date str
 	// Create the date node if it doesn't exist yet
 	MERGE (d:Date {date: date($date), week: date($date).week})
 	// Create the relationship, if it doesn't exist yet
-	MERGE (d) -[:IS_WEEKDAY]-> (w)
+	MERGE (d) -[:IS_ON_WEEKDAY]-> (w)
 	RETURN d`
 	params := map[string]interface{}{
 		"weekdayID": weekday,

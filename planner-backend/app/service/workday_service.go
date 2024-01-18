@@ -197,6 +197,7 @@ func mapWorkdayToWorkdayResponse(workday dao.Workday) dco.WorkdayResponse {
 		StartTime:  workday.StartTime,
 		EndTime:    workday.EndTime,
 		Person:     mapWorkdayPersonToWorkdayPersonResponse(workday.Person),
+		Weekday:    workday.Weekday,
 	}
 }
 
