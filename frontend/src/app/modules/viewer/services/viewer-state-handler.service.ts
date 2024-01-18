@@ -1,8 +1,17 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
+import { Injectable, inject } from '@angular/core';
 import { Workday } from '@app/shared/interfaces/workday';
 import { WorkdayAPIService } from '@app/shared/services/workday-api.service';
-import { catchError, filter, from, map, mergeMap, of, reduce, tap } from 'rxjs';
+import {
+  Subject,
+  catchError,
+  filter,
+  from,
+  map,
+  mergeMap,
+  of,
+  reduce,
+  tap,
+} from 'rxjs';
 
 const getWeekFromDate = (date: Date) => {
   // Create a new date object from the input date
@@ -37,33 +46,21 @@ export class ViewerStateHandlerService {
   // inject the services here
   private workdayAPIService = inject(WorkdayAPIService);
 
-  // this keeps track of the active week currently being viewed
-  private activeDepartment$ = signal<string | null>(null);
-  private activeDate$ = signal<Date | null>(null);
-
-  // dynamically caluclated based on the activeDepartment and activeDate
-
-  activeWeek = computed<ActiveWeek | null>(() => {
-    if (!this.activeDepartment$() || !this.activeDate$()) {
-      return null;
-    }
-
-    return {
-      department: this.activeDepartment$()!,
-      dates: getWeekFromDate(this.activeDate$()!),
-    };
-  });
-
-  setDepartment(department: string) {
-    this.activeDepartment$.set(department);
+  setActiveView(department: string, date: Date) {
+    this._activeViewTrackerSubject.next({ department, date });
   }
-  setDate(date: Date) {
-    this.activeDate$.set(date);
-  }
-
+  private _activeViewTrackerSubject = new Subject<{
+    department: string;
+    date: Date;
+  }>();
   // this keeps track of the active week currently being viewed
   // this is a computed property which fetches the workdays upon receiving activeWeek signal
-  activeWorkdays$ = toObservable(this.activeWeek).pipe(
+  activeWorkdays$ = this._activeViewTrackerSubject.pipe(
+    map(({ department, date }) => ({
+      department,
+      dates: getWeekFromDate(date),
+    })),
+    // filter out null values
     filter((activeWeek): activeWeek is ActiveWeek => !!activeWeek),
     // date to YYYY-MM-DD format
     map(({ department, dates }) => ({

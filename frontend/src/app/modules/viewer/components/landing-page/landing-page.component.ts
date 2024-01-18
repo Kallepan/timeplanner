@@ -4,7 +4,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
-import { WorkdayAPIService } from '@app/shared/services/workday-api.service';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
@@ -17,7 +16,6 @@ import { AsyncPipe } from '@angular/common';
 export class LandingPageComponent implements OnInit {
   // inject the services here
   private viewerStateHandlerService = inject(ViewerStateHandlerService);
-  private workdayAPIService = inject(WorkdayAPIService);
   private destroyRef$ = inject(DestroyRef);
 
   // router
@@ -45,8 +43,7 @@ export class LandingPageComponent implements OnInit {
         // set both the department and the current date
         // This will cause the activeWeek signal to be updated
         // and fetch all workdays for the current week we want to view
-        this.viewerStateHandlerService.setDepartment(department);
-        this.viewerStateHandlerService.setDate(currentDate);
+        this.viewerStateHandlerService.setActiveView(department, currentDate);
       });
   }
 
