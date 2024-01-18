@@ -5,11 +5,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
+import { ViewOnlyTimetableComponent } from '@app/modules/viewer/components/view-only-timetable/view-only-timetable.component';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [MatButtonModule, RouterLink, AsyncPipe],
+  imports: [MatButtonModule, RouterLink, AsyncPipe, ViewOnlyTimetableComponent],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss',
 })
@@ -43,9 +44,9 @@ export class LandingPageComponent implements OnInit {
         // set both the department and the current date
         // This will cause the activeWeek signal to be updated
         // and fetch all workdays for the current week we want to view
-        this.viewerStateHandlerService.setActiveView(department, currentDate);
+        setTimeout(() => {
+          this.viewerStateHandlerService.setActiveView(department, currentDate);
+        }, 0);
       });
   }
-
-  activeWorkdays$ = this.viewerStateHandlerService.activeWorkdays$;
 }

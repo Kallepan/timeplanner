@@ -1,0 +1,72 @@
+<div class="timetable-container">
+  <div class="timetable mat-elevation-z8">
+    <!-- Add static headers -->
+    <div class="cell header">Arbeitsplatz</div>
+    <div class="cell header">Slot</div>
+
+    <!-- Add headers from weekdays array-->
+    @for (data of timetableDataContainerService.weekdays$; track $index) {
+      <div class="cell header">
+        {{ data.date | date: 'dd.MM.yyyy' }} ({{ data.shortName | titlecase }})
+      </div>
+      <div
+        class="vertical-line"
+        [ngStyle]="{
+          'grid-row-start': 2,
+          'grid-row-end': timetableDataContainerService.fullHeight$,
+          'grid-column': $index + 3
+        }"></div>
+    }
+
+    @for (
+      workplace of timetableDataContainerService.workplaces$;
+      track $index
+    ) {
+      <div
+        class="cell header"
+        [ngStyle]="{
+          'grid-row-start': workplace.gridRowStart,
+          'grid-row-end': workplace.gridRowEnd,
+          'grid-column': 1
+        }">
+        {{ workplace.name }}
+      </div>
+      <!-- Now display the slots by using the respective gridRow !-->
+      @for (slot of workplace.timeslotGroups; track slot) {
+        <div
+          class="cell header"
+          [ngStyle]="{
+            'grid-row': slot.gridRow,
+            'grid-column': 2
+          }">
+          {{ slot.name }}
+        </div>
+
+        <!-- Seperate each slot by a line-->
+        <div
+          class="horizontal-line"
+          [ngStyle]="{
+            'grid-row': slot.gridRow
+          }"></div>
+
+        <!-- Now display the timeslots by using their respective gridRow and gridColumn !-->
+        @for (ts of slot.timeslots; track ts) {
+          <div
+            class="cell"
+            [ngClass]="{
+              'not-occupied': !ts.person
+            }"
+            [ngStyle]="{
+              'grid-row': slot.gridRow,
+              'grid-column': ts.gridColumn
+            }">
+            {{ ts.person?.id }} <br />
+            @if (timetableDataContainerService.displayTime$) {
+              {{ ts.start_time }} - {{ ts.end_time }}
+            }
+          </div>
+        }
+      }
+    }
+  </div>
+</div>
