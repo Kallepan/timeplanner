@@ -16,7 +16,11 @@ describe('DepartmentAPIService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        DepartmentAPIService,
+      ],
     });
     service = TestBed.inject(DepartmentAPIService);
     httpController = TestBed.inject(HttpTestingController);

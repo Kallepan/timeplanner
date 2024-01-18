@@ -31,7 +31,11 @@ describe('WorkdayAPIService', () => {
 
   beforeEach(async () => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        WorkdayAPIService,
+      ],
     });
     service = TestBed.inject(WorkdayAPIService);
     httpController = TestBed.inject(HttpTestingController);

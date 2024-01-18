@@ -13,7 +13,11 @@ describe('TimeslotAPIService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        TimeslotAPIService,
+      ],
     });
     service = TestBed.inject(TimeslotAPIService);
 

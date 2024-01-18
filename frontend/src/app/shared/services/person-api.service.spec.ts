@@ -16,7 +16,11 @@ describe('PersonAPIService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        PersonAPIService,
+      ],
     });
     service = TestBed.inject(PersonAPIService);
 

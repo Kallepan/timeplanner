@@ -13,7 +13,11 @@ describe('WorkplaceAPIService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        WorkplaceAPIService,
+      ],
     });
     service = TestBed.inject(WorkplaceAPIService);
     httpController = TestBed.inject(HttpTestingController);
