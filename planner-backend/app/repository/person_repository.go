@@ -115,6 +115,10 @@ func (p PersonRepositoryImpl) FindAllPersons(departmentName string) ([]dao.Perso
 			return nil, err
 		}
 
+		if err := person.ParseAdditionalFieldsFromDBRecord(record); err != nil {
+			return nil, err
+		}
+
 		persons = append(persons, person)
 	}
 
