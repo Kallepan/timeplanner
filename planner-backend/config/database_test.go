@@ -9,7 +9,8 @@ import (
 )
 
 func TestMigrate(t *testing.T) {
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
 	uri := os.Getenv("PLANNER_DB_URI")
 	username := os.Getenv("PLANNER_DB_USERNAME")
@@ -24,4 +25,5 @@ func TestMigrate(t *testing.T) {
 
 	Migrate(ctx, d)
 	// Clear(ctx, d)
+
 }

@@ -20,12 +20,13 @@ type WeekdayRepository interface {
 }
 
 type WeekdayRepositoryImpl struct {
-	db *neo4j.DriverWithContext
+	db  *neo4j.DriverWithContext
+	ctx context.Context
 }
 
 func (w WeekdayRepositoryImpl) AddWeekdayToTimeslot(timeslot *dao.Timeslot, weekday *dao.OnWeekday) ([]dao.OnWeekday, error) {
 	/* Adds a weekday to a timeslot */
-	ctx := context.Background()
+
 	query := `
     MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(wp:Workplace {name: $workplaceName})-[:HAS_TIMESLOT]->(t:Timeslot {name: $timeslotName})
     MATCH (wd:Weekday {id: $weekdayID})
@@ -54,7 +55,7 @@ func (w WeekdayRepositoryImpl) AddWeekdayToTimeslot(timeslot *dao.Timeslot, week
 	}
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		w.ctx,
 		*w.db,
 		query,
 		params,
@@ -94,7 +95,7 @@ func (w WeekdayRepositoryImpl) AddWeekdayToTimeslot(timeslot *dao.Timeslot, week
 
 func (w WeekdayRepositoryImpl) DeleteWeekdayFromTimeslot(timeslot *dao.Timeslot, weekday *dao.OnWeekday) error {
 	/* Deletes a weekday from a timeslot */
-	ctx := context.Background()
+
 	query := `
     MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(wp:Workplace {name: $workplaceName})-[:HAS_TIMESLOT]->(t:Timeslot {name: $timeslotName})
     MATCH (wd:Weekday {id: $weekdayID})
@@ -109,7 +110,7 @@ func (w WeekdayRepositoryImpl) DeleteWeekdayFromTimeslot(timeslot *dao.Timeslot,
 	}
 
 	_, err := neo4j.ExecuteQuery(
-		ctx,
+		w.ctx,
 		*w.db,
 		query,
 		params,
@@ -125,7 +126,6 @@ func (w WeekdayRepositoryImpl) DeleteWeekdayFromTimeslot(timeslot *dao.Timeslot,
 /*
 func (w WeekdayRepositoryImpl) UpdateWeekdayForTimeslot(timeslot *dao.Timeslot, weekday *dao.OnWeekday) ([]dao.OnWeekday, error) {
 
-		ctx := context.Background()
 		query := `
 	    MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(wp:Workplace {name: $workplaceName})-[:HAS_TIMESLOT]->(t:Timeslot {name: $timeslotName})
 	    MATCH (wd:Weekday {id: $weekdayID})
@@ -145,7 +145,7 @@ func (w WeekdayRepositoryImpl) UpdateWeekdayForTimeslot(timeslot *dao.Timeslot, 
 		}
 
 		result, err := neo4j.ExecuteQuery(
-			ctx,
+			w.ctx,
 			*w.db,
 			query,
 			params,
@@ -170,8 +170,11 @@ func (w WeekdayRepositoryImpl) UpdateWeekdayForTimeslot(timeslot *dao.Timeslot, 
 
 */
 
-func WeekdayRepositoryInit(db *neo4j.DriverWithContext) *WeekdayRepositoryImpl {
-	return &WeekdayRepositoryImpl{db: db}
+func WeekdayRepositoryInit(db *neo4j.DriverWithContext, ctx context.Context) *WeekdayRepositoryImpl {
+	return &WeekdayRepositoryImpl{
+		db:  db,
+		ctx: ctx,
+	}
 }
 
 var weekdayRepositorySet = wire.NewSet(

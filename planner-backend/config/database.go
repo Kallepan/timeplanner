@@ -71,7 +71,6 @@ func Migrate(ctx context.Context, db neo4j.DriverWithContext) {
 			slog.Error("Failed to run query", "name", name, "error", err)
 			panic(err)
 		}
-
 	}
 
 	slog.Info("Migration complete")

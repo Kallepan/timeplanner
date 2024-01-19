@@ -17,12 +17,13 @@ type TimeslotRepository interface {
 }
 
 type TimeslotRepositoryImpl struct {
-	db *neo4j.DriverWithContext
+	db  *neo4j.DriverWithContext
+	ctx context.Context
 }
 
 func (t TimeslotRepositoryImpl) FindAllTimeslots(departmentName string, workplaceName string) ([]dao.Timeslot, error) {
 	/* Returns all timeslots */
-	ctx := context.Background()
+
 	timeslots := []dao.Timeslot{}
 	query := `
     MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(wp:Workplace {name: $workplaceName})-[:HAS_TIMESLOT]->(t:Timeslot)
@@ -42,7 +43,7 @@ func (t TimeslotRepositoryImpl) FindAllTimeslots(departmentName string, workplac
 	}
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		t.ctx,
 		*t.db,
 		query,
 		params,
@@ -66,7 +67,7 @@ func (t TimeslotRepositoryImpl) FindAllTimeslots(departmentName string, workplac
 
 func (t TimeslotRepositoryImpl) FindTimeslotByName(departmentName string, workplaceName string, timeslotName string) (dao.Timeslot, error) {
 	/* Returns a timeslot by name */
-	ctx := context.Background()
+
 	timeslot := dao.Timeslot{}
 	query := `
     MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(wp:Workplace {name: $workplaceName})-[:HAS_TIMESLOT]->(t:Timeslot {name: $timeslotName})
@@ -86,7 +87,7 @@ func (t TimeslotRepositoryImpl) FindTimeslotByName(departmentName string, workpl
 	}
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		t.ctx,
 		*t.db,
 		query,
 		params,
@@ -109,7 +110,7 @@ func (t TimeslotRepositoryImpl) FindTimeslotByName(departmentName string, workpl
 
 func (t TimeslotRepositoryImpl) Save(departmentName string, workplaceName string, timeslot *dao.Timeslot) (dao.Timeslot, error) {
 	/* Saves a timeslot */
-	ctx := context.Background()
+
 	query := `
 	MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(wp:Workplace {name: $workplaceName})
 	MERGE (t:Timeslot {name: $timeslotName}) <-[:HAS_TIMESLOT]- (wp)
@@ -139,7 +140,7 @@ func (t TimeslotRepositoryImpl) Save(departmentName string, workplaceName string
 	}
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		t.ctx,
 		*t.db,
 		query,
 		params,
@@ -162,7 +163,7 @@ func (t TimeslotRepositoryImpl) Save(departmentName string, workplaceName string
 
 func (t TimeslotRepositoryImpl) Delete(departmentName string, workplaceName string, timeslot *dao.Timeslot) error {
 	/* Deletes a timeslot */
-	ctx := context.Background()
+
 	query := `
     MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(wp:Workplace {name: $workplaceName})-[:HAS_TIMESLOT]->(t:Timeslot {name: $timeslotName})
     SET t.deleted_at = datetime()
@@ -174,7 +175,7 @@ func (t TimeslotRepositoryImpl) Delete(departmentName string, workplaceName stri
 	}
 
 	_, err := neo4j.ExecuteQuery(
-		ctx,
+		t.ctx,
 		*t.db,
 		query,
 		params,
@@ -187,9 +188,10 @@ func (t TimeslotRepositoryImpl) Delete(departmentName string, workplaceName stri
 	return nil
 }
 
-func TimeslotRepositoryInit(db *neo4j.DriverWithContext) *TimeslotRepositoryImpl {
+func TimeslotRepositoryInit(db *neo4j.DriverWithContext, ctx context.Context) *TimeslotRepositoryImpl {
 	return &TimeslotRepositoryImpl{
-		db: db,
+		db:  db,
+		ctx: ctx,
 	}
 }
 

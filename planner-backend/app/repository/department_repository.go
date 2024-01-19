@@ -18,12 +18,13 @@ type DepartmentRepository interface {
 }
 
 type DepartmentRepositoryImpl struct {
-	db *neo4j.DriverWithContext
+	db  *neo4j.DriverWithContext
+	ctx context.Context
 }
 
 func (d DepartmentRepositoryImpl) FindAllDepartments() ([]dao.Department, error) {
 	/* Returns all departments */
-	ctx := context.Background()
+
 	departments := []dao.Department{}
 	query := `
 	MATCH (d:Department)
@@ -31,7 +32,7 @@ func (d DepartmentRepositoryImpl) FindAllDepartments() ([]dao.Department, error)
 	RETURN d`
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		d.ctx,
 		*d.db,
 		query,
 		nil,
@@ -55,7 +56,7 @@ func (d DepartmentRepositoryImpl) FindAllDepartments() ([]dao.Department, error)
 
 func (d DepartmentRepositoryImpl) FindDepartmentByName(departmentName string) (dao.Department, error) {
 	/* Returns a department by name */
-	ctx := context.Background()
+
 	department := dao.Department{}
 	query := `
 	MATCH (d:Department {name: $name})
@@ -66,7 +67,7 @@ func (d DepartmentRepositoryImpl) FindDepartmentByName(departmentName string) (d
 	}
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		d.ctx,
 		*d.db,
 		query,
 		params,
@@ -88,7 +89,7 @@ func (d DepartmentRepositoryImpl) FindDepartmentByName(departmentName string) (d
 
 func (d DepartmentRepositoryImpl) Save(department *dao.Department) (dao.Department, error) {
 	/* Creates a department */
-	ctx := context.Background()
+
 	query := `
 	MERGE (d:Department {name: $name})
 	ON CREATE SET
@@ -104,7 +105,7 @@ func (d DepartmentRepositoryImpl) Save(department *dao.Department) (dao.Departme
 	}
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		d.ctx,
 		*d.db,
 		query,
 		params,
@@ -126,7 +127,7 @@ func (d DepartmentRepositoryImpl) Save(department *dao.Department) (dao.Departme
 
 func (d DepartmentRepositoryImpl) Delete(department *dao.Department) error {
 	/* Deletes a department */
-	ctx := context.Background()
+
 	query := `
 	MATCH (d:Department)
 	WHERE d.name = $name
@@ -136,7 +137,7 @@ func (d DepartmentRepositoryImpl) Delete(department *dao.Department) error {
 	}
 
 	_, err := neo4j.ExecuteQuery(
-		ctx,
+		d.ctx,
 		*d.db,
 		query,
 		params,
@@ -149,9 +150,10 @@ func (d DepartmentRepositoryImpl) Delete(department *dao.Department) error {
 	return nil
 }
 
-func DepartmentRepositoryInit(db *neo4j.DriverWithContext) *DepartmentRepositoryImpl {
+func DepartmentRepositoryInit(db *neo4j.DriverWithContext, ctx context.Context) *DepartmentRepositoryImpl {
 	return &DepartmentRepositoryImpl{
-		db: db,
+		db:  db,
+		ctx: ctx,
 	}
 }
 

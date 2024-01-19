@@ -26,7 +26,8 @@ type PersonRelRepository interface {
 }
 
 type PersonRelRepositoryImpl struct {
-	db *neo4j.DriverWithContext
+	db  *neo4j.DriverWithContext
+	ctx context.Context
 }
 
 // Function Used by the service
@@ -41,7 +42,6 @@ func (p PersonRelRepositoryImpl) AddAbsencyToPerson(person dao.Person, absence d
 		return err
 	}
 
-	ctx := context.Background()
 	query := `
 	MATCH (p: Person {id: $personID})
 	MATCH (d: Date {date: date($date)})
@@ -57,7 +57,7 @@ func (p PersonRelRepositoryImpl) AddAbsencyToPerson(person dao.Person, absence d
 	}
 
 	_, err := neo4j.ExecuteQuery(
-		ctx,
+		p.ctx,
 		*p.db,
 		query,
 		params,
@@ -76,7 +76,6 @@ func (p PersonRelRepositoryImpl) RemoveAbsencyFromPerson(person dao.Person, abse
 	   @param date: The date of the absency
 	*/
 
-	ctx := context.Background()
 	query := `
 	MATCH (p: Person {id: $personID}) -[r:ABSENT_ON]-> (d: Date {date: date($date)})
 	DELETE r
@@ -87,7 +86,7 @@ func (p PersonRelRepositoryImpl) RemoveAbsencyFromPerson(person dao.Person, abse
 	}
 
 	_, err := neo4j.ExecuteQuery(
-		ctx,
+		p.ctx,
 		*p.db,
 		query,
 		params,
@@ -106,7 +105,6 @@ func (p PersonRelRepositoryImpl) FindAbsencyForPerson(personID string, date stri
 	   @param date: The date of the absency
 	*/
 
-	ctx := context.Background()
 	query := `
 	MATCH (p: Person {id: $personID}) -[r:ABSENT_ON]-> (d: Date {date: date($date)})
 	RETURN r`
@@ -116,7 +114,7 @@ func (p PersonRelRepositoryImpl) FindAbsencyForPerson(personID string, date stri
 	}
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		p.ctx,
 		*p.db,
 		query,
 		params,
@@ -145,7 +143,6 @@ func (p PersonRelRepositoryImpl) AddDepartmentToPerson(person dao.Person, depart
 	   @param departmentName: The name of the department to add
 	*/
 
-	ctx := context.Background()
 	query := `
 	MATCH (p: Person {id: $personID})
 	MATCH (d: Department {name: $departmentName})
@@ -158,7 +155,7 @@ func (p PersonRelRepositoryImpl) AddDepartmentToPerson(person dao.Person, depart
 	}
 
 	_, err := neo4j.ExecuteQuery(
-		ctx,
+		p.ctx,
 		*p.db,
 		query,
 		params,
@@ -177,7 +174,6 @@ func (p PersonRelRepositoryImpl) RemoveDepartmentFromPerson(person dao.Person, d
 	   @param departmentName: The name of the department to remove
 	*/
 
-	ctx := context.Background()
 	query := `
 	MATCH (p: Person {id: $personID}) -[r:WORKS_AT]-> (d: Department {name: $departmentName})
 	DELETE r
@@ -188,7 +184,7 @@ func (p PersonRelRepositoryImpl) RemoveDepartmentFromPerson(person dao.Person, d
 	}
 
 	_, err := neo4j.ExecuteQuery(
-		ctx,
+		p.ctx,
 		*p.db,
 		query,
 		params,
@@ -207,7 +203,6 @@ func (p PersonRelRepositoryImpl) AddWorkplaceToPerson(person dao.Person, departm
 	   @param workplaceName: The name of the workplace to add
 	*/
 
-	ctx := context.Background()
 	query := `
 	MATCH (p: Person {id: $personID})
 	MATCH (d: Department {name: $departmentName}) -[:HAS_WORKPLACE]-> (w: Workplace {name: $workplaceName})
@@ -223,7 +218,7 @@ func (p PersonRelRepositoryImpl) AddWorkplaceToPerson(person dao.Person, departm
 	}
 
 	_, err := neo4j.ExecuteQuery(
-		ctx,
+		p.ctx,
 		*p.db,
 		query,
 		params,
@@ -242,7 +237,6 @@ func (p PersonRelRepositoryImpl) RemoveWorkplaceFromPerson(person dao.Person, de
 	   @param workplaceName: The name of the workplace to remove
 	*/
 
-	ctx := context.Background()
 	query := `
 	MATCH (p: Person {id: $personID}) -[r:QUALIFIED_FOR]-> (w: Workplace {name: $workplaceName}) <-[:HAS_WORKPLACE]- (d: Department {name: $departmentName})
 	DELETE r
@@ -254,7 +248,7 @@ func (p PersonRelRepositoryImpl) RemoveWorkplaceFromPerson(person dao.Person, de
 	}
 
 	_, err := neo4j.ExecuteQuery(
-		ctx,
+		p.ctx,
 		*p.db,
 		query,
 		params,
@@ -273,7 +267,6 @@ func (p PersonRelRepositoryImpl) AddWeekdayToPerson(person dao.Person, weekdayID
 	   @param weekdayID: The ID of the weekday to add
 	*/
 
-	ctx := context.Background()
 	query := `
 	MATCH (p: Person {id: $personID})
 	MATCH (wd: Weekday {id: $weekdayID})
@@ -286,7 +279,7 @@ func (p PersonRelRepositoryImpl) AddWeekdayToPerson(person dao.Person, weekdayID
 	}
 
 	_, err := neo4j.ExecuteQuery(
-		ctx,
+		p.ctx,
 		*p.db,
 		query,
 		params,
@@ -306,7 +299,6 @@ func (p PersonRelRepositoryImpl) RemoveWeekdayFromPerson(person dao.Person, week
 	   @param weekdayID: The ID of the weekday to remove
 	*/
 
-	ctx := context.Background()
 	query := `
 	MATCH (p: Person {id: $personID}) -[r:AVAILABLE_ON]-> (wd: Weekday {id: $weekdayID})
 	DELETE r
@@ -317,7 +309,7 @@ func (p PersonRelRepositoryImpl) RemoveWeekdayFromPerson(person dao.Person, week
 	}
 
 	_, err := neo4j.ExecuteQuery(
-		ctx,
+		p.ctx,
 		*p.db,
 		query,
 		params,
@@ -331,9 +323,10 @@ func (p PersonRelRepositoryImpl) RemoveWeekdayFromPerson(person dao.Person, week
 	return nil
 }
 
-func PersonRelRepositoryInit(db *neo4j.DriverWithContext) *PersonRelRepositoryImpl {
+func PersonRelRepositoryInit(db *neo4j.DriverWithContext, ctx context.Context) *PersonRelRepositoryImpl {
 	return &PersonRelRepositoryImpl{
-		db: db,
+		db:  db,
+		ctx: ctx,
 	}
 }
 

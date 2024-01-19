@@ -17,7 +17,8 @@ type SynchronizeRepository interface {
 }
 
 type SynchronizeRepositoryImpl struct {
-	db *neo4j.DriverWithContext
+	db  *neo4j.DriverWithContext
+	ctx context.Context
 }
 
 func (d SynchronizeRepositoryImpl) Synchronize(datesInAdvance int) error {
@@ -27,7 +28,7 @@ func (d SynchronizeRepositoryImpl) Synchronize(datesInAdvance int) error {
 			- Create Date nodes for each of them
 			- Create Workday nodes for each of them
 	*/
-	ctx := context.Background()
+
 	now := time.Now()
 
 	// Get all dates from now to 1 week from now
@@ -35,11 +36,11 @@ func (d SynchronizeRepositoryImpl) Synchronize(datesInAdvance int) error {
 		date := n.Format("2006-01-02")
 		weekday := TimeDateToWeekdayID(n)
 
-		if err := EnsureDateExists(d.db, ctx, date); err != nil {
+		if err := EnsureDateExists(d.db, d.ctx, date); err != nil {
 			return err
 		}
 
-		if err := d.createWorkday(ctx, date, weekday); err != nil {
+		if err := d.createWorkday(d.ctx, date, weekday); err != nil {
 			return err
 		}
 
@@ -111,9 +112,10 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date strin
 	return err
 }
 
-func SynchronizeRepositoryInit(db *neo4j.DriverWithContext) *SynchronizeRepositoryImpl {
+func SynchronizeRepositoryInit(db *neo4j.DriverWithContext, ctx context.Context) *SynchronizeRepositoryImpl {
 	return &SynchronizeRepositoryImpl{
-		db: db,
+		db:  db,
+		ctx: ctx,
 	}
 }
 

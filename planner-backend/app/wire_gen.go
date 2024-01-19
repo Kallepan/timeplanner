@@ -17,32 +17,31 @@ import (
 
 // Injectors from wire.go:
 
-func BuildInjector() (*config.Injector, func(), error) {
-	contextContext := context.Background()
-	driverWithContext := config.ConnectToDB(contextContext)
+func BuildInjector(ctx context.Context) (*config.Injector, func(), error) {
+	driverWithContext := config.ConnectToDB(ctx)
 	systemControllerImpl := &controller.SystemControllerImpl{}
-	departmentRepositoryImpl := repository.DepartmentRepositoryInit(driverWithContext)
+	departmentRepositoryImpl := repository.DepartmentRepositoryInit(driverWithContext, ctx)
 	departmentServiceImpl := &service.DepartmentServiceImpl{
 		DepartmentRepository: departmentRepositoryImpl,
 	}
 	departmentControllerImpl := &controller.DepartmentControllerImpl{
 		DepartmentService: departmentServiceImpl,
 	}
-	workplaceRepositoryImpl := repository.WorkplaceRepositoryInit(driverWithContext)
+	workplaceRepositoryImpl := repository.WorkplaceRepositoryInit(driverWithContext, ctx)
 	workplaceServiceImpl := &service.WorkplaceServiceImpl{
 		WorkplaceRepository: workplaceRepositoryImpl,
 	}
 	workplaceControllerImpl := &controller.WorkplaceControllerImpl{
 		WorkplaceService: workplaceServiceImpl,
 	}
-	timeslotRepositoryImpl := repository.TimeslotRepositoryInit(driverWithContext)
+	timeslotRepositoryImpl := repository.TimeslotRepositoryInit(driverWithContext, ctx)
 	timeslotServiceImpl := &service.TimeslotServiceImpl{
 		TimeslotRepository: timeslotRepositoryImpl,
 	}
 	timeslotControllerImpl := &controller.TimeslotControllerImpl{
 		TimeslotService: timeslotServiceImpl,
 	}
-	weekdayRepositoryImpl := repository.WeekdayRepositoryInit(driverWithContext)
+	weekdayRepositoryImpl := repository.WeekdayRepositoryInit(driverWithContext, ctx)
 	weekdayServiceImpl := &service.WeekdayServiceImpl{
 		WeekdayRepository:  weekdayRepositoryImpl,
 		TimeslotRepository: timeslotRepositoryImpl,
@@ -50,14 +49,14 @@ func BuildInjector() (*config.Injector, func(), error) {
 	weekdayControllerImpl := &controller.WeekdayControllerImpl{
 		WeekdayService: weekdayServiceImpl,
 	}
-	personRepositoryImpl := repository.PersonRepositoryInit(driverWithContext)
+	personRepositoryImpl := repository.PersonRepositoryInit(driverWithContext, ctx)
 	personServiceImpl := &service.PersonServiceImpl{
 		PersonRepository: personRepositoryImpl,
 	}
 	personControllerImpl := &controller.PersonControllerImpl{
 		PersonService: personServiceImpl,
 	}
-	personRelRepositoryImpl := repository.PersonRelRepositoryInit(driverWithContext)
+	personRelRepositoryImpl := repository.PersonRelRepositoryInit(driverWithContext, ctx)
 	personRelServiceImpl := service.PersonRelServiceImpl{
 		PersonRelRepository:  personRelRepositoryImpl,
 		PersonRepository:     personRepositoryImpl,
@@ -67,14 +66,14 @@ func BuildInjector() (*config.Injector, func(), error) {
 	personRelControllerImpl := &controller.PersonRelControllerImpl{
 		PersonRelService: personRelServiceImpl,
 	}
-	workdayRepositoryImpl := repository.WorkdayRepositoryInit(driverWithContext)
+	workdayRepositoryImpl := repository.WorkdayRepositoryInit(driverWithContext, ctx)
 	workdayServiceImpl := &service.WorkdayServiceImpl{
 		WorkdayRepository: workdayRepositoryImpl,
 	}
 	workdayControllerImpl := &controller.WorkdayControllerImpl{
 		WorkdayService: workdayServiceImpl,
 	}
-	synchronizeRepositoryImpl := repository.SynchronizeRepositoryInit(driverWithContext)
+	synchronizeRepositoryImpl := repository.SynchronizeRepositoryInit(driverWithContext, ctx)
 	injector := &config.Injector{
 		DB:              driverWithContext,
 		SystemCtrl:      systemControllerImpl,
@@ -93,6 +92,6 @@ func BuildInjector() (*config.Injector, func(), error) {
 
 // wire.go:
 
-var db = wire.NewSet(config.ConnectToDB, context.Background)
+var db = wire.NewSet(config.ConnectToDB)
 
 var InjectorSet = wire.NewSet(wire.Struct(new(config.Injector), "*"))

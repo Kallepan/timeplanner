@@ -25,11 +25,12 @@ type WorkdayRepository interface {
 }
 
 type WorkdayRepositoryImpl struct {
-	db *neo4j.DriverWithContext
+	db  *neo4j.DriverWithContext
+	ctx context.Context
 }
 
 func (w WorkdayRepositoryImpl) GetWorkdaysForDepartmentAndDate(departmentName string, date string) ([]dao.Workday, error) {
-	ctx := context.Background()
+
 	query := `
 	// fetch the workdays for a given date
 	MATCH (wkd:Workday {date: date($date), department: $departmentName})
@@ -46,7 +47,7 @@ func (w WorkdayRepositoryImpl) GetWorkdaysForDepartmentAndDate(departmentName st
 	}
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		w.ctx,
 		*w.db,
 		query,
 		params,
@@ -70,7 +71,7 @@ func (w WorkdayRepositoryImpl) GetWorkdaysForDepartmentAndDate(departmentName st
 }
 
 func (w WorkdayRepositoryImpl) GetWorkday(departmentName string, workplaceName string, timeslotName string, date string) (dao.Workday, error) {
-	ctx := context.Background()
+
 	query := `
 	// fetch the workday
 	MATCH (wkd:Workday {date: date($date), department: $departmentName, workplace: $workplaceName, timeslot: $timeslotName})
@@ -89,7 +90,7 @@ func (w WorkdayRepositoryImpl) GetWorkday(departmentName string, workplaceName s
 	}
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		w.ctx,
 		*w.db,
 		query,
 		params,
@@ -112,7 +113,7 @@ func (w WorkdayRepositoryImpl) GetWorkday(departmentName string, workplaceName s
 }
 
 func (w WorkdayRepositoryImpl) AssignPersonToWorkday(personID string, departmentName string, workplaceName string, timeslotName string, date string) error {
-	ctx := context.Background()
+
 	query := `
 	// fetch the person
 	MATCH (p:Person {id: $personID})
@@ -131,7 +132,7 @@ func (w WorkdayRepositoryImpl) AssignPersonToWorkday(personID string, department
 	}
 
 	_, err := neo4j.ExecuteQuery(
-		ctx,
+		w.ctx,
 		*w.db,
 		query,
 		params,
@@ -145,7 +146,7 @@ func (w WorkdayRepositoryImpl) AssignPersonToWorkday(personID string, department
 }
 
 func (w WorkdayRepositoryImpl) UnassignPersonFromWorkday(personID string, departmentName string, workplaceName string, timeslotName string, date string) error {
-	ctx := context.Background()
+
 	query := `
 	MATCH (wkd:Workday {date: date($date), department: $departmentName, workplace: $workplaceName, timeslot: $timeslotName})
 	// delete the relationship between the person and the workday
@@ -161,7 +162,7 @@ func (w WorkdayRepositoryImpl) UnassignPersonFromWorkday(personID string, depart
 	}
 
 	_, err := neo4j.ExecuteQuery(
-		ctx,
+		w.ctx,
 		*w.db,
 		query,
 		params,
@@ -174,9 +175,10 @@ func (w WorkdayRepositoryImpl) UnassignPersonFromWorkday(personID string, depart
 	return nil
 }
 
-func WorkdayRepositoryInit(db *neo4j.DriverWithContext) *WorkdayRepositoryImpl {
+func WorkdayRepositoryInit(db *neo4j.DriverWithContext, ctx context.Context) *WorkdayRepositoryImpl {
 	return &WorkdayRepositoryImpl{
-		db: db,
+		db:  db,
+		ctx: ctx,
 	}
 }
 
