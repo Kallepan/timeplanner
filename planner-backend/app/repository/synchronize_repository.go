@@ -24,15 +24,21 @@ type SynchronizeRepositoryImpl struct {
 func (d SynchronizeRepositoryImpl) Synchronize(datesInAdvance int) error {
 	/*
 		Synchronize:
-			- Get all dates from now to 1 week from now
+			- Get all dates from next Monday to 1 week from then
 			- Create Date nodes for each of them
 			- Create Workday nodes for each of them
 	*/
 
 	now := time.Now()
 
-	// Get all dates from now to 1 week from now
-	for n := now; n.Before(now.AddDate(0, 0, datesInAdvance)); n = n.AddDate(0, 0, 1) {
+	// Calculate the difference between the current day of the week and the next Monday
+	diff := (int(time.Monday) - int(now.Weekday())) % 7
+
+	// Start from the next Monday
+	start := now.AddDate(0, 0, diff)
+
+	// Get all dates from next Monday to 1 week from then
+	for n := start; n.Before(start.AddDate(0, 0, datesInAdvance)); n = n.AddDate(0, 0, 1) {
 		date := n.Format("2006-01-02")
 		weekday := TimeDateToWeekdayID(n)
 
