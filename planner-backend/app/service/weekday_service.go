@@ -77,7 +77,7 @@ func (w WeekdayServiceImpl) BulkUpdateWeekdaysForTimeslot(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	data := mapWeekdayListToWeekdayResponseList(weekdays)
+	data := mapOnWeekdayListToWeekdayResponseList(weekdays)
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
 }
@@ -122,7 +122,7 @@ func (w WeekdayServiceImpl) AddWeekdayToTimeslot(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	data := mapWeekdayListToWeekdayResponseList(weekdays)
+	data := mapOnWeekdayListToWeekdayResponseList(weekdays)
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
 }
@@ -267,13 +267,13 @@ func mapWeekdayRequestToWeekday(weekdayRequest dco.WeekdayRequest) (*dao.OnWeekd
 	}, nil
 }
 
-func mapWeekdayToWeekdayResponse(weekday dao.OnWeekday) dco.WeekdayResponse {
+func mapOnWeekdayToWeekdayResponse(weekday dao.OnWeekday) dco.OnWeekdayResponse {
 	/* mapWeekdayToWeekdayResponse is a function to map weekday to weekday response
 	 * @param weekday is dao.OnWeekday
 	 * @return dco.WeekdayResponse
 	 */
 
-	return dco.WeekdayResponse{
+	return dco.OnWeekdayResponse{
 		ID:        weekday.ID,
 		Name:      weekday.Name,
 		StartTime: weekday.StartTime.Format(constant.TimeFormat),
@@ -281,15 +281,15 @@ func mapWeekdayToWeekdayResponse(weekday dao.OnWeekday) dco.WeekdayResponse {
 	}
 }
 
-func mapWeekdayListToWeekdayResponseList(weekdays []dao.OnWeekday) []dco.WeekdayResponse {
+func mapOnWeekdayListToWeekdayResponseList(weekdays []dao.OnWeekday) []dco.OnWeekdayResponse {
 	/* mapWeekdayListToWeekdayResponseList is a function to map weekday list to weekday response list
 	 * @param weekdays is []dao.OnWeekday
 	 * @return []dco.WeekdayResponse
 	 */
 
-	weekdayResponseList := []dco.WeekdayResponse{}
+	weekdayResponseList := []dco.OnWeekdayResponse{}
 	for _, weekday := range weekdays {
-		weekdayResponseList = append(weekdayResponseList, mapWeekdayToWeekdayResponse(weekday))
+		weekdayResponseList = append(weekdayResponseList, mapOnWeekdayToWeekdayResponse(weekday))
 	}
 
 	return weekdayResponseList

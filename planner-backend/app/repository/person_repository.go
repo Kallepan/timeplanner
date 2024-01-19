@@ -96,7 +96,7 @@ func (p PersonRepositoryImpl) FindAllPersons(departmentName string) ([]dao.Perso
 	OPTIONAL MATCH (p)-[:QUALIFIED_FOR]->(w: Workplace)
 	OPTIONAL MATCH (p)-[:AVAILABLE_ON]->(wd: Weekday)
     WHERE p.deleted_at IS NULL AND p.active = true
-    RETURN p, COLLECT(DISTINCT d.name) AS departments, COLLECT(DISTINCT w.name) AS workplaces, COLLECT(DISTINCT wd.id) AS weekdays`
+    RETURN p, COLLECT(DISTINCT d) AS departments, COLLECT(DISTINCT w) AS workplaces, COLLECT(DISTINCT wd) AS weekdays`
 
 	result, err := neo4j.ExecuteQuery(
 		p.ctx,
@@ -135,7 +135,7 @@ func (p PersonRepositoryImpl) FindPersonByID(personID string) (dao.Person, error
 	OPTIONAL MATCH (p)-[:QUALIFIED_FOR]->(w: Workplace)
 	OPTIONAL MATCH (p)-[:AVAILABLE_ON]->(wd: Weekday)
 	WHERE p.deleted_at IS NULL AND p.active = true
-	RETURN p, COLLECT(DISTINCT d.name) AS departments, COLLECT(DISTINCT w.name) AS workplaces, COLLECT(DISTINCT wd.id) AS weekdays`
+	RETURN p, COLLECT(DISTINCT d) AS departments, COLLECT(DISTINCT w) AS workplaces, COLLECT(DISTINCT wd) AS weekdays`
 	params := map[string]interface{}{
 		"personID": personID,
 	}

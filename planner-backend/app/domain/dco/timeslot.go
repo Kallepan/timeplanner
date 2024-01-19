@@ -3,7 +3,7 @@ package dco
 import "planner-backend/app/pkg"
 
 /** Responses **/
-type WeekdayResponse struct {
+type OnWeekdayResponse struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
 
@@ -14,11 +14,11 @@ type WeekdayResponse struct {
 
 type TimeslotResponse struct {
 	Base
-	Name           string            `json:"name"`
-	Active         *bool             `json:"active"`
-	DepartmentName string            `json:"department_name"`
-	WorkplaceName  string            `json:"workplace_name"`
-	Weekdays       []WeekdayResponse `json:"weekdays"`
+	Name           string              `json:"name"`
+	Active         *bool               `json:"active"`
+	DepartmentName string              `json:"department_name"`
+	WorkplaceName  string              `json:"workplace_name"`
+	Weekdays       []OnWeekdayResponse `json:"weekdays"`
 }
 
 /** Requests **/

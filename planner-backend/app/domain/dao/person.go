@@ -6,6 +6,32 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
+type Weekday struct {
+	ID   string
+	Name string
+}
+
+func (w *Weekday) ParseFromNode(node *neo4j.Node) error {
+	/**
+	* Parses a weekday struct from a neo4j node and sets the value on this weekday
+	 */
+
+	id, err := neo4j.GetProperty[string](node, "id")
+	if err != nil {
+		return err
+	}
+
+	name, err := neo4j.GetProperty[string](node, "name")
+	if err != nil {
+		return err
+	}
+
+	w.ID = id
+	w.Name = name
+
+	return nil
+}
+
 type Person struct {
 	Base
 
@@ -15,9 +41,9 @@ type Person struct {
 	Email     string
 	Active    bool
 
-	Workplaces  []string
-	Departments []string
-	Weekdays    []string
+	Workplaces  []Workplace
+	Departments []Department
+	Weekdays    []Weekday
 
 	WorkingHours int64
 }
@@ -27,22 +53,43 @@ func (p *Person) ParseAdditionalFieldsFromDBRecord(record *neo4j.Record) error {
 	* Parses additional fields such as departments, workplaces, and weekdays from a neo4j record and sets the values on this person
 	**/
 
-	if workplaces, isNil, err := neo4j.GetRecordValue[[]interface{}](record, "workplaces"); err != nil {
+	if workplaceNodeInteraces, isNil, err := neo4j.GetRecordValue[[]interface{}](record, "workplaces"); err != nil {
 		return err
 	} else if !isNil {
-		p.Workplaces = convertInterfaceSliceToStringSlice(workplaces)
+		for _, workplaceNodeInterface := range workplaceNodeInteraces {
+			workplaceNode := workplaceNodeInterface.(neo4j.Node)
+			workplace := Workplace{}
+			if err := workplace.ParseFromNode(&workplaceNode); err != nil {
+				return err
+			}
+			p.Workplaces = append(p.Workplaces, workplace)
+		}
 	}
 
 	if departments, isNil, err := neo4j.GetRecordValue[[]interface{}](record, "departments"); err != nil {
 		return err
 	} else if !isNil {
-		p.Departments = convertInterfaceSliceToStringSlice(departments)
+		for _, departmentInterface := range departments {
+			departmentNode := departmentInterface.(neo4j.Node)
+			department := Department{}
+			if err := department.ParseFromNode(&departmentNode); err != nil {
+				return err
+			}
+			p.Departments = append(p.Departments, department)
+		}
 	}
 
 	if weekdays, isNil, err := neo4j.GetRecordValue[[]interface{}](record, "weekdays"); err != nil {
 		return err
 	} else if !isNil {
-		p.Weekdays = convertInterfaceSliceToStringSlice(weekdays)
+		for _, weekdayInterface := range weekdays {
+			weekdayNode := weekdayInterface.(neo4j.Node)
+			weekday := Weekday{}
+			if err := weekday.ParseFromNode(&weekdayNode); err != nil {
+				return err
+			}
+			p.Weekdays = append(p.Weekdays, weekday)
+		}
 	}
 
 	return nil

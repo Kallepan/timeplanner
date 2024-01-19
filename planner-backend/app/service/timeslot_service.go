@@ -225,7 +225,7 @@ func mapTimeslotToTimeslotResponse(timeslot dao.Timeslot) dco.TimeslotResponse {
 		Active:         &timeslot.Active,
 		DepartmentName: timeslot.DepartmentName,
 		WorkplaceName:  timeslot.WorkplaceName,
-		Weekdays:       mapWeekdayListToWeekdayResponseList(timeslot.Weekdays),
+		Weekdays:       mapOnWeekdayListToWeekdayResponseList(timeslot.Weekdays),
 		Base: dco.Base{
 			CreatedAt: timeslot.Base.CreatedAt,
 			UpdatedAt: timeslot.Base.UpdatedAt,
