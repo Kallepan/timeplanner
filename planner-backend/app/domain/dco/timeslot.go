@@ -40,6 +40,21 @@ func (w *WeekdayRequest) Validate() error {
 	return nil
 }
 
+// this is used for bulk updating the weekdays
+type WeekdaysRequest struct {
+	Weekdays []WeekdayRequest `json:"weekdays" binding:"required"`
+}
+
+func (w *WeekdaysRequest) Validate() error {
+	for _, weekday := range w.Weekdays {
+		if err := weekday.Validate(); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 type TimeslotRequest struct {
 	Name   string `json:"name" binding:"required"`
 	Active *bool  `json:"active" binding:"required"`

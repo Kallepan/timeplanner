@@ -14,6 +14,15 @@ type OnWeekday struct {
 	EndTime   time.Time
 }
 
+func (w *OnWeekday) ToMap() map[string]interface{} {
+	return map[string]interface{}{
+		"id":         w.ID,
+		"name":       w.Name,
+		"start_time": w.StartTime,
+		"end_time":   w.EndTime,
+	}
+}
+
 type Timeslot struct {
 	Name           string
 	Active         bool

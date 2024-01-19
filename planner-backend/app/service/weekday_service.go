@@ -21,6 +21,8 @@ import (
 )
 
 type WeekdayService interface {
+	BulkUpdateWeekdaysForTimeslot(c *gin.Context)
+
 	AddWeekdayToTimeslot(c *gin.Context)
 	DeleteWeekdayFromTimeslot(c *gin.Context)
 }
@@ -28,6 +30,56 @@ type WeekdayService interface {
 type WeekdayServiceImpl struct {
 	WeekdayRepository  repository.WeekdayRepository
 	TimeslotRepository repository.TimeslotRepository
+}
+
+func (w WeekdayServiceImpl) BulkUpdateWeekdaysForTimeslot(c *gin.Context) {
+	defer pkg.PanicHandler(c)
+	slog.Info("start to execute program bulk update weekdays for timeslot")
+
+	departmentName := c.Param("departmentName")
+	workplaceName := c.Param("workplaceName")
+	timeslotName := c.Param("timeslotName")
+	if departmentName == "" || workplaceName == "" || timeslotName == "" {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+
+	var weekdaysRequest dco.WeekdaysRequest
+	if err := c.ShouldBindJSON(&weekdaysRequest); err != nil {
+		slog.Error("Error when binding json", "error", err)
+		pkg.PanicException(constant.InvalidRequest)
+	}
+
+	timeslot, err := w.TimeslotRepository.FindTimeslotByName(departmentName, workplaceName, timeslotName)
+	switch err {
+	case nil:
+		break
+	case pkg.ErrNoRows:
+		pkg.PanicException(constant.InvalidRequest)
+	default:
+		slog.Error("Error when fetching data from database", "error", err)
+		pkg.PanicException(constant.UnknownError)
+	}
+
+	if err := w.WeekdayRepository.DeleteAllWeekdaysFromTimeslot(&timeslot); err != nil {
+		slog.Error("Error when deleting data from database", "error", err)
+		pkg.PanicException(constant.UnknownError)
+	}
+
+	weekdaysToBeAdded, err := mapWeekdaysRequestToWeekdayList(weekdaysRequest)
+	if err != nil {
+		slog.Error("Error when mapping weekdays request to weekday list", "error", err)
+		pkg.PanicException(constant.InvalidRequest)
+	}
+
+	weekdays, err := w.WeekdayRepository.AddWeekdaysToTimeslot(&timeslot, weekdaysToBeAdded)
+	if err != nil {
+		slog.Error("Error when adding weekdays to timeslot", "error", err)
+		pkg.PanicException(constant.UnknownError)
+	}
+
+	data := mapWeekdayListToWeekdayResponseList(weekdays)
+
+	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
 }
 
 func (w WeekdayServiceImpl) AddWeekdayToTimeslot(c *gin.Context) {
@@ -167,6 +219,22 @@ func (w WeekdayServiceImpl) DeleteWeekdayFromTimeslot(c *gin.Context) {
 
 *
 */
+
+func mapWeekdaysRequestToWeekdayList(weekdaysRequest dco.WeekdaysRequest) ([]dao.OnWeekday, error) {
+	/* Maps a WeekdaysRequest to a list of Weekday */
+
+	weekdays := []dao.OnWeekday{}
+	for _, weekdayRequest := range weekdaysRequest.Weekdays {
+		weekday, err := mapWeekdayRequestToWeekday(weekdayRequest)
+		if err != nil {
+			return nil, err
+		}
+		weekdays = append(weekdays, *weekday)
+	}
+
+	return weekdays, nil
+}
+
 func mapWeekdayRequestToWeekday(weekdayRequest dco.WeekdayRequest) (*dao.OnWeekday, error) {
 	/* Maps a WeekdayRequest to a Weekday */
 

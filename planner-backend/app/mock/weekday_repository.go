@@ -30,6 +30,17 @@ func (r *WeekdayRepositoryMock) Return(mockData interface{}, errorData error) Mo
 }
 
 /* Repository interface implementations */
+func (r *WeekdayRepositoryMock) AddWeekdaysToTimeslot(timeslot *dao.Timeslot, weekdays []dao.OnWeekday) ([]dao.OnWeekday, error) {
+	if r.dataContainer["AddWeekdaysToTimeslot"] == nil {
+		return nil, r.errorContainer["AddWeekdaysToTimeslot"]
+	}
+	return r.dataContainer["AddWeekdaysToTimeslot"].([]dao.OnWeekday), r.errorContainer["AddWeekdaysToTimeslot"]
+}
+
+func (r *WeekdayRepositoryMock) DeleteAllWeekdaysFromTimeslot(timeslot *dao.Timeslot) error {
+	return r.errorContainer["DeleteAllWeekdaysFromTimeslot"]
+}
+
 func (r *WeekdayRepositoryMock) AddWeekdayToTimeslot(timeslot *dao.Timeslot, weekday *dao.OnWeekday) ([]dao.OnWeekday, error) {
 	if r.dataContainer["AddWeekdayToTimeslot"] == nil {
 		return nil, r.errorContainer["AddWeekdayToTimeslot"]

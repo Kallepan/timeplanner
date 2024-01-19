@@ -1,6 +1,8 @@
 package dao
 
 import (
+	"planner-backend/app/constant"
+
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
@@ -69,8 +71,8 @@ func (w *Workday) ParseFromDBRecord(record *neo4j.Record, departmentName string,
 	w.WorkplaceName = workplaceName
 	w.TimeslotName = timeslotName
 	w.Date = date
-	w.StartTime = startTime.Time().Format("15:04:05")
-	w.EndTime = endTime.Time().Format("15:04:05")
+	w.StartTime = startTime.Time().Format(constant.TimeFormat)
+	w.EndTime = endTime.Time().Format(constant.TimeFormat)
 	w.Weekday = weekday
 
 	return nil
