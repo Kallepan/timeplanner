@@ -32,7 +32,7 @@ func ConnectToDB(ctx context.Context) *neo4j.DriverWithContext {
 	}()
 
 	// Migrate
-	Migrate(ctx, driver)
+	Migrate(ctx, &driver)
 
 	return &driver
 }
@@ -55,7 +55,7 @@ var queries = map[string]string{
 	"index_workday_timeslot":   `CREATE INDEX workday_timeslot IF NOT EXISTS FOR (w:Workday) ON (w.timeslot)`,
 }
 
-func Migrate(ctx context.Context, db neo4j.DriverWithContext) {
+func Migrate(ctx context.Context, db *neo4j.DriverWithContext) {
 	slog.Info("Migrating database")
 
 	for name, query := range queries {
@@ -63,7 +63,7 @@ func Migrate(ctx context.Context, db neo4j.DriverWithContext) {
 
 		if _, err := neo4j.ExecuteQuery(
 			ctx,
-			db,
+			*db,
 			query,
 			map[string]interface{}{},
 			neo4j.EagerResultTransformer,
@@ -76,7 +76,7 @@ func Migrate(ctx context.Context, db neo4j.DriverWithContext) {
 	slog.Info("Migration complete")
 }
 
-func Clear(ctx context.Context, db neo4j.DriverWithContext) {
+func Clear(ctx context.Context, db *neo4j.DriverWithContext) {
 	/**
 	* Clears the database
 	 */
@@ -90,7 +90,7 @@ func Clear(ctx context.Context, db neo4j.DriverWithContext) {
 
 	if _, err := neo4j.ExecuteQuery(
 		ctx,
-		db,
+		*db,
 		"MATCH (n) DETACH DELETE n;",
 		map[string]interface{}{},
 		neo4j.EagerResultTransformer,

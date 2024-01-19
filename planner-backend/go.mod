@@ -3,9 +3,11 @@ module planner-backend
 go 1.21.5
 
 require (
+	github.com/docker/go-connections v0.4.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/google/wire v0.5.0
 	github.com/neo4j/neo4j-go-driver/v5 v5.16.0
+	github.com/testcontainers/testcontainers-go v0.27.0
 )
 
 require (
@@ -21,7 +23,6 @@ require (
 	github.com/cpuguy83/dockercfg v0.3.1 // indirect
 	github.com/docker/distribution v2.8.2+incompatible // indirect
 	github.com/docker/docker v24.0.7+incompatible // indirect
-	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
@@ -55,7 +56,6 @@ require (
 	github.com/shirou/gopsutil/v3 v3.23.11 // indirect
 	github.com/shoenig/go-m1cpu v0.1.6 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
-	github.com/testcontainers/testcontainers-go v0.27.0 // indirect
 	github.com/tklauser/go-sysconf v0.3.12 // indirect
 	github.com/tklauser/numcpus v0.6.1 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect

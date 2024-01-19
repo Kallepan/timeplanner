@@ -1,7 +1,4 @@
-/**
-* Test using go-testcontainers to test the repository using a mock database
-**/
-package repository
+package mock
 
 import (
 	"context"
@@ -19,6 +16,7 @@ func SetupTestDB(ctx context.Context, t *testing.T) (*neo4j.DriverWithContext, e
 		Image: "neo4j:latest",
 		Env: map[string]string{
 			"NEO4J_AUTH": "neo4j/test",
+			"NEO4J_dbms_security_auth__minimum__password__length": "1",
 		},
 		WaitingFor:   wait.ForLog("Started."),
 		ExposedPorts: []string{"7687/tcp"},
