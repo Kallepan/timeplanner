@@ -122,6 +122,7 @@ func (w WorkdayRepositoryImpl) AssignPersonToWorkday(personID string, department
 	// create a relationship between the person and the workday
 	MERGE (p)-[r:ASSIGNED_TO]->(wkd)
 	ON CREATE SET r.created_at = datetime()
+	RETURN p, r, wkd
 	`
 	params := map[string]interface{}{
 		"personID":       personID,
@@ -131,7 +132,7 @@ func (w WorkdayRepositoryImpl) AssignPersonToWorkday(personID string, department
 		"timeslotName":   timeslotName,
 	}
 
-	_, err := neo4j.ExecuteQuery(
+	result, err := neo4j.ExecuteQuery(
 		w.ctx,
 		*w.db,
 		query,
@@ -140,6 +141,10 @@ func (w WorkdayRepositoryImpl) AssignPersonToWorkday(personID string, department
 	)
 	if err != nil {
 		return err
+	}
+
+	if len(result.Records) == 0 {
+		return pkg.ErrDidNotCreateRelationship
 	}
 
 	return nil
