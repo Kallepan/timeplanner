@@ -1502,7 +1502,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"department_name\": \"BAK\",\n    \"workplace_name\": \"MALDI\"\n}",
+											"raw": "{\n    \"department_id\": \"BAK\",\n    \"workplace_id\": \"MALDI\"\n}",
 											"options": {
 												"raw": {
 													"language": "json"

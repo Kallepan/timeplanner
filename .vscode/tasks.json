@@ -3,6 +3,16 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "create persons",
+      "type": "shell",
+      "command": "python",
+      "args": ["scripts/upload_persons.py"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
       "label": "wire gen api-gateway",
       "type": "shell",
       "command": "sh",

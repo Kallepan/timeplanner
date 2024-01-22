@@ -5,6 +5,8 @@ NODE_MODULES="@angular/cli"
 npm install -g ${NODE_MODULES} && \
     npm cache clean --force
 
+pip install -r requirements.txt
+
 # install api gateway dependencies
 cd api-gateway
 go mod download

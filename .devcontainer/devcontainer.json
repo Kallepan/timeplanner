@@ -47,7 +47,9 @@
         "eamodio.gitlens",
         "ms-azuretools.vscode-docker",
         "esbenp.prettier-vscode",
-        "dbaeumer.vscode-eslint"
+        "dbaeumer.vscode-eslint",
+        "ms-python.python",
+        "ms-python.black-formatter"
       ],
       "settings": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
@@ -61,6 +63,10 @@
         },
         "[typescript]": {
           "editor.maxTokenizationLineLength": 2500,
+          "editor.formatOnSave": true
+        },
+        "[python]": {
+          "editor.defaultFormatter": "ms-python.black-formatter",
           "editor.formatOnSave": true
         },
         "[go]": {
