@@ -79,7 +79,7 @@ func (w WeekdayServiceImpl) BulkUpdateWeekdaysForTimeslot(c *gin.Context) {
 
 	data := mapOnWeekdayListToWeekdayResponseList(weekdays)
 
-	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
+	c.JSON(http.StatusCreated, pkg.BuildResponse(constant.Success, data))
 }
 
 func (w WeekdayServiceImpl) AddWeekdayToTimeslot(c *gin.Context) {
@@ -129,7 +129,7 @@ func (w WeekdayServiceImpl) AddWeekdayToTimeslot(c *gin.Context) {
 
 	data := mapOnWeekdayListToWeekdayResponseList(weekdays)
 
-	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
+	c.JSON(http.StatusCreated, pkg.BuildResponse(constant.Success, data))
 }
 
 func (w WeekdayServiceImpl) DeleteWeekdayFromTimeslot(c *gin.Context) {

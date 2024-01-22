@@ -79,6 +79,7 @@ func TestUpdateWorkplace(t *testing.T) {
 	testSteps := []ServiceTestPUT{
 		{
 			mockRequestData: map[string]interface{}{
+				"id":   "test_id",
 				"name": "newName",
 			},
 			findValue: dao.Workplace{
@@ -97,6 +98,7 @@ func TestUpdateWorkplace(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
+				"id":   "test_id",
 				"name": "newName",
 			},
 			findValue:          nil,
@@ -107,6 +109,7 @@ func TestUpdateWorkplace(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
+				"id":   "test_id",
 				"name": "newName",
 			},
 			findValue: dao.Workplace{
@@ -130,7 +133,7 @@ func TestUpdateWorkplace(t *testing.T) {
 	}
 
 	for i, testStep := range testSteps {
-		WorkplaceRepository.On("").Return(testStep.findValue, testStep.findError)
+		WorkplaceRepository.On("FindWorkplaceByID").Return(testStep.findValue, testStep.findError)
 		WorkplaceRepository.On("Save").Return(testStep.saveValue, testStep.saveError)
 
 		// get GIN context
@@ -168,6 +171,7 @@ func TestAddWorkplace(t *testing.T) {
 	testSteps := []ServiceTestPOST{
 		{
 			mockRequestData: map[string]interface{}{
+				"id":   "test_id",
 				"name": "test",
 			},
 			findValue: nil,
@@ -183,6 +187,7 @@ func TestAddWorkplace(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
+				"id":   "test_id",
 				"name": "test",
 			},
 			findValue: dao.Workplace{
@@ -198,6 +203,7 @@ func TestAddWorkplace(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
+				"id":   "test_id",
 				"name": "test",
 			},
 			findValue: nil,
@@ -221,13 +227,14 @@ func TestAddWorkplace(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
+				"id":   "test_id",
 				"name": "test",
 			},
-			findValue:          nil,
+			findValue:          dao.Workplace{},
 			saveValue:          nil,
 			expectedStatusCode: 500,
 			findError:          pkg.ErrNoRows,
-			saveError:          pkg.ErrNoRows,
+			saveError:          errors.New("Save error"),
 			params: map[string]string{
 				"departmentID": "test",
 			},
@@ -244,7 +251,7 @@ func TestAddWorkplace(t *testing.T) {
 
 	for i, testStep := range testSteps {
 		t.Run("Test Add Workplace", func(t *testing.T) {
-			WorkplaceRepository.On("").Return(testStep.findValue, testStep.findError)
+			WorkplaceRepository.On("FindWorkplaceByID").Return(testStep.findValue, testStep.findError)
 			WorkplaceRepository.On("Save").Return(testStep.saveValue, testStep.saveError)
 
 			// get GIN context
@@ -348,7 +355,7 @@ func TestGetAllWorkplaces(t *testing.T) {
 	}
 }
 
-func TestGetWorkplaceByName(t *testing.T) {
+func TestGetWorkplaceByID(t *testing.T) {
 	WorkplaceRepository := mock.NewWorkplaceRepositoryMock()
 	workplaceService := WorkplaceServiceImpl{
 		WorkplaceRepository: WorkplaceRepository,
@@ -357,9 +364,11 @@ func TestGetWorkplaceByName(t *testing.T) {
 	testSteps := []ServiceTestGET{
 		{
 			mockValue: dao.Workplace{
+				ID:   "test",
 				Name: "test",
 			},
 			expectedResponse: dao.Workplace{
+				ID:   "test",
 				Name: "test",
 			},
 			expectedStatusCode: http.StatusOK,
@@ -371,9 +380,11 @@ func TestGetWorkplaceByName(t *testing.T) {
 		},
 		{
 			mockValue: dao.Workplace{
+				ID:   "test",
 				Name: "test",
 			},
 			expectedResponse: dao.Workplace{
+				ID:   "test",
 				Name: "test",
 			},
 			expectedStatusCode: http.StatusBadRequest,
@@ -416,7 +427,7 @@ func TestGetWorkplaceByName(t *testing.T) {
 
 	for i, testStep := range testSteps {
 		t.Run("Test Get Workplace By Name", func(t *testing.T) {
-			WorkplaceRepository.On("").Return(testStep.mockValue, testStep.mockError)
+			WorkplaceRepository.On("FindWorkplaceByID").Return(testStep.mockValue, testStep.mockError)
 
 			// get GIN context
 			w := httptest.NewRecorder()

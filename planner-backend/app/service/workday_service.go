@@ -133,7 +133,7 @@ func (w WorkdayServiceImpl) AssignPersonToWorkday(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, pkg.Null()))
+	c.JSON(http.StatusCreated, pkg.BuildResponse(constant.Success, pkg.Null()))
 }
 
 func (w WorkdayServiceImpl) UnassignPersonFromWorkday(c *gin.Context) {

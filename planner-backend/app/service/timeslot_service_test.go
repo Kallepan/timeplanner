@@ -311,11 +311,11 @@ func TestAddTimeslot(t *testing.T) {
 				"name":   "test",
 				"active": true,
 			},
-			findValue:          nil,
+			findValue:          dao.Timeslot{},
 			saveValue:          nil,
 			expectedStatusCode: 500,
 			findError:          pkg.ErrNoRows,
-			saveError:          pkg.ErrNoRows,
+			saveError:          errors.New("Save error"),
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",

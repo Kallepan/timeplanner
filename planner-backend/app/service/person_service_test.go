@@ -248,7 +248,7 @@ func TestAddPerson(t *testing.T) {
 				Active:       true,
 				WorkingHours: 8,
 			},
-			expectedStatusCode: http.StatusOK,
+			expectedStatusCode: http.StatusCreated,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 		},

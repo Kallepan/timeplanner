@@ -8,7 +8,6 @@ import (
 	"planner-backend/app/domain/dco"
 	"planner-backend/app/pkg"
 	"planner-backend/app/repository"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -70,7 +69,6 @@ func (p PersonServiceImpl) GetPersonByID(c *gin.Context) {
 	if personID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	personID = strings.ToUpper(personID)
 
 	rawData, err := p.PersonRepository.FindPersonByID(personID)
 	switch err {
@@ -102,9 +100,6 @@ func (p PersonServiceImpl) AddPerson(c *gin.Context) {
 		slog.Error("Error when binding json", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	if err := personRequest.Validate(); err != nil {
-		pkg.PanicException(constant.InvalidRequest)
-	}
 
 	_, err := p.PersonRepository.FindPersonByID(personRequest.ID)
 	switch err {
@@ -126,7 +121,7 @@ func (p PersonServiceImpl) AddPerson(c *gin.Context) {
 
 	data := mapPersonToPersonResponse(rawData)
 
-	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
+	c.JSON(http.StatusCreated, pkg.BuildResponse(constant.Success, data))
 }
 
 func (p PersonServiceImpl) UpdatePerson(c *gin.Context) {
@@ -142,7 +137,6 @@ func (p PersonServiceImpl) UpdatePerson(c *gin.Context) {
 	if personID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	personID = strings.ToUpper(personID)
 
 	person, err := p.PersonRepository.FindPersonByID(personID)
 	switch err {
@@ -157,9 +151,6 @@ func (p PersonServiceImpl) UpdatePerson(c *gin.Context) {
 
 	var personRequest dco.PersonRequest
 	if err := c.ShouldBindJSON(&personRequest); err != nil {
-		pkg.PanicException(constant.InvalidRequest)
-	}
-	if err := personRequest.Validate(); err != nil {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
@@ -193,7 +184,6 @@ func (p PersonServiceImpl) DeletePerson(c *gin.Context) {
 	if personID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	personID = strings.ToUpper(personID)
 
 	person, err := p.PersonRepository.FindPersonByID(personID)
 	switch err {

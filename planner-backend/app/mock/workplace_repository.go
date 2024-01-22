@@ -37,14 +37,6 @@ func (r *WorkplaceRepositoryMock) FindAllWorkplaces(departmentID string) ([]dao.
 	return r.dataContainer["FindAllWorkplaces"].([]dao.Workplace), r.errorContainer["FindAllWorkplaces"]
 }
 
-func (r *WorkplaceRepositoryMock) FindWorkplaceByName(departmentID string, workplaceID string) (dao.Workplace, error) {
-	if r.dataContainer["FindWorkplaceByName"] == nil {
-		return dao.Workplace{}, r.errorContainer["FindWorkplaceByName"]
-	}
-
-	return r.dataContainer["FindWorkplaceByName"].(dao.Workplace), r.errorContainer["FindWorkplaceByName"]
-}
-
 func (r *WorkplaceRepositoryMock) FindWorkplaceByID(departmentID string, workplaceID string) (dao.Workplace, error) {
 	if r.dataContainer["FindWorkplaceByID"] == nil {
 		return dao.Workplace{}, r.errorContainer["FindWorkplaceByID"]

@@ -45,7 +45,7 @@ type Person struct {
 	Departments []Department
 	Weekdays    []Weekday
 
-	WorkingHours int64
+	WorkingHours float64
 }
 
 func (p *Person) ParseAdditionalFieldsFromDBRecord(record *neo4j.Record) error {
@@ -137,7 +137,7 @@ func (p *Person) ParseFromDBRecord(record *neo4j.Record) error {
 	if err != nil {
 		return err
 	}
-	workingHours, err := neo4j.GetProperty[int64](personNode, "workingHours")
+	workingHours, err := neo4j.GetProperty[float64](personNode, "workingHours")
 	if err != nil {
 		return err
 	}

@@ -39,7 +39,7 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 					ID: "MON",
 				},
 			},
-			expectedStatusCode: http.StatusOK,
+			expectedStatusCode: http.StatusCreated,
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
@@ -95,7 +95,7 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 				t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
 			}
 
-			if response.StatusCode != http.StatusOK {
+			if response.StatusCode != http.StatusCreated {
 				return
 			}
 
@@ -136,7 +136,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 					ID: "MON",
 				},
 			},
-			expectedStatusCode: http.StatusOK,
+			expectedStatusCode: http.StatusCreated,
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
@@ -217,17 +217,19 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 				t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
 			}
 
-			if response.StatusCode != 201 {
+			if response.StatusCode != http.StatusCreated {
 				return
 			}
 
-			var responseBody dto.APIResponse[dco.WeekdayResponse]
+			var responseBody dto.APIResponse[[]dco.OnWeekdayResponse]
 			if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
 				t.Errorf("Test Step %d: Error when decoding response body", i)
 			}
 
-			if responseBody.Data.ID != testStep.saveValue.(dao.OnWeekday).ID {
-				t.Errorf("Test Step %d: Expected response body %v, got %v", i, testStep.saveValue, responseBody.Data)
+			for _, weekday := range responseBody.Data {
+				if weekday.ID != testStep.saveValue.([]dao.OnWeekday)[0].ID {
+					t.Errorf("Test Step %d: Expected response body %v, got %v", i, testStep.saveValue, responseBody.Data)
+				}
 			}
 		})
 	}

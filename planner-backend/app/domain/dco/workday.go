@@ -1,7 +1,6 @@
 package dco
 
 import (
-	"strings"
 	"time"
 )
 
@@ -15,11 +14,7 @@ type AssignPersonToWorkdayRequest struct {
 }
 
 func (r *AssignPersonToWorkdayRequest) Validate() error {
-	// validate date in format: yyyy-mm-
-
-	// Ensure all strings are uppercase
-	r.PersonID = strings.ToUpper(r.PersonID)
-
+	// validate date in format: yyyy-mm-dd
 	_, err := time.Parse("2006-01-02", r.Date)
 	if err != nil {
 		return err
@@ -37,11 +32,7 @@ type UnassignPersonFromWorkdayRequest struct {
 }
 
 func (r *UnassignPersonFromWorkdayRequest) Validate() error {
-	// validate date in format: yyyy-mm-
-
-	// Ensure all strings are uppercase
-	r.PersonID = strings.ToUpper(r.PersonID)
-
+	// validate date in format: yyyy-mm-dd
 	_, err := time.Parse("2006-01-02", r.Date)
 	if err != nil {
 		return err
@@ -52,11 +43,11 @@ func (r *UnassignPersonFromWorkdayRequest) Validate() error {
 
 /* Responses */
 type WorkdayPersonResponse struct {
-	ID           string `json:"id"`
-	FirstName    string `json:"first_name"`
-	LastName     string `json:"last_name"`
-	Email        string `json:"email"`
-	WorkingHours int64  `json:"working_hours"`
+	ID           string  `json:"id"`
+	FirstName    string  `json:"first_name"`
+	LastName     string  `json:"last_name"`
+	Email        string  `json:"email"`
+	WorkingHours float64 `json:"working_hours"`
 }
 type WorkdayResponse struct {
 	Department string `json:"department"`

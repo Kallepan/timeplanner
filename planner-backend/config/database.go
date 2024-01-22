@@ -40,7 +40,7 @@ func ConnectToDB(ctx context.Context) *neo4j.DriverWithContext {
 /* Migrations */
 var queries = map[string]string{
 	// TODO: Implement a better way to handle these queries
-	"unique_department":        `CREATE CONSTRAINT unique_department_name IF NOT EXISTS FOR (d:Department) REQUIRE d.name IS UNIQUE;`,
+	"unique_department":        `CREATE CONSTRAINT unique_department_id IF NOT EXISTS FOR (d:Department) REQUIRE d.name IS UNIQUE;`,
 	"unique_person":            `CREATE CONSTRAINT unique_person_id IF NOT EXISTS FOR (p:Person) REQUIRE p.id IS UNIQUE;`,
 	"create_monday":            `MERGE (:Weekday {name: 'Monday', id: "MON"});`,
 	"create_tuesday":           `MERGE (:Weekday {name: 'Tuesday', id: "TUE"});`,
