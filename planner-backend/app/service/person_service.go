@@ -36,12 +36,12 @@ func (p PersonServiceImpl) GetAllPersons(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program get all persons")
 
-	departmentName := c.Query("department")
-	if departmentName == "" {
+	departmentID := c.Query("department")
+	if departmentID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	rawData, err := p.PersonRepository.FindAllPersons(departmentName)
+	rawData, err := p.PersonRepository.FindAllPersons(departmentID)
 	switch err {
 	case nil:
 		break
@@ -235,10 +235,36 @@ func mapPersonToPersonResponse(person dao.Person) dco.PersonResponse {
 			DeletedAt: person.DeletedAt,
 		},
 
-		Workplaces:  person.Workplaces,
-		Departments: person.Departments,
-		Weekdays:    person.Weekdays,
+		Workplaces:  mapWorkplaceListToWorkplaceResponseList(person.Workplaces),
+		Departments: mapDepartmentListToDepartmentResponseList(person.Departments),
+		Weekdays:    mapWeekdayListToWeekdayResponseList(person.Weekdays),
 	}
+}
+
+func mapWeekdayToWeekdayResponse(weekday dao.Weekday) dco.WeekdayResponse {
+	/* mapWeekdayToWeekdayResponse is a function to map weekday to weekday response
+	 * @param weekday is dao.Weekday
+	 * @return dco.WeekdayResponse
+	 */
+
+	return dco.WeekdayResponse{
+		ID:   weekday.ID,
+		Name: weekday.Name,
+	}
+}
+
+func mapWeekdayListToWeekdayResponseList(weekdays []dao.Weekday) []dco.WeekdayResponse {
+	/* mapWeekdayListToWeekdayResponseList is a function to map weekday list to weekday response list
+	 * @param weekdays is []dao.Weekday
+	 * @return []dco.WeekdayResponse
+	 */
+
+	var weekdayResponseList []dco.WeekdayResponse
+	for _, weekday := range weekdays {
+		weekdayResponseList = append(weekdayResponseList, mapWeekdayToWeekdayResponse(weekday))
+	}
+
+	return weekdayResponseList
 }
 
 func mapPersonListToPersonResponseList(persons []dao.Person) []dco.PersonResponse {

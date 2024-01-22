@@ -34,16 +34,16 @@ func (t TimeslotServiceImpl) GetAllTimeslots(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program get all timeslots")
 
-	departmentName := c.Param("departmentName")
-	if departmentName == "" {
+	departmentID := c.Param("departmentID")
+	if departmentID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	workplaceName := c.Param("workplaceName")
-	if workplaceName == "" {
+	workplaceID := c.Param("workplaceID")
+	if workplaceID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	rawData, err := t.TimeslotRepository.FindAllTimeslots(departmentName, workplaceName)
+	rawData, err := t.TimeslotRepository.FindAllTimeslots(departmentID, workplaceID)
 	switch err {
 	case nil:
 		break
@@ -68,14 +68,14 @@ func (t TimeslotServiceImpl) GetTimeslotByName(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program get timeslot by name")
 
-	departmentName := c.Param("departmentName")
-	workplaceName := c.Param("workplaceName")
+	departmentID := c.Param("departmentID")
+	workplaceID := c.Param("workplaceID")
 	timeslotName := c.Param("timeslotName")
-	if departmentName == "" || workplaceName == "" || timeslotName == "" {
+	if departmentID == "" || workplaceID == "" || timeslotName == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	rawData, err := t.TimeslotRepository.FindTimeslotByName(departmentName, workplaceName, timeslotName)
+	rawData, err := t.TimeslotRepository.FindTimeslotByName(departmentID, workplaceID, timeslotName)
 	switch err {
 	case nil:
 		break
@@ -105,12 +105,12 @@ func (t TimeslotServiceImpl) AddTimeslot(c *gin.Context) {
 		slog.Error("Error when binding json", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	departmentName := c.Param("departmentName")
-	workplaceName := c.Param("workplaceName")
-	if departmentName == "" || workplaceName == "" {
+	departmentID := c.Param("departmentID")
+	workplaceID := c.Param("workplaceID")
+	if departmentID == "" || workplaceID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	_, err := t.TimeslotRepository.FindTimeslotByName(departmentName, workplaceName, timeslotRequest.Name)
+	_, err := t.TimeslotRepository.FindTimeslotByName(departmentID, workplaceID, timeslotRequest.Name)
 	switch err {
 	case nil:
 		pkg.PanicException(constant.Conflict)
@@ -122,8 +122,13 @@ func (t TimeslotServiceImpl) AddTimeslot(c *gin.Context) {
 	}
 
 	timeslot := mapTimeslotRequestToTimeslot(timeslotRequest)
-	rawData, err := t.TimeslotRepository.Save(departmentName, workplaceName, &timeslot)
-	if err != nil {
+	rawData, err := t.TimeslotRepository.Save(departmentID, workplaceID, &timeslot)
+	switch err {
+	case nil:
+		break
+	case pkg.ErrNoRows:
+		pkg.PanicException(constant.DataNotFound)
+	default:
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
@@ -142,14 +147,14 @@ func (t TimeslotServiceImpl) UpdateTimeslot(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program update timeslot")
 
-	departmentName := c.Param("departmentName")
-	workplaceName := c.Param("workplaceName")
+	departmentID := c.Param("departmentID")
+	workplaceID := c.Param("workplaceID")
 	timeslotName := c.Param("timeslotName")
-	if timeslotName == "" || departmentName == "" || workplaceName == "" {
+	if timeslotName == "" || departmentID == "" || workplaceID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	timeslot, err := t.TimeslotRepository.FindTimeslotByName(departmentName, workplaceName, timeslotName)
+	timeslot, err := t.TimeslotRepository.FindTimeslotByName(departmentID, workplaceID, timeslotName)
 	switch err {
 	case nil:
 		break
@@ -169,8 +174,13 @@ func (t TimeslotServiceImpl) UpdateTimeslot(c *gin.Context) {
 	timeslot.Name = timeslotRequest.Name
 	timeslot.Active = *timeslotRequest.Active
 
-	rawData, err := t.TimeslotRepository.Save(departmentName, workplaceName, &timeslot)
-	if err != nil {
+	rawData, err := t.TimeslotRepository.Save(departmentID, workplaceID, &timeslot)
+	switch err {
+	case nil:
+		break
+	case pkg.ErrNoRows:
+		pkg.PanicException(constant.DataNotFound)
+	default:
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
@@ -189,14 +199,14 @@ func (t TimeslotServiceImpl) DeleteTimeslot(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program delete timeslot")
 
-	departmentName := c.Param("departmentName")
-	workplaceName := c.Param("workplaceName")
+	departmentID := c.Param("departmentID")
+	workplaceID := c.Param("workplaceID")
 	timeslotName := c.Param("timeslotName")
-	if departmentName == "" || workplaceName == "" || timeslotName == "" {
+	if departmentID == "" || workplaceID == "" || timeslotName == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	timeslot, err := t.TimeslotRepository.FindTimeslotByName(departmentName, workplaceName, timeslotName)
+	timeslot, err := t.TimeslotRepository.FindTimeslotByName(departmentID, workplaceID, timeslotName)
 	switch err {
 	case nil:
 		break
@@ -206,7 +216,8 @@ func (t TimeslotServiceImpl) DeleteTimeslot(c *gin.Context) {
 		slog.Error("Error when fetching data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
-	if err := t.TimeslotRepository.Delete(departmentName, workplaceName, &timeslot); err != nil {
+
+	if err := t.TimeslotRepository.Delete(departmentID, workplaceID, &timeslot); err != nil {
 		slog.Error("Error when deleting data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
@@ -221,11 +232,11 @@ func mapTimeslotToTimeslotResponse(timeslot dao.Timeslot) dco.TimeslotResponse {
 	 */
 
 	return dco.TimeslotResponse{
-		Name:           timeslot.Name,
-		Active:         &timeslot.Active,
-		DepartmentName: timeslot.DepartmentName,
-		WorkplaceName:  timeslot.WorkplaceName,
-		Weekdays:       mapWeekdayListToWeekdayResponseList(timeslot.Weekdays),
+		Name:         timeslot.Name,
+		Active:       &timeslot.Active,
+		DepartmentID: timeslot.DepartmentID,
+		WorkplaceID:  timeslot.WorkplaceID,
+		Weekdays:     mapOnWeekdayListToWeekdayResponseList(timeslot.Weekdays),
 		Base: dco.Base{
 			CreatedAt: timeslot.Base.CreatedAt,
 			UpdatedAt: timeslot.Base.UpdatedAt,

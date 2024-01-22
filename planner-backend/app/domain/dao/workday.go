@@ -8,10 +8,10 @@ import (
 
 type Workday struct {
 	// Metadata to uniquely identify a Workday
-	DepartmentName string
-	WorkplaceName  string
-	TimeslotName   string
-	Date           string
+	DepartmentID string
+	WorkplaceID  string
+	TimeslotName string
+	Date         string
 
 	// Assigned Person can be nil
 	Person *Person
@@ -23,7 +23,7 @@ type Workday struct {
 	Weekday string
 }
 
-func (w *Workday) ParseFromDBRecord(record *neo4j.Record, departmentName string, date string) error {
+func (w *Workday) ParseFromDBRecord(record *neo4j.Record, departmentID string, date string) error {
 	/* Parses a workday from a neo4j record and sets the values on this workday */
 
 	// get wkd Node
@@ -33,7 +33,7 @@ func (w *Workday) ParseFromDBRecord(record *neo4j.Record, departmentName string,
 	}
 
 	// get wkd properties
-	workplaceName, err := neo4j.GetProperty[string](workdayNode, "workplace")
+	workplaceID, err := neo4j.GetProperty[string](workdayNode, "workplace")
 	if err != nil {
 		return err
 	}
@@ -67,8 +67,8 @@ func (w *Workday) ParseFromDBRecord(record *neo4j.Record, departmentName string,
 	}
 
 	// set values on workday
-	w.DepartmentName = departmentName
-	w.WorkplaceName = workplaceName
+	w.DepartmentID = departmentID
+	w.WorkplaceID = workplaceID
 	w.TimeslotName = timeslotName
 	w.Date = date
 	w.StartTime = startTime.Time().Format(constant.TimeFormat)

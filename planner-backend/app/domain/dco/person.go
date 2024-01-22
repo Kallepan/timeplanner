@@ -5,6 +5,11 @@ import (
 )
 
 /** Responses **/
+type WeekdayResponse struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+
 type PersonResponse struct {
 	Base
 	ID           string `json:"id"`
@@ -14,9 +19,9 @@ type PersonResponse struct {
 	Active       *bool  `json:"active"`
 	WorkingHours int64  `json:"working_hours"`
 
-	Workplaces  []string `json:"workplaces,omitempty"`
-	Departments []string `json:"departments,omitempty"`
-	Weekdays    []string `json:"weekdays,omitempty"`
+	Workplaces  []WorkplaceResponse  `json:"workplaces,omitempty"`
+	Departments []DepartmentResponse `json:"departments,omitempty"`
+	Weekdays    []WeekdayResponse    `json:"weekdays,omitempty"`
 }
 
 /** Requests **/

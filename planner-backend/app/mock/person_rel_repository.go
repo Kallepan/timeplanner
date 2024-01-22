@@ -41,16 +41,16 @@ func (r *PersonRelRepositoryMock) FindAbsencyForPerson(personID string, date str
 	return r.dataContainer["FindAbsencyForPerson"].(dao.Absence), r.errorContainer["FindAbsencyForPerson"]
 }
 
-func (r *PersonRelRepositoryMock) AddDepartmentToPerson(person dao.Person, departmentName string) error {
+func (r *PersonRelRepositoryMock) AddDepartmentToPerson(person dao.Person, departmentID string) error {
 	return r.errorContainer["AddDepartmentToPerson"]
 }
-func (r *PersonRelRepositoryMock) RemoveDepartmentFromPerson(person dao.Person, departmentName string) error {
+func (r *PersonRelRepositoryMock) RemoveDepartmentFromPerson(person dao.Person, departmentID string) error {
 	return r.errorContainer["RemoveDepartmentFromPerson"]
 }
-func (r *PersonRelRepositoryMock) AddWorkplaceToPerson(person dao.Person, departmentName string, workplaceName string) error {
+func (r *PersonRelRepositoryMock) AddWorkplaceToPerson(person dao.Person, departmentID string, workplaceID string) error {
 	return r.errorContainer["AddWorkplaceToPerson"]
 }
-func (r *PersonRelRepositoryMock) RemoveWorkplaceFromPerson(person dao.Person, departmentName string, workplaceName string) error {
+func (r *PersonRelRepositoryMock) RemoveWorkplaceFromPerson(person dao.Person, departmentID string, workplaceID string) error {
 	return r.errorContainer["RemoveWorkplaceFromPerson"]
 }
 func (r *PersonRelRepositoryMock) AddWeekdayToPerson(person dao.Person, weekdayID string) error {

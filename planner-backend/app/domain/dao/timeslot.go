@@ -24,11 +24,11 @@ func (w *OnWeekday) ToMap() map[string]interface{} {
 }
 
 type Timeslot struct {
-	Name           string
-	Active         bool
-	DepartmentName string
-	WorkplaceName  string
-	Weekdays       []OnWeekday
+	Name         string
+	Active       bool
+	DepartmentID string
+	WorkplaceID  string
+	Weekdays     []OnWeekday
 	Base
 }
 
@@ -61,7 +61,7 @@ func (w *OnWeekday) ParseFromMap(data map[string]interface{}) error {
 	return nil
 }
 
-func (t *Timeslot) ParseFromDB(record *neo4j.Record, departmentName string, workplaceName string) error {
+func (t *Timeslot) ParseFromDB(record *neo4j.Record, departmentID string, workplaceID string) error {
 	timelotNode, _, err := neo4j.GetRecordValue[neo4j.Node](record, "t")
 	if err != nil {
 		return err
@@ -95,8 +95,8 @@ func (t *Timeslot) ParseFromDB(record *neo4j.Record, departmentName string, work
 
 	t.Name = name
 	t.Active = active
-	t.DepartmentName = departmentName
-	t.WorkplaceName = workplaceName
+	t.DepartmentID = departmentID
+	t.WorkplaceID = workplaceID
 	t.Base.CreatedAt = createdAt
 	t.Base.UpdatedAt = updatedAt
 	t.Base.DeletedAt = deletedAt

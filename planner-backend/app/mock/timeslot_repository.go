@@ -30,14 +30,14 @@ func (r *TimeslotRepositoryMock) Return(mockData interface{}, errorData error) M
 }
 
 /* Repository interface implementations */
-func (r *TimeslotRepositoryMock) FindAllTimeslots(departmentName string, workplaceName string) ([]dao.Timeslot, error) {
+func (r *TimeslotRepositoryMock) FindAllTimeslots(departmentID string, workplaceID string) ([]dao.Timeslot, error) {
 	if r.dataContainer["FindAllTimeslots"] == nil {
 		return nil, r.errorContainer["FindAllTimeslots"]
 	}
 	return r.dataContainer["FindAllTimeslots"].([]dao.Timeslot), r.errorContainer["FindAllTimeslots"]
 }
 
-func (r *TimeslotRepositoryMock) FindTimeslotByName(departmentName string, workplaceName string, timeslotName string) (dao.Timeslot, error) {
+func (r *TimeslotRepositoryMock) FindTimeslotByName(departmentID string, workplaceID string, timeslotName string) (dao.Timeslot, error) {
 	if r.dataContainer["FindTimeslotByName"] == nil {
 		return dao.Timeslot{}, r.errorContainer["FindTimeslotByName"]
 	}
@@ -45,14 +45,14 @@ func (r *TimeslotRepositoryMock) FindTimeslotByName(departmentName string, workp
 	return r.dataContainer["FindTimeslotByName"].(dao.Timeslot), r.errorContainer["FindTimeslotByName"]
 }
 
-func (r *TimeslotRepositoryMock) Save(departmentName string, workplaceName string, timeslot *dao.Timeslot) (dao.Timeslot, error) {
+func (r *TimeslotRepositoryMock) Save(departmentID string, workplaceID string, timeslot *dao.Timeslot) (dao.Timeslot, error) {
 	if r.dataContainer["Save"] == nil {
 		return dao.Timeslot{}, r.errorContainer["Save"]
 	}
 	return r.dataContainer["Save"].(dao.Timeslot), r.errorContainer["Save"]
 }
 
-func (r *TimeslotRepositoryMock) Delete(departmentName string, workplaceName string, timeslot *dao.Timeslot) error {
+func (r *TimeslotRepositoryMock) Delete(departmentID string, workplaceID string, timeslot *dao.Timeslot) error {
 	return r.errorContainer["Delete"]
 }
 

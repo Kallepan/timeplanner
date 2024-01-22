@@ -37,12 +37,12 @@ func (r *DepartmentRepositoryMock) FindAllDepartments() ([]dao.Department, error
 	return r.dataContainer["FindAllDepartments"].([]dao.Department), r.errorContainer["FindAllDepartments"]
 }
 
-func (r *DepartmentRepositoryMock) FindDepartmentByName(name string) (dao.Department, error) {
-	if r.dataContainer["FindDepartmentByName"] == nil {
-		return dao.Department{}, r.errorContainer["FindDepartmentByName"]
+func (r *DepartmentRepositoryMock) FindDepartmentByID(id string) (dao.Department, error) {
+	if r.dataContainer["FindDepartmentByID"] == nil {
+		return dao.Department{}, r.errorContainer["FindDepartmentByID"]
 	}
 
-	return r.dataContainer["FindDepartmentByName"].(dao.Department), r.errorContainer["FindDepartmentByName"]
+	return r.dataContainer["FindDepartmentByID"].(dao.Department), r.errorContainer["FindDepartmentByID"]
 }
 
 func (r *DepartmentRepositoryMock) Save(Department *dao.Department) (dao.Department, error) {
