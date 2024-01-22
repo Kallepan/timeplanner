@@ -463,7 +463,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"BAK\"\n}",
+									"raw": "{\n    \"id\": \"BAK\",\n    \"name\": \"Mikrobiologie\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -494,7 +494,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"DELETED\"\n}",
+									"raw": "{\n    \"id\": \"DELETED\",\n    \"name\": \"deleted\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -610,7 +610,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"MALDI\"\n}",
+									"raw": "{\n    \"id\": \"MALDI\",\n    \"name\": \"MALDI\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -643,7 +643,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"VITEK\"\n}",
+									"raw": "{\n    \"id\": \"VITEK\",\n    \"name\": \"VITEK\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -676,7 +676,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"VITEK\"\n}",
+									"raw": "{\n    \"id\": \"VITEK\",\n    \"name\": \"VITEK\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -712,7 +712,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\": \"BAK\"\n}",
+									"raw": "",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1056,7 +1056,7 @@
 									"response": []
 								},
 								{
-									"name": "add V2 on mon Copy",
+									"name": "delete V2 on mon",
 									"request": {
 										"method": "DELETE",
 										"header": [],
@@ -1159,6 +1159,42 @@
 										"BAK",
 										"workplace",
 										"MALDI",
+										"timeslot",
+										""
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "create V2 Vitek",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"V2\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:8080/api/v1/planner/department/DELETED/workplace/VITEK/timeslot/",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "8080",
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"DELETED",
+										"workplace",
+										"VITEK",
 										"timeslot",
 										""
 									]
@@ -1273,7 +1309,7 @@
 								"method": "DELETE",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/api/v1/planner/department/Deleted",
+									"raw": "http://localhost:8080/api/v1/planner/department/DELETED/workplace/VITEK/timeslot/V2",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -1284,7 +1320,11 @@
 										"v1",
 										"planner",
 										"department",
-										"Deleted"
+										"DELETED",
+										"workplace",
+										"VITEK",
+										"timeslot",
+										"V2"
 									]
 								}
 							},
@@ -1305,7 +1345,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"department_name\": \"BAK\"\n}",
+											"raw": "{\n    \"department_id\": \"BAK\"\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -1338,7 +1378,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"department_name\": \"BAK\",\n    \"workplace_name\": \"MALDI\"\n}",
+											"raw": "{\n    \"department_id\": \"BAK\",\n    \"workplace_id\": \"MALDI\"\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -1729,7 +1769,7 @@
 								"method": "GET",
 								"header": [],
 								"url": {
-									"raw": "http://localhost:8080/api/v1/planner/workday?department=BAK&date=2024-02-12",
+									"raw": "http://localhost:8080/api/v1/planner/workday?department=BAK&date=2024-01-15",
 									"protocol": "http",
 									"host": [
 										"localhost"
@@ -1748,7 +1788,7 @@
 										},
 										{
 											"key": "date",
-											"value": "2024-02-12"
+											"value": "2024-01-15"
 										}
 									]
 								}
@@ -1844,7 +1884,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"person_id\": \"KANK\",\n    \"department_name\": \"BAK\",\n    \"workplace_name\": \"MALDI\",\n    \"timeslot_name\": \"V2\",\n    \"date\": \"2024-01-19\"\n}",
+									"raw": "{\n    \"person_id\": \"KANK\",\n    \"department_id\": \"BAK\",\n    \"workplace_id\": \"Vitek\",\n    \"timeslot_name\": \"V1\",\n    \"date\": \"2024-01-15\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1876,7 +1916,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"person_id\": \"KANK\",\n    \"department_name\": \"BAK\",\n    \"workplace_name\": \"MALDI\",\n    \"timeslot_name\": \"V1\",\n    \"date\": \"2024-02-12\"\n}",
+									"raw": "{\n    \"person_id\": \"KANK\",\n    \"department_id\": \"BAK\",\n    \"workplace_id\": \"MALDI\",\n    \"timeslot_name\": \"V1\",\n    \"date\": \"2024-02-12\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -1923,6 +1963,2381 @@
 						}
 					},
 					"response": []
+				}
+			]
+		},
+		{
+			"name": "real-data",
+			"item": [
+				{
+					"name": "department",
+					"item": [
+						{
+							"name": "create BAK",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"bak\",\n    \"name\": \"Mikrobiologie\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "workplace",
+					"item": [
+						{
+							"name": "P.S.",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"psl\",\n    \"name\": \"P.S.\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Varia",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"var\",\n    \"name\": \"Varia\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Grossraumlabor",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"gro\",\n    \"name\": \"Groraumlabor\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Anlernplatz",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"anl\",\n    \"name\": \"Anlernplatz\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Arzt",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"arz\",\n    \"name\": \"Arzt\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Iso",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"iso\",\n    \"name\": \"Iso\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Stuhl",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"stu\",\n    \"name\": \"Stuhl\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Atemwege",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"ate\",\n    \"name\": \"Atemwege\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "MALDI",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"mal\",\n    \"name\": \"MALDI\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Vitek",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"vit\",\n    \"name\": \"Vitek\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "TB",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"tbl\",\n    \"name\": \"TB\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Hygiene",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"hyg\",\n    \"name\": \"Hygiene\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Trinkwasser",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"tri\",\n    \"name\": \"Trinkwasser\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Auspacken + Erfassen",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"aus\",\n    \"name\": \"Auspacken / Erfassen\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Chargenfreigabe",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"cha\",\n    \"name\": \"Chargenfreigabe\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Joker",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"jok\",\n    \"name\": \"Joker\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sonstige",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"son\",\n    \"name\": \"Sonstige\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Timeslot",
+					"item": [
+						{
+							"name": "P.S P1",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"P1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/psl/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"psl",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "P.S P2",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"P2\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/psl/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"psl",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Varia V1",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"V1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/var/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"var",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Varia V2",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"V2\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/var/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"var",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Grossraumlabor",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"G1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/gro/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"gro",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Anlernplatz",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"AN1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/anl/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"anl",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Arzt V1",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"V1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/arz/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"arz",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Arzt V2",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"V2\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/arz/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"arz",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Arzt V3",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"V3\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/arz/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"arz",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Iso",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"I1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/iso/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"iso",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Stuhl EIA",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"EIA\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/stu/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"stu",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Stuhl Vis",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Vis\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/stu/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"stu",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Stuhl V1",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"V1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/stu/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"stu",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Atemwege",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"A1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/ate/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"ate",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "MALDI",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"M1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/mal/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"mal",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Vitek V1",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"V1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/vit/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"vit",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Vitek V2",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"V2\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/vit/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"vit",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "TB",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"T1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/tbl/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"tbl",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Hygiene",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"H1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/hyg/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"hyg",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Trinkwasser",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"TW1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/tri/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"tri",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Auspacken+Erfassen",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"AE1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/aus/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"aus",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Auspacken+Erfassen",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"AE2\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/aus/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"aus",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Chargenfreigabe",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"C1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/cha/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"cha",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Joker",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"J1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/jok/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"jok",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sonstige S1",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"S1\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/son/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"son",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sonstige S2",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"S2\",\n    \"active\": true\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/son/timeslot",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"son",
+										"timeslot"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "offered_on",
+					"item": [
+						{
+							"name": "P.S P1",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"06:00\",\n      \"end_time\": \"14:45\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"06:00\",\n      \"end_time\": \"14:45\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"06:00\",\n      \"end_time\": \"14:45\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"06:00\",\n      \"end_time\": \"14:45\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"06:00\",\n      \"end_time\": \"14:45\"\n    },\n    {\n      \"id\": \"SAT\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"13:00\"\n    },\n    {\n      \"id\": \"SUN\",\n      \"start_time\": \"08:00\",\n      \"end_time\": \"14:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/psl/timeslot/P1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"psl",
+										"timeslot",
+										"P1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "P.S P2",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/psl/timeslot/P2/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"psl",
+										"timeslot",
+										"P2",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Varia V1",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"06:00\",\n      \"end_time\": \"14:45\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"06:00\",\n      \"end_time\": \"14:45\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"06:00\",\n      \"end_time\": \"14:45\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"06:00\",\n      \"end_time\": \"14:45\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"06:00\",\n      \"end_time\": \"14:45\"\n    },\n    {\n      \"id\": \"SAT\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"13:00\"\n    },\n    {\n      \"id\": \"SUN\",\n      \"start_time\": \"08:00\",\n      \"end_time\": \"14:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/var/timeslot/V1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"var",
+										"timeslot",
+										"V1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Varia V2",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"SAT\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"13:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/var/timeslot/V2/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"var",
+										"timeslot",
+										"V2",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Grossraumlabor",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"SAT\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"13:00\"\n    },\n    {\n      \"id\": \"SUN\",\n      \"start_time\": \"08:00\",\n      \"end_time\": \"14:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/gro/timeslot/G1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"gro",
+										"timeslot",
+										"G1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Anlernplatz",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/anl/timeslot/AN1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"anl",
+										"timeslot",
+										"AN1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Arzt V1",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"SAT\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"13:00\"\n    },\n    {\n      \"id\": \"SUN\",\n      \"start_time\": \"08:00\",\n      \"end_time\": \"14:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/arz/timeslot/V1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"arz",
+										"timeslot",
+										"V1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Arzt V2",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"SAT\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"13:00\"\n    },\n    {\n      \"id\": \"SUN\",\n      \"start_time\": \"08:00\",\n      \"end_time\": \"14:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/arz/timeslot/V2/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"arz",
+										"timeslot",
+										"V2",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Arzt V3",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/arz/timeslot/V3/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"arz",
+										"timeslot",
+										"V3",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Iso",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"SAT\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"13:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/iso/timeslot/I1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"iso",
+										"timeslot",
+										"I1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Stuhl EIA",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"06:00\",\n      \"end_time\": \"14:45\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"06:00\",\n      \"end_time\": \"14:45\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"06:00\",\n      \"end_time\": \"14:45\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"06:00\",\n      \"end_time\": \"14:45\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"06:00\",\n      \"end_time\": \"14:45\"\n    },\n    {\n      \"id\": \"SAT\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"13:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/stu/timeslot/EIA/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"stu",
+										"timeslot",
+										"EIA",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Stuhl Vis",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"SAT\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"13:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/stu/timeslot/Vis/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"stu",
+										"timeslot",
+										"Vis",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Stuhl V1",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"10:45\",\n      \"end_time\": \"19:30\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"10:45\",\n      \"end_time\": \"19:30\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"10:45\",\n      \"end_time\": \"19:30\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"10:45\",\n      \"end_time\": \"19:30\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"10:45\",\n      \"end_time\": \"19:30\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/stu/timeslot/V1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"stu",
+										"timeslot",
+										"V1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Atemwege",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"SAT\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"13:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/ate/timeslot/A1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"ate",
+										"timeslot",
+										"A1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "MALDI",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"07:45\",\n      \"end_time\": \"16:30\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"07:45\",\n      \"end_time\": \"16:30\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"07:45\",\n      \"end_time\": \"16:30\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"07:45\",\n      \"end_time\": \"16:30\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"07:45\",\n      \"end_time\": \"16:30\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/mal/timeslot/M1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"mal",
+										"timeslot",
+										"M1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Vitek V1",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"SAT\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"13:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/vit/timeslot/V1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"vit",
+										"timeslot",
+										"V1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Vitek V2",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/vit/timeslot/V2/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"vit",
+										"timeslot",
+										"V2",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "TB",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/tbl/timeslot/T1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"tbl",
+										"timeslot",
+										"T1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Hygiene",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"07:00\",\n      \"end_time\": \"15:45\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/hyg/timeslot/H1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"hyg",
+										"timeslot",
+										"H1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Trinkwasser",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/tri/timeslot/TW1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"tri",
+										"timeslot",
+										"TW1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Auspacken+Erfassen AE1",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"10:45\",\n      \"end_time\": \"19:30\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"10:45\",\n      \"end_time\": \"19:30\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"10:45\",\n      \"end_time\": \"19:30\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"10:45\",\n      \"end_time\": \"19:30\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"10:45\",\n      \"end_time\": \"19:30\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/aus/timeslot/AE1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"aus",
+										"timeslot",
+										"AE1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Auspacken+Erfassen AE2",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"10:45\",\n      \"end_time\": \"19:30\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"10:45\",\n      \"end_time\": \"19:30\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"10:45\",\n      \"end_time\": \"19:30\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"10:45\",\n      \"end_time\": \"19:30\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"10:45\",\n      \"end_time\": \"19:30\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/aus/timeslot/AE2/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"aus",
+										"timeslot",
+										"AE2",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Chargenfreigabe",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/cha/timeslot/C1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"cha",
+										"timeslot",
+										"C1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Joker",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/jok/timeslot/J1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"jok",
+										"timeslot",
+										"J1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sonstige S1",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/son/timeslot/S1/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"son",
+										"timeslot",
+										"S1",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Sonstige S2",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"weekdays\": [\n    {\n      \"id\": \"MON\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"TUE\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"WED\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"THU\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    },\n    {\n      \"id\": \"FRI\",\n      \"start_time\": \"08:15\",\n      \"end_time\": \"17:00\"\n    }\n  ]\n}\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/api/v1/planner/department/bak/workplace/son/timeslot/S2/weekday/bulk",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"planner",
+										"department",
+										"bak",
+										"workplace",
+										"son",
+										"timeslot",
+										"S2",
+										"weekday",
+										"bulk"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		}
