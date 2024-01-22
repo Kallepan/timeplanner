@@ -220,7 +220,7 @@ func (p PersonRelServiceImpl) AddDepartmentToPerson(c *gin.Context) {
 	if err := c.ShouldBindJSON(&request); err != nil {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	_, err = p.DepartmentRepository.FindDepartmentByName(request.DepartmentName)
+	_, err = p.DepartmentRepository.FindDepartmentByID(request.DepartmentID)
 	switch err {
 	case nil:
 		break
@@ -231,7 +231,7 @@ func (p PersonRelServiceImpl) AddDepartmentToPerson(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	if err := p.PersonRelRepository.AddDepartmentToPerson(person, request.DepartmentName); err != nil {
+	if err := p.PersonRelRepository.AddDepartmentToPerson(person, request.DepartmentID); err != nil {
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
@@ -253,8 +253,8 @@ func (p PersonRelServiceImpl) RemoveDepartmentFromPerson(c *gin.Context) {
 	}
 	personID = strings.ToUpper(personID)
 
-	departmentName := c.Param("departmentName")
-	if departmentName == "" {
+	departmentID := c.Param("departmentID")
+	if departmentID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
@@ -269,7 +269,7 @@ func (p PersonRelServiceImpl) RemoveDepartmentFromPerson(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	if err := p.PersonRelRepository.RemoveDepartmentFromPerson(person, departmentName); err != nil {
+	if err := p.PersonRelRepository.RemoveDepartmentFromPerson(person, departmentID); err != nil {
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
@@ -307,7 +307,7 @@ func (p PersonRelServiceImpl) AddWorkplaceToPerson(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	_, err = p.WorkplaceRepository.FindWorkplaceByName(request.DepartmentName, request.WorkplaceName)
+	_, err = p.WorkplaceRepository.FindWorkplaceByID(request.DepartmentID, request.WorkplaceID)
 	switch err {
 	case nil:
 		break
@@ -318,7 +318,7 @@ func (p PersonRelServiceImpl) AddWorkplaceToPerson(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	if err := p.PersonRelRepository.AddWorkplaceToPerson(person, request.DepartmentName, request.WorkplaceName); err != nil {
+	if err := p.PersonRelRepository.AddWorkplaceToPerson(person, request.DepartmentID, request.WorkplaceID); err != nil {
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
@@ -356,7 +356,7 @@ func (p PersonRelServiceImpl) RemoveWorkplaceFromPerson(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	if err := p.PersonRelRepository.RemoveWorkplaceFromPerson(person, request.DepartmentName, request.WorkplaceName); err != nil {
+	if err := p.PersonRelRepository.RemoveWorkplaceFromPerson(person, request.DepartmentID, request.WorkplaceID); err != nil {
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}

@@ -12,7 +12,7 @@ import (
 type DepartmentRepository interface {
 	// Function Used by the service
 	FindAllDepartments() ([]dao.Department, error)
-	FindDepartmentByName(departmentName string) (dao.Department, error)
+	FindDepartmentByID(id string) (dao.Department, error)
 	Save(department *dao.Department) (dao.Department, error)
 	Delete(department *dao.Department) error
 }
@@ -54,16 +54,16 @@ func (d DepartmentRepositoryImpl) FindAllDepartments() ([]dao.Department, error)
 	return departments, nil
 }
 
-func (d DepartmentRepositoryImpl) FindDepartmentByName(departmentName string) (dao.Department, error) {
+func (d DepartmentRepositoryImpl) FindDepartmentByID(id string) (dao.Department, error) {
 	/* Returns a department by name */
 
 	department := dao.Department{}
 	query := `
-	MATCH (d:Department {name: $name})
+	MATCH (d:Department {id: $id})
 	WHERE d.deleted_at IS NULL
 	RETURN d`
 	params := map[string]interface{}{
-		"name": departmentName,
+		"id": id,
 	}
 
 	result, err := neo4j.ExecuteQuery(
@@ -91,16 +91,19 @@ func (d DepartmentRepositoryImpl) Save(department *dao.Department) (dao.Departme
 	/* Creates a department */
 
 	query := `
-	MERGE (d:Department {name: $name})
+	MERGE (d:Department {id: $id})
 	ON CREATE SET
+		d.name = $name,
 		d.created_at = datetime(),
 		d.updated_at = datetime(),
 		d.deleted_at = NULL
     ON MATCH SET
+		d.name = $name,
         d.updated_at = datetime(),
 		d.deleted_at = NULL
 	RETURN d`
 	params := map[string]interface{}{
+		"id":   department.ID,
 		"name": department.Name,
 	}
 
@@ -130,10 +133,10 @@ func (d DepartmentRepositoryImpl) Delete(department *dao.Department) error {
 
 	query := `
 	MATCH (d:Department)
-	WHERE d.name = $name
+	WHERE d.id = $id
 	SET d.deleted_at = datetime()`
 	params := map[string]interface{}{
-		"name": department.Name,
+		"id": department.ID,
 	}
 
 	_, err := neo4j.ExecuteQuery(

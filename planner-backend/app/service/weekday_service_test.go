@@ -41,9 +41,9 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 			},
 			expectedStatusCode: http.StatusOK,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
-				"timeslotName":   "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
+				"timeslotName": "test",
 			},
 		},
 		{
@@ -70,9 +70,9 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
-				"timeslotName":   "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
+				"timeslotName": "test",
 			},
 		},
 		// Add more test steps here...
@@ -140,9 +140,9 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
-				"timeslotName":   "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
+				"timeslotName": "test",
 			},
 		},
 		{
@@ -157,9 +157,9 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
-				"timeslotName":   "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
+				"timeslotName": "test",
 			},
 		},
 		{
@@ -186,9 +186,9 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
-				"timeslotName":   "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
+				"timeslotName": "test",
 			},
 		},
 		{
@@ -252,10 +252,10 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 			},
 			findError: nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
-				"timeslotName":   "test",
-				"weekdayName":    "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
+				"timeslotName": "test",
+				"weekdayName":  "test",
 			},
 		},
 		{ // Test 2
@@ -264,10 +264,10 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 			findValue:          nil,
 			findError:          pkg.ErrNoRows,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
-				"timeslotName":   "test",
-				"weekdayName":    "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
+				"timeslotName": "test",
+				"weekdayName":  "test",
 			},
 		},
 		{ // Test 3
@@ -275,10 +275,10 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 			findValue:          nil,
 			findError:          pkg.ErrNoRows,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
-				"timeslotName":   "test",
-				"weekdayName":    "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
+				"timeslotName": "test",
+				"weekdayName":  "test",
 			},
 		},
 	}

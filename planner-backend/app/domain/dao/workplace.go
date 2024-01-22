@@ -8,6 +8,7 @@ import (
 
 type Workplace struct {
 	Name string
+	ID   string
 
 	Base
 }
@@ -17,6 +18,10 @@ func (w *Workplace) ParseFromNode(node *neo4j.Node) error {
 	 * Parses a workplace from a neo4j node and sets the values on this workplace
 	 */
 
+	id, err := neo4j.GetProperty[string](node, "id")
+	if err != nil {
+		return err
+	}
 	name, err := neo4j.GetProperty[string](node, "name")
 	if err != nil {
 		return err
@@ -35,6 +40,7 @@ func (w *Workplace) ParseFromNode(node *neo4j.Node) error {
 		return err
 	}
 
+	w.ID = id
 	w.Name = name
 	w.Base.CreatedAt = createdAt
 	w.Base.UpdatedAt = updatedAt
@@ -53,28 +59,10 @@ func (w *Workplace) ParseFromDBRecord(record *neo4j.Record) error {
 		return err
 	}
 
-	name, err := neo4j.GetProperty[string](workplaceNode, "name")
+	err = w.ParseFromNode(&workplaceNode)
 	if err != nil {
 		return err
 	}
-	createdAt, err := neo4j.GetProperty[time.Time](workplaceNode, "created_at")
-	if err != nil {
-		return err
-	}
-	updatedAt, err := neo4j.GetProperty[time.Time](workplaceNode, "updated_at")
-	if err != nil {
-		return err
-	}
-	deletedAtInterface, _ := neo4j.GetProperty[[]any](workplaceNode, "deleted_at")
-	deletedAt, err := ConvertNullableValueToTime(deletedAtInterface)
-	if err != nil {
-		return err
-	}
-
-	w.Name = name
-	w.Base.CreatedAt = createdAt
-	w.Base.UpdatedAt = updatedAt
-	w.Base.DeletedAt = deletedAt
 
 	return nil
 }

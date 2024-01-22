@@ -16,7 +16,7 @@ import (
 type DepartmentService interface {
 	// Function Used by the controller
 	GetAllDepartments(c *gin.Context)
-	GetDepartmentByName(c *gin.Context)
+	GetDepartmentByID(c *gin.Context)
 	AddDepartment(c *gin.Context)
 	UpdateDepartment(c *gin.Context)
 	DeleteDepartment(c *gin.Context)
@@ -46,7 +46,7 @@ func (d DepartmentServiceImpl) GetAllDepartments(c *gin.Context) {
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
 }
 
-func (d DepartmentServiceImpl) GetDepartmentByName(c *gin.Context) {
+func (d DepartmentServiceImpl) GetDepartmentByID(c *gin.Context) {
 	/* GetDepartmentById is a function to get department by name
 	 * @param c is gin context
 	 * @return void
@@ -55,8 +55,8 @@ func (d DepartmentServiceImpl) GetDepartmentByName(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program get department by name")
 
-	name := c.Param("departmentName")
-	rawData, err := d.DepartmentRepository.FindDepartmentByName(name)
+	id := c.Param("departmentID")
+	rawData, err := d.DepartmentRepository.FindDepartmentByID(id)
 	switch err {
 	case nil:
 		break
@@ -89,7 +89,7 @@ func (d DepartmentServiceImpl) AddDepartment(c *gin.Context) {
 
 	department := mapDepartmentRequestToDepartment(departmentRequest)
 
-	_, err := d.DepartmentRepository.FindDepartmentByName(department.Name)
+	_, err := d.DepartmentRepository.FindDepartmentByID(department.ID)
 	switch err {
 	case nil:
 		pkg.PanicException(constant.Conflict)
@@ -119,8 +119,8 @@ func (d DepartmentServiceImpl) UpdateDepartment(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program update department")
 
-	name := c.Param("departmentName")
-	department, err := d.DepartmentRepository.FindDepartmentByName(name)
+	id := c.Param("departmentID")
+	department, err := d.DepartmentRepository.FindDepartmentByID(id)
 	switch err {
 	case nil:
 		break
@@ -158,8 +158,8 @@ func (d DepartmentServiceImpl) DeleteDepartment(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program delete department")
 
-	name := c.Param("departmentName")
-	department, err := d.DepartmentRepository.FindDepartmentByName(name)
+	name := c.Param("departmentID")
+	department, err := d.DepartmentRepository.FindDepartmentByID(name)
 	switch err {
 	case nil:
 		break
@@ -195,6 +195,7 @@ func mapDepartmentToDepartmentResponse(department dao.Department) dco.Department
 			UpdatedAt: department.UpdatedAt,
 			DeletedAt: department.DeletedAt,
 		},
+		ID:   department.ID,
 		Name: department.Name,
 	}
 
@@ -218,6 +219,7 @@ func mapDepartmentRequestToDepartment(departmentRequest dco.DepartmentRequest) d
 	 * @return dao.Department
 	 */
 	return dao.Department{
+		ID:   departmentRequest.ID,
 		Name: departmentRequest.Name,
 	}
 }

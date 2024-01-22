@@ -24,7 +24,7 @@ func (u DepartmentControllerImpl) GetAll(ctx *gin.Context) {
 }
 
 func (u DepartmentControllerImpl) Get(ctx *gin.Context) {
-	u.DepartmentService.GetDepartmentByName(ctx)
+	u.DepartmentService.GetDepartmentByID(ctx)
 }
 
 func (u DepartmentControllerImpl) Create(ctx *gin.Context) {

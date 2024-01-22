@@ -36,12 +36,12 @@ func (p PersonServiceImpl) GetAllPersons(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program get all persons")
 
-	departmentName := c.Query("department")
-	if departmentName == "" {
+	departmentID := c.Query("department")
+	if departmentID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	rawData, err := p.PersonRepository.FindAllPersons(departmentName)
+	rawData, err := p.PersonRepository.FindAllPersons(departmentID)
 	switch err {
 	case nil:
 		break

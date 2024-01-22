@@ -7,11 +7,11 @@ import (
 
 /* Requests */
 type AssignPersonToWorkdayRequest struct {
-	PersonID       string `json:"person_id" binding:"required"`
-	DepartmentName string `json:"department_name" binding:"required"`
-	WorkplaceName  string `json:"workplace_name" binding:"required"`
-	TimeslotName   string `json:"timeslot_name" binding:"required"`
-	Date           string `json:"date" binding:"required"`
+	PersonID     string `json:"person_id" binding:"required"`
+	DepartmentID string `json:"department_id" binding:"required"`
+	WorkplaceID  string `json:"workplace_id" binding:"required"`
+	TimeslotName string `json:"timeslot_name" binding:"required"`
+	Date         string `json:"date" binding:"required"`
 }
 
 func (r *AssignPersonToWorkdayRequest) Validate() error {
@@ -19,9 +19,6 @@ func (r *AssignPersonToWorkdayRequest) Validate() error {
 
 	// Ensure all strings are uppercase
 	r.PersonID = strings.ToUpper(r.PersonID)
-	r.DepartmentName = strings.ToUpper(r.DepartmentName)
-	r.WorkplaceName = strings.ToUpper(r.WorkplaceName)
-	r.TimeslotName = strings.ToUpper(r.TimeslotName)
 
 	_, err := time.Parse("2006-01-02", r.Date)
 	if err != nil {
@@ -32,11 +29,11 @@ func (r *AssignPersonToWorkdayRequest) Validate() error {
 }
 
 type UnassignPersonFromWorkdayRequest struct {
-	PersonID       string `json:"person_id" binding:"required"`
-	DepartmentName string `json:"department_name" binding:"required"`
-	WorkplaceName  string `json:"workplace_name" binding:"required"`
-	TimeslotName   string `json:"timeslot_name" binding:"required"`
-	Date           string `json:"date" binding:"required"`
+	PersonID     string `json:"person_id" binding:"required"`
+	DepartmentID string `json:"department_id" binding:"required"`
+	WorkplaceID  string `json:"workplace_id" binding:"required"`
+	TimeslotName string `json:"timeslot_name" binding:"required"`
+	Date         string `json:"date" binding:"required"`
 }
 
 func (r *UnassignPersonFromWorkdayRequest) Validate() error {
@@ -44,9 +41,6 @@ func (r *UnassignPersonFromWorkdayRequest) Validate() error {
 
 	// Ensure all strings are uppercase
 	r.PersonID = strings.ToUpper(r.PersonID)
-	r.DepartmentName = strings.ToUpper(r.DepartmentName)
-	r.WorkplaceName = strings.ToUpper(r.WorkplaceName)
-	r.TimeslotName = strings.ToUpper(r.TimeslotName)
 
 	_, err := time.Parse("2006-01-02", r.Date)
 	if err != nil {

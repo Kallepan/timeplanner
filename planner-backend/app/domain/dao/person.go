@@ -57,7 +57,10 @@ func (p *Person) ParseAdditionalFieldsFromDBRecord(record *neo4j.Record) error {
 		return err
 	} else if !isNil {
 		for _, workplaceNodeInterface := range workplaceNodeInteraces {
-			workplaceNode := workplaceNodeInterface.(neo4j.Node)
+			workplaceNode, ok := workplaceNodeInterface.(neo4j.Node)
+			if !ok {
+				continue
+			}
 			workplace := Workplace{}
 			if err := workplace.ParseFromNode(&workplaceNode); err != nil {
 				return err
@@ -70,7 +73,10 @@ func (p *Person) ParseAdditionalFieldsFromDBRecord(record *neo4j.Record) error {
 		return err
 	} else if !isNil {
 		for _, departmentInterface := range departments {
-			departmentNode := departmentInterface.(neo4j.Node)
+			departmentNode, ok := departmentInterface.(neo4j.Node)
+			if !ok {
+				continue
+			}
 			department := Department{}
 			if err := department.ParseFromNode(&departmentNode); err != nil {
 				return err
@@ -83,7 +89,10 @@ func (p *Person) ParseAdditionalFieldsFromDBRecord(record *neo4j.Record) error {
 		return err
 	} else if !isNil {
 		for _, weekdayInterface := range weekdays {
-			weekdayNode := weekdayInterface.(neo4j.Node)
+			weekdayNode, ok := weekdayInterface.(neo4j.Node)
+			if !ok {
+				continue
+			}
 			weekday := Weekday{}
 			if err := weekday.ParseFromNode(&weekdayNode); err != nil {
 				return err

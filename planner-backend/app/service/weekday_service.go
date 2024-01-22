@@ -36,10 +36,10 @@ func (w WeekdayServiceImpl) BulkUpdateWeekdaysForTimeslot(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program bulk update weekdays for timeslot")
 
-	departmentName := c.Param("departmentName")
-	workplaceName := c.Param("workplaceName")
+	departmentID := c.Param("departmentID")
+	workplaceID := c.Param("workplaceID")
 	timeslotName := c.Param("timeslotName")
-	if departmentName == "" || workplaceName == "" || timeslotName == "" {
+	if departmentID == "" || workplaceID == "" || timeslotName == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
@@ -49,7 +49,7 @@ func (w WeekdayServiceImpl) BulkUpdateWeekdaysForTimeslot(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	timeslot, err := w.TimeslotRepository.FindTimeslotByName(departmentName, workplaceName, timeslotName)
+	timeslot, err := w.TimeslotRepository.FindTimeslotByName(departmentID, workplaceID, timeslotName)
 	switch err {
 	case nil:
 		break
@@ -86,10 +86,10 @@ func (w WeekdayServiceImpl) AddWeekdayToTimeslot(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program add weekday to timeslot")
 
-	departmentName := c.Param("departmentName")
-	workplaceName := c.Param("workplaceName")
+	departmentID := c.Param("departmentID")
+	workplaceID := c.Param("workplaceID")
 	timeslotName := c.Param("timeslotName")
-	if departmentName == "" || workplaceName == "" || timeslotName == "" {
+	if departmentID == "" || workplaceID == "" || timeslotName == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
@@ -101,7 +101,7 @@ func (w WeekdayServiceImpl) AddWeekdayToTimeslot(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	timeslot, err := w.TimeslotRepository.FindTimeslotByName(departmentName, workplaceName, timeslotName)
+	timeslot, err := w.TimeslotRepository.FindTimeslotByName(departmentID, workplaceID, timeslotName)
 	switch err {
 	case nil:
 		break
@@ -117,7 +117,12 @@ func (w WeekdayServiceImpl) AddWeekdayToTimeslot(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 	weekdays, err := w.WeekdayRepository.AddWeekdayToTimeslot(&timeslot, weekday)
-	if err != nil {
+	switch err {
+	case nil:
+		break
+	case pkg.ErrNoRows:
+		pkg.PanicException(constant.InvalidRequest)
+	default:
 		slog.Error("Error when fetching data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
@@ -131,10 +136,10 @@ func (w WeekdayServiceImpl) DeleteWeekdayFromTimeslot(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program delete weekday from timeslot")
 
-	departmentName := c.Param("departmentName")
-	workplaceName := c.Param("workplaceName")
+	departmentID := c.Param("departmentID")
+	workplaceID := c.Param("workplaceID")
 	timeslotName := c.Param("timeslotName")
-	if departmentName == "" || workplaceName == "" || timeslotName == "" {
+	if departmentID == "" || workplaceID == "" || timeslotName == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
@@ -147,7 +152,7 @@ func (w WeekdayServiceImpl) DeleteWeekdayFromTimeslot(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	timeslot, err := w.TimeslotRepository.FindTimeslotByName(departmentName, workplaceName, timeslotName)
+	timeslot, err := w.TimeslotRepository.FindTimeslotByName(departmentID, workplaceID, timeslotName)
 	switch err {
 	case nil:
 		break
@@ -178,10 +183,10 @@ func (w WeekdayServiceImpl) DeleteWeekdayFromTimeslot(c *gin.Context) {
 		defer pkg.PanicHandler(c)
 		slog.Info("start to execute program update weekday for timeslot")
 
-		departmentName := c.Param("departmentName")
-		workplaceName := c.Param("workplaceName")
+		departmentID := c.Param("departmentID")
+		workplaceID := c.Param("workplaceID")
 		timeslotName := c.Param("timeslotName")
-		if departmentName == "" || workplaceName == "" || timeslotName == "" {
+		if departmentID == "" || workplaceID == "" || timeslotName == "" {
 			pkg.PanicException(constant.InvalidRequest)
 		}
 
@@ -191,7 +196,7 @@ func (w WeekdayServiceImpl) DeleteWeekdayFromTimeslot(c *gin.Context) {
 			pkg.PanicException(constant.InvalidRequest)
 		}
 
-		timeslot, err := w.TimeslotRepository.FindTimeslotByName(departmentName, workplaceName, timeslotName)
+		timeslot, err := w.TimeslotRepository.FindTimeslotByName(departmentID, workplaceID, timeslotName)
 		switch err {
 		case nil:
 			break

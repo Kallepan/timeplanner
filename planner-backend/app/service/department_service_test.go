@@ -24,20 +24,19 @@ func TestDeleteDepartment(t *testing.T) {
 	testSteps := []ServiceTestDELETE{
 		{
 			mockValue: dao.Department{
+				ID:   "test",
 				Name: "test",
 			},
 			params: map[string]string{
-				"departmentName": "test",
+				"departmentID": "test",
 			},
 			mockError:          nil,
 			expectedStatusCode: http.StatusOK,
 		},
 		{
-			mockValue: dao.Department{
-				Name: "test",
-			},
+			mockValue: nil,
 			params: map[string]string{
-				"departmentName": "test",
+				"departmentID": "test",
 			},
 			mockError:          pkg.ErrNoRows,
 			expectedStatusCode: http.StatusOK,
@@ -70,6 +69,7 @@ func TestUpdateDepartment(t *testing.T) {
 	testSteps := []ServiceTestPUT{
 		{
 			mockRequestData: map[string]interface{}{
+				"id":   "newName",
 				"name": "newName",
 			},
 			findValue: dao.Department{
@@ -117,7 +117,7 @@ func TestUpdateDepartment(t *testing.T) {
 	}
 
 	for i, testStep := range testSteps {
-		departmentMockRepo.On("FindDepartmentByName").Return(testStep.findValue, testStep.findError)
+		departmentMockRepo.On("FindDepartmentByID").Return(testStep.findValue, testStep.findError)
 		departmentMockRepo.On("Save").Return(testStep.saveValue, testStep.saveError)
 
 		// get GIN context
@@ -156,9 +156,11 @@ func TestAddDepartment(t *testing.T) {
 		{
 			mockRequestData: map[string]interface{}{
 				"name": "test",
+				"id":   "test",
 			},
 			findValue: nil,
 			saveValue: dao.Department{
+				ID:   "test",
 				Name: "test",
 			},
 			expectedStatusCode: http.StatusCreated,
@@ -169,6 +171,7 @@ func TestAddDepartment(t *testing.T) {
 			// conflict
 			mockRequestData: map[string]interface{}{
 				"name": "test",
+				"id":   "test",
 			},
 			findValue: dao.Department{
 				Name: "test",
@@ -189,6 +192,7 @@ func TestAddDepartment(t *testing.T) {
 		{
 			mockRequestData: map[string]interface{}{
 				"name": "test",
+				"id":   "test",
 			},
 			findValue:          nil,
 			saveValue:          nil,
@@ -208,7 +212,7 @@ func TestAddDepartment(t *testing.T) {
 
 	for i, testStep := range testSteps {
 		t.Run("Test Add Department", func(t *testing.T) {
-			departmentMockRepo.On("FindDepartmentByName").Return(testStep.findValue, testStep.findError)
+			departmentMockRepo.On("FindDepartmentByID").Return(testStep.findValue, testStep.findError)
 			departmentMockRepo.On("Save").Return(testStep.saveValue, testStep.saveError)
 
 			// get GIN context
@@ -306,7 +310,7 @@ func TestGetAllDepartments(t *testing.T) {
 	}
 }
 
-func TestGetDepartmentByName(t *testing.T) {
+func TestGetDepartmentByID(t *testing.T) {
 	departmentMockRepo := mock.NewDepartmentRepositoryMock()
 	departmentService := DepartmentServiceImpl{
 		DepartmentRepository: departmentMockRepo,
@@ -323,7 +327,7 @@ func TestGetDepartmentByName(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
+				"departmentID": "test",
 			},
 		},
 		{
@@ -332,20 +336,20 @@ func TestGetDepartmentByName(t *testing.T) {
 			expectedStatusCode: http.StatusNotFound,
 			mockError:          pkg.ErrNoRows,
 			params: map[string]string{
-				"departmentName": "test",
+				"departmentID": "test",
 			},
 		},
 	}
 
 	for i, testStep := range testSteps {
 		t.Run("Test Get Department By Name", func(t *testing.T) {
-			departmentMockRepo.On("FindDepartmentByName").Return(testStep.mockValue, testStep.mockError)
+			departmentMockRepo.On("FindDepartmentByID").Return(testStep.mockValue, testStep.mockError)
 
 			// get GIN context
 			w := httptest.NewRecorder()
 			c := mock.GetGinTestContext(w, "GET", testStep.ParamsToGinParams(), nil)
 
-			departmentService.GetDepartmentByName(c)
+			departmentService.GetDepartmentByID(c)
 			response := w.Result()
 
 			if response.StatusCode != testStep.expectedStatusCode {

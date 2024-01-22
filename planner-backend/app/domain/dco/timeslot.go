@@ -14,11 +14,11 @@ type OnWeekdayResponse struct {
 
 type TimeslotResponse struct {
 	Base
-	Name           string              `json:"name"`
-	Active         *bool               `json:"active"`
-	DepartmentName string              `json:"department_name"`
-	WorkplaceName  string              `json:"workplace_name"`
-	Weekdays       []OnWeekdayResponse `json:"weekdays"`
+	Name         string              `json:"name"`
+	Active       *bool               `json:"active"`
+	DepartmentID string              `json:"department_id"`
+	WorkplaceID  string              `json:"workplace_id"`
+	Weekdays     []OnWeekdayResponse `json:"weekdays"`
 }
 
 /** Requests **/

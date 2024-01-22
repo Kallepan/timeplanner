@@ -25,9 +25,9 @@ func TestDeleteTimeslot(t *testing.T) {
 				Name: "test",
 			},
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
-				"timeslotName":   "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
+				"timeslotName": "test",
 			},
 			mockError:          nil,
 			expectedStatusCode: http.StatusOK,
@@ -37,8 +37,8 @@ func TestDeleteTimeslot(t *testing.T) {
 				Name: "test",
 			},
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
 			},
 			mockError:          pkg.ErrNoRows,
 			expectedStatusCode: http.StatusBadRequest,
@@ -48,8 +48,8 @@ func TestDeleteTimeslot(t *testing.T) {
 				Name: "test",
 			},
 			params: map[string]string{
-				"departmentName": "test",
-				"timeslotName":   "test",
+				"departmentID": "test",
+				"timeslotName": "test",
 			},
 			mockError:          pkg.ErrNoRows,
 			expectedStatusCode: http.StatusBadRequest,
@@ -94,9 +94,9 @@ func TestUpdateTimeslot(t *testing.T) {
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
-				"timeslotName":   "oldName",
+				"departmentID": "test",
+				"workplaceID":  "test",
+				"timeslotName": "oldName",
 			},
 		},
 		{
@@ -114,9 +114,9 @@ func TestUpdateTimeslot(t *testing.T) {
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
-				"timeslotName":   "oldName",
+				"departmentID": "test",
+				"workplaceID":  "test",
+				"timeslotName": "oldName",
 			},
 		},
 		{
@@ -133,9 +133,9 @@ func TestUpdateTimeslot(t *testing.T) {
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
-				"timeslotName":   "oldName",
+				"departmentID": "test",
+				"workplaceID":  "test",
+				"timeslotName": "oldName",
 			},
 		},
 		{
@@ -148,9 +148,9 @@ func TestUpdateTimeslot(t *testing.T) {
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
-				"timeslotName":   "oldName",
+				"departmentID": "test",
+				"workplaceID":  "test",
+				"timeslotName": "oldName",
 			},
 		},
 		{
@@ -227,8 +227,8 @@ func TestAddTimeslot(t *testing.T) {
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
 			},
 		},
 		{
@@ -244,8 +244,8 @@ func TestAddTimeslot(t *testing.T) {
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
 			},
 		},
 		{
@@ -260,8 +260,8 @@ func TestAddTimeslot(t *testing.T) {
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
 			},
 		},
 		{
@@ -277,8 +277,8 @@ func TestAddTimeslot(t *testing.T) {
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
 			},
 		},
 		{
@@ -302,8 +302,8 @@ func TestAddTimeslot(t *testing.T) {
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
 			},
 		},
 		{
@@ -317,8 +317,8 @@ func TestAddTimeslot(t *testing.T) {
 			findError:          pkg.ErrNoRows,
 			saveError:          pkg.ErrNoRows,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
 			},
 		},
 		{
@@ -384,8 +384,8 @@ func TestGetAllTimeslots(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
 			},
 		},
 		{
@@ -400,8 +400,8 @@ func TestGetAllTimeslots(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			mockError:          pkg.ErrNoRows,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
 			},
 		},
 	}
@@ -456,9 +456,9 @@ func TestGetTimeslotByName(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 			params: map[string]string{
-				"timeslotName":   "test",
-				"departmentName": "test",
-				"workplaceName":  "test",
+				"timeslotName": "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
 			},
 		},
 		{
@@ -471,8 +471,8 @@ func TestGetTimeslotByName(t *testing.T) {
 			expectedStatusCode: http.StatusBadRequest,
 			mockError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
 			},
 		},
 		{
@@ -485,8 +485,8 @@ func TestGetTimeslotByName(t *testing.T) {
 			expectedStatusCode: http.StatusBadRequest,
 			mockError:          nil,
 			params: map[string]string{
-				"timeslotName":   "test",
-				"departmentName": "test",
+				"timeslotName": "test",
+				"departmentID": "test",
 			},
 		},
 		{
@@ -502,9 +502,9 @@ func TestGetTimeslotByName(t *testing.T) {
 			expectedStatusCode: http.StatusNotFound,
 			mockError:          pkg.ErrNoRows,
 			params: map[string]string{
-				"timeslotName":   "test",
-				"departmentName": "test",
-				"workplaceName":  "test",
+				"timeslotName": "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
 			},
 		},
 	}

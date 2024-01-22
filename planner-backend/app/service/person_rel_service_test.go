@@ -419,7 +419,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 		t.Run("Test Add Department To Person", func(t *testing.T) {
 			PersonRepository.On("FindPersonByID").Return(testStep.findValue, testStep.findError)
 			PersonRelRepository.On("AddDepartmentToPerson").Return(testStep.mockValue, testStep.mockError)
-			DepartmentRepository.On("FindDepartmentByName").Return(testStep.additionalFindValue, testStep.additionalFindError)
+			DepartmentRepository.On("FindDepartmentByID").Return(testStep.additionalFindValue, testStep.additionalFindError)
 
 			// get GIN context
 			w := httptest.NewRecorder()
@@ -454,8 +454,8 @@ func TestRemoveDepartmentFromPerson(t *testing.T) {
 			},
 			findError: nil,
 			params: map[string]string{
-				"personID":       "test",
-				"departmentName": "department1",
+				"personID":     "test",
+				"departmentID": "department1",
 			},
 			expectedStatusCode: http.StatusOK,
 		},
@@ -466,8 +466,8 @@ func TestRemoveDepartmentFromPerson(t *testing.T) {
 			},
 			findError: nil,
 			params: map[string]string{
-				"personID":       "test",
-				"departmentName": "department1",
+				"personID":     "test",
+				"departmentID": "department1",
 			},
 			expectedStatusCode: http.StatusOK,
 		},
@@ -485,8 +485,8 @@ func TestRemoveDepartmentFromPerson(t *testing.T) {
 			findValue: nil,
 			findError: pkg.ErrNoRows,
 			params: map[string]string{
-				"personID":       "test",
-				"departmentName": "department1",
+				"personID":     "test",
+				"departmentID": "department1",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 		},
@@ -494,7 +494,7 @@ func TestRemoveDepartmentFromPerson(t *testing.T) {
 			findValue: nil,
 			findError: nil,
 			params: map[string]string{
-				"departmentName": "department1",
+				"departmentID": "department1",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 		},
@@ -504,8 +504,8 @@ func TestRemoveDepartmentFromPerson(t *testing.T) {
 			},
 			findError: nil,
 			params: map[string]string{
-				"personID":       "test",
-				"departmentName": "department1",
+				"personID":     "test",
+				"departmentID": "department1",
 			},
 			mockError:          errors.New("test"),
 			expectedStatusCode: 500,
@@ -647,7 +647,7 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 		t.Run("Test Add Workplace To Person", func(t *testing.T) {
 			PersonRepository.On("FindPersonByID").Return(testStep.findValue, testStep.findError)
 			PersonRelRepository.On("AddWorkplaceToPerson").Return(testStep.mockValue, testStep.mockError)
-			WorkplaceRepository.On("FindWorkplaceByName").Return(testStep.additionalFindValue, testStep.additionalFindError)
+			WorkplaceRepository.On("FindWorkplaceByID").Return(testStep.additionalFindValue, testStep.additionalFindError)
 
 			// get GIN context
 			w := httptest.NewRecorder()

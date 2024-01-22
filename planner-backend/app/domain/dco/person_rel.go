@@ -20,17 +20,17 @@ type AbsenceRequest struct {
 }
 
 type RelAddDepartmentRequest struct {
-	DepartmentName string `json:"department_name" binding:"required"`
+	DepartmentID string `json:"department_id" binding:"required"`
 }
 
 type RelAddWorkplaceRequest struct {
-	WorkplaceName  string `json:"workplace_name" binding:"required"`
-	DepartmentName string `json:"department_name" binding:"required"`
+	WorkplaceID  string `json:"workplace_id" binding:"required"`
+	DepartmentID string `json:"department_id" binding:"required"`
 }
 
 type RelRemoveWorkplaceRequest struct {
-	WorkplaceName  string `json:"workplace_name" binding:"required"`
-	DepartmentName string `json:"department_name" binding:"required"`
+	WorkplaceID  string `json:"workplace_id" binding:"required"`
+	DepartmentID string `json:"department_id" binding:"required"`
 }
 
 type RelAddWeekdayRequest struct {
