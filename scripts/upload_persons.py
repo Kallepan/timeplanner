@@ -44,7 +44,7 @@ def main() -> None:
             response = requests.post(URL, json=data)
             if response.status_code != 201:
                 logging.error(f"Error uploading person {id}: {response.text}")
-                return
+                continue
 
             # upload weekdays
             weekdays = person["present_weekdays"]
@@ -60,6 +60,57 @@ def main() -> None:
                         f"Error uploading weekday {weekday_id} for person {id}: {weekday_response.text}. Status: {weekday_response.status_code}"
                     )
                     continue
+
+            # upload departments
+            departments = ["bak"]
+            workplaces = [
+                "psl",
+                "var",
+                "gro",
+                "anl",
+                "arz",
+                "iso",
+                "stu",
+                "ate",
+                "mal",
+                "vit",
+                "tbl",
+                "hyg",
+                "tri",
+                "aus",
+                "cha",
+                "jok",
+                "son",
+            ]
+            department_request_url = f"{URL}/{id.lower()}/department"
+            for department_id in departments:
+                department_data = {"department_id": department_id}
+                department_response = requests.post(
+                    department_request_url, json=department_data
+                )
+                if department_response.status_code != 201:
+                    logging.info(
+                        f"Error uploading department {department_id} for person {id}: {department_response.text}. Status: {department_response.status_code}"
+                    )
+                    continue
+
+                # upload workplaces
+                for workplace_id in workplaces:
+                    workplace_request_url = f"{URL}/{id.lower()}/workplace"
+                    request_data = {
+                        "department_id": department_id,
+                        "workplace_id": workplace_id,
+                    }
+
+                    workplace_response = requests.post(
+                        workplace_request_url, json=request_data
+                    )
+
+                    if workplace_response.status_code != 201:
+                        logging.info(
+                            f"Error uploading workplace {workplace_id} for person {id}: {workplace_response.text}. Status: {workplace_response.status_code}"
+                        )
+                        continue
 
     logging.info("Done")
 
