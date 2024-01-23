@@ -82,7 +82,7 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date strin
 	MATCH  (d:Department) -[:HAS_WORKPLACE]-> (w:Workplace) -[:HAS_TIMESLOT]-> (t:Timeslot) -[r:OFFERED_ON]-> (wd:Weekday {id: $weekdayID})
 	WHERE t.deleted_at IS NULL AND t.active = true
 
-	WITH COLLECT({workplace:w.name, department: d.name, timeslot: t, start_time: r.start_time, end_time: r.end_time}) AS collection
+	WITH COLLECT({workplace:w.id, department: d.id, timeslot: t, start_time: r.start_time, end_time: r.end_time}) AS collection
 	UNWIND collection AS c
 	WITH c
 

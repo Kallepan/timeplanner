@@ -61,33 +61,28 @@ func (w *OnWeekday) ParseFromMap(data map[string]interface{}) error {
 	return nil
 }
 
-func (t *Timeslot) ParseFromDB(record *neo4j.Record, departmentID string, workplaceID string) error {
-	timelotNode, _, err := neo4j.GetRecordValue[neo4j.Node](record, "t")
+func (t *Timeslot) ParseFromNode(node *neo4j.Node) error {
+	name, err := neo4j.GetProperty[string](node, "name")
 	if err != nil {
 		return err
 	}
 
-	name, err := neo4j.GetProperty[string](timelotNode, "name")
+	active, err := neo4j.GetProperty[bool](node, "active")
 	if err != nil {
 		return err
 	}
 
-	active, err := neo4j.GetProperty[bool](timelotNode, "active")
+	createdAt, err := neo4j.GetProperty[time.Time](node, "created_at")
 	if err != nil {
 		return err
 	}
 
-	createdAt, err := neo4j.GetProperty[time.Time](timelotNode, "created_at")
+	updatedAt, err := neo4j.GetProperty[time.Time](node, "updated_at")
 	if err != nil {
 		return err
 	}
 
-	updatedAt, err := neo4j.GetProperty[time.Time](timelotNode, "updated_at")
-	if err != nil {
-		return err
-	}
-
-	deletedAtInterface, _ := neo4j.GetProperty[[]any](timelotNode, "deleted_at")
+	deletedAtInterface, _ := neo4j.GetProperty[[]any](node, "deleted_at")
 	deletedAt, err := ConvertNullableValueToTime(deletedAtInterface)
 	if err != nil {
 		return err
@@ -95,11 +90,25 @@ func (t *Timeslot) ParseFromDB(record *neo4j.Record, departmentID string, workpl
 
 	t.Name = name
 	t.Active = active
-	t.DepartmentID = departmentID
-	t.WorkplaceID = workplaceID
 	t.Base.CreatedAt = createdAt
 	t.Base.UpdatedAt = updatedAt
 	t.Base.DeletedAt = deletedAt
+
+	return nil
+}
+
+func (t *Timeslot) ParseFromDB(record *neo4j.Record, departmentID string, workplaceID string) error {
+	timelotNode, _, err := neo4j.GetRecordValue[neo4j.Node](record, "t")
+	if err != nil {
+		return err
+	}
+
+	if err := t.ParseFromNode(&timelotNode); err != nil {
+		return err
+	}
+
+	t.DepartmentID = departmentID
+	t.WorkplaceID = workplaceID
 
 	weekdaysInterface, _, err := neo4j.GetRecordValue[[]any](record, "weekdays")
 	if err != nil {

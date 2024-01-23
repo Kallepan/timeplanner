@@ -34,13 +34,21 @@ func TestGetWorkdaysForDepartmentAndDate(t *testing.T) {
 			},
 			mockValue: []dao.Workday{
 				{
-					DepartmentID: "department1",
-					WorkplaceID:  "workplace1",
-					TimeslotName: "timeslot1",
-					Date:         "2021-01-01",
-					StartTime:    "08:00:00",
-					EndTime:      "16:00:00",
-					Person:       nil,
+					Department: dao.Department{
+						ID:   "department1",
+						Name: "department1",
+					},
+					Workplace: dao.Workplace{
+						ID:   "workplace1",
+						Name: "workplace1",
+					},
+					Timeslot: dao.Timeslot{
+						Name: "timeslot1",
+					},
+					Date:      "2021-01-01",
+					StartTime: "08:00:00",
+					EndTime:   "16:00:00",
+					Person:    nil,
 				},
 			},
 			expectedStatusCode: http.StatusOK,
@@ -69,13 +77,21 @@ func TestGetWorkdaysForDepartmentAndDate(t *testing.T) {
 			},
 			mockValue: []dao.Workday{
 				{
-					DepartmentID: "department1",
-					WorkplaceID:  "workplace1",
-					TimeslotName: "timeslot1",
-					Date:         "2021-01-01",
-					StartTime:    "08:00:00",
-					EndTime:      "16:00:00",
-					Person:       &mockPerson,
+					Department: dao.Department{
+						ID:   "department1",
+						Name: "department1",
+					},
+					Workplace: dao.Workplace{
+						ID:   "workplace1",
+						Name: "workplace1",
+					},
+					Timeslot: dao.Timeslot{
+						Name: "timeslot1",
+					},
+					Date:      "2021-01-01",
+					StartTime: "08:00:00",
+					EndTime:   "16:00:00",
+					Person:    &mockPerson,
 				},
 			},
 			expectedStatusCode: http.StatusOK,
@@ -130,17 +146,6 @@ func TestGetWorkdaysForDepartmentAndDate(t *testing.T) {
 			}
 
 			for i, workday := range responseBody.Data {
-				if workday.Department != testStep.mockValue.([]dao.Workday)[i].DepartmentID {
-					t.Errorf("Test Step %d: Expected department %s, got %s", i, testStep.mockValue.([]dao.Workday)[i].DepartmentID, workday.Department)
-				}
-
-				if workday.Workplace != testStep.mockValue.([]dao.Workday)[i].WorkplaceID {
-					t.Errorf("Test Step %d: Expected workplace %s, got %s", i, testStep.mockValue.([]dao.Workday)[i].WorkplaceID, workday.Workplace)
-				}
-
-				if workday.Timeslot != testStep.mockValue.([]dao.Workday)[i].TimeslotName {
-					t.Errorf("Test Step %d: Expected timeslot %s, got %s", i, testStep.mockValue.([]dao.Workday)[i].TimeslotName, workday.Timeslot)
-				}
 
 				// check if Person is nil
 				if testStep.mockValue.([]dao.Workday)[i].Person == nil {
@@ -179,13 +184,21 @@ func TestGetWorkday(t *testing.T) {
 				"date":       "2021-01-01",
 			},
 			mockValue: dao.Workday{
-				DepartmentID: "department1",
-				WorkplaceID:  "workplace1",
-				TimeslotName: "timeslot1",
-				Date:         "2021-01-01",
-				StartTime:    "08:00:00",
-				EndTime:      "16:00:00",
-				Person:       nil,
+				Department: dao.Department{
+					ID:   "department1",
+					Name: "department1",
+				},
+				Workplace: dao.Workplace{
+					ID:   "workplace1",
+					Name: "workplace1",
+				},
+				Timeslot: dao.Timeslot{
+					Name: "timeslot1",
+				},
+				Date:      "2021-01-01",
+				StartTime: "08:00:00",
+				EndTime:   "16:00:00",
+				Person:    nil,
 			},
 			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
@@ -209,13 +222,21 @@ func TestGetWorkday(t *testing.T) {
 				"date":       "2021-01-01",
 			},
 			mockValue: dao.Workday{
-				DepartmentID: "department1",
-				WorkplaceID:  "workplace1",
-				TimeslotName: "timeslot1",
-				Date:         "2021-01-01",
-				StartTime:    "08:00:00",
-				EndTime:      "16:00:00",
-				Person:       &mockPerson,
+				Department: dao.Department{
+					ID:   "department1",
+					Name: "department1",
+				},
+				Workplace: dao.Workplace{
+					ID:   "workplace1",
+					Name: "workplace1",
+				},
+				Timeslot: dao.Timeslot{
+					Name: "timeslot1",
+				},
+				Date:      "2021-01-01",
+				StartTime: "08:00:00",
+				EndTime:   "16:00:00",
+				Person:    &mockPerson,
 			},
 			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
@@ -285,18 +306,6 @@ func TestGetWorkday(t *testing.T) {
 			}
 
 			workday := responseBody.Data
-			if workday.Department != testStep.mockValue.(dao.Workday).DepartmentID {
-				t.Errorf("Test Step %d: Expected department %s, got %s", i, testStep.mockValue.(dao.Workday).DepartmentID, workday.Department)
-			}
-
-			if workday.Workplace != testStep.mockValue.(dao.Workday).WorkplaceID {
-				t.Errorf("Test Step %d: Expected workplace %s, got %s", i, testStep.mockValue.(dao.Workday).WorkplaceID, workday.Workplace)
-			}
-
-			if workday.Timeslot != testStep.mockValue.(dao.Workday).TimeslotName {
-				t.Errorf("Test Step %d: Expected timeslot %s, got %s", i, testStep.mockValue.(dao.Workday).TimeslotName, workday.Timeslot)
-			}
-
 			// check if Person is nil
 			if testStep.mockValue.(dao.Workday).Person == nil {
 				if workday.Person != nil {

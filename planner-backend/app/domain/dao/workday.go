@@ -8,10 +8,10 @@ import (
 
 type Workday struct {
 	// Metadata to uniquely identify a Workday
-	DepartmentID string
-	WorkplaceID  string
-	TimeslotName string
-	Date         string
+	Department Department
+	Workplace  Workplace
+	Timeslot   Timeslot
+	Date       string
 
 	// Assigned Person can be nil
 	Person *Person
@@ -23,21 +23,41 @@ type Workday struct {
 	Weekday string
 }
 
-func (w *Workday) ParseFromDBRecord(record *neo4j.Record, departmentID string, date string) error {
+func (w *Workday) ParseFromDBRecord(record *neo4j.Record, date string) error {
 	/* Parses a workday from a neo4j record and sets the values on this workday */
+
+	// get department Node
+	department := Department{}
+	departmentNode, _, err := neo4j.GetRecordValue[neo4j.Node](record, "d")
+	if err != nil {
+		return err
+	}
+	if err := department.ParseFromNode(&departmentNode); err != nil {
+		return err
+	}
+
+	// get workplace Node
+	workplace := Workplace{}
+	workplaceNode, _, err := neo4j.GetRecordValue[neo4j.Node](record, "w")
+	if err != nil {
+		return err
+	}
+	if err := workplace.ParseFromNode(&workplaceNode); err != nil {
+		return err
+	}
+
+	// get timeslot Node
+	timeslot := Timeslot{}
+	timeslotNode, _, err := neo4j.GetRecordValue[neo4j.Node](record, "t")
+	if err := timeslot.ParseFromNode(&timeslotNode); err != nil {
+		return err
+	}
+	if err != nil {
+		return err
+	}
 
 	// get wkd Node
 	workdayNode, _, err := neo4j.GetRecordValue[neo4j.Node](record, "wkd")
-	if err != nil {
-		return err
-	}
-
-	// get wkd properties
-	workplaceID, err := neo4j.GetProperty[string](workdayNode, "workplace")
-	if err != nil {
-		return err
-	}
-	timeslotName, err := neo4j.GetProperty[string](workdayNode, "timeslot")
 	if err != nil {
 		return err
 	}
@@ -67,9 +87,9 @@ func (w *Workday) ParseFromDBRecord(record *neo4j.Record, departmentID string, d
 	}
 
 	// set values on workday
-	w.DepartmentID = departmentID
-	w.WorkplaceID = workplaceID
-	w.TimeslotName = timeslotName
+	w.Department = department
+	w.Workplace = workplace
+	w.Timeslot = timeslot
 	w.Date = date
 	w.StartTime = startTime.Time().Format(constant.TimeFormat)
 	w.EndTime = endTime.Time().Format(constant.TimeFormat)

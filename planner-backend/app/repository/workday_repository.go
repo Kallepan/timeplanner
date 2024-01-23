@@ -34,12 +34,14 @@ func (w WorkdayRepositoryImpl) GetWorkdaysForDepartmentAndDate(departmentID stri
 	query := `
 	// fetch the workdays for a given date
 	MATCH (wkd:Workday {date: date($date), department: $departmentID})
+	// fetch the Timeslot, department and workplace
+	MATCH (wkd) -[:IS_TIMESLOT]-> (t) <-[:HAS_TIMESLOT]- (w:Workplace) <-[:HAS_WORKPLACE]-(d: Department)
 	// fetch the person assigned to the workday
 	OPTIONAL MATCH (wkd)<-[:ASSIGNED_TO]-(p:Person)
 	// if workday is active
 	WHERE wkd.active = true AND wkd.deleted_at IS NULL
 	// return the workday and the person
-	RETURN wkd, p
+	RETURN wkd, p, t, w, d
 	`
 	params := map[string]interface{}{
 		"date":         date,
@@ -60,7 +62,7 @@ func (w WorkdayRepositoryImpl) GetWorkdaysForDepartmentAndDate(departmentID stri
 	var workdays []dao.Workday
 	for _, record := range result.Records {
 		workday := dao.Workday{}
-		if err := workday.ParseFromDBRecord(record, departmentID, date); err != nil {
+		if err := workday.ParseFromDBRecord(record, date); err != nil {
 			return nil, err
 		}
 
@@ -75,12 +77,14 @@ func (w WorkdayRepositoryImpl) GetWorkday(departmentID string, workplaceID strin
 	query := `
 	// fetch the workday
 	MATCH (wkd:Workday {date: date($date), department: $departmentID, workplace: $workplaceID, timeslot: $timeslotName})
+	// fetch the Timeslot, department and workplace
+	MATCH (wkd) -[:IS_TIMESLOT]-> (t) <-[:HAS_TIMESLOT]- (w:Workplace) <-[:HAS_WORKPLACE]-(d: Department)
 	// fetch the person assigned to the workday
 	OPTIONAL MATCH (wkd)<-[:ASSIGNED_TO]-(p:Person)
 	// if workday is active
 	WHERE wkd.active = true AND wkd.deleted_at IS NULL
 	// return the workday and the person
-	RETURN wkd, p`
+	RETURN wkd, p, t, w, d`
 
 	params := map[string]interface{}{
 		"date":         date,
@@ -105,7 +109,7 @@ func (w WorkdayRepositoryImpl) GetWorkday(departmentID string, workplaceID strin
 	}
 
 	workday := dao.Workday{}
-	if err := workday.ParseFromDBRecord(result.Records[0], departmentID, date); err != nil {
+	if err := workday.ParseFromDBRecord(result.Records[0], date); err != nil {
 		return dao.Workday{}, err
 	}
 

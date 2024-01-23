@@ -190,9 +190,9 @@ func mapWorkdayToWorkdayResponse(workday dao.Workday) dco.WorkdayResponse {
 	 */
 
 	return dco.WorkdayResponse{
-		Department: workday.DepartmentID,
-		Workplace:  workday.WorkplaceID,
-		Timeslot:   workday.TimeslotName,
+		Department: mapDepartmentToDepartmentResponse(workday.Department),
+		Workplace:  mapWorkplaceToWorkplaceResponse(workday.Workplace),
+		Timeslot:   mapTimeslotToTimeslotResponse(workday.Timeslot),
 		Date:       workday.Date,
 		StartTime:  workday.StartTime,
 		EndTime:    workday.EndTime,

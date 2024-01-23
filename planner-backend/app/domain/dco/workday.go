@@ -50,13 +50,13 @@ type WorkdayPersonResponse struct {
 	WorkingHours float64 `json:"working_hours"`
 }
 type WorkdayResponse struct {
-	Department string `json:"department"`
-	Workplace  string `json:"workplace"`
-	Timeslot   string `json:"timeslot"`
-	Date       string `json:"date"`
-	StartTime  string `json:"start_time"`
-	EndTime    string `json:"end_time"`
-	Weekday    string `json:"weekday"`
+	Department DepartmentResponse `json:"department"`
+	Workplace  WorkplaceResponse  `json:"workplace"`
+	Timeslot   TimeslotResponse   `json:"timeslot"`
+	Date       string             `json:"date"`
+	StartTime  string             `json:"start_time"`
+	EndTime    string             `json:"end_time"`
+	Weekday    string             `json:"weekday"`
 
 	// Assigned Person can be nil
 	Person *WorkdayPersonResponse `json:"person"`
