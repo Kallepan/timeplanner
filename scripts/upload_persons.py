@@ -69,9 +69,12 @@ def create_persons(department_id: str, workplace_ids: list[str]) -> None:
             }
 
             response = requests.post(f"{URL}/person", json=data)
-            if response.status_code != 201:
+            if response.status_code != 201 and response.status_code != 409:
                 logging.error(f"Error uploading person {id}: {response.text}")
                 continue
+
+            # upload department and workplaces
+            create_person_relationships(department_id, workplace_ids, id.lower())
 
             # upload weekdays
             weekdays = person["present_weekdays"]
@@ -82,14 +85,14 @@ def create_persons(department_id: str, workplace_ids: list[str]) -> None:
             for weekday_id in weekdays.split(","):
                 weekday_data = {"weekday_id": weekday_id}
                 weekday_response = requests.post(weekday_request_url, json=weekday_data)
-                if weekday_response.status_code != 201:
+                if (
+                    weekday_response.status_code != 201
+                    and weekday_response.status_code != 409
+                ):
                     logging.info(
                         f"Error uploading weekday {weekday_id} for person {id}: {weekday_response.text}. Status: {weekday_response.status_code}"
                     )
                     continue
-
-            # upload department and workplaces
-            create_person_relationships(department_id, workplace_ids, id.lower())
 
     logging.info("Done")
 
@@ -109,11 +112,10 @@ def main() -> None:
         "vit",
         "tbl",
         "hyg",
-        "tri",
         "aus",
         "cha",
         "jok",
-        "son",
+        "azu",
     ]
     create_persons(
         department_id=department_id,

@@ -22,7 +22,8 @@
     },
     {
       "label": "setup initial state",
-      "dependsOn": ["upload meta", "upload persons"]
+      "dependsOn": ["upload meta", "upload persons"],
+      "problemMatcher": []
     },
     {
       "label": "wire gen api-gateway",
