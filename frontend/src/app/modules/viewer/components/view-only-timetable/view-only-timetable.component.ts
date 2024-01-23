@@ -7,11 +7,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { TimetableDataContainerService } from '../../services/timetable-data-container.service';
+import { ActionsComponent } from '../actions/actions.component';
 
 @Component({
   selector: 'app-view-only-timetable',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ActionsComponent],
   templateUrl: './view-only-timetable.component.html',
   styleUrl: './view-only-timetable.component.scss',
 })

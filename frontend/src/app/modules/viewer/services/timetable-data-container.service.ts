@@ -46,6 +46,14 @@ export class TimetableDataContainerService {
     this._fullHeight.set(value);
   }
 
+  protected _displayPersons = signal<boolean>(true);
+  get displayPersons$(): boolean {
+    return this._displayPersons();
+  }
+  set displayPersons(value: boolean) {
+    this._displayPersons.set(value);
+  }
+
   protected _displayTime = signal<boolean>(true);
   get displayTime$(): boolean {
     return this._displayTime();
@@ -57,6 +65,9 @@ export class TimetableDataContainerService {
   protected _colorize = signal<boolean>(true);
   get colorize$(): boolean {
     return this._colorize();
+  }
+  set colorize(value: boolean) {
+    this._colorize.set(value);
   }
 
   // the data for the timetable
@@ -108,6 +119,9 @@ export class TimetableDataContainerService {
           name: timeslotName,
           workdayTimeslots: displayWorkdayTimeslots.sort((a, b) => a.timeslot.name.localeCompare(b.timeslot.name)),
           gridRow: gridRowCounter,
+
+          startTime: displayWorkdayTimeslots[0].start_time,
+          endTime: displayWorkdayTimeslots[0].end_time,
         });
         gridRowCounter++;
       });

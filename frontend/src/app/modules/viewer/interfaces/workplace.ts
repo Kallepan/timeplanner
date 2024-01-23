@@ -9,6 +9,10 @@ export type DisplayedWorkdayTimeslotGroup = {
   name: string;
   workdayTimeslots: DisplayedWorkdayTimeslot[];
 
+  // This is a concatenation of the start and end time of the first timeslot in the group.
+  startTime: string;
+  endTime: string;
+
   // for display
   gridRow: number;
 };
