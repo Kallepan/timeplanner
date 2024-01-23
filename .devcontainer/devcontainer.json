@@ -49,7 +49,8 @@
         "esbenp.prettier-vscode",
         "dbaeumer.vscode-eslint",
         "ms-python.python",
-        "ms-python.black-formatter"
+        "ms-python.black-formatter",
+        "mechatroner.rainbow-csv"
       ],
       "settings": {
         "editor.defaultFormatter": "esbenp.prettier-vscode",
