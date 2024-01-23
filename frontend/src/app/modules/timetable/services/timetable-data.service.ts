@@ -3,13 +3,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { WeekdayIDToGridColumn } from '@app/shared/functions/weekday-to-grid-column.function';
 import { Subject, catchError, map, of, tap } from 'rxjs';
-import {
-  Slot,
-  Timeslot,
-  TimeslotResponse,
-  Weekday,
-  Workplace,
-} from '../interfaces/timetable.interface';
+import { Slot, Timeslot, TimeslotResponse, Weekday, Workplace } from '../interfaces/timetable.interface';
 import { TimetableAPIService } from './timetable-api.service';
 
 @Injectable({
@@ -53,8 +47,8 @@ export abstract class AbstractTimetableDataService {
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + i);
       weekdays.push({
-        name: date.toLocaleString('default', { weekday: 'long' }),
-        shortName: date.toLocaleString('default', { weekday: 'short' }),
+        name: date.toLocaleString('de-DE', { weekday: 'long' }),
+        shortName: date.toLocaleString('de-DE', { weekday: 'short' }),
         date,
       });
     }
@@ -72,10 +66,10 @@ export abstract class AbstractTimetableDataService {
       // group By workplace
       const workplaceMap = new Map<string, TimeslotResponse[]>();
       timeslots.forEach((timeslot) => {
-        if (!workplaceMap.has(timeslot.workplace_name)) {
-          workplaceMap.set(timeslot.workplace_name, []);
+        if (!workplaceMap.has(timeslot.workplace_id)) {
+          workplaceMap.set(timeslot.workplace_id, []);
         }
-        workplaceMap.get(timeslot.workplace_name)!.push(timeslot);
+        workplaceMap.get(timeslot.workplace_id)!.push(timeslot);
       });
 
       // group by slot
@@ -112,11 +106,8 @@ export abstract class AbstractTimetableDataService {
         });
         // fetch the min and max gridRow to set the gridRowStart and gridRowEnd
         // of the workplace which can span multiple rows
-        const minGridRow = Math.min(
-          ...workplaceSlots.map((slot) => slot.gridRow),
-        );
-        const maxGridRow =
-          Math.max(...workplaceSlots.map((slot) => slot.gridRow)) + 1;
+        const minGridRow = Math.min(...workplaceSlots.map((slot) => slot.gridRow));
+        const maxGridRow = Math.max(...workplaceSlots.map((slot) => slot.gridRow)) + 1;
         workplaceDatas.push({
           name: workplaceName,
           slots: workplaceSlots,
@@ -131,9 +122,7 @@ export abstract class AbstractTimetableDataService {
     }),
     tap((workplaceDatas) => {
       // Extract the largest gridRowEnd to set fullHeight of the timetable
-      const fullHeight = Math.max(
-        ...workplaceDatas.map((workplace) => workplace.gridRowEnd),
-      );
+      const fullHeight = Math.max(...workplaceDatas.map((workplace) => workplace.gridRowEnd));
 
       this._fullHeight.set(fullHeight);
     }),

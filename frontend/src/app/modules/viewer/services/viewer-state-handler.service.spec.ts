@@ -3,16 +3,17 @@ import { TestBed } from '@angular/core/testing';
 import { ViewerStateHandlerService } from './viewer-state-handler.service';
 import { WorkdayAPIService } from '@app/shared/services/workday-api.service';
 import { of, throwError } from 'rxjs';
-import { Workday } from '@app/shared/interfaces/workday';
+import { WorkdayTimeslot } from '@app/shared/interfaces/workday_timeslot';
+import { DepartmentWithMetadata } from '@app/shared/interfaces/department';
+import { WorkplaceWithMetadata } from '@app/shared/interfaces/workplace';
+import { TimeslotWithMetadata } from '@app/shared/interfaces/timeslot';
 
 describe('ViewerStateHandlerService', () => {
   let service: ViewerStateHandlerService;
   let mockWorkdayAPIService: jasmine.SpyObj<WorkdayAPIService>;
 
   beforeEach(() => {
-    mockWorkdayAPIService = jasmine.createSpyObj('WorkdayAPIService', [
-      'getWorkdays',
-    ]);
+    mockWorkdayAPIService = jasmine.createSpyObj('WorkdayAPIService', ['getWorkdays']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -37,31 +38,65 @@ describe('ViewerStateHandlerService', () => {
       dates: [new Date(2022, 1, 1), new Date(2022, 1, 2)],
     };
 
+    const mockDepartment: DepartmentWithMetadata = {
+      id: 'dep',
+      name: 'department1',
+      created_at: new Date(),
+      updated_at: new Date(),
+      deleted_at: null,
+    };
+
+    const mockWorkplace: WorkplaceWithMetadata = {
+      id: 'workplace1',
+      name: 'workplace1',
+      created_at: new Date(),
+      updated_at: new Date(),
+      deleted_at: null,
+    };
+
+    const mockTimeslot: TimeslotWithMetadata = {
+      name: 'timeslot1',
+      active: true,
+      department_name: 'department1',
+      workplace_name: 'workplace1',
+      weekdays: [
+        {
+          id: 'weekday1',
+          name: 'Monday',
+          start_time: '08:00:00',
+          end_time: '16:00:00',
+        },
+      ],
+      created_at: new Date(),
+      updated_at: new Date(),
+      deleted_at: null,
+    };
+
     // create a mock workday
-    const mockWorkdays: Workday[] = [
+    const mockWorkdays: WorkdayTimeslot[] = [
       {
         date: '2022-02-01',
-        department: 'department1',
-        workplace: 'workplace1',
-        timeslot: 'timeslot1',
+        department: mockDepartment,
+        workplace: mockWorkplace,
+        timeslot: mockTimeslot,
         start_time: '08:00:00',
         end_time: '16:00:00',
         person: null,
+        weekday: 'MON',
       },
       {
         date: '2022-02-01',
-        department: 'department1',
-        workplace: 'workplace1',
-        timeslot: 'timeslot2',
+        department: mockDepartment,
+        workplace: mockWorkplace,
+        timeslot: mockTimeslot,
         start_time: '08:00:00',
         end_time: '16:00:00',
         person: null,
+        weekday: 'MON',
       },
     ];
 
-    mockWorkdayAPIService.getWorkdays.and.returnValue(
-      of({ data: mockWorkdays, status: 200, message: 'Success' }),
-    );
+    mockWorkdayAPIService.getWorkdays.and.returnValue(of({ data: mockWorkdays, status: 200, message: 'Success' }));
 
     service.activeWorkdays$.subscribe((workdays) => {
       // expect the workdays to be 14 since we return two workdays for each day in the active week

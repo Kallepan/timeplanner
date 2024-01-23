@@ -13,7 +13,7 @@ export interface Timeslot {
   department_name: string;
   workplace_name: string;
 
-  weekdays: OfferedOnWeekdays[];
+  weekdays: OfferedOnWeekdays[] | undefined;
 }
 
 export type TimeslotWithMetadata = Timeslot & Metadata;

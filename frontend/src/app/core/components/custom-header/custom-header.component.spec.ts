@@ -21,7 +21,7 @@ describe('CustomHeaderComponent', () => {
       events: of(new NavigationEnd(1, '', '')),
     });
     activatedRoute = jasmine.createSpyObj('ActivatedRoute', ['data'], {
-      data: of({ featureFlag: 'BAK' }),
+      data: of({ featureFlag: 'bak' }),
     });
   });
 

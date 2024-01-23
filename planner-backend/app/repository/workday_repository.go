@@ -42,6 +42,7 @@ func (w WorkdayRepositoryImpl) GetWorkdaysForDepartmentAndDate(departmentID stri
 	WHERE wkd.active = true AND wkd.deleted_at IS NULL
 	// return the workday and the person
 	RETURN wkd, p, t, w, d
+	ORDER BY w.id, t.name
 	`
 	params := map[string]interface{}{
 		"date":         date,

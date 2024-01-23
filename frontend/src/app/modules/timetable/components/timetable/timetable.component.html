@@ -3,9 +3,7 @@
 
   <app-person-list> </app-person-list>
   @if (showActions) {
-    <app-actions
-      (toggleEditing)="editable = $event"
-      (toggleTimes)="displayTime = $event"></app-actions>
+    <app-actions (toggleEditing)="editable = $event" (toggleTimes)="displayTime = $event"></app-actions>
   }
   <div class="timetable mat-elevation-z8">
     <!-- Add static headers -->
@@ -14,9 +12,7 @@
 
     <!-- Add headers from weekdays array-->
     @for (data of weekdayDatas; track $index) {
-      <div class="cell header">
-        {{ data.date | date: 'dd.MM.yyyy' }} ({{ data.shortName | titlecase }})
-      </div>
+      <div class="cell header">{{ data.date | date: 'dd.MM.yyyy' }} ({{ data.shortName | titlecase }})</div>
       <div
         class="vertical-line"
         [ngStyle]="{
@@ -74,12 +70,7 @@
               'grid-column': ts.gridColumn
             }">
             @if (editable) {
-              <app-select-person
-                [selectedPerson]="ts.occupiedBy"
-                (selected)="
-                  personDroppedIn.emit({ person: $event, timeslots: [ts] });
-                  ts.occupiedBy = $event
-                "></app-select-person>
+              <app-select-person [selectedPerson]="ts.occupiedBy" (selected)="personDroppedIn.emit({ person: $event, timeslots: [ts] }); ts.occupiedBy = $event"></app-select-person>
             } @else {
               {{ ts.occupiedBy?.fullname ?? 'NA' }}
             }

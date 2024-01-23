@@ -1,22 +1,20 @@
 import { WorkdayTimeslot } from '@app/shared/interfaces/workday_timeslot';
+import { WorkplaceWithMetadata } from '@app/shared/interfaces/workplace';
 
-export type DisplayedWorkdayTimeslot = Omit<
-  WorkdayTimeslot,
-  'date' | 'department' | 'workplace' | 'timeslot'
-> & {
+export type DisplayedWorkdayTimeslot = WorkdayTimeslot & {
   gridColumn: number;
 };
 
 export type DisplayedWorkdayTimeslotGroup = {
   name: string;
-  timeslots: DisplayedWorkdayTimeslot[];
+  workdayTimeslots: DisplayedWorkdayTimeslot[];
 
   // for display
   gridRow: number;
 };
 
 export type DisplayedWorkplace = {
-  name: string;
+  workplace: WorkplaceWithMetadata;
   timeslotGroups: DisplayedWorkdayTimeslotGroup[];
 
   // for display

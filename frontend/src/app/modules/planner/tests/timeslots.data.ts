@@ -2,8 +2,8 @@ import { TimeslotResponse } from '@app/modules/timetable/interfaces/timetable.in
 
 export const DUMMY_TIMESLOTS: TimeslotResponse[] = [
   {
-    department_name: 'Department 1',
-    workplace_name: 'Test',
+    department_id: 'Department 1',
+    workplace_id: 'Test',
     name: 'V1',
     weekday_id: 'MON',
     start_time: '08:00',
@@ -11,8 +11,8 @@ export const DUMMY_TIMESLOTS: TimeslotResponse[] = [
     persons: null,
   },
   {
-    department_name: 'Department 1',
-    workplace_name: 'Arzt',
+    department_id: 'Department 1',
+    workplace_id: 'Arzt',
     name: 'V1',
     weekday_id: 'MON',
     start_time: '08:00',
@@ -20,8 +20,8 @@ export const DUMMY_TIMESLOTS: TimeslotResponse[] = [
     persons: null,
   },
   {
-    department_name: 'Department 1',
-    workplace_name: 'Arzt',
+    department_id: 'Department 1',
+    workplace_id: 'Arzt',
     name: 'V1',
     weekday_id: 'TUE',
     start_time: '08:00',
@@ -29,8 +29,8 @@ export const DUMMY_TIMESLOTS: TimeslotResponse[] = [
     persons: null,
   },
   {
-    department_name: 'Department 1',
-    workplace_name: 'Arzt',
+    department_id: 'Department 1',
+    workplace_id: 'Arzt',
     name: 'V1',
     weekday_id: 'WED',
     start_time: '08:00',
@@ -38,8 +38,8 @@ export const DUMMY_TIMESLOTS: TimeslotResponse[] = [
     persons: null,
   },
   {
-    department_name: 'Department 1',
-    workplace_name: 'Arzt',
+    department_id: 'Department 1',
+    workplace_id: 'Arzt',
     name: 'V2',
     weekday_id: 'TUE',
     start_time: '08:00',

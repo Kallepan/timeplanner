@@ -1,17 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { WorkdayTimeslot } from '@app/shared/interfaces/workday_timeslot';
 import { WorkdayAPIService } from '@app/shared/services/workday-api.service';
-import {
-  Subject,
-  catchError,
-  filter,
-  from,
-  map,
-  mergeMap,
-  of,
-  reduce,
-  tap,
-} from 'rxjs';
+import { Subject, catchError, filter, from, map, mergeMap, of, reduce, tap } from 'rxjs';
 import { TimetableDataContainerService } from './timetable-data-container.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -58,43 +48,43 @@ export class ViewerStateHandlerService {
   }>();
   // this keeps track of the active week currently being viewed
   // this is a computed property which fetches the workdays upon receiving activeWeek signal
-  activeWorkdays$ = this._activeViewTrackerSubject
-    .pipe(
-      takeUntilDestroyed(),
-      map(({ department, date }) => ({
-        department,
-        dates: getWeekFromDate(date),
-      })),
-      tap((activeWeek) => {
-        this.timetableDataContainerService.weekdays = activeWeek.dates;
-      }),
-      // filter out null values
-      filter((activeWeek): activeWeek is ActiveWeek => !!activeWeek),
-      // date to YYYY-MM-DD format
-      map(({ department, dates }) => ({
-        department,
-        dates: dates.map((date) => date.toISOString().split('T')[0]),
-      })),
-      // call API for each date in dates and return the workdays for each date
-      mergeMap(({ department, dates }) =>
-        // convert the dates array to an observable
-        from(dates).pipe(
-          // fetch workdays for each date
-          mergeMap((date) =>
-            this.workdayAPIService.getWorkdays(department, date).pipe(
-              map((resp) => resp.data), // map the response to the data property
-              catchError(() => of([])), // if there is an error, return an empty array
-            ),
+  activeWorkdays$ = this._activeViewTrackerSubject.pipe(
+    takeUntilDestroyed(),
+    map(({ department, date }) => ({
+      department,
+      dates: getWeekFromDate(date),
+    })),
+    tap((activeWeek) => {
+      this.timetableDataContainerService.weekdays = activeWeek.dates;
+    }),
+    // filter out null values
+    filter((activeWeek): activeWeek is ActiveWeek => !!activeWeek),
+    // date to YYYY-MM-DD format
+    map(({ department, dates }) => ({
+      department,
+      dates: dates.map((date) => date.toISOString().split('T')[0]),
+    })),
+    // call API for each date in dates and return the workdays for each date
+    mergeMap(({ department, dates }) =>
+      // convert the dates array to an observable
+      from(dates).pipe(
+        // fetch workdays for each date
+        mergeMap((date) =>
+          this.workdayAPIService.getWorkdays(department, date).pipe(
+            map((resp) => resp.data), // map the response to the data property
+            catchError(() => of([])), // if there is an error, return an empty array
           ),
-          reduce(
-            (acc, workdays) => [...acc, ...workdays],
-            [] as WorkdayTimeslot[],
-          ), // reduce the workdays into a single array
         ),
+        reduce((acc, workdays) => [...acc, ...workdays], [] as WorkdayTimeslot[]), // reduce the workdays into a single array
       ),
-    )
-    .subscribe((workdays) => {
+    ),
+    map((workdays) => workdays.sort((a, b) => a.workplace.id.localeCompare(b.workplace.id))),
+  );
+
+  constructor() {
+    this.activeWorkdays$.subscribe((workdays) => {
       // update the workdays in the service
       this.timetableDataContainerService.workdays = workdays;
     });
+  }
 }

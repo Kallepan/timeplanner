@@ -39,8 +39,8 @@ export interface Timeslot {
 
 // the timeslot returned from the backend
 export interface TimeslotResponse {
-  department_name: string;
-  workplace_name: string;
+  department_id: string;
+  workplace_id: string;
   name: string;
 
   weekday_id: string; // 3 Letter identifier

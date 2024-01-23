@@ -4,10 +4,6 @@ import { ViewerStateHandlerService } from './services/viewer-state-handler.servi
 import { TimetableDataContainerService } from './services/timetable-data-container.service';
 
 @NgModule({
-  providers: [
-    ViewerStateHandlerService,
-    WorkdayAPIService,
-    TimetableDataContainerService,
-  ],
+  providers: [ViewerStateHandlerService, WorkdayAPIService, TimetableDataContainerService],
 })
 export class ViewerModule {}

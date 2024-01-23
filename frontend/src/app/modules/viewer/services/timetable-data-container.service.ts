@@ -14,11 +14,7 @@
  **/
 import { Injectable, signal } from '@angular/core';
 import { Weekday } from '../interfaces/weekday';
-import {
-  DisplayedWorkdayTimeslot,
-  DisplayedWorkdayTimeslotGroup,
-  DisplayedWorkplace,
-} from '../interfaces/workplace';
+import { DisplayedWorkdayTimeslot, DisplayedWorkdayTimeslotGroup, DisplayedWorkplace } from '../interfaces/workplace';
 import { WorkdayTimeslot } from '@app/shared/interfaces/workday_timeslot';
 import { WeekdayIDToGridColumn } from '@app/shared/functions/weekday-to-grid-column.function';
 
@@ -34,8 +30,8 @@ export class TimetableDataContainerService {
     this._weekdays.set(
       value.map((date) => {
         return {
-          name: date.toLocaleString('default', { weekday: 'long' }),
-          shortName: date.toLocaleString('default', { weekday: 'short' }),
+          name: date.toLocaleString('de-DE', { weekday: 'long' }),
+          shortName: date.toLocaleString('de-DE', { weekday: 'short' }),
           date,
         };
       }),
@@ -58,78 +54,86 @@ export class TimetableDataContainerService {
     this._displayTime.set(value);
   }
 
+  protected _colorize = signal<boolean>(true);
+  get colorize$(): boolean {
+    return this._colorize();
+  }
+
   // the data for the timetable
   protected _workplaces = signal<DisplayedWorkplace[]>([]);
   get workplaces$(): DisplayedWorkplace[] {
     return this._workplaces();
   }
+  /**
+   * This method is a setter for the `workdays` property. It takes an array of `WorkdayTimeslot` objects as input.
+   * Each `WorkdayTimeslot` object represents a timeslot in a workday at a specific workplace.
+   * The method organizes these timeslots into a structure that is convenient for displaying in a grid.
+   *
+   * @param workdays - An array of `WorkdayTimeslot` objects.
+   **/
   set workdays(workdays: WorkdayTimeslot[]) {
-    let counter = 2;
+    // This counter is used to keep track of the current grid row to be added to the final elements
+    let gridRowCounter = 2;
 
-    // group by workplace
-    const workplaceMap = new Map<string, WorkdayTimeslot[]>();
-    workdays.forEach((workday) => {
-      if (!workplaceMap.has(workday.workplace)) {
-        workplaceMap.set(workday.workplace, []);
-      }
-      workplaceMap.get(workday.workplace)!.push(workday);
+    // The workdays are first grouped by workplace, as each workplace is displayed in a separate row.
+    // This is done using a Map where the key is the workplace id and the value is an array of workday timeslots for that workplace.
+    const workdayTimeslotGroupedByWorkplaceMap = new Map<string, WorkdayTimeslot[]>();
+    workdays.forEach((workdayTimeslot) => {
+      const workplaceTimeslots = workdayTimeslotGroupedByWorkplaceMap.get(workdayTimeslot.workplace.id) || [];
+      workplaceTimeslots.push(workdayTimeslot);
+      workdayTimeslotGroupedByWorkplaceMap.set(workdayTimeslot.workplace.id, workplaceTimeslots);
     });
 
-    // group each workplace by timeslot into timeslotGroups
+    // The workdays for each workplace are then further grouped by timeslot, as each timeslot is displayed in a separate subrow within the workplace row.
+    // This is done using a Map where the key is the timeslot name and the value is an array of workday timeslots for that timeslot.
     const workplaceGroups: DisplayedWorkplace[] = [];
-    workplaceMap.forEach((workplace, workplaceName) => {
-      const timeslotMap = new Map<string, WorkdayTimeslot[]>();
-      workplace.forEach((workday) => {
-        if (!timeslotMap.has(workday.timeslot)) {
-          timeslotMap.set(workday.timeslot, []);
-        }
-        timeslotMap.get(workday.timeslot)!.push(workday);
+    workdayTimeslotGroupedByWorkplaceMap.forEach((workdayTimeslots) => {
+      const displayWorkdayTimeslotMap = new Map<string, DisplayedWorkdayTimeslot[]>();
+      workdayTimeslots.forEach((workdayTimeslot) => {
+        const timeslotsArray = displayWorkdayTimeslotMap.get(workdayTimeslot.timeslot.name) || [];
+
+        // add the gridColumn property to the workday
+        timeslotsArray.push({
+          ...workdayTimeslot,
+          gridColumn: WeekdayIDToGridColumn(workdayTimeslot.weekday),
+        });
+        displayWorkdayTimeslotMap.set(workdayTimeslot.timeslot.name, timeslotsArray);
       });
 
-      // convert to DisplayedWorkdayTimeslotGroup interface
+      // The timeslot groups are then converted to the `DisplayedWorkdayTimeslotGroup` interface.
+      // Each group is assigned a grid row number, which is incremented for each group.
       const timeslotGroups: DisplayedWorkdayTimeslotGroup[] = [];
-      timeslotMap.forEach((workdays, timeslotName) => {
-        const timeslots: DisplayedWorkdayTimeslot[] = [];
-        workdays.forEach((workday) => {
-          timeslots.push({
-            ...workday,
-            gridColumn: WeekdayIDToGridColumn(workday.weekday),
-          });
-          counter++;
-        });
+      displayWorkdayTimeslotMap.forEach((displayWorkdayTimeslots, timeslotName) => {
         timeslotGroups.push({
           name: timeslotName,
-          timeslots,
-          gridRow: counter,
+          workdayTimeslots: displayWorkdayTimeslots.sort((a, b) => a.timeslot.name.localeCompare(b.timeslot.name)),
+          gridRow: gridRowCounter,
         });
+        gridRowCounter++;
       });
 
-      // fetch the min and max gridRow to set the gridRowStart and gridRowEnd
-      // of the workplace which can span multiple rows
-      const minGridRow = Math.min(
-        ...timeslotGroups.map((timeslotGroup) => timeslotGroup.gridRow),
-      );
-      const maxGridRow =
-        Math.max(
-          ...timeslotGroups.map((timeslotGroup) => timeslotGroup.gridRow),
-        ) + 1;
+      // The minimum and maximum grid row numbers are calculated for each workplace.
+      // These are used to set the `gridRowStart` and `gridRowEnd` properties of the workplace, which can span multiple rows.
+      const minGridRow = Math.min(...timeslotGroups.map((timeslotGroup) => timeslotGroup.gridRow));
+      const maxGridRow = Math.max(...timeslotGroups.map((timeslotGroup) => timeslotGroup.gridRow)) + 1; // +1 due to display grid way of handling gridRowEnd
 
+      // The workplace groups are then created, each with its timeslot groups and grid row start and end numbers.
       workplaceGroups.push({
-        name: workplaceName,
-        timeslotGroups,
+        workplace: workdayTimeslots[0].workplace,
+        timeslotGroups: timeslotGroups,
         gridRowStart: minGridRow,
         gridRowEnd: maxGridRow,
       });
 
       // 'reset' the counter for the next i.e. where it should start
-      counter = maxGridRow + 1;
+      gridRowCounter = maxGridRow + 1;
     });
 
-    const fullHeight = Math.max(
-      ...workplaceGroups.map((workplace) => workplace.gridRowEnd),
-    );
+    // The maximum grid row end number is calculated and set as the full height of the grid.
+    const fullHeight = Math.max(...workplaceGroups.map((workplace) => workplace.gridRowEnd));
     this._fullHeight.set(fullHeight);
 
+    // The workplace groups are finally set as the workplaces to be displayed.
     this._workplaces.set(workplaceGroups);
   }
 }
