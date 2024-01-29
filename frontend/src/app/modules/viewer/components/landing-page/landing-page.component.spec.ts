@@ -15,10 +15,7 @@ describe('LandingPageComponent', () => {
     activatedRoute = jasmine.createSpyObj('ActivatedRoute', ['data'], {
       queryParams: of({ department: 'department1' }),
     });
-    mockViewerStateHandlerService = jasmine.createSpyObj(
-      'ViewerStateHandlerService',
-      ['setActiveView'],
-    );
+    mockViewerStateHandlerService = jasmine.createSpyObj('ViewerStateHandlerService', ['setActiveView']);
 
     await TestBed.configureTestingModule({
       providers: [
@@ -44,10 +41,7 @@ describe('LandingPageComponent', () => {
   });
 
   it('should set the department from the activated route', () => {
-    expect(mockViewerStateHandlerService.setActiveView).toHaveBeenCalledWith(
-      'department1',
-      jasmine.any(Date),
-    );
+    expect(mockViewerStateHandlerService.setActiveView).toHaveBeenCalledWith('department1', jasmine.any(Date));
   });
 
   it('should not set null department', () => {
@@ -57,6 +51,12 @@ describe('LandingPageComponent', () => {
       mockViewerStateHandlerService.setActiveView,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ).not.toHaveBeenCalledWith(null as any, jasmine.any(Date));
+  });
+
+  it('should turn department to lowercase', () => {
+    activatedRoute.queryParams = of({ department: 'Department1' });
+    component.ngOnInit();
+    expect(mockViewerStateHandlerService.setActiveView).toHaveBeenCalledWith('department1', jasmine.any(Date));
   });
 
   it('should not set undefined department', () => {

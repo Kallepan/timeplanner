@@ -6,17 +6,18 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { filter, map } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { ViewOnlyTimetableComponent } from '@app/modules/viewer/components/view-only-timetable/view-only-timetable.component';
+import { ActionsComponent } from '../actions/actions.component';
 
 @Component({
   selector: 'app-landing-page',
   standalone: true,
-  imports: [MatButtonModule, RouterLink, AsyncPipe, ViewOnlyTimetableComponent],
+  imports: [MatButtonModule, RouterLink, AsyncPipe, ViewOnlyTimetableComponent, ActionsComponent],
   templateUrl: './landing-page.component.html',
   styleUrl: './landing-page.component.scss',
 })
 export class LandingPageComponent implements OnInit {
   // inject the services here
-  private viewerStateHandlerService = inject(ViewerStateHandlerService);
+  viewerStateHandlerService = inject(ViewerStateHandlerService);
   private destroyRef$ = inject(DestroyRef);
 
   // router
@@ -30,6 +31,7 @@ export class LandingPageComponent implements OnInit {
         // set the department
         map((params) => params['department']),
         filter((department): department is string => !!department),
+        map((department) => department.toLowerCase()),
         // fetch the current date
         map((department) => {
           const currentDate = new Date();

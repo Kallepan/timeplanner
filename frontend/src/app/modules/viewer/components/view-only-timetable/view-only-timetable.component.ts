@@ -6,7 +6,7 @@
  **/
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { TimetableDataContainerService } from '../../services/timetable-data-container.service';
+import { TimetableDataContainerService } from '../../../../shared/services/timetable-data-container.service';
 import { ActionsComponent } from '../actions/actions.component';
 
 @Component({

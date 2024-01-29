@@ -2,10 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { DepartmentAPIService } from './department-api.service';
 import { provideHttpClient } from '@angular/common/http';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { APIResponse } from '@app/core/interfaces/response';
 import { Department, DepartmentWithMetadata } from '../interfaces/department';
 import { constants } from '@app/constants/constants';
@@ -16,11 +13,7 @@ describe('DepartmentAPIService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        DepartmentAPIService,
-      ],
+      providers: [provideHttpClient(), provideHttpClientTesting(), DepartmentAPIService],
     });
     service = TestBed.inject(DepartmentAPIService);
     httpController = TestBed.inject(HttpTestingController);
@@ -52,9 +45,7 @@ describe('DepartmentAPIService', () => {
       expect(result).toEqual(mockDepartment);
     });
 
-    const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/department`,
-    );
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/department`);
     expect(req.request.method).toEqual('GET');
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
@@ -80,9 +71,7 @@ describe('DepartmentAPIService', () => {
       expect(result).toEqual(mockDepartment);
     });
 
-    const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/department/${departmentName}`,
-    );
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/department/${departmentName}`);
     expect(req.request.method).toEqual('GET');
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
@@ -110,9 +99,7 @@ describe('DepartmentAPIService', () => {
       expect(result).toEqual(mockDepartment);
     });
 
-    const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/department`,
-    );
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/department`);
     expect(req.request.method).toEqual('POST');
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
@@ -133,9 +120,7 @@ describe('DepartmentAPIService', () => {
       expect(result).toEqual(mockResponse);
     });
 
-    const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/department/${departmentName}`,
-    );
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/department/${departmentName}`);
     expect(req.request.method).toEqual('DELETE');
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');

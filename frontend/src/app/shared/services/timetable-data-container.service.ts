@@ -13,8 +13,8 @@
  * In the html template we simple loop over the workplaces and then over the timeslotGroups and timeslots.
  **/
 import { Injectable, signal } from '@angular/core';
-import { Weekday } from '../interfaces/weekday';
-import { DisplayedWorkdayTimeslot, DisplayedWorkdayTimeslotGroup, DisplayedWorkplace } from '../interfaces/workplace';
+import { Weekday } from '../../modules/viewer/interfaces/weekday';
+import { DisplayedWorkdayTimeslot, DisplayedWorkdayTimeslotGroup, DisplayedWorkplace } from '../../modules/viewer/interfaces/workplace';
 import { WorkdayTimeslot } from '@app/shared/interfaces/workday_timeslot';
 import { WeekdayIDToGridColumn } from '@app/shared/functions/weekday-to-grid-column.function';
 
