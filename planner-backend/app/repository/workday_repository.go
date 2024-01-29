@@ -120,10 +120,14 @@ func (w WorkdayRepositoryImpl) GetWorkday(departmentID string, workplaceID strin
 func (w WorkdayRepositoryImpl) AssignPersonToWorkday(personID string, departmentID string, workplaceID string, timeslotName string, date string) error {
 
 	query := `
+	// delete the relationship between the person and the workday
+	MATCH (wkd:Workday {date: date($date), department: $departmentID, workplace: $workplaceID, timeslot: $timeslotName})
+	// delete the relationship between the person and the workday
+	OPTIONAL MATCH (wkd)<-[r:ASSIGNED_TO]-(:Person)
+	DELETE r
+	WITH wkd
 	// fetch the person
 	MATCH (p:Person {id: $personID})
-	// fetch the workday
-	MATCH (wkd:Workday {date: date($date), department: $departmentID, workplace: $workplaceID, timeslot: $timeslotName})
 	// create a relationship between the person and the workday
 	MERGE (p)-[r:ASSIGNED_TO]->(wkd)
 	ON CREATE SET r.created_at = datetime()

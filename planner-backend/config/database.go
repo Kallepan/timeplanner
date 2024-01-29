@@ -49,6 +49,7 @@ var queries = map[string]string{
 	"create_friday":            `MERGE (:Weekday {name: 'Friday', id: "FRI"});`,
 	"create_saturday":          `MERGE (:Weekday {name: 'Saturday', id: "SAT"});`,
 	"create_sunday":            `MERGE (:Weekday {name: 'Sunday', id: "SUN"});`,
+	"index_person_id":          `CREATE INDEX person_id IF NOT EXISTS FOR (p:Person) ON (p.id)`,
 	"index_workday_date":       `CREATE INDEX workday_date IF NOT EXISTS FOR (w:Workday) ON (w.date)`,
 	"index_workday_department": `CREATE INDEX workday_department IF NOT EXISTS FOR (w:Workday) ON (w.department)`,
 	"index_workday_workplace":  `CREATE INDEX workday_workplace IF NOT EXISTS FOR (w:Workday) ON (w.workplace)`,

@@ -147,7 +147,9 @@ func (p PersonRelServiceImpl) FindAbsencyForPerson(c *gin.Context) {
 	case nil:
 		break
 	case pkg.ErrNoRows:
-		pkg.PanicException(constant.DataNotFound)
+		// This is not an error, just return empty data
+		c.JSON(http.StatusOK, pkg.BuildResponse(constant.DataNotFound, pkg.Null()))
+		return
 	default:
 		slog.Error("Error when fetching data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
