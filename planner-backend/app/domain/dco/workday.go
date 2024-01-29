@@ -42,22 +42,16 @@ func (r *UnassignPersonFromWorkdayRequest) Validate() error {
 }
 
 /* Responses */
-type WorkdayPersonResponse struct {
-	ID           string  `json:"id"`
-	FirstName    string  `json:"first_name"`
-	LastName     string  `json:"last_name"`
-	Email        string  `json:"email"`
-	WorkingHours float64 `json:"working_hours"`
-}
 type WorkdayResponse struct {
-	Department DepartmentResponse `json:"department"`
-	Workplace  WorkplaceResponse  `json:"workplace"`
-	Timeslot   TimeslotResponse   `json:"timeslot"`
-	Date       string             `json:"date"`
-	StartTime  string             `json:"start_time"`
-	EndTime    string             `json:"end_time"`
-	Weekday    string             `json:"weekday"`
+	Department        DepartmentResponse `json:"department"`
+	Workplace         WorkplaceResponse  `json:"workplace"`
+	Timeslot          TimeslotResponse   `json:"timeslot"`
+	Date              string             `json:"date"`
+	StartTime         string             `json:"start_time"`
+	DurationInMinutes int64              `json:"duration_in_minutes"`
+	EndTime           string             `json:"end_time"`
+	Weekday           string             `json:"weekday"`
 
 	// Assigned Person can be nil
-	Person *WorkdayPersonResponse `json:"person"`
+	Person *PersonResponse `json:"person"`
 }

@@ -17,8 +17,9 @@ type Workday struct {
 	Person *Person
 
 	// StartTime and EndTime
-	StartTime string
-	EndTime   string
+	StartTime         string
+	EndTime           string
+	DurationInMinutes int64
 
 	Weekday string
 }
@@ -70,6 +71,10 @@ func (w *Workday) ParseFromDBRecord(record *neo4j.Record, date string) error {
 	if err != nil {
 		return err
 	}
+	duration, err := neo4j.GetProperty[int64](workdayNode, "duration_in_minutes")
+	if err != nil {
+		return err
+	}
 
 	weekday, err := neo4j.GetProperty[string](workdayNode, "weekday")
 	if err != nil {
@@ -91,6 +96,7 @@ func (w *Workday) ParseFromDBRecord(record *neo4j.Record, date string) error {
 	w.Workplace = workplace
 	w.Timeslot = timeslot
 	w.Date = date
+	w.DurationInMinutes = duration
 	w.StartTime = startTime.Time().Format(constant.TimeFormat)
 	w.EndTime = endTime.Time().Format(constant.TimeFormat)
 	w.Weekday = weekday

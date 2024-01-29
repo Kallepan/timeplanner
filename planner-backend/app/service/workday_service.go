@@ -168,20 +168,16 @@ func (w WorkdayServiceImpl) UnassignPersonFromWorkday(c *gin.Context) {
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, pkg.Null()))
 }
 
-func mapWorkdayPersonToWorkdayPersonResponse(workdayPerson *dao.Person) *dco.WorkdayPersonResponse {
+func mapWorkdayPersonToWorkdayPersonResponse(person *dao.Person) *dco.PersonResponse {
 	/*
 	 * Maps a WorkdayPerson to a WorkdayPersonResponse
 	 */
-	if workdayPerson == nil {
+	if person == nil {
 		return nil
 	}
-	return &dco.WorkdayPersonResponse{
-		ID:           workdayPerson.ID,
-		FirstName:    workdayPerson.FirstName,
-		LastName:     workdayPerson.LastName,
-		Email:        workdayPerson.Email,
-		WorkingHours: workdayPerson.WorkingHours,
-	}
+	p := mapPersonToPersonResponse(*person)
+
+	return &p
 }
 
 func mapWorkdayToWorkdayResponse(workday dao.Workday) dco.WorkdayResponse {
@@ -190,14 +186,15 @@ func mapWorkdayToWorkdayResponse(workday dao.Workday) dco.WorkdayResponse {
 	 */
 
 	return dco.WorkdayResponse{
-		Department: mapDepartmentToDepartmentResponse(workday.Department),
-		Workplace:  mapWorkplaceToWorkplaceResponse(workday.Workplace),
-		Timeslot:   mapTimeslotToTimeslotResponse(workday.Timeslot),
-		Date:       workday.Date,
-		StartTime:  workday.StartTime,
-		EndTime:    workday.EndTime,
-		Person:     mapWorkdayPersonToWorkdayPersonResponse(workday.Person),
-		Weekday:    workday.Weekday,
+		Department:        mapDepartmentToDepartmentResponse(workday.Department),
+		Workplace:         mapWorkplaceToWorkplaceResponse(workday.Workplace),
+		Timeslot:          mapTimeslotToTimeslotResponse(workday.Timeslot),
+		Date:              workday.Date,
+		StartTime:         workday.StartTime,
+		EndTime:           workday.EndTime,
+		DurationInMinutes: workday.DurationInMinutes,
+		Person:            mapWorkdayPersonToWorkdayPersonResponse(workday.Person),
+		Weekday:           workday.Weekday,
 	}
 }
 

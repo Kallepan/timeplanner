@@ -94,6 +94,7 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date strin
 	ON CREATE SET
 		wkd.start_time = c.start_time,
 		wkd.end_time = c.end_time,
+		wkd.duration_in_minutes = duration.between(c.start_time, c.end_time).minutes,
 		wkd.active = true,
 		wkd.created_at = datetime()
 		
