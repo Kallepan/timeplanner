@@ -13,6 +13,7 @@ export type WorkdayTimeslot = {
 
   start_time: string;
   end_time: string;
+  duration_in_minutes: number;
 
   person: WorkdayTimeslotPerson | null;
 };
@@ -33,4 +34,4 @@ export type UnassignPersonFromWorkdayTimeslotRequest = {
   person_id: string;
 };
 
-export type WorkdayTimeslotPerson = Pick<Person, 'id' | 'first_name' | 'last_name' | 'email' | 'working_hours'>;
+export type WorkdayTimeslotPerson = Pick<Person, 'id' | 'first_name' | 'last_name' | 'email' | 'working_hours' | 'workplaces' | 'departments'>;
