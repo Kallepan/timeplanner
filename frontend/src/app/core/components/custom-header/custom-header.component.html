@@ -1,1 +1,3 @@
-<p>custom-header works!</p>
+@if (activatedRoute$ | async; as activatedRoute) {
+  {{ activatedRoute | titlecase }}
+}
