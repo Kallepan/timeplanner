@@ -1,4 +1,9 @@
-<div class="timetable-container">
+<div class="timetable-container" cdkDropListGroup>
+  @defer (on timer(500ms)) {
+    <app-person-list></app-person-list>
+  }
+
+  <!-- This is the parent container for all cdkDropLists !-->
   <div class="timetable mat-elevation-z8">
     <!-- Add static headers -->
     <div class="cell header">Arbeitsplatz</div>
@@ -33,7 +38,14 @@
           [ngStyle]="{
             'grid-row': slot.gridRow,
             'grid-column': 2
-          }">
+          }"
+          cdkDropList
+          (cdkDropListDropped)="
+            personDroppedIntoTimeslot.emit({
+              person: $event.item.data,
+              timeslots: slot.workdayTimeslots
+            })
+          ">
           {{ slot.name }}
         </div>
 
@@ -45,21 +57,23 @@
           }"></div>
 
         <!-- Now display the timeslots by using their respective gridRow and gridColumn !-->
-        @for (wts of slot.workdayTimeslots; track wts) {
+        @for (ts of slot.workdayTimeslots; track ts) {
           <div
             class="cell"
             [ngClass]="{
-              'not-occupied': !wts.person
+              'not-occupied': !ts.person
             }"
             [ngStyle]="{
               'grid-row': slot.gridRow,
-              'grid-column': wts.gridColumn
+              'grid-column': ts.gridColumn
             }">
-            @if (timetableDataContainerService.displayPersons$) {
-              {{ wts.person?.id }} <br />
+            @defer (on hover) {
+              <app-select-person [selectedPerson]="ts.person" (selected)="personDroppedIntoTimeslot.emit({ person: $event, timeslots: [ts] })"></app-select-person>
+            } @placeholder {
+              <app-edit-person-preview [person]="ts.person"></app-edit-person-preview>
             }
             @if (timetableDataContainerService.displayTime$) {
-              {{ wts.start_time }} - {{ wts.end_time }} ({{ wts.duration_in_minutes / 60 }})
+              {{ ts.start_time }} - {{ ts.end_time }} ({{ ts.duration_in_minutes / 60 }})
             }
           </div>
         }

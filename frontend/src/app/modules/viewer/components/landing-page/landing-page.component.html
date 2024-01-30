@@ -1,6 +1,9 @@
 <!-- TODO: add actions to modify values in viewerstatehandlerservice-->
 <div class="actions-container">
-  <app-actions></app-actions>
+  <app-actions
+    (toggleColors)="timetableDataContainerService.colorize = $event"
+    (togglePersonsLabel)="timetableDataContainerService.displayPersons = $event"
+    (toggleTimeLabel)="timetableDataContainerService.displayTime = $event"></app-actions>
 </div>
 
 <app-view-only-timetable></app-view-only-timetable>

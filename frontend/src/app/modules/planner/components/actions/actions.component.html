@@ -1,0 +1,6 @@
+<div class="actions">
+  <mat-slide-toggle id="toggleColors" color="accent" [checked]="true" (change)="toggleColors.emit($event.checked)">Zeitslots farbig markieren</mat-slide-toggle>
+  <mat-slide-toggle id="toggleTimeLabel" color="accent" [checked]="true" (change)="toggleTimeLabel.emit($event.checked)">Zeiten anzeigen</mat-slide-toggle>
+  <mat-slide-toggle id="togglePersonsLabel" color="accent" [checked]="true" (change)="togglePersonsLabel.emit($event.checked)">Personen anzeigen</mat-slide-toggle>
+  <mat-slide-toggle id="toggleEditingMode" color="accent" [checked]="false" (change)="toggleEditingMode.emit($event.checked)">Editiermodus aktivieren</mat-slide-toggle>
+</div>

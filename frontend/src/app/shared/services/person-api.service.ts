@@ -19,8 +19,15 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { constants } from '@app/constants/constants';
 import { APIResponse } from '@app/core/interfaces/response';
-import { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
 import { CreatePerson, PersonWithMetadata } from '../interfaces/person';
+
+type AbsenceReponse = {
+  person_id: string;
+  reason: string;
+  date: string;
+  created_at: Date;
+};
 
 @Injectable({
   providedIn: null,
@@ -210,6 +217,27 @@ export class PersonAPIService {
     };
 
     return this.http.get<APIResponse<null>>(url, httpOptions);
+  }
+
+  isAbsentOnDate(personID: string, date: string): Observable<boolean> {
+    const url = `${constants.APIS.PLANNER}/person/${personID}/absency/${date}`;
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      withCredentials: true,
+    };
+
+    return this.http.get<APIResponse<AbsenceReponse | null>>(url, httpOptions).pipe(
+      map((response) => {
+        if (response.data) {
+          return true;
+        } else {
+          return false;
+        }
+      }),
+    );
   }
 
   removeAbsencyFromPerson(personID: string, date: string): Observable<APIResponse<null>> {

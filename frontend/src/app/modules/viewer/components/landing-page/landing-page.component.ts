@@ -7,6 +7,7 @@ import { filter, map } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 import { ViewOnlyTimetableComponent } from '@app/modules/viewer/components/view-only-timetable/view-only-timetable.component';
 import { ActionsComponent } from '../actions/actions.component';
+import { TimetableDataContainerService } from '@app/shared/services/timetable-data-container.service';
 
 @Component({
   selector: 'app-landing-page',
@@ -16,6 +17,7 @@ import { ActionsComponent } from '../actions/actions.component';
   styleUrl: './landing-page.component.scss',
 })
 export class LandingPageComponent implements OnInit {
+  timetableDataContainerService = inject(TimetableDataContainerService);
   // inject the services here
   viewerStateHandlerService = inject(ViewerStateHandlerService);
   private destroyRef$ = inject(DestroyRef);

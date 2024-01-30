@@ -1,5 +1,5 @@
 import { DepartmentWithMetadata } from './department';
-import { Person } from './person';
+import { PersonWithMetadata } from './person';
 import { TimeslotWithMetadata } from './timeslot';
 import { WorkplaceWithMetadata } from './workplace';
 
@@ -15,23 +15,21 @@ export type WorkdayTimeslot = {
   end_time: string;
   duration_in_minutes: number;
 
-  person: WorkdayTimeslotPerson | null;
+  person: PersonWithMetadata | null;
 };
 
 export type AssignPersonToWorkdayTimeslotRequest = {
   date: string;
-  department_name: string;
-  workplace_name: string;
+  department_id: string;
+  workplace_id: string;
   timeslot_name: string;
   person_id: string;
 };
 
 export type UnassignPersonFromWorkdayTimeslotRequest = {
   date: string;
-  department_name: string;
-  workplace_name: string;
+  department_id: string;
+  workplace_id: string;
   timeslot_name: string;
   person_id: string;
 };
-
-export type WorkdayTimeslotPerson = Pick<Person, 'id' | 'first_name' | 'last_name' | 'email' | 'working_hours' | 'workplaces' | 'departments'>;

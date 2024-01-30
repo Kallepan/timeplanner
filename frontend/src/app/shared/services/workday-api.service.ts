@@ -59,7 +59,7 @@ export class WorkdayAPIService {
     return this.http.get<APIResponse<WorkdayTimeslot[]>>(url, httpOptions);
   }
 
-  assignPerson(departmentName: string, date: string, workplace: string, timeslot: string, personId: string): Observable<APIResponse<null>> {
+  assignPerson(department_id: string, date: string, workplace_id: string, timeslot_name: string, person_id: string): Observable<APIResponse<null>> {
     const url = `${constants.APIS.PLANNER}/workday/assign`;
 
     const httpOptions = {
@@ -70,17 +70,17 @@ export class WorkdayAPIService {
     };
 
     const body: AssignPersonToWorkdayTimeslotRequest = {
-      department_name: departmentName,
-      date: date,
-      workplace_name: workplace,
-      timeslot_name: timeslot,
-      person_id: personId,
+      department_id,
+      date,
+      workplace_id,
+      timeslot_name,
+      person_id,
     };
 
     return this.http.post<APIResponse<null>>(url, body, httpOptions);
   }
 
-  unassignPerson(departmentName: string, date: string, workplace: string, timeslot: string, personId: string): Observable<APIResponse<null>> {
+  unassignPerson(department_id: string, date: string, workplace_id: string, timeslot_name: string, person_id: string): Observable<APIResponse<null>> {
     const url = `${constants.APIS.PLANNER}/workday/unassign`;
 
     const httpOptions = {
@@ -91,11 +91,11 @@ export class WorkdayAPIService {
     };
 
     const body: UnassignPersonFromWorkdayTimeslotRequest = {
-      department_name: departmentName,
-      date: date,
-      workplace_name: workplace,
-      timeslot_name: timeslot,
-      person_id: personId,
+      department_id,
+      date,
+      workplace_id,
+      timeslot_name,
+      person_id,
     };
 
     return this.http.post<APIResponse<null>>(url, body, httpOptions);
