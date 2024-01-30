@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  namespace: timeplanner
+  labels:
+    app: api-gateway
+    tier: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-gateway
+  template:
+    metadata:
+      labels:
+        app: api-gateway
+        tier: backend
+    spec:
+      imagePullSecrets:
+        - name: regcred
+      containers:
+        - image: mikroedv/timeplanner-api-gateway:dev
+          imagePullPolicy: Always
+          name: api-gateway
+          envFrom:
+            - secretRef:
+                name: secrets
+          ports:
+            - containerPort: 8080
+              name: gin
+          resources:
+            limits:
+              memory: "1Gi"
+            requests:
+              memory: "1Gi"
+          securityContext:
+            allowPrivilegeEscalation: false

@@ -14,8 +14,8 @@ export class constants {
     USERNAME_STORAGE: 'username',
   };
 
-  public static TITLE_SHORT = 'TP';
-  public static TITLE_LONG = 'TP - Timeplanner';
+  public static TITLE_SHORT = 'DPP';
+  public static TITLE_LONG = 'DPP - Dienstplan Planer';
   public static VERSION = '1.0.0';
 
   public static IS_PRODUCTION = environment.production;

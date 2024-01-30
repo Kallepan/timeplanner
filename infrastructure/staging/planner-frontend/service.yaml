@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: planner-frontend
+  namespace: timeplanner
+  labels:
+    app: planner-frontend
+    tier: planner-frontend
+spec:
+  selector:
+    app: planner-frontend
+    tier: planner-frontend
+  ports:
+    - name: web
+      port: 80
+      targetPort: 80
+      protocol: TCP

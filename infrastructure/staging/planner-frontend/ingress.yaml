@@ -1,0 +1,39 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingressroute-https
+  namespace: timeplanner
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`timeplanner.dev-k8s.labmed.de`) && PathPrefix(`/`)
+      kind: Rule
+      middlewares:
+        - name: redirect-to-http
+          namespace: timeplanner
+      services:
+        - kind: Service
+          name: planner-frontend
+          namespace: timeplanner
+          passHostHeader: true
+          port: 80
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ingressroute-http
+  namespace: timeplanner
+spec:
+  entryPoints:
+    - web
+  routes:
+    - match: Host(`timeplanner.dev-k8s.labmed.de`) && PathPrefix(`/`)
+      kind: Rule
+      services:
+        - kind: Service
+          name: planner-frontend
+          namespace: timeplanner
+          passHostHeader: true
+          scheme: http
+          port: 80

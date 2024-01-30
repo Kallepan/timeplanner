@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: planner-backend
+  namespace: timeplanner
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: planner-backend
+  template:
+    metadata:
+      labels:
+        app: planner-backend
+        tier: backend
+    spec:
+      containers:
+        - name: planner-backend
+          image: mikroedv/timeplanner-planner-backend:dev
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - secretRef:
+                name: secrets
+          securityContext:
+            allowPrivilegeEscalation: false
+          resources:
+            limits:
+              memory: "1Gi"
+            requests:
+              memory: "1Gi"
