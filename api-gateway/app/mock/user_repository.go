@@ -40,6 +40,7 @@ func (r *UserRepositoryMock) Return(mockData interface{}, errorData error) Mock 
 			BaseModel: dao.BaseModel{
 				ID: mockData.(dao.User).DepartmentID,
 			},
+			Name: mockData.(dao.User).Department.Name,
 		}
 		mockData = formattedData
 	}

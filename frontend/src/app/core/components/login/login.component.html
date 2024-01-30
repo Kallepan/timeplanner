@@ -4,50 +4,23 @@
       <mat-icon>account_circle</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <form
-        action="submit"
-        [formGroup]="loginForm"
-        class="mat-app-background menu"
-        (click)="stopPropagation($event)"
-        (keydown.tab)="stopPropagation($event)"
-        tabindex="0">
+      <form action="submit" [formGroup]="loginForm" class="mat-app-background menu" (click)="$event.stopPropagation()" (keydown.tab)="$event.stopPropagation()" tabindex="0">
         <mat-form-field appearance="fill">
           <mat-label>Identifier</mat-label>
-          <input
-            matInput
-            placeholder="Identifier"
-            formControlName="identifier"
-            type="text"
-            autocomplete="off" />
-          <mat-error *ngIf="loginForm.get('identifier')?.hasError('required')">
-            Pflichtfeld
-          </mat-error>
+          <input matInput placeholder="Identifier" formControlName="identifier" type="text" autocomplete="off" />
+          <mat-error *ngIf="loginForm.get('identifier')?.hasError('required')"> Pflichtfeld </mat-error>
         </mat-form-field>
         <mat-form-field appearance="fill">
           <mat-label>Passwort</mat-label>
-          <input
-            matInput
-            placeholder="Password"
-            formControlName="password"
-            type="password"
-            autocomplete="off" />
-          <mat-error *ngIf="loginForm.get('password')?.hasError('required')">
-            Pflichtfeld
-          </mat-error>
+          <input matInput placeholder="Password" formControlName="password" type="password" autocomplete="off" />
+          <mat-error *ngIf="loginForm.get('password')?.hasError('required')"> Pflichtfeld </mat-error>
         </mat-form-field>
-        <button
-          id="login-confirm"
-          mat-raised-button
-          color="accent"
-          (click)="onSubmitLogin()"
-          [disabled]="loginForm.invalid">
-          Login
-        </button>
+        <button id="login-confirm" mat-raised-button color="accent" (click)="onSubmitLogin()" [disabled]="loginForm.invalid">Login</button>
       </form>
     </mat-menu>
   } @else {
     <div class="info">
-      {{ authService.authData()?.department | uppercase }}
+      {{ authService.authData()?.username | uppercase }}
       <button mat-icon-button (click)="authService.logout()">
         <mat-icon>logout</mat-icon>
       </button>

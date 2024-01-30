@@ -1,20 +1,21 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {
-  Injectable,
-  computed,
-  inject,
-  signal,
-  type WritableSignal,
-} from '@angular/core';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { Injectable, computed, inject, signal, type WritableSignal } from '@angular/core';
 import { Router } from '@angular/router';
-import { from, map, switchMap, tap, timeout } from 'rxjs';
+import { Observable, catchError, from, map, of, switchMap, tap } from 'rxjs';
 import { constants } from '../../constants/constants';
 import { messages } from '../../constants/messages';
 import { NotificationService } from './notification.service';
+import { APIResponse } from '../interfaces/response';
 
-interface AuthData {
-  department: string;
-}
+type AuthResponse = {
+  username: string;
+  email: string;
+};
+
+type AuthData = {
+  username: string;
+  email: string;
+};
 
 @Injectable({
   providedIn: 'root',
@@ -34,6 +35,26 @@ export class AuthService {
     return this._authData() !== null && this._authData() !== undefined;
   });
 
+  hasAccessToDepartment(departmentName: string): Observable<boolean> {
+    // Check if the user has access to a department
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      withCredentials: true,
+      params: new HttpParams({
+        fromObject: {
+          department: departmentName,
+        },
+      }),
+    };
+
+    return this.http.get<null>(`${constants.APIS.AUTH}/me`, httpOptions).pipe(
+      map(() => true),
+      catchError(() => of(false)),
+    );
+  }
+
   verifyLogin(): void {
     /* Called at ngOnInit() in app.component.ts to check if the user is logged in using cookies */
     const httpOptions = {
@@ -44,29 +65,21 @@ export class AuthService {
     };
 
     this.http
-      .get<any>(`${constants.APIS.AUTH}/verify`, httpOptions)
+      .get<APIResponse<AuthResponse>>(`${constants.APIS.AUTH}/me`, httpOptions)
       .pipe(
-        timeout(4000),
-        map((resp) => {
-          return {
-            department: resp.identifier,
-          };
-        }),
+        map((resp) => resp.data),
+        catchError(() => of(null)),
       )
       .subscribe({
         next: (data) => {
           this._authData.set(data);
-          this._notificationService.infoMessage(messages.AUTH.LOGGED_IN);
-        },
-        error: () => {
-          this._authData.set(null);
         },
       });
   }
 
-  login(identifier: string | null, password: string | null): void {
+  login(username: string | null, password: string | null): void {
     const data = {
-      identifier,
+      username,
       password,
     };
 
@@ -78,25 +91,15 @@ export class AuthService {
     };
 
     this.http
-      .post<any>(`${constants.APIS.AUTH}/`, data, httpOptions)
+      .post<APIResponse<AuthResponse>>(`${constants.APIS.AUTH}/login`, data, httpOptions)
       .pipe(
-        map(() => {
-          return data.identifier === null
-            ? null
-            : { department: data.identifier };
-        }),
-        tap((data) => {
-          this._authData.set(data);
-        }),
+        map((resp) => resp.data),
+        catchError(() => of(null)),
       )
       .subscribe({
-        next: () => {
+        next: (data) => {
+          this._authData.set(data);
           this._notificationService.infoMessage(messages.AUTH.LOGGED_IN);
-        },
-        error: () => {
-          this._notificationService.warnMessage(
-            messages.AUTH.INVALID_CREDENTIALS,
-          );
         },
       });
   }
@@ -110,7 +113,7 @@ export class AuthService {
     };
 
     this.http
-      .post<any>(`${constants.APIS.AUTH}/logout/`, {}, httpOptions)
+      .post<null>(`${constants.APIS.AUTH}/logout`, {}, httpOptions)
       .pipe(
         tap(() => {
           this._authData.set(null);

@@ -9,6 +9,7 @@ package service
 
 import (
 	"api-gateway/app/constant"
+	"api-gateway/app/domain/dao"
 	"api-gateway/app/domain/dco"
 	"api-gateway/app/pkg"
 	"api-gateway/app/repository"
@@ -61,22 +62,15 @@ func (a AuthServiceImpl) Login(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	slog.Info("start to compare password", "hashedPassword", user.Password, "password", request.Password)
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.Password)); err != nil {
 		slog.Error("Error happened: when compare password", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	// generate JWT token
-	convertedPermissions := make([]string, len(user.Permissions))
-	for i, v := range user.Permissions {
-		convertedPermissions[i] = v.ConvertToID()
-	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, dco.JWTClaim{
-		Username:    user.Username,
-		Department:  user.Department.ID.String(),
-		Permissions: convertedPermissions,
-		IsAdmin:     user.IsAdmin,
+		Username:   user.Username,
+		Department: user.Department.ID.String(),
+		IsAdmin:    user.IsAdmin,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(dco.JWTExpirationTime)),
 		},
@@ -91,9 +85,7 @@ func (a AuthServiceImpl) Login(c *gin.Context) {
 	// set the token in the cookie
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("Authorization", tokenString, int(dco.JWTExpirationTime.Seconds()), "/", "", false, true)
-	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, gin.H{
-		"message": "login successfully",
-	}))
+	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, mapUserToUserResponse(user)))
 }
 
 func (a AuthServiceImpl) Me(c *gin.Context) {
@@ -112,7 +104,7 @@ func (a AuthServiceImpl) Me(c *gin.Context) {
 	}
 
 	// find the user data from the database
-	rawData, err := a.UserRepository.FindUserByUsername(claim.(*dco.JWTClaim).Username)
+	data, err := a.UserRepository.FindUserByUsername(claim.(*dco.JWTClaim).Username)
 	switch err {
 	case nil:
 		break
@@ -124,8 +116,13 @@ func (a AuthServiceImpl) Me(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	data := mapUserToUserResponse(rawData)
-	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
+	// if departmentQuery parameter is not "", check if user belongs to the department
+	departmentQuery := c.Query("department")
+	if departmentQuery != "" && departmentQuery != data.Department.Name && !data.IsAdmin {
+		pkg.PanicException(constant.Unauthorized)
+	}
+
+	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, mapUserToAuthResponse(data)))
 }
 
 func (a AuthServiceImpl) Logout(c *gin.Context) {
@@ -134,12 +131,20 @@ func (a AuthServiceImpl) Logout(c *gin.Context) {
 
 	c.SetSameSite(http.SameSiteLaxMode)
 	c.SetCookie("Authorization", "", -1, "/", "", false, true)
-	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, gin.H{
-		"message": "logout successfully",
-	}))
+	c.Status(http.StatusOK)
 }
 
 var authServiceSet = wire.NewSet(
 	wire.Struct(new(AuthServiceImpl), "*"),
 	wire.Bind(new(AuthService), new(*AuthServiceImpl)),
 )
+
+func mapUserToAuthResponse(user dao.User) dco.AuthResponse {
+	/**
+	* This function maps the user data from the database to the response data
+	**/
+	return dco.AuthResponse{
+		Username: user.Username,
+		Email:    user.Email,
+	}
+}
