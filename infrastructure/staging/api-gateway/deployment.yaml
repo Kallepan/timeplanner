@@ -36,3 +36,21 @@ spec:
               memory: "1Gi"
           securityContext:
             allowPrivilegeEscalation: false
+          readinessProbe:
+            httpGet:
+              path: /api/v1/ping
+              port: gin
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /api/v1/ping
+              port: gin
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 5
+            successThreshold: 1
+            failureThreshold: 3
