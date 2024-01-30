@@ -28,8 +28,8 @@ docker build --platform linux/amd64 -t $DOCKER_REGISTRY_SERVER/$DOCKER_REGISTRY_
 docker push $DOCKER_REGISTRY_USERNAME/timeplanner-planner-backend:$VERSION
 
 cd ../frontend
-docker build --platform linux/amd64 -t $DOCKER_REGISTRY_SERVER/$DOCKER_REGISTRY_USERNAME/timeplanner-frontend:$VERSION .
-docker push $DOCKER_REGISTRY_USERNAME/timeplanner-frontend:$VERSION
+docker build --platform linux/amd64 -t $DOCKER_REGISTRY_SERVER/$DOCKER_REGISTRY_USERNAME/timeplanner-planner-frontend:$VERSION .
+docker push $DOCKER_REGISTRY_USERNAME/timeplanner-planner-frontend:$VERSION
 
 
 kubectl rollout restart deployment api-gateway -n $NAMESPACE --kubeconfig=$KUBECONFIG

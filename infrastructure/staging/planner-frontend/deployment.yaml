@@ -21,7 +21,7 @@ spec:
         - name: regcred
       containers:
         - name: planner-frontend
-          image: mikroedv/timeplanner-frontend:dev
+          image: mikroedv/timeplanner-planner-frontend:dev
           imagePullPolicy: Always
           ports:
             - containerPort: 80
