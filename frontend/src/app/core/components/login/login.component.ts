@@ -12,18 +12,9 @@ import { AuthService } from '@app/core/services/auth.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatIconModule,
-    MatButtonModule,
-    MatMenuModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ReactiveFormsModule,
-    MatProgressSpinnerModule
-  ],
+  imports: [CommonModule, MatIconModule, MatButtonModule, MatMenuModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatProgressSpinnerModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
   authService = inject(AuthService);
@@ -31,18 +22,14 @@ export class LoginComponent implements OnInit {
 
   loginForm = this._fb.group({
     identifier: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(5)]],
-    password: ['', [Validators.required]]
+    password: ['', [Validators.required]],
   });
 
-  stopPropagation (event: Event): void {
-    event.stopPropagation();
-  }
-
-  ngOnInit (): void {
+  ngOnInit(): void {
     this.authService.verifyLogin();
   }
 
-  onSubmitLogin (): void {
+  onSubmitLogin(): void {
     this.authService.login(this.loginForm.controls.identifier.value, this.loginForm.controls.password.value);
   }
 }

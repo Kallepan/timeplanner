@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { WorkdayTimeslot } from '@app/shared/interfaces/workday_timeslot';
 import { WorkdayAPIService } from '@app/shared/services/workday-api.service';
 import { Subject, catchError, filter, from, map, mergeMap, of, reduce, tap } from 'rxjs';
@@ -35,6 +35,10 @@ type ActiveWeek = {
   providedIn: null,
 })
 export class ViewerStateHandlerService {
+  private _activeWeek = signal<ActiveWeek | null>(null);
+  get activeWeek$() {
+    return this._activeWeek();
+  }
   // inject the services here
   private timetableDataContainerService = inject(TimetableDataContainerService);
   private workdayAPIService = inject(WorkdayAPIService);
@@ -59,6 +63,9 @@ export class ViewerStateHandlerService {
         })),
         tap((activeWeek) => {
           this.timetableDataContainerService.weekdays = activeWeek.dates;
+        }),
+        tap((activeWeeks) => {
+          this._activeWeek.set(activeWeeks);
         }),
         // filter out null values
         filter((activeWeek): activeWeek is ActiveWeek => !!activeWeek),

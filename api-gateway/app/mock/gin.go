@@ -67,6 +67,16 @@ func (b *TestContextBuilder) WithQuery(key, value string) *TestContextBuilder {
 	return b
 }
 
+func (b *TestContextBuilder) WithQueries(queries map[string]string) *TestContextBuilder {
+	q := b.url.Query()
+	for key, value := range queries {
+		q.Set(key, value)
+	}
+	b.url.RawQuery = q.Encode()
+
+	return b
+}
+
 func (b *TestContextBuilder) Build() (*gin.Context, error) {
 	gin.SetMode(gin.TestMode)
 

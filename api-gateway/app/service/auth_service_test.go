@@ -8,6 +8,7 @@ import (
 	"api-gateway/app/mock"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -119,7 +120,8 @@ func TestLoginSimple(t *testing.T) {
 func TestMe(t *testing.T) {
 	// define test struct
 	type authMeTest struct {
-		params             map[string]string
+		data               map[string]string
+		query              map[string]string
 		expectedStatusCode int
 		expectedValue      dao.User
 		setCookie          bool
@@ -135,19 +137,16 @@ func TestMe(t *testing.T) {
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("test"), bcrypt.DefaultCost)
 	testSteps := []authMeTest{
 		{
-			params: map[string]string{
+			// check if admin can access 'his' department
+			data: map[string]string{
 				"username": "test",
 			},
+			query: map[string]string{
+				"department": "test",
+			},
 			expectedValue: dao.User{
-				BaseModel: dao.BaseModel{
-					ID: uuid.MustParse("00000000-0000-0000-0000-000000000000"),
-				},
-				Username: "test",
-				Password: string(hashedPassword),
+				IsAdmin: true,
 				Department: dao.Department{
-					BaseModel: dao.BaseModel{
-						ID: uuid.MustParse("00000000-0000-0000-0000-000000000000"),
-					},
 					Name: "test",
 				},
 			},
@@ -155,7 +154,76 @@ func TestMe(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 		},
 		{
-			params: map[string]string{
+			// check if admin can access all department
+			data: map[string]string{
+				"username": "test",
+			},
+			query: map[string]string{
+				"department": "test2",
+			},
+			expectedValue: dao.User{
+				IsAdmin: true,
+				Department: dao.Department{
+					Name: "test",
+				},
+			},
+			setCookie:          true,
+			expectedStatusCode: http.StatusOK,
+		},
+		{
+			// check if user can access correct department
+			data: map[string]string{
+				"username": "test",
+			},
+			query: map[string]string{
+				"department": "test",
+			},
+			expectedValue: dao.User{
+				Username: "test",
+				IsAdmin:  false,
+				Department: dao.Department{
+					Name: "test",
+				},
+			},
+			setCookie:          true,
+			expectedStatusCode: http.StatusOK,
+		},
+		{
+			// check if user can access different department
+			data: map[string]string{
+				"username": "test",
+			},
+			query: map[string]string{
+				"department": "test2",
+			},
+			expectedValue: dao.User{
+				IsAdmin: false,
+				Department: dao.Department{
+					Name: "test",
+				},
+			},
+			setCookie:          true,
+			expectedStatusCode: http.StatusUnauthorized,
+		},
+		{
+			data: map[string]string{
+				"username": "test",
+			},
+			expectedValue: dao.User{
+				Username: "test",
+				Password: string(hashedPassword),
+				Department: dao.Department{
+					BaseModel: dao.BaseModel{
+						ID: uuid.MustParse("00000000-0000-0000-0000-000000000000"),
+					},
+					Name: "testDepartment",
+				},
+			},
+			setCookie:          true,
+			expectedStatusCode: http.StatusOK,
+		},
+		{
+			data: map[string]string{
 				"username": "test",
 			},
 			expectedValue: dao.User{
@@ -176,7 +244,7 @@ func TestMe(t *testing.T) {
 			mockError:          gorm.ErrRecordNotFound,
 		},
 		{
-			params: map[string]string{
+			data: map[string]string{
 				"username": "test",
 			},
 			expectedValue:      dao.User{},
@@ -184,7 +252,7 @@ func TestMe(t *testing.T) {
 			setCookie:          false,
 		},
 		{
-			params: map[string]string{
+			data: map[string]string{
 				"username": "test",
 			},
 			expectedValue:      dao.User{},
@@ -195,41 +263,47 @@ func TestMe(t *testing.T) {
 	}
 
 	for i, testStep := range testSteps {
-		// Set mock data
-		mockUserRepository.On("FindUserByUsername").Return(testStep.expectedValue, testStep.mockError)
+		t.Run(fmt.Sprintf("Test step %d", i), func(t *testing.T) {
 
-		w := httptest.NewRecorder()
-		ctx := mock.GetGinTestContext(w, "GET", gin.Params{}, nil)
+			// Set mock data
+			mockUserRepository.On("FindUserByUsername").Return(testStep.expectedValue, testStep.mockError)
 
-		// generate mock token
-		if testStep.setCookie {
-			token, err := mock.GenerateMockToken(testStep.expectedValue)
+			w := httptest.NewRecorder()
+			ctx, err := mock.NewTestContextBuilder().WithMethod("GET").WithBody(testStep.data).WithQueries(testStep.query).WithResponseRecorder(w).Build()
 			if err != nil {
-				t.Error("Error happened: when generate mock token", "error", err)
-			}
-			claim, _ := middleware.DecodeToken(token)
-			ctx.Set("retrievedToken", claim)
-		}
-
-		// send request
-		authService.Me(ctx)
-
-		// check status code
-		if w.Code != testStep.expectedStatusCode {
-			t.Errorf("Step %d. Expected status code %d but got %d", i, testStep.expectedStatusCode, w.Code)
-		}
-
-		// check if user is returned in the response
-		if testStep.expectedStatusCode == http.StatusOK {
-			var responseBody dto.APIResponse[dco.UserResponse]
-			if err := json.Unmarshal(w.Body.Bytes(), &responseBody); err != nil {
-				t.Error("Error happened: when unmarshal response body", "error", err)
-			}
-			if responseBody.Data.Username != testStep.expectedValue.Username {
-				t.Errorf("Expected username %s but got %s", testStep.expectedValue.Username, responseBody.Data.Username)
+				t.Error("Error happened: when build test context", "error", err)
 			}
 
-		}
+			// generate mock token
+			if testStep.setCookie {
+				token, err := mock.GenerateMockToken(testStep.expectedValue)
+				if err != nil {
+					t.Error("Error happened: when generate mock token", "error", err)
+				}
+				claim, _ := middleware.DecodeToken(token)
+				ctx.Set("retrievedToken", claim)
+			}
+
+			// send request
+			authService.Me(ctx)
+
+			// check status code
+			if w.Code != testStep.expectedStatusCode {
+				t.Errorf("Step %d. Expected status code %d but got %d", i, testStep.expectedStatusCode, w.Code)
+			}
+
+			// check if user is returned in the response
+			if testStep.expectedStatusCode == http.StatusOK {
+				var responseBody dto.APIResponse[dco.UserResponse]
+				if err := json.Unmarshal(w.Body.Bytes(), &responseBody); err != nil {
+					t.Error("Error happened: when unmarshal response body", "error", err)
+				}
+				if responseBody.Data.Username != testStep.expectedValue.Username {
+					t.Errorf("Expected username %s but got %s", testStep.expectedValue.Username, responseBody.Data.Username)
+				}
+
+			}
+		})
 	}
 
 }
@@ -252,26 +326,28 @@ func TestLogoutSimple(t *testing.T) {
 	}
 
 	for _, testStep := range testSteps {
-		w := httptest.NewRecorder()
-		ctx := mock.GetGinTestContext(w, "POST", gin.Params{}, nil)
+		t.Run(fmt.Sprintf("Test step %d", testStep.expectedStatusCode), func(t *testing.T) {
+			w := httptest.NewRecorder()
+			ctx := mock.GetGinTestContext(w, "POST", gin.Params{}, nil)
 
-		authService.Logout(ctx)
+			authService.Logout(ctx)
 
-		if w.Code != testStep.expectedStatusCode {
-			t.Errorf("Expected status code %d but got %d", testStep.expectedStatusCode, w.Code)
-		}
-
-		// check the httpOnly cookie
-		cookie := w.Header().Get("Set-Cookie")
-
-		if testStep.cookieExpected {
-			if cookie == "" {
-				t.Errorf("Expected cookie to be set but got empty")
+			if w.Code != testStep.expectedStatusCode {
+				t.Errorf("Expected status code %d but got %d", testStep.expectedStatusCode, w.Code)
 			}
-		} else {
-			if cookie != "" {
-				t.Errorf("Expected cookie to be empty but got %s", cookie)
+
+			// check the httpOnly cookie
+			cookie := w.Header().Get("Set-Cookie")
+
+			if testStep.cookieExpected {
+				if cookie == "" {
+					t.Errorf("Expected cookie to be set but got empty")
+				}
+			} else {
+				if cookie != "" {
+					t.Errorf("Expected cookie to be empty but got %s", cookie)
+				}
 			}
-		}
+		})
 	}
 }

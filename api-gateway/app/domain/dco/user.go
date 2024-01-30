@@ -23,11 +23,10 @@ type PermissionResponse struct {
 type UserResponse struct {
 	BaseModel
 
-	Username    string               `json:"username"`
-	Email       string               `json:"email"`
-	IsAdmin     bool                 `json:"is_admin"`
-	Department  DepartmentResponse   `json:"department"`
-	Permissions []PermissionResponse `json:"permissions"`
+	Username   string             `json:"username"`
+	Email      string             `json:"email"`
+	IsAdmin    bool               `json:"is_admin"`
+	Department DepartmentResponse `json:"department"`
 }
 
 func (res UserResponse) MarshalJSON() ([]byte, error) {

@@ -53,4 +53,10 @@ export class LandingPageComponent implements OnInit {
         }, 0);
       });
   }
+
+  getEditRouterQueryParams(): { department?: string } {
+    return {
+      department: this.viewerStateHandlerService.activeWeek$?.department,
+    };
+  }
 }

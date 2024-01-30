@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotificationService } from '@app/core/services/notification.service';
 import { WorkdayTimeslot } from '@app/shared/interfaces/workday_timeslot';
@@ -52,15 +52,6 @@ export class PlannerStateHandlerService {
     department: string;
     date: Date;
   }>();
-
-  // editable Tracker
-  protected _editable = signal<boolean>(false);
-  get editable$(): boolean {
-    return this._editable();
-  }
-  set editable(value: boolean) {
-    this._editable.set(value);
-  }
 
   constructor() {
     // this keeps track of the active week currently being viewed
