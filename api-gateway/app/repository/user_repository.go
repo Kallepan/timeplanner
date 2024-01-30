@@ -39,7 +39,7 @@ func (u UserRepositoryImpl) FindUserByUsername(username string) (dao.User, error
 	user := dao.User{
 		Username: username,
 	}
-	err := u.db.Preload("Permissions").Preload("Department", "name = ?", username).First(&user).Error
+	err := u.db.Preload("Permissions").Preload("Department").Where("username = ?", username).First(&user).Error
 	if err != nil {
 		slog.Error("Got and error when find user by username.", "error", err)
 		return dao.User{}, err

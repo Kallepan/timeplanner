@@ -8,8 +8,45 @@ import (
 
 type Department struct {
 	Name string
+	ID   string
 
 	Base
+}
+
+func (d *Department) ParseFromNode(node *neo4j.Node) error {
+	/**
+	 * Parses a department from a neo4j node and sets the values on this department
+	 */
+
+	id, err := neo4j.GetProperty[string](node, "id")
+	if err != nil {
+		return err
+	}
+	name, err := neo4j.GetProperty[string](node, "name")
+	if err != nil {
+		return err
+	}
+	createdAt, err := neo4j.GetProperty[time.Time](node, "created_at")
+	if err != nil {
+		return err
+	}
+	updatedAt, err := neo4j.GetProperty[time.Time](node, "updated_at")
+	if err != nil {
+		return err
+	}
+	deletedAtInterface, _ := neo4j.GetProperty[[]any](node, "deleted_at")
+	deletedAt, err := ConvertNullableValueToTime(deletedAtInterface)
+	if err != nil {
+		return err
+	}
+
+	d.ID = id
+	d.Name = name
+	d.Base.CreatedAt = createdAt
+	d.Base.UpdatedAt = updatedAt
+	d.Base.DeletedAt = deletedAt
+
+	return nil
 }
 
 func (d *Department) ParseFromDB(record *neo4j.Record) error {
@@ -22,29 +59,7 @@ func (d *Department) ParseFromDB(record *neo4j.Record) error {
 		return err
 	}
 
-	name, err := neo4j.GetProperty[string](departmentNode, "name")
-	if err != nil {
-		return err
-	}
-	createdAt, err := neo4j.GetProperty[time.Time](departmentNode, "created_at")
-	if err != nil {
-		return err
-	}
-	updatedAt, err := neo4j.GetProperty[time.Time](departmentNode, "updated_at")
-	if err != nil {
-		return err
-	}
-
-	deletedAtInterface, _ := neo4j.GetProperty[[]any](departmentNode, "deleted_at")
-	deletedAt, err := ConvertNullableValueToTime(deletedAtInterface)
-	if err != nil {
-		return err
-	}
-
-	d.Name = name
-	d.Base.CreatedAt = createdAt
-	d.Base.UpdatedAt = updatedAt
-	d.Base.DeletedAt = deletedAt
+	d.ParseFromNode(&departmentNode)
 
 	return nil
 }

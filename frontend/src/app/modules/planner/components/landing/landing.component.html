@@ -1,9 +1,9 @@
-<div class="container">
-  <app-timetable
-    [showActions]="true"
-    [fullHeight]="timetableDataService.fullHeight$"
-    [weekdayDatas]="timetableDataService.weekdays$"
-    [workplaceDatas]="timetableDataService.workplaces$"
-    (personDroppedIn)="handleDropIn($event)">
-  </app-timetable>
+<div class="actions-container">
+  <app-actions
+    (toggleEditingMode)="plannerStateHandlerService.editable = $event"
+    (toggleColors)="timetableDataContainerService.colorize = $event"
+    (togglePersonsLabel)="timetableDataContainerService.displayPersons = $event"
+    (toggleTimeLabel)="timetableDataContainerService.displayTime = $event"></app-actions>
 </div>
+
+<app-editable-timetable (personDroppedIntoTimeslot)="plannerStateHandlerService.assignPersonToTimelots($event)"></app-editable-timetable>

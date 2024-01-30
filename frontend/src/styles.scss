@@ -187,6 +187,7 @@ $light-default-theme: mat.define-light-theme(
   --border-color: #ffffff;
 
   --highlight-color: #673ab7;
+  --warn-color: #ff0000;
 }
 .theme-light {
   @include mat.all-component-colors($light-default-theme);
@@ -199,6 +200,7 @@ $light-default-theme: mat.define-light-theme(
   --border-color: #424242;
 
   --highlight-color: #dfd9c3;
+  --warn-color: #ff0000;
 }
 
 /* You can add global styles to this file, and also import other style files */

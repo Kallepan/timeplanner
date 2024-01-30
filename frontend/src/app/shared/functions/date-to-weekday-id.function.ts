@@ -9,5 +9,5 @@ export const dateToWeekdayID = (date: Date): string => {
    * dateToWeekdayID('2021-01-02') // 'SAT'
    * dateToWeekdayID('2021-01-03') // 'SUN'
    */
-  return date.toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase();
+  return date.toLocaleDateString('de-DE', { weekday: 'short' }).toUpperCase();
 };

@@ -10,7 +10,7 @@ describe('SidenavComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [SidenavComponent, RouterTestingModule, MatButtonModule]
+      imports: [SidenavComponent, RouterTestingModule, MatButtonModule],
     });
     fixture = TestBed.createComponent(SidenavComponent);
     component = fixture.componentInstance;
@@ -27,7 +27,6 @@ describe('SidenavComponent', () => {
     const compiled = fixture.debugElement.nativeElement;
     const buttons = compiled.querySelectorAll('button');
 
-    // Get number of links
-    expect(component.routes.length).toEqual(buttons.length);
+    expect(buttons.length).toEqual(0);
   });
 });

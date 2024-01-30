@@ -8,7 +8,6 @@ import (
 	"planner-backend/app/domain/dco"
 	"planner-backend/app/pkg"
 	"planner-backend/app/repository"
-	"strings"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -50,7 +49,6 @@ func (p PersonRelServiceImpl) AddAbsencyToPerson(c *gin.Context) {
 	if personID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	personID = strings.ToUpper(personID)
 
 	var request dco.AbsenceRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -90,7 +88,6 @@ func (p PersonRelServiceImpl) RemoveAbsencyFromPerson(c *gin.Context) {
 	if personID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	personID = strings.ToUpper(personID)
 
 	date := c.Param("date")
 	if date == "" {
@@ -139,7 +136,6 @@ func (p PersonRelServiceImpl) FindAbsencyForPerson(c *gin.Context) {
 	if personID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	personID = strings.ToUpper(personID)
 
 	date := c.Param("date")
 	if date == "" {
@@ -151,7 +147,9 @@ func (p PersonRelServiceImpl) FindAbsencyForPerson(c *gin.Context) {
 	case nil:
 		break
 	case pkg.ErrNoRows:
-		break
+		// This is not an error, just return empty data
+		c.JSON(http.StatusOK, pkg.BuildResponse(constant.DataNotFound, pkg.Null()))
+		return
 	default:
 		slog.Error("Error when fetching data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
@@ -166,6 +164,7 @@ func mapAbsenceToAbsenceResponse(absence dao.Absence) dco.AbsenceResponse {
 	/** Maps an absence to an absence response */
 
 	return dco.AbsenceResponse{
+		PersonID:  absence.PersonID,
 		Date:      absence.Date,
 		Reason:    absence.Reason,
 		CreatedAt: absence.CreatedAt,
@@ -202,7 +201,6 @@ func (p PersonRelServiceImpl) AddDepartmentToPerson(c *gin.Context) {
 	if personID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	personID = strings.ToUpper(personID)
 
 	person, err := p.PersonRepository.FindPersonByID(personID)
 	switch err {
@@ -219,7 +217,7 @@ func (p PersonRelServiceImpl) AddDepartmentToPerson(c *gin.Context) {
 	if err := c.ShouldBindJSON(&request); err != nil {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	_, err = p.DepartmentRepository.FindDepartmentByName(request.DepartmentName)
+	_, err = p.DepartmentRepository.FindDepartmentByID(request.DepartmentID)
 	switch err {
 	case nil:
 		break
@@ -230,12 +228,12 @@ func (p PersonRelServiceImpl) AddDepartmentToPerson(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	if err := p.PersonRelRepository.AddDepartmentToPerson(person, request.DepartmentName); err != nil {
+	if err := p.PersonRelRepository.AddDepartmentToPerson(person, request.DepartmentID); err != nil {
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, pkg.Null()))
+	c.JSON(http.StatusCreated, pkg.BuildResponse(constant.Success, pkg.Null()))
 }
 
 func (p PersonRelServiceImpl) RemoveDepartmentFromPerson(c *gin.Context) {
@@ -250,10 +248,9 @@ func (p PersonRelServiceImpl) RemoveDepartmentFromPerson(c *gin.Context) {
 	if personID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	personID = strings.ToUpper(personID)
 
-	departmentName := c.Param("departmentName")
-	if departmentName == "" {
+	departmentID := c.Param("departmentID")
+	if departmentID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
@@ -268,7 +265,7 @@ func (p PersonRelServiceImpl) RemoveDepartmentFromPerson(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	if err := p.PersonRelRepository.RemoveDepartmentFromPerson(person, departmentName); err != nil {
+	if err := p.PersonRelRepository.RemoveDepartmentFromPerson(person, departmentID); err != nil {
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
@@ -288,7 +285,6 @@ func (p PersonRelServiceImpl) AddWorkplaceToPerson(c *gin.Context) {
 	if personID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	personID = strings.ToUpper(personID)
 
 	person, err := p.PersonRepository.FindPersonByID(personID)
 	switch err {
@@ -306,7 +302,7 @@ func (p PersonRelServiceImpl) AddWorkplaceToPerson(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	_, err = p.WorkplaceRepository.FindWorkplaceByName(request.DepartmentName, request.WorkplaceName)
+	_, err = p.WorkplaceRepository.FindWorkplaceByID(request.DepartmentID, request.WorkplaceID)
 	switch err {
 	case nil:
 		break
@@ -317,12 +313,12 @@ func (p PersonRelServiceImpl) AddWorkplaceToPerson(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	if err := p.PersonRelRepository.AddWorkplaceToPerson(person, request.DepartmentName, request.WorkplaceName); err != nil {
+	if err := p.PersonRelRepository.AddWorkplaceToPerson(person, request.DepartmentID, request.WorkplaceID); err != nil {
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, pkg.Null()))
+	c.JSON(http.StatusCreated, pkg.BuildResponse(constant.Success, pkg.Null()))
 }
 
 func (p PersonRelServiceImpl) RemoveWorkplaceFromPerson(c *gin.Context) {
@@ -337,7 +333,6 @@ func (p PersonRelServiceImpl) RemoveWorkplaceFromPerson(c *gin.Context) {
 	if personID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	personID = strings.ToUpper(personID)
 
 	request := dco.RelRemoveWorkplaceRequest{}
 	if err := c.ShouldBindJSON(&request); err != nil {
@@ -355,7 +350,7 @@ func (p PersonRelServiceImpl) RemoveWorkplaceFromPerson(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	if err := p.PersonRelRepository.RemoveWorkplaceFromPerson(person, request.DepartmentName, request.WorkplaceName); err != nil {
+	if err := p.PersonRelRepository.RemoveWorkplaceFromPerson(person, request.DepartmentID, request.WorkplaceID); err != nil {
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
@@ -376,7 +371,6 @@ func (p PersonRelServiceImpl) AddWeekdayToPerson(c *gin.Context) {
 	if personID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	personID = strings.ToUpper(personID)
 
 	person, err := p.PersonRepository.FindPersonByID(personID)
 	switch err {
@@ -402,7 +396,7 @@ func (p PersonRelServiceImpl) AddWeekdayToPerson(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
-	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, pkg.Null()))
+	c.JSON(http.StatusCreated, pkg.BuildResponse(constant.Success, pkg.Null()))
 }
 
 func (p PersonRelServiceImpl) RemoveWeekdayFromPerson(c *gin.Context) {
@@ -417,7 +411,6 @@ func (p PersonRelServiceImpl) RemoveWeekdayFromPerson(c *gin.Context) {
 	if personID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	personID = strings.ToUpper(personID)
 
 	weekdayID := c.Param("weekdayID")
 	if weekdayID == "" {

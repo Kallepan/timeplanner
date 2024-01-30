@@ -74,7 +74,10 @@ func TestRequiredAuth(t *testing.T) {
 		t.Fatalf("Failed to create valid token: %v", err)
 	}
 	req, _ = http.NewRequest("GET", "/test", nil)
-	req.Header.Set("Authorization", validToken)
+	req.AddCookie(&http.Cookie{
+		Name:  "Authorization",
+		Value: validToken,
+	})
 	resp = httptest.NewRecorder()
 	router.ServeHTTP(resp, req)
 	if status := resp.Code; status != http.StatusOK {

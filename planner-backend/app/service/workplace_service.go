@@ -35,12 +35,12 @@ func (w WorkplaceServiceImpl) GetAllWorkplaces(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program get all workplaces")
 
-	departmentName := c.Param("departmentName")
-	if departmentName == "" {
+	departmentID := c.Param("departmentID")
+	if departmentID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	rawData, err := w.WorkplaceRepository.FindAllWorkplaces(departmentName)
+	rawData, err := w.WorkplaceRepository.FindAllWorkplaces(departmentID)
 	switch err {
 	case nil:
 		break
@@ -65,13 +65,13 @@ func (w WorkplaceServiceImpl) GetWorkplaceByName(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program get workplace by name")
 
-	departmentName := c.Param("departmentName")
-	workplaceName := c.Param("workplaceName")
-	if departmentName == "" || workplaceName == "" {
+	departmentID := c.Param("departmentID")
+	workplaceID := c.Param("workplaceID")
+	if departmentID == "" || workplaceID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	rawData, err := w.WorkplaceRepository.FindWorkplaceByName(departmentName, workplaceName)
+	rawData, err := w.WorkplaceRepository.FindWorkplaceByID(departmentID, workplaceID)
 	switch err {
 	case nil:
 		break
@@ -101,11 +101,11 @@ func (w WorkplaceServiceImpl) AddWorkplace(c *gin.Context) {
 		slog.Error("Error when binding json", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	departmentName := c.Param("departmentName")
-	if departmentName == "" {
+	departmentID := c.Param("departmentID")
+	if departmentID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	_, err := w.WorkplaceRepository.FindWorkplaceByName(departmentName, workplaceRequest.Name)
+	_, err := w.WorkplaceRepository.FindWorkplaceByID(departmentID, workplaceRequest.Name)
 	switch err {
 	case nil:
 		pkg.PanicException(constant.Conflict)
@@ -117,8 +117,13 @@ func (w WorkplaceServiceImpl) AddWorkplace(c *gin.Context) {
 	}
 
 	workplace := mapWorkplaceRequestToWorkplace(workplaceRequest)
-	rawData, err := w.WorkplaceRepository.Save(departmentName, &workplace)
-	if err != nil {
+	rawData, err := w.WorkplaceRepository.Save(departmentID, &workplace)
+	switch err {
+	case nil:
+		break
+	case pkg.ErrNoRows:
+		pkg.PanicException(constant.DataNotFound)
+	default:
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
@@ -137,13 +142,13 @@ func (w WorkplaceServiceImpl) UpdateWorkplace(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program update workplace")
 
-	departmentName := c.Param("departmentName")
-	workplaceName := c.Param("workplaceName")
-	if workplaceName == "" || departmentName == "" {
+	departmentID := c.Param("departmentID")
+	workplaceID := c.Param("workplaceID")
+	if workplaceID == "" || departmentID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	workplace, err := w.WorkplaceRepository.FindWorkplaceByName(departmentName, workplaceName)
+	workplace, err := w.WorkplaceRepository.FindWorkplaceByID(departmentID, workplaceID)
 	switch err {
 	case nil:
 		break
@@ -161,8 +166,13 @@ func (w WorkplaceServiceImpl) UpdateWorkplace(c *gin.Context) {
 	}
 
 	workplace.Name = workplaceRequest.Name
-	rawData, err := w.WorkplaceRepository.Save(departmentName, &workplace)
-	if err != nil {
+	rawData, err := w.WorkplaceRepository.Save(departmentID, &workplace)
+	switch err {
+	case nil:
+		break
+	case pkg.ErrNoRows:
+		pkg.PanicException(constant.DataNotFound)
+	default:
 		slog.Error("Error when saving data to database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
@@ -181,13 +191,13 @@ func (w WorkplaceServiceImpl) DeleteWorkplace(c *gin.Context) {
 	defer pkg.PanicHandler(c)
 	slog.Info("start to execute program delete workplace")
 
-	departmentName := c.Param("departmentName")
-	workplaceName := c.Param("workplaceName")
-	if departmentName == "" || workplaceName == "" {
+	departmentID := c.Param("departmentID")
+	workplaceID := c.Param("workplaceID")
+	if departmentID == "" || workplaceID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	workplace, err := w.WorkplaceRepository.FindWorkplaceByName(departmentName, workplaceName)
+	workplace, err := w.WorkplaceRepository.FindWorkplaceByID(departmentID, workplaceID)
 	switch err {
 	case nil:
 		break
@@ -197,7 +207,7 @@ func (w WorkplaceServiceImpl) DeleteWorkplace(c *gin.Context) {
 		slog.Error("Error when fetching data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
-	if err := w.WorkplaceRepository.Delete(departmentName, &workplace); err != nil {
+	if err := w.WorkplaceRepository.Delete(departmentID, &workplace); err != nil {
 		slog.Error("Error when deleting data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
 	}
@@ -213,6 +223,7 @@ func mapWorkplaceToWorkplaceResponse(workplace dao.Workplace) dco.WorkplaceRespo
 
 	return dco.WorkplaceResponse{
 		Name: workplace.Name,
+		ID:   workplace.ID,
 		Base: dco.Base{
 			CreatedAt: workplace.Base.CreatedAt,
 			UpdatedAt: workplace.Base.UpdatedAt,
@@ -242,6 +253,7 @@ func mapWorkplaceRequestToWorkplace(workplace dco.WorkplaceRequest) dao.Workplac
 	 */
 
 	return dao.Workplace{
+		ID:   workplace.ID,
 		Name: workplace.Name,
 	}
 }

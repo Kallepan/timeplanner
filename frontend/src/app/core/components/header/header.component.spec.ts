@@ -16,14 +16,8 @@ describe('HeaderComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        HeaderComponent
-      ],
-      providers: [
-        { provide: ActivatedRoute, useValue: { snapshot: { data: { title: 'Test' } } } },
-        provideHttpClientTesting(),
-        provideHttpClient()
-      ]
+      imports: [HeaderComponent],
+      providers: [{ provide: ActivatedRoute, useValue: { snapshot: { data: { title: 'Test' } } } }, provideHttpClientTesting(), provideHttpClient()],
     });
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;

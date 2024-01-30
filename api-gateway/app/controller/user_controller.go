@@ -33,7 +33,11 @@ func (u UserControllerImpl) GetAll(ctx *gin.Context) {
 }
 
 func (u UserControllerImpl) Get(ctx *gin.Context) {
-	u.UserService.GetUserById(ctx)
+	if ctx.Query("id") != "" {
+		u.UserService.GetUserById(ctx)
+		return
+	}
+	u.UserService.GetUserByUsername(ctx)
 }
 
 func (u UserControllerImpl) Create(ctx *gin.Context) {

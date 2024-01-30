@@ -34,13 +34,21 @@ func TestGetWorkdaysForDepartmentAndDate(t *testing.T) {
 			},
 			mockValue: []dao.Workday{
 				{
-					DepartmentName: "department1",
-					WorkplaceName:  "workplace1",
-					TimeslotName:   "timeslot1",
-					Date:           "2021-01-01",
-					StartTime:      "08:00:00",
-					EndTime:        "16:00:00",
-					Person:         nil,
+					Department: dao.Department{
+						ID:   "department1",
+						Name: "department1",
+					},
+					Workplace: dao.Workplace{
+						ID:   "workplace1",
+						Name: "workplace1",
+					},
+					Timeslot: dao.Timeslot{
+						Name: "timeslot1",
+					},
+					Date:      "2021-01-01",
+					StartTime: "08:00:00",
+					EndTime:   "16:00:00",
+					Person:    nil,
 				},
 			},
 			expectedStatusCode: http.StatusOK,
@@ -69,13 +77,21 @@ func TestGetWorkdaysForDepartmentAndDate(t *testing.T) {
 			},
 			mockValue: []dao.Workday{
 				{
-					DepartmentName: "department1",
-					WorkplaceName:  "workplace1",
-					TimeslotName:   "timeslot1",
-					Date:           "2021-01-01",
-					StartTime:      "08:00:00",
-					EndTime:        "16:00:00",
-					Person:         &mockPerson,
+					Department: dao.Department{
+						ID:   "department1",
+						Name: "department1",
+					},
+					Workplace: dao.Workplace{
+						ID:   "workplace1",
+						Name: "workplace1",
+					},
+					Timeslot: dao.Timeslot{
+						Name: "timeslot1",
+					},
+					Date:      "2021-01-01",
+					StartTime: "08:00:00",
+					EndTime:   "16:00:00",
+					Person:    &mockPerson,
 				},
 			},
 			expectedStatusCode: http.StatusOK,
@@ -130,17 +146,6 @@ func TestGetWorkdaysForDepartmentAndDate(t *testing.T) {
 			}
 
 			for i, workday := range responseBody.Data {
-				if workday.Department != testStep.mockValue.([]dao.Workday)[i].DepartmentName {
-					t.Errorf("Test Step %d: Expected department %s, got %s", i, testStep.mockValue.([]dao.Workday)[i].DepartmentName, workday.Department)
-				}
-
-				if workday.Workplace != testStep.mockValue.([]dao.Workday)[i].WorkplaceName {
-					t.Errorf("Test Step %d: Expected workplace %s, got %s", i, testStep.mockValue.([]dao.Workday)[i].WorkplaceName, workday.Workplace)
-				}
-
-				if workday.Timeslot != testStep.mockValue.([]dao.Workday)[i].TimeslotName {
-					t.Errorf("Test Step %d: Expected timeslot %s, got %s", i, testStep.mockValue.([]dao.Workday)[i].TimeslotName, workday.Timeslot)
-				}
 
 				// check if Person is nil
 				if testStep.mockValue.([]dao.Workday)[i].Person == nil {
@@ -179,13 +184,21 @@ func TestGetWorkday(t *testing.T) {
 				"date":       "2021-01-01",
 			},
 			mockValue: dao.Workday{
-				DepartmentName: "department1",
-				WorkplaceName:  "workplace1",
-				TimeslotName:   "timeslot1",
-				Date:           "2021-01-01",
-				StartTime:      "08:00:00",
-				EndTime:        "16:00:00",
-				Person:         nil,
+				Department: dao.Department{
+					ID:   "department1",
+					Name: "department1",
+				},
+				Workplace: dao.Workplace{
+					ID:   "workplace1",
+					Name: "workplace1",
+				},
+				Timeslot: dao.Timeslot{
+					Name: "timeslot1",
+				},
+				Date:      "2021-01-01",
+				StartTime: "08:00:00",
+				EndTime:   "16:00:00",
+				Person:    nil,
 			},
 			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
@@ -209,13 +222,21 @@ func TestGetWorkday(t *testing.T) {
 				"date":       "2021-01-01",
 			},
 			mockValue: dao.Workday{
-				DepartmentName: "department1",
-				WorkplaceName:  "workplace1",
-				TimeslotName:   "timeslot1",
-				Date:           "2021-01-01",
-				StartTime:      "08:00:00",
-				EndTime:        "16:00:00",
-				Person:         &mockPerson,
+				Department: dao.Department{
+					ID:   "department1",
+					Name: "department1",
+				},
+				Workplace: dao.Workplace{
+					ID:   "workplace1",
+					Name: "workplace1",
+				},
+				Timeslot: dao.Timeslot{
+					Name: "timeslot1",
+				},
+				Date:      "2021-01-01",
+				StartTime: "08:00:00",
+				EndTime:   "16:00:00",
+				Person:    &mockPerson,
 			},
 			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
@@ -285,18 +306,6 @@ func TestGetWorkday(t *testing.T) {
 			}
 
 			workday := responseBody.Data
-			if workday.Department != testStep.mockValue.(dao.Workday).DepartmentName {
-				t.Errorf("Test Step %d: Expected department %s, got %s", i, testStep.mockValue.(dao.Workday).DepartmentName, workday.Department)
-			}
-
-			if workday.Workplace != testStep.mockValue.(dao.Workday).WorkplaceName {
-				t.Errorf("Test Step %d: Expected workplace %s, got %s", i, testStep.mockValue.(dao.Workday).WorkplaceName, workday.Workplace)
-			}
-
-			if workday.Timeslot != testStep.mockValue.(dao.Workday).TimeslotName {
-				t.Errorf("Test Step %d: Expected timeslot %s, got %s", i, testStep.mockValue.(dao.Workday).TimeslotName, workday.Timeslot)
-			}
-
 			// check if Person is nil
 			if testStep.mockValue.(dao.Workday).Person == nil {
 				if workday.Person != nil {
@@ -321,33 +330,33 @@ func TestAssignPersonToWorkday(t *testing.T) {
 		{
 			// valid request
 			mockRequestData: map[string]interface{}{
-				"person_id":       "person1",
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
-				"timeslot_name":   "timeslot1",
-				"date":            "2021-01-01",
+				"person_id":     "person1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
+				"timeslot_name": "timeslot1",
+				"date":          "2021-01-01",
 			},
-			expectedStatusCode: http.StatusOK,
+			expectedStatusCode: http.StatusCreated,
 			saveError:          nil,
 		},
 		{
 			// missing person_id
 			mockRequestData: map[string]interface{}{
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
-				"timeslot_name":   "timeslot1",
-				"date":            "2021-01-01",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
+				"timeslot_name": "timeslot1",
+				"date":          "2021-01-01",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 		},
 		{
-			// missing department_name
+			// missing department_id
 			mockRequestData: map[string]interface{}{
-				"person_id":      "person1",
-				"workplace_name": "workplace1",
-				"timeslot_name":  "timeslot1",
-				"date":           "2021-01-01",
+				"person_id":     "person1",
+				"workplace_id":  "workplace1",
+				"timeslot_name": "timeslot1",
+				"date":          "2021-01-01",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
@@ -355,21 +364,21 @@ func TestAssignPersonToWorkday(t *testing.T) {
 		{
 			// missing Date
 			mockRequestData: map[string]interface{}{
-				"person_id":       "person1",
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
-				"timeslot_name":   "timeslot1",
+				"person_id":     "person1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
+				"timeslot_name": "timeslot1",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"person_id":       "person1",
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
-				"timeslot_name":   "timeslot1",
-				"date":            "2021-01-01",
+				"person_id":     "person1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
+				"timeslot_name": "timeslot1",
+				"date":          "2021-01-01",
 			},
 			// repository error
 			expectedStatusCode: 500,
@@ -410,11 +419,11 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 		{
 			// valid request
 			mockRequestData: map[string]interface{}{
-				"person_id":       "person1",
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
-				"timeslot_name":   "timeslot1",
-				"date":            "2021-01-01",
+				"person_id":     "person1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
+				"timeslot_name": "timeslot1",
+				"date":          "2021-01-01",
 			},
 			expectedStatusCode: http.StatusOK,
 			saveError:          nil,
@@ -422,21 +431,21 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 		{
 			// missing person_id
 			mockRequestData: map[string]interface{}{
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
-				"timeslot_name":   "timeslot1",
-				"date":            "2021-01-01",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
+				"timeslot_name": "timeslot1",
+				"date":          "2021-01-01",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 		},
 		{
-			// missing department_name
+			// missing department_id
 			mockRequestData: map[string]interface{}{
-				"person_id":      "person1",
-				"workplace_name": "workplace1",
-				"timeslot_name":  "timeslot1",
-				"date":           "2021-01-01",
+				"person_id":     "person1",
+				"workplace_id":  "workplace1",
+				"timeslot_name": "timeslot1",
+				"date":          "2021-01-01",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
@@ -444,21 +453,21 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 		{
 			// missing Date
 			mockRequestData: map[string]interface{}{
-				"person_id":       "person1",
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
-				"timeslot_name":   "timeslot1",
+				"person_id":     "person1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
+				"timeslot_name": "timeslot1",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"person_id":       "person1",
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
-				"timeslot_name":   "timeslot1",
-				"date":            "2021-01-01",
+				"person_id":     "person1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
+				"timeslot_name": "timeslot1",
+				"date":          "2021-01-01",
 			},
 			// repository error
 			expectedStatusCode: 500,

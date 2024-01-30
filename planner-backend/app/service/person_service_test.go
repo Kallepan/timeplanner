@@ -22,6 +22,16 @@ func TestDeletePerson(t *testing.T) {
 	testSteps := []ServiceTestDELETE{
 		{
 			mockValue: dao.Person{
+				ID: "TEST",
+			},
+			params: map[string]string{
+				"personID": "test",
+			},
+			mockError:          nil,
+			expectedStatusCode: http.StatusOK,
+		},
+		{
+			mockValue: dao.Person{
 				ID: "test",
 			},
 			params: map[string]string{
@@ -66,6 +76,38 @@ func TestUpdatePerson(t *testing.T) {
 	}
 
 	testSteps := []ServiceTestPUT{
+		{
+			mockRequestData: map[string]interface{}{
+				"id":            "NTES",
+				"first_name":    "newFirstName",
+				"last_name":     "newLastName",
+				"email":         "newEmail@example.com",
+				"active":        true,
+				"working_hours": 8,
+			},
+			findValue: dao.Person{
+				ID:           "NTES",
+				FirstName:    "oldFirstName",
+				LastName:     "oldLastName",
+				Email:        "oldEmail@example.com",
+				Active:       true,
+				WorkingHours: 8,
+			},
+			saveValue: dao.Person{
+				ID:           "TEST",
+				FirstName:    "newFirstName",
+				LastName:     "newLastName",
+				Email:        "newEmail@example.com",
+				Active:       true,
+				WorkingHours: 8,
+			},
+			expectedStatusCode: http.StatusOK,
+			findError:          nil,
+			saveError:          nil,
+			params: map[string]string{
+				"personID": "ntes",
+			},
+		},
 		{
 			mockRequestData: map[string]interface{}{
 				"id":            "NTES",
@@ -206,7 +248,7 @@ func TestAddPerson(t *testing.T) {
 				Active:       true,
 				WorkingHours: 8,
 			},
-			expectedStatusCode: http.StatusOK,
+			expectedStatusCode: http.StatusCreated,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 		},

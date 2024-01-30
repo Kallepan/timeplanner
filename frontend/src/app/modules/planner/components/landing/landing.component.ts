@@ -1,47 +1,56 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
-import {
-  PersonDropIn,
-  TimetableComponent,
-} from '@app/modules/timetable/components/timetable/timetable.component';
-import { AbstractTimetableDataService } from '@app/modules/timetable/services/timetable-data.service';
-import { PlannerTimetableDataService } from '../../services/planner-timetable-data.service';
-import { DUMMY_TIMESLOTS } from '../../tests/timeslots.data';
+import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { EditableTimetableComponent } from '../editable-timetable/editable-timetable.component';
+import { ActionsComponent } from '../actions/actions.component';
+import { PlannerStateHandlerService } from '../../services/planner-state-handler.service';
+import { PersonListComponent } from '../person-list/person-list.component';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { filter, map } from 'rxjs';
+import { TimetableDataContainerService } from '@app/shared/services/timetable-data-container.service';
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [CommonModule, TimetableComponent],
+  imports: [CommonModule, EditableTimetableComponent, ActionsComponent, PersonListComponent],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.scss',
-  providers: [
-    {
-      provide: AbstractTimetableDataService,
-      useClass: PlannerTimetableDataService,
-    },
-  ],
+  providers: [],
 })
 export class LandingComponent implements OnInit {
-  public calenderWeek: string = 'KW 42';
-  public calenderYear: string = '2020';
+  timetableDataContainerService = inject(TimetableDataContainerService);
+  plannerStateHandlerService = inject(PlannerStateHandlerService);
+  private destroyRef$ = inject(DestroyRef);
 
-  public timetableDataService = inject(AbstractTimetableDataService);
+  // router
+  private route = inject(ActivatedRoute);
 
   ngOnInit(): void {
-    setTimeout(() => {
-      this.timetableDataService._slots.next(DUMMY_TIMESLOTS);
-      this.timetableDataService.weekdays$ = new Date('2023-01-02');
-    }, 0);
-  }
+    // fetch department query param
+    this.route.queryParams
+      .pipe(
+        takeUntilDestroyed(this.destroyRef$),
+        // set the department
+        map((params) => params['department']),
+        filter((department): department is string => !!department),
+        map((department) => department.toLowerCase()),
+        // fetch the current date
+        map((department) => {
+          const currentDate = new Date();
 
-  handleDropIn(event: PersonDropIn) {
-    /**
-     *
-     * This functions inserts the requested persons into the timetable and updates the database.
-     * Afterwards a query is made to the database to get the updated timetable with the assigned
-     * Person.
-     */
-
-    console.log(event);
+          return {
+            department,
+            currentDate,
+          };
+        }),
+      )
+      .subscribe(({ department, currentDate }) => {
+        // set both the department and the current date
+        // This will cause the activeWeek signal to be updated
+        // and fetch all workdays for the current week we want to view
+        setTimeout(() => {
+          this.plannerStateHandlerService.setActiveView(department, currentDate);
+        }, 0);
+      });
   }
 }

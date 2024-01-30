@@ -11,39 +11,39 @@ import (
 
 type PersonRepository interface {
 	// Function Used by the service
-	FindAllPersons(departmentName string) ([]dao.Person, error)
-	FindAllPersonsBy(departmentName string, workplaceName string, weekdayID string, notAbsentOn string) ([]dao.Person, error)
+	FindAllPersons(departmentID string) ([]dao.Person, error)
+	FindAllPersonsBy(departmentID string, workplaceID string, weekdayID string, notAbsentOn string) ([]dao.Person, error)
 	FindPersonByID(personID string) (dao.Person, error)
 	Save(person *dao.Person) (dao.Person, error)
 	Delete(person *dao.Person) error
 }
 
 type PersonRepositoryImpl struct {
-	db *neo4j.DriverWithContext
+	db  *neo4j.DriverWithContext
+	ctx context.Context
 }
 
-func (p PersonRepositoryImpl) FindAllPersonsBy(departmentName string, workplaceName string, weekdayID string, notAbsentDate string) ([]dao.Person, error) {
+func (p PersonRepositoryImpl) FindAllPersonsBy(departmentID string, workplaceID string, weekdayID string, notAbsentDate string) ([]dao.Person, error) {
 	/* Returns all persons in a department, qualified for a workplace that are present on a weekday and not absent on a date
-	   @param departmentName: The name of the department the persons should be in
+	   @param departmentID: The name of the department the persons should be in
 	   @param presentOnWeekdayID: The ID of the weekday the persons should be present on
-	   @param workplaceName: The name of the workplace the person should be qualified for
+	   @param workplaceID: The name of the workplace the person should be qualified for
 	   @param notAbsentOn: The date the person should not be absent on
 	*/
 
-	ctx := context.Background()
 	persons := []dao.Person{}
 
 	// Build dynamic query depending on which param was given
 	params := map[string]interface{}{
-		"departmentName": departmentName,
+		"departmentID": departmentID,
 	}
 
 	query := `MATCH (p: Person) 
-    MATCH (p)-[:WORKS_AT]->(d: Department {name: $departmentName})`
+    MATCH (p)-[:WORKS_AT]->(d: Department {id: $departmentID})`
 
-	if workplaceName != "" {
-		query += ` MATCH (p) -[:QUALIFIED_FOR]-> (w: Workplace {name: $workplaceName})`
-		params["workplaceName"] = workplaceName
+	if workplaceID != "" {
+		query += ` MATCH (p) -[:QUALIFIED_FOR]-> (w: Workplace {id: $workplaceID})`
+		params["workplaceID"] = workplaceID
 	}
 	if weekdayID != "" {
 		query += ` MATCH (p) -[:AVAILABLE_ON]->(wd: Weekday {id: $weekdayID})`
@@ -59,7 +59,7 @@ func (p PersonRepositoryImpl) FindAllPersonsBy(departmentName string, workplaceN
 	query += ` RETURN p`
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		p.ctx,
 		*p.db,
 		query,
 		params,
@@ -81,25 +81,25 @@ func (p PersonRepositoryImpl) FindAllPersonsBy(departmentName string, workplaceN
 	return persons, nil
 }
 
-func (p PersonRepositoryImpl) FindAllPersons(departmentName string) ([]dao.Person, error) {
+func (p PersonRepositoryImpl) FindAllPersons(departmentID string) ([]dao.Person, error) {
 	/* Returns all persons
-	   @param departmentName: The name of the department the persons should be in
+	   @param departmentID: The name of the department the persons should be in
 	*/
-	ctx := context.Background()
+
 	persons := []dao.Person{}
 	params := map[string]interface{}{
-		"departmentName": departmentName,
+		"departmentID": departmentID,
 	}
 	query := `
     MATCH (p: Person)
-    MATCH (p)-[:WORKS_AT]->(d: Department {name: $departmentName})
+    MATCH (p)-[:WORKS_AT]->(d: Department {id: $departmentID})
 	OPTIONAL MATCH (p)-[:QUALIFIED_FOR]->(w: Workplace)
 	OPTIONAL MATCH (p)-[:AVAILABLE_ON]->(wd: Weekday)
     WHERE p.deleted_at IS NULL AND p.active = true
-    RETURN p, COLLECT(DISTINCT d.name) AS departments, COLLECT(DISTINCT w.name) AS workplaces, COLLECT(DISTINCT wd.id) AS weekdays`
+    RETURN p, COLLECT(DISTINCT d) AS departments, COLLECT(DISTINCT w) AS workplaces, COLLECT(DISTINCT wd) AS weekdays`
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		p.ctx,
 		*p.db,
 		query,
 		params,
@@ -112,6 +112,10 @@ func (p PersonRepositoryImpl) FindAllPersons(departmentName string) ([]dao.Perso
 	for _, record := range result.Records {
 		person := dao.Person{}
 		if err := person.ParseFromDBRecord(record); err != nil {
+			return nil, err
+		}
+
+		if err := person.ParseAdditionalFieldsFromDBRecord(record); err != nil {
 			return nil, err
 		}
 
@@ -123,20 +127,21 @@ func (p PersonRepositoryImpl) FindAllPersons(departmentName string) ([]dao.Perso
 
 func (p PersonRepositoryImpl) FindPersonByID(personID string) (dao.Person, error) {
 	/* Returns a person by name */
-	ctx := context.Background()
+
 	person := dao.Person{}
 	query := `
 	MATCH (p:Person {id: $personID})
 	OPTIONAL MATCH (p)-[:WORKS_AT]->(d: Department)
 	OPTIONAL MATCH (p)-[:QUALIFIED_FOR]->(w: Workplace)
 	OPTIONAL MATCH (p)-[:AVAILABLE_ON]->(wd: Weekday)
-	RETURN p, COLLECT(DISTINCT d.name) AS departments, COLLECT(DISTINCT w.name) AS workplaces, COLLECT(DISTINCT wd.id) AS weekdays`
+	WHERE p.deleted_at IS NULL AND p.active = true
+	RETURN p, COLLECT(DISTINCT d) AS departments, COLLECT(DISTINCT w) AS workplaces, COLLECT(DISTINCT wd) AS weekdays`
 	params := map[string]interface{}{
 		"personID": personID,
 	}
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		p.ctx,
 		*p.db,
 		query,
 		params,
@@ -162,7 +167,7 @@ func (p PersonRepositoryImpl) FindPersonByID(personID string) (dao.Person, error
 
 func (p PersonRepositoryImpl) Save(person *dao.Person) (dao.Person, error) {
 	/* Saves a person */
-	ctx := context.Background()
+
 	query := `
     MERGE (p:Person {id: $personID})
     ON CREATE SET
@@ -179,7 +184,8 @@ func (p PersonRepositoryImpl) Save(person *dao.Person) (dao.Person, error) {
         p.email = $email,
         p.active = $active,
         p.workingHours = $workingHours,
-        p.updated_at = datetime()
+        p.updated_at = datetime(),
+		p.deleted_at = NULL
     RETURN p`
 	params := map[string]interface{}{
 		"personID":     person.ID,
@@ -191,7 +197,7 @@ func (p PersonRepositoryImpl) Save(person *dao.Person) (dao.Person, error) {
 	}
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		p.ctx,
 		*p.db,
 		query,
 		params,
@@ -214,7 +220,7 @@ func (p PersonRepositoryImpl) Save(person *dao.Person) (dao.Person, error) {
 
 func (p PersonRepositoryImpl) Delete(person *dao.Person) error {
 	/* Deletes a person */
-	ctx := context.Background()
+
 	query := `
     MATCH  (p:Person {id: $personID})
     SET p.deleted_at = datetime()`
@@ -223,7 +229,7 @@ func (p PersonRepositoryImpl) Delete(person *dao.Person) error {
 	}
 
 	_, err := neo4j.ExecuteQuery(
-		ctx,
+		p.ctx,
 		*p.db,
 		query,
 		params,
@@ -236,9 +242,10 @@ func (p PersonRepositoryImpl) Delete(person *dao.Person) error {
 	return nil
 }
 
-func PersonRepositoryInit(db *neo4j.DriverWithContext) *PersonRepositoryImpl {
+func PersonRepositoryInit(db *neo4j.DriverWithContext, ctx context.Context) *PersonRepositoryImpl {
 	return &PersonRepositoryImpl{
-		db: db,
+		db:  db,
+		ctx: ctx,
 	}
 }
 

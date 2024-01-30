@@ -28,25 +28,25 @@ func (r *WorkdayRepositoryMock) Return(mockData interface{}, errorData error) Mo
 }
 
 /* Repostory interface implementations */
-func (r *WorkdayRepositoryMock) GetWorkdaysForDepartmentAndDate(departmentName string, date string) ([]dao.Workday, error) {
+func (r *WorkdayRepositoryMock) GetWorkdaysForDepartmentAndDate(departmentID string, date string) ([]dao.Workday, error) {
 	if r.dataContainer["GetWorkdaysForDepartmentAndDate"] == nil {
 		return nil, r.errorContainer["GetWorkdaysForDepartmentAndDate"]
 	}
 	return r.dataContainer["GetWorkdaysForDepartmentAndDate"].([]dao.Workday), r.errorContainer["GetWorkdaysForDepartmentAndDate"]
 }
 
-func (r *WorkdayRepositoryMock) GetWorkday(departmentName string, workplaceName string, timeslotName string, date string) (dao.Workday, error) {
+func (r *WorkdayRepositoryMock) GetWorkday(departmentID string, workplaceID string, timeslotName string, date string) (dao.Workday, error) {
 	if r.dataContainer["GetWorkday"] == nil {
 		return dao.Workday{}, r.errorContainer["GetWorkday"]
 	}
 	return r.dataContainer["GetWorkday"].(dao.Workday), r.errorContainer["GetWorkday"]
 }
 
-func (r *WorkdayRepositoryMock) AssignPersonToWorkday(personID string, departmentName string, workplaceName string, timeslotName string, date string) error {
+func (r *WorkdayRepositoryMock) AssignPersonToWorkday(personID string, departmentID string, workplaceID string, timeslotName string, date string) error {
 	return r.errorContainer["AssignPersonToWorkday"]
 }
 
-func (r *WorkdayRepositoryMock) UnassignPersonFromWorkday(personID string, departmentName string, workplaceName string, timeslotName string, date string) error {
+func (r *WorkdayRepositoryMock) UnassignPersonFromWorkday(personID string, departmentID string, workplaceID string, timeslotName string, date string) error {
 	return r.errorContainer["UnassignPersonFromWorkday"]
 }
 

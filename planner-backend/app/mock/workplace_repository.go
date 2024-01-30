@@ -30,29 +30,29 @@ func (r *WorkplaceRepositoryMock) Return(mockData interface{}, errorData error) 
 }
 
 /* Repostory interface implementations */
-func (r *WorkplaceRepositoryMock) FindAllWorkplaces(departmentName string) ([]dao.Workplace, error) {
+func (r *WorkplaceRepositoryMock) FindAllWorkplaces(departmentID string) ([]dao.Workplace, error) {
 	if r.dataContainer["FindAllWorkplaces"] == nil {
 		return nil, r.errorContainer["FindAllWorkplaces"]
 	}
 	return r.dataContainer["FindAllWorkplaces"].([]dao.Workplace), r.errorContainer["FindAllWorkplaces"]
 }
 
-func (r *WorkplaceRepositoryMock) FindWorkplaceByName(departmentName string, workplaceName string) (dao.Workplace, error) {
-	if r.dataContainer["FindWorkplaceByName"] == nil {
-		return dao.Workplace{}, r.errorContainer["FindWorkplaceByName"]
+func (r *WorkplaceRepositoryMock) FindWorkplaceByID(departmentID string, workplaceID string) (dao.Workplace, error) {
+	if r.dataContainer["FindWorkplaceByID"] == nil {
+		return dao.Workplace{}, r.errorContainer["FindWorkplaceByID"]
 	}
 
-	return r.dataContainer["FindWorkplaceByName"].(dao.Workplace), r.errorContainer["FindWorkplaceByName"]
+	return r.dataContainer["FindWorkplaceByID"].(dao.Workplace), r.errorContainer["FindWorkplaceByID"]
 }
 
-func (r *WorkplaceRepositoryMock) Save(departmentName string, Workplace *dao.Workplace) (dao.Workplace, error) {
+func (r *WorkplaceRepositoryMock) Save(departmentID string, Workplace *dao.Workplace) (dao.Workplace, error) {
 	if r.dataContainer["Save"] == nil {
 		return dao.Workplace{}, r.errorContainer["Save"]
 	}
 	return r.dataContainer["Save"].(dao.Workplace), r.errorContainer["Save"]
 }
 
-func (r *WorkplaceRepositoryMock) Delete(departmentName string, Workplace *dao.Workplace) error {
+func (r *WorkplaceRepositoryMock) Delete(departmentID string, Workplace *dao.Workplace) error {
 	return r.errorContainer["Delete"]
 }
 

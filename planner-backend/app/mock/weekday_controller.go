@@ -16,3 +16,7 @@ func (m *WeekdayControllerMock) AddWeekdayToTimeslot(ctx *gin.Context) {
 func (m *WeekdayControllerMock) RemoveWeekdayFromTimeslot(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "RemoveWeekdayFromTimeslot"})
 }
+
+func (m *WeekdayControllerMock) BulkUpdateWeekdaysForTimeslot(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{"message": "BulkUpdateWeekdaysForTimeslot"})
+}

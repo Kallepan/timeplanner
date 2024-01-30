@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"os"
 	"planner-backend/app"
 	"planner-backend/app/router"
@@ -8,6 +9,9 @@ import (
 )
 
 func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
 	port := os.Getenv("PLANNER_BACKEND_PORT")
 	if port == "" {
 		port = "8081"
@@ -15,7 +19,7 @@ func main() {
 
 	config.InitLogger()
 
-	init, _, _ := app.BuildInjector()
+	init, _, _ := app.BuildInjector(ctx)
 
 	router := router.Init(init)
 

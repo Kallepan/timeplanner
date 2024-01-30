@@ -25,8 +25,8 @@ func TestDeleteWorkplace(t *testing.T) {
 				Name: "test",
 			},
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "test",
+				"departmentID": "test",
+				"workplaceID":  "test",
 			},
 			mockError:          nil,
 			expectedStatusCode: http.StatusOK,
@@ -36,7 +36,7 @@ func TestDeleteWorkplace(t *testing.T) {
 				Name: "test",
 			},
 			params: map[string]string{
-				"departmentName": "test,",
+				"departmentID": "test,",
 			},
 			mockError:          pkg.ErrNoRows,
 			expectedStatusCode: http.StatusBadRequest,
@@ -46,7 +46,7 @@ func TestDeleteWorkplace(t *testing.T) {
 				Name: "test",
 			},
 			params: map[string]string{
-				"workplaceName": "test,",
+				"workplaceID": "test,",
 			},
 			mockError:          pkg.ErrNoRows,
 			expectedStatusCode: http.StatusBadRequest,
@@ -79,6 +79,7 @@ func TestUpdateWorkplace(t *testing.T) {
 	testSteps := []ServiceTestPUT{
 		{
 			mockRequestData: map[string]interface{}{
+				"id":   "test_id",
 				"name": "newName",
 			},
 			findValue: dao.Workplace{
@@ -91,12 +92,13 @@ func TestUpdateWorkplace(t *testing.T) {
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-				"workplaceName":  "oldName",
+				"departmentID": "test",
+				"workplaceID":  "oldName",
 			},
 		},
 		{
 			mockRequestData: map[string]interface{}{
+				"id":   "test_id",
 				"name": "newName",
 			},
 			findValue:          nil,
@@ -107,6 +109,7 @@ func TestUpdateWorkplace(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
+				"id":   "test_id",
 				"name": "newName",
 			},
 			findValue: dao.Workplace{
@@ -130,7 +133,7 @@ func TestUpdateWorkplace(t *testing.T) {
 	}
 
 	for i, testStep := range testSteps {
-		WorkplaceRepository.On("FindWorkplaceByName").Return(testStep.findValue, testStep.findError)
+		WorkplaceRepository.On("FindWorkplaceByID").Return(testStep.findValue, testStep.findError)
 		WorkplaceRepository.On("Save").Return(testStep.saveValue, testStep.saveError)
 
 		// get GIN context
@@ -168,6 +171,7 @@ func TestAddWorkplace(t *testing.T) {
 	testSteps := []ServiceTestPOST{
 		{
 			mockRequestData: map[string]interface{}{
+				"id":   "test_id",
 				"name": "test",
 			},
 			findValue: nil,
@@ -178,11 +182,12 @@ func TestAddWorkplace(t *testing.T) {
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
+				"departmentID": "test",
 			},
 		},
 		{
 			mockRequestData: map[string]interface{}{
+				"id":   "test_id",
 				"name": "test",
 			},
 			findValue: dao.Workplace{
@@ -193,11 +198,12 @@ func TestAddWorkplace(t *testing.T) {
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
+				"departmentID": "test",
 			},
 		},
 		{
 			mockRequestData: map[string]interface{}{
+				"id":   "test_id",
 				"name": "test",
 			},
 			findValue: nil,
@@ -216,20 +222,21 @@ func TestAddWorkplace(t *testing.T) {
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
+				"departmentID": "test",
 			},
 		},
 		{
 			mockRequestData: map[string]interface{}{
+				"id":   "test_id",
 				"name": "test",
 			},
-			findValue:          nil,
+			findValue:          dao.Workplace{},
 			saveValue:          nil,
 			expectedStatusCode: 500,
 			findError:          pkg.ErrNoRows,
-			saveError:          pkg.ErrNoRows,
+			saveError:          errors.New("Save error"),
 			params: map[string]string{
-				"departmentName": "test",
+				"departmentID": "test",
 			},
 		},
 		{
@@ -244,7 +251,7 @@ func TestAddWorkplace(t *testing.T) {
 
 	for i, testStep := range testSteps {
 		t.Run("Test Add Workplace", func(t *testing.T) {
-			WorkplaceRepository.On("FindWorkplaceByName").Return(testStep.findValue, testStep.findError)
+			WorkplaceRepository.On("FindWorkplaceByID").Return(testStep.findValue, testStep.findError)
 			WorkplaceRepository.On("Save").Return(testStep.saveValue, testStep.saveError)
 
 			// get GIN context
@@ -295,7 +302,7 @@ func TestGetAllWorkplaces(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
+				"departmentID": "test",
 			},
 		},
 		{
@@ -310,7 +317,7 @@ func TestGetAllWorkplaces(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			mockError:          pkg.ErrNoRows,
 			params: map[string]string{
-				"departmentName": "test",
+				"departmentID": "test",
 			},
 		},
 	}
@@ -348,7 +355,7 @@ func TestGetAllWorkplaces(t *testing.T) {
 	}
 }
 
-func TestGetWorkplaceByName(t *testing.T) {
+func TestGetWorkplaceByID(t *testing.T) {
 	WorkplaceRepository := mock.NewWorkplaceRepositoryMock()
 	workplaceService := WorkplaceServiceImpl{
 		WorkplaceRepository: WorkplaceRepository,
@@ -357,16 +364,33 @@ func TestGetWorkplaceByName(t *testing.T) {
 	testSteps := []ServiceTestGET{
 		{
 			mockValue: dao.Workplace{
+				ID:   "test",
 				Name: "test",
 			},
 			expectedResponse: dao.Workplace{
+				ID:   "test",
 				Name: "test",
 			},
 			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 			params: map[string]string{
-				"workplaceName":  "test",
-				"departmentName": "test",
+				"workplaceID":  "test",
+				"departmentID": "test",
+			},
+		},
+		{
+			mockValue: dao.Workplace{
+				ID:   "test",
+				Name: "test",
+			},
+			expectedResponse: dao.Workplace{
+				ID:   "test",
+				Name: "test",
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			mockError:          nil,
+			params: map[string]string{
+				"departmentID": "test",
 			},
 		},
 		{
@@ -379,20 +403,7 @@ func TestGetWorkplaceByName(t *testing.T) {
 			expectedStatusCode: http.StatusBadRequest,
 			mockError:          nil,
 			params: map[string]string{
-				"departmentName": "test",
-			},
-		},
-		{
-			mockValue: dao.Workplace{
-				Name: "test",
-			},
-			expectedResponse: dao.Workplace{
-				Name: "test",
-			},
-			expectedStatusCode: http.StatusBadRequest,
-			mockError:          nil,
-			params: map[string]string{
-				"workplaceName": "test",
+				"workplaceID": "test",
 			},
 		},
 		{
@@ -408,15 +419,15 @@ func TestGetWorkplaceByName(t *testing.T) {
 			expectedStatusCode: http.StatusNotFound,
 			mockError:          pkg.ErrNoRows,
 			params: map[string]string{
-				"workplaceName":  "test",
-				"departmentName": "test",
+				"workplaceID":  "test",
+				"departmentID": "test",
 			},
 		},
 	}
 
 	for i, testStep := range testSteps {
 		t.Run("Test Get Workplace By Name", func(t *testing.T) {
-			WorkplaceRepository.On("FindWorkplaceByName").Return(testStep.mockValue, testStep.mockError)
+			WorkplaceRepository.On("FindWorkplaceByID").Return(testStep.mockValue, testStep.mockError)
 
 			// get GIN context
 			w := httptest.NewRecorder()

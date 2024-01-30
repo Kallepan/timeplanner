@@ -23,19 +23,19 @@ func Init(init *config.Injector) *gin.Engine {
 		department := plannerAPI.Group("/department")
 		{
 			department.GET("/", init.DepartmentCtrl.GetAll)
-			department.GET("/:departmentName", init.DepartmentCtrl.Get)
+			department.GET("/:departmentID", init.DepartmentCtrl.Get)
 			department.POST("/", init.DepartmentCtrl.Create)
-			department.PUT("/:departmentName", init.DepartmentCtrl.Update)
-			department.DELETE("/:departmentName", init.DepartmentCtrl.Delete)
+			department.PUT("/:departmentID", init.DepartmentCtrl.Update)
+			department.DELETE("/:departmentID", init.DepartmentCtrl.Delete)
 
-			workplace := department.Group("/:departmentName/workplace")
+			workplace := department.Group("/:departmentID/workplace")
 			workplace.GET("/", init.WorkplaceCtrl.GetAll)
-			workplace.GET("/:workplaceName", init.WorkplaceCtrl.Get)
+			workplace.GET("/:workplaceID", init.WorkplaceCtrl.Get)
 			workplace.POST("/", init.WorkplaceCtrl.Create)
-			workplace.PUT("/:workplaceName", init.WorkplaceCtrl.Update)
-			workplace.DELETE("/:workplaceName", init.WorkplaceCtrl.Delete)
+			workplace.PUT("/:workplaceID", init.WorkplaceCtrl.Update)
+			workplace.DELETE("/:workplaceID", init.WorkplaceCtrl.Delete)
 
-			timeslot := workplace.Group("/:workplaceName/timeslot")
+			timeslot := workplace.Group("/:workplaceID/timeslot")
 			timeslot.GET("/", init.TimeslotCtrl.GetAll)
 			timeslot.GET("/:timeslotName", init.TimeslotCtrl.Get)
 			timeslot.POST("/", init.TimeslotCtrl.Create)
@@ -45,6 +45,7 @@ func Init(init *config.Injector) *gin.Engine {
 			weekday := timeslot.Group("/:timeslotName/weekday")
 			weekday.POST("/", init.WeekdayCtrl.AddWeekdayToTimeslot)
 			weekday.DELETE("/", init.WeekdayCtrl.RemoveWeekdayFromTimeslot)
+			weekday.POST("/bulk", init.WeekdayCtrl.BulkUpdateWeekdaysForTimeslot)
 
 		}
 		person := plannerAPI.Group("/person")
@@ -62,7 +63,7 @@ func Init(init *config.Injector) *gin.Engine {
 				personRel.GET("/absency/:date", init.PersonRelCtrl.FindAbsencyForPerson)
 
 				personRel.POST("/department", init.PersonRelCtrl.AddDepartment)
-				personRel.DELETE("/department/:departmentName", init.PersonRelCtrl.RemoveDepartment)
+				personRel.DELETE("/department/:departmentID", init.PersonRelCtrl.RemoveDepartment)
 
 				personRel.POST("/workplace", init.PersonRelCtrl.AddWorkplace)
 				personRel.DELETE("/workplace", init.PersonRelCtrl.RemoveWorkplace)
@@ -73,8 +74,8 @@ func Init(init *config.Injector) *gin.Engine {
 		}
 		workday := plannerAPI.Group("/workday")
 		{
-			workday.GET("/", init.WorkdayCtrl.GetWorkdaysForDepartmentAndDate) // ?departmentName=...&date=...
-			workday.GET("/detail", init.WorkdayCtrl.GetWorkday)                // ?departmentName=...&date=...&workplaceName=...&timeslotName=...
+			workday.GET("/", init.WorkdayCtrl.GetWorkdaysForDepartmentAndDate) // ?departmentID=...&date=...
+			workday.GET("/detail", init.WorkdayCtrl.GetWorkday)                // ?departmentID=...&date=...&workplaceID=...&timeslotName=...
 			workday.POST("/assign", init.WorkdayCtrl.AssignPersonToWorkday)
 			workday.DELETE("/assign", init.WorkdayCtrl.UnassignPersonFromWorkday)
 		}

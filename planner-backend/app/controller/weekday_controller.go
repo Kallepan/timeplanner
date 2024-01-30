@@ -10,6 +10,7 @@ import (
 type WeekdayController interface {
 	AddWeekdayToTimeslot(ctx *gin.Context)
 	RemoveWeekdayFromTimeslot(ctx *gin.Context)
+	BulkUpdateWeekdaysForTimeslot(ctx *gin.Context)
 }
 
 type WeekdayControllerImpl struct {
@@ -22,6 +23,10 @@ func (u WeekdayControllerImpl) AddWeekdayToTimeslot(ctx *gin.Context) {
 
 func (u WeekdayControllerImpl) RemoveWeekdayFromTimeslot(ctx *gin.Context) {
 	u.WeekdayService.DeleteWeekdayFromTimeslot(ctx)
+}
+
+func (u WeekdayControllerImpl) BulkUpdateWeekdaysForTimeslot(ctx *gin.Context) {
+	u.WeekdayService.BulkUpdateWeekdaysForTimeslot(ctx)
 }
 
 var weekdayControllerSet = wire.NewSet(

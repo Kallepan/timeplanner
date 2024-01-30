@@ -2,26 +2,19 @@ package config
 
 import (
 	"context"
-	"os"
+	"planner-backend/app/mock"
 	"testing"
-
-	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
 func TestMigrate(t *testing.T) {
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
-	uri := os.Getenv("PLANNER_DB_URI")
-	username := os.Getenv("PLANNER_DB_USERNAME")
-	password := os.Getenv("PLANNER_DB_PASSWORD")
-
-	d, err := neo4j.NewDriverWithContext(uri, neo4j.BasicAuth(username, password, ""))
+	db, err := mock.SetupTestDB(ctx, t)
 	if err != nil {
-		t.Fatal(err)
+		t.Errorf("Failed to connect to mock database")
 	}
 
-	defer d.Close(ctx)
-
-	Migrate(ctx, d)
-	// Clear(ctx, d)
+	Migrate(ctx, db)
+	Clear(ctx, db)
 }

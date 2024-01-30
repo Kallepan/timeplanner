@@ -321,7 +321,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 		{
 			// no department found
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
+				"department_id": "department1",
 			},
 			findValue: dao.Person{
 				ID: "TEST",
@@ -336,7 +336,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 		{
 			// capital letters personID
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
+				"department_id": "department1",
 			},
 			findValue: dao.Person{
 				ID: "TEST",
@@ -345,7 +345,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: http.StatusOK,
+			expectedStatusCode: http.StatusCreated,
 			additionalFindValue: dao.Department{
 				Name: "department1",
 			},
@@ -354,7 +354,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 		{
 			// small letters personID
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
+				"department_id": "department1",
 			},
 			findValue: dao.Person{
 				ID: "test",
@@ -363,7 +363,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: http.StatusOK,
+			expectedStatusCode: http.StatusCreated,
 		},
 		{
 			// no request body
@@ -379,7 +379,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 		{
 			// no person found
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
+				"department_id": "department1",
 			},
 			findValue: nil,
 			findError: pkg.ErrNoRows,
@@ -391,7 +391,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 		{
 			// incorrect request params
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
+				"department_id": "department1",
 			},
 			findValue:          nil,
 			findError:          nil,
@@ -401,7 +401,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 		{
 			// error in dao
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
+				"department_id": "department1",
 			},
 			findValue: dao.Person{
 				ID: "test",
@@ -419,7 +419,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 		t.Run("Test Add Department To Person", func(t *testing.T) {
 			PersonRepository.On("FindPersonByID").Return(testStep.findValue, testStep.findError)
 			PersonRelRepository.On("AddDepartmentToPerson").Return(testStep.mockValue, testStep.mockError)
-			DepartmentRepository.On("FindDepartmentByName").Return(testStep.additionalFindValue, testStep.additionalFindError)
+			DepartmentRepository.On("FindDepartmentByID").Return(testStep.additionalFindValue, testStep.additionalFindError)
 
 			// get GIN context
 			w := httptest.NewRecorder()
@@ -454,8 +454,8 @@ func TestRemoveDepartmentFromPerson(t *testing.T) {
 			},
 			findError: nil,
 			params: map[string]string{
-				"personID":       "test",
-				"departmentName": "department1",
+				"personID":     "test",
+				"departmentID": "department1",
 			},
 			expectedStatusCode: http.StatusOK,
 		},
@@ -466,8 +466,8 @@ func TestRemoveDepartmentFromPerson(t *testing.T) {
 			},
 			findError: nil,
 			params: map[string]string{
-				"personID":       "test",
-				"departmentName": "department1",
+				"personID":     "test",
+				"departmentID": "department1",
 			},
 			expectedStatusCode: http.StatusOK,
 		},
@@ -485,8 +485,8 @@ func TestRemoveDepartmentFromPerson(t *testing.T) {
 			findValue: nil,
 			findError: pkg.ErrNoRows,
 			params: map[string]string{
-				"personID":       "test",
-				"departmentName": "department1",
+				"personID":     "test",
+				"departmentID": "department1",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 		},
@@ -494,7 +494,7 @@ func TestRemoveDepartmentFromPerson(t *testing.T) {
 			findValue: nil,
 			findError: nil,
 			params: map[string]string{
-				"departmentName": "department1",
+				"departmentID": "department1",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 		},
@@ -504,8 +504,8 @@ func TestRemoveDepartmentFromPerson(t *testing.T) {
 			},
 			findError: nil,
 			params: map[string]string{
-				"personID":       "test",
-				"departmentName": "department1",
+				"personID":     "test",
+				"departmentID": "department1",
 			},
 			mockError:          errors.New("test"),
 			expectedStatusCode: 500,
@@ -548,8 +548,8 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 		{
 			// not found workplace
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
 			},
 			findValue: dao.Person{
 				ID: "TEST",
@@ -564,8 +564,8 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 		},
 		{
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
 			},
 			findValue: dao.Person{
 				ID: "TEST",
@@ -574,7 +574,7 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: http.StatusOK,
+			expectedStatusCode: http.StatusCreated,
 			additionalFindValue: dao.Workplace{
 				Name: "workplace1",
 			},
@@ -582,8 +582,8 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 		},
 		{
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
 			},
 			findValue: dao.Person{
 				ID: "test",
@@ -592,7 +592,7 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: http.StatusOK,
+			expectedStatusCode: http.StatusCreated,
 		},
 		{
 			findValue: dao.Person{
@@ -606,8 +606,8 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 		},
 		{
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
 			},
 			findValue: nil,
 			findError: pkg.ErrNoRows,
@@ -618,8 +618,8 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 		},
 		{
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
 			},
 			findValue:          nil,
 			findError:          nil,
@@ -628,8 +628,8 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 		},
 		{
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
 			},
 			findValue: dao.Person{
 				ID: "test",
@@ -647,7 +647,7 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 		t.Run("Test Add Workplace To Person", func(t *testing.T) {
 			PersonRepository.On("FindPersonByID").Return(testStep.findValue, testStep.findError)
 			PersonRelRepository.On("AddWorkplaceToPerson").Return(testStep.mockValue, testStep.mockError)
-			WorkplaceRepository.On("FindWorkplaceByName").Return(testStep.additionalFindValue, testStep.additionalFindError)
+			WorkplaceRepository.On("FindWorkplaceByID").Return(testStep.additionalFindValue, testStep.additionalFindError)
 
 			// get GIN context
 			w := httptest.NewRecorder()
@@ -677,8 +677,8 @@ func TestRemoveWorkplaceFromPerson(t *testing.T) {
 	testSteps := []serviceTestPersonRel{
 		{
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
 			},
 			findValue: dao.Person{
 				ID: "TEST",
@@ -691,8 +691,8 @@ func TestRemoveWorkplaceFromPerson(t *testing.T) {
 		},
 		{
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
 			},
 			findValue: dao.Person{
 				ID: "test",
@@ -716,8 +716,8 @@ func TestRemoveWorkplaceFromPerson(t *testing.T) {
 		},
 		{
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
 			},
 			findValue: nil,
 			findError: pkg.ErrNoRows,
@@ -728,8 +728,8 @@ func TestRemoveWorkplaceFromPerson(t *testing.T) {
 		},
 		{
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
 			},
 			findValue:          nil,
 			findError:          nil,
@@ -738,8 +738,8 @@ func TestRemoveWorkplaceFromPerson(t *testing.T) {
 		},
 		{
 			mockRequest: map[string]interface{}{
-				"department_name": "department1",
-				"workplace_name":  "workplace1",
+				"department_id": "department1",
+				"workplace_id":  "workplace1",
 			},
 			findValue: dao.Person{
 				ID: "test",
@@ -808,7 +808,7 @@ func TestAddWeekdayToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: http.StatusOK,
+			expectedStatusCode: http.StatusCreated,
 		},
 		{
 			mockRequest: map[string]interface{}{
@@ -821,7 +821,7 @@ func TestAddWeekdayToPerson(t *testing.T) {
 			params: map[string]string{
 				"personID": "test",
 			},
-			expectedStatusCode: http.StatusOK,
+			expectedStatusCode: http.StatusCreated,
 		},
 		{
 			findValue: dao.Person{

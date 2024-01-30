@@ -40,10 +40,11 @@ type ServiceTestPOST struct {
 	// expected status code to be returned by service
 	expectedStatusCode int
 
-	findValue interface{}
-	saveValue interface{}
-	findError error
-	saveError error
+	findValue       interface{}
+	saveValue       interface{}
+	findError       error
+	saveError       error
+	additionalError error
 
 	params map[string]string
 }

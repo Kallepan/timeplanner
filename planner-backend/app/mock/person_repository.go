@@ -30,14 +30,14 @@ func (r *PersonRepositoryMock) Return(mockData interface{}, errorData error) Moc
 }
 
 /* Repository interface implementations */
-func (r *PersonRepositoryMock) FindAllPersons(departmentName string) ([]dao.Person, error) {
+func (r *PersonRepositoryMock) FindAllPersons(departmentID string) ([]dao.Person, error) {
 	if r.dataContainer["FindAllPersons"] == nil {
 		return nil, r.errorContainer["FindAllPersons"]
 	}
 	return r.dataContainer["FindAllPersons"].([]dao.Person), r.errorContainer["FindAllPersons"]
 }
 
-func (r *PersonRepositoryMock) FindAllPersonsBy(departmentName string, workplaceName string, weekdayID string, notAbsentOn string) ([]dao.Person, error) {
+func (r *PersonRepositoryMock) FindAllPersonsBy(departmentID string, workplaceID string, weekdayID string, notAbsentOn string) ([]dao.Person, error) {
 	if r.dataContainer["FindAllPersonsBy"] == nil {
 		return nil, r.errorContainer["FindAllPersonsBy"]
 	}

@@ -3,10 +3,10 @@
 ## Components
 
 - Frontend: Angular (directory: `frontend`)
-    - Login functionality
-    - View with current week as overview
-    - View to edit a given week (planning)
-    - Add/Alter people
+  - Login functionality
+  - View with current week as overview
+  - View to edit a given week (planning)
+  - Add/Alter people
 - api-gateway: GoLang (directory: `api-gateway`)
 - Plan-Backend: GoLang (directory: `planner-backend`)
 
@@ -25,4 +25,4 @@ postman tests for the backend can be found [here](tests/)
 
 ### Backend
 
-- [ ] Write tests for repositories
+- [ ] Write tests for repositories (testcontainers is implemented)

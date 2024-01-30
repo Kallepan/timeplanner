@@ -6,13 +6,6 @@ import (
 	"github.com/neo4j/neo4j-go-driver/v5/neo4j"
 )
 
-/** Base struct for all domain objects */
-
-type PresentWeekday struct {
-	ID   string
-	Name string
-}
-
 type Absence struct {
 	PersonID string
 	Date     string // Date as string since we only need the date
@@ -49,13 +42,4 @@ func (a *Absence) ParseFromDBRecord(relRecord *neo4j.Record, date string, person
 	a.CreatedAt = createdAt
 
 	return nil
-}
-
-// TODO: eventually change me
-type Qualification struct {
-	PersonID       string
-	DepartmentName string
-	WorkplaceName  string
-
-	CreatedAt time.Time
 }

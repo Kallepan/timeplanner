@@ -13,15 +13,12 @@ describe('CustomHeaderComponent', () => {
   let activatedRoute: jasmine.SpyObj<ActivatedRoute>;
 
   beforeEach(() => {
-    notificationService = jasmine.createSpyObj('NotificationService', [
-      'infoMessage',
-      'warnMessage',
-    ]);
+    notificationService = jasmine.createSpyObj('NotificationService', ['infoMessage', 'warnMessage']);
     router = jasmine.createSpyObj('Router', ['navigate'], {
       events: of(new NavigationEnd(1, '', '')),
     });
     activatedRoute = jasmine.createSpyObj('ActivatedRoute', ['data'], {
-      data: of({ featureFlag: 'BAK' }),
+      data: of({ featureFlag: 'bak' }),
     });
   });
 

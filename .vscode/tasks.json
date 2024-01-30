@@ -3,6 +3,29 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "upload meta",
+      "type": "shell",
+      "command": "python",
+      "args": ["scripts/upload_initial.py"],
+      "presentation": {
+        "reveal": "never"
+      }
+    },
+    {
+      "label": "upload persons",
+      "type": "shell",
+      "command": "python",
+      "args": ["scripts/upload_persons.py"],
+      "presentation": {
+        "reveal": "never"
+      }
+    },
+    {
+      "label": "setup initial state",
+      "dependsOn": ["upload meta", "upload persons"],
+      "problemMatcher": []
+    },
+    {
       "label": "wire gen api-gateway",
       "type": "shell",
       "command": "sh",

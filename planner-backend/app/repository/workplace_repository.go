@@ -11,30 +11,30 @@ import (
 
 type WorkplaceRepository interface {
 	// Function Used by the service
-	FindAllWorkplaces(departmentName string) ([]dao.Workplace, error)
-	FindWorkplaceByName(departmentName string, workplaceName string) (dao.Workplace, error)
-	Save(departmentName string, workplace *dao.Workplace) (dao.Workplace, error)
-	Delete(departmentName string, workplace *dao.Workplace) error
+	FindAllWorkplaces(departmentID string) ([]dao.Workplace, error)
+	FindWorkplaceByID(departmentID string, workplaceID string) (dao.Workplace, error)
+	Save(departmentID string, workplace *dao.Workplace) (dao.Workplace, error)
+	Delete(departmentID string, workplace *dao.Workplace) error
 }
 
 type WorkplaceRepositoryImpl struct {
-	db *neo4j.DriverWithContext
+	db  *neo4j.DriverWithContext
+	ctx context.Context
 }
 
-func (w WorkplaceRepositoryImpl) FindAllWorkplaces(departmentName string) ([]dao.Workplace, error) {
+func (w WorkplaceRepositoryImpl) FindAllWorkplaces(departmentID string) ([]dao.Workplace, error) {
 	/* Returns all workplaces */
-	ctx := context.Background()
 	workplaces := []dao.Workplace{}
 	query := `
-    MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(w:Workplace)
-	WHERE w.deleted_at IS NULL
+    MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(w:Workplace)
+	WHERE w.deleted_at IS NULL AND d.deleted_at IS NULL
     RETURN w`
 	params := map[string]interface{}{
-		"departmentName": departmentName,
+		"departmentID": departmentID,
 	}
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		w.ctx,
 		*w.db,
 		query,
 		params,
@@ -56,20 +56,19 @@ func (w WorkplaceRepositoryImpl) FindAllWorkplaces(departmentName string) ([]dao
 	return workplaces, nil
 }
 
-func (w WorkplaceRepositoryImpl) FindWorkplaceByName(departmentName string, workplaceName string) (dao.Workplace, error) {
-	/* Returns a workplace by name */
-	ctx := context.Background()
+func (w WorkplaceRepositoryImpl) FindWorkplaceByID(departmentID string, workplaceID string) (dao.Workplace, error) {
 	workplace := dao.Workplace{}
 	query := `
-    MATCH (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(w:Workplace {name: $workplaceName})
-    RETURN w`
+	MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(w:Workplace {id: $workplaceID})
+	WHERE w.deleted_at IS NULL AND d.deleted_at IS NULL
+	RETURN w`
 	params := map[string]interface{}{
-		"departmentName": departmentName,
-		"workplaceName":  workplaceName,
+		"departmentID": departmentID,
+		"workplaceID":  workplaceID,
 	}
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		w.ctx,
 		*w.db,
 		query,
 		params,
@@ -90,23 +89,30 @@ func (w WorkplaceRepositoryImpl) FindWorkplaceByName(departmentName string, work
 	return workplace, nil
 }
 
-func (w WorkplaceRepositoryImpl) Save(departmentName string, workplace *dao.Workplace) (dao.Workplace, error) {
+func (w WorkplaceRepositoryImpl) Save(departmentID string, workplace *dao.Workplace) (dao.Workplace, error) {
 	/* Saves a workplace */
-	ctx := context.Background()
 	query := `
-    MATCH (d:Department {name: $departmentName})
-    MERGE (d)-[:HAS_WORKPLACE]->(w:Workplace {name: $workplaceName})
+    MATCH (d:Department {id: $departmentID})
+	WHERE d.deleted_at IS NULL
+	MERGE (w:Workplace {id: $workplaceID}) <-[:HAS_WORKPLACE]- (d)
     ON CREATE SET
+		w.name = $workplaceName,
         w.created_at = datetime(),
-        w.updated_at = datetime()
+        w.updated_at = datetime(),
+		w.deleted_at = NULL
+	ON MATCH SET
+		w.name = $workplaceName,
+		w.updated_at = datetime(),
+		w.deleted_at = NULL
     RETURN w`
 	params := map[string]interface{}{
-		"departmentName": departmentName,
-		"workplaceName":  workplace.Name,
+		"departmentID":  departmentID,
+		"workplaceID":   workplace.ID,
+		"workplaceName": workplace.Name,
 	}
 
 	result, err := neo4j.ExecuteQuery(
-		ctx,
+		w.ctx,
 		*w.db,
 		query,
 		params,
@@ -127,20 +133,18 @@ func (w WorkplaceRepositoryImpl) Save(departmentName string, workplace *dao.Work
 	return *workplace, nil
 }
 
-func (w WorkplaceRepositoryImpl) Delete(departmentName string, workplace *dao.Workplace) error {
+func (w WorkplaceRepositoryImpl) Delete(departmentID string, workplace *dao.Workplace) error {
 	/* Deletes a department */
-	ctx := context.Background()
 	query := `
-	MATCH  (d:Department {name: $departmentName})-[:HAS_WORKPLACE]->(w:Workplace {name: $workplaceName})
-	WHERE d.name = $name
-	SET d.deleted_at = datetime()`
+	MATCH  (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(w:Workplace {id: $workplaceID})
+	SET w.deleted_at = datetime()`
 	params := map[string]interface{}{
-		"departmentName": departmentName,
-		"workplaceName":  workplace.Name,
+		"departmentID": departmentID,
+		"workplaceID":  workplace.ID,
 	}
 
 	_, err := neo4j.ExecuteQuery(
-		ctx,
+		w.ctx,
 		*w.db,
 		query,
 		params,
@@ -153,9 +157,10 @@ func (w WorkplaceRepositoryImpl) Delete(departmentName string, workplace *dao.Wo
 	return nil
 }
 
-func WorkplaceRepositoryInit(db *neo4j.DriverWithContext) *WorkplaceRepositoryImpl {
+func WorkplaceRepositoryInit(db *neo4j.DriverWithContext, ctx context.Context) *WorkplaceRepositoryImpl {
 	return &WorkplaceRepositoryImpl{
-		db: db,
+		db:  db,
+		ctx: ctx,
 	}
 }
 

@@ -32,7 +32,7 @@ func ConnectToDB(ctx context.Context) *neo4j.DriverWithContext {
 	}()
 
 	// Migrate
-	Migrate(ctx, driver)
+	Migrate(ctx, &driver)
 
 	return &driver
 }
@@ -40,7 +40,7 @@ func ConnectToDB(ctx context.Context) *neo4j.DriverWithContext {
 /* Migrations */
 var queries = map[string]string{
 	// TODO: Implement a better way to handle these queries
-	"unique_department":        `CREATE CONSTRAINT unique_department_name IF NOT EXISTS FOR (d:Department) REQUIRE d.name IS UNIQUE;`,
+	"unique_department":        `CREATE CONSTRAINT unique_department_id IF NOT EXISTS FOR (d:Department) REQUIRE d.id IS UNIQUE;`,
 	"unique_person":            `CREATE CONSTRAINT unique_person_id IF NOT EXISTS FOR (p:Person) REQUIRE p.id IS UNIQUE;`,
 	"create_monday":            `MERGE (:Weekday {name: 'Monday', id: "MON"});`,
 	"create_tuesday":           `MERGE (:Weekday {name: 'Tuesday', id: "TUE"});`,
@@ -49,13 +49,14 @@ var queries = map[string]string{
 	"create_friday":            `MERGE (:Weekday {name: 'Friday', id: "FRI"});`,
 	"create_saturday":          `MERGE (:Weekday {name: 'Saturday', id: "SAT"});`,
 	"create_sunday":            `MERGE (:Weekday {name: 'Sunday', id: "SUN"});`,
+	"index_person_id":          `CREATE INDEX person_id IF NOT EXISTS FOR (p:Person) ON (p.id)`,
 	"index_workday_date":       `CREATE INDEX workday_date IF NOT EXISTS FOR (w:Workday) ON (w.date)`,
 	"index_workday_department": `CREATE INDEX workday_department IF NOT EXISTS FOR (w:Workday) ON (w.department)`,
 	"index_workday_workplace":  `CREATE INDEX workday_workplace IF NOT EXISTS FOR (w:Workday) ON (w.workplace)`,
 	"index_workday_timeslot":   `CREATE INDEX workday_timeslot IF NOT EXISTS FOR (w:Workday) ON (w.timeslot)`,
 }
 
-func Migrate(ctx context.Context, db neo4j.DriverWithContext) {
+func Migrate(ctx context.Context, db *neo4j.DriverWithContext) {
 	slog.Info("Migrating database")
 
 	for name, query := range queries {
@@ -63,7 +64,7 @@ func Migrate(ctx context.Context, db neo4j.DriverWithContext) {
 
 		if _, err := neo4j.ExecuteQuery(
 			ctx,
-			db,
+			*db,
 			query,
 			map[string]interface{}{},
 			neo4j.EagerResultTransformer,
@@ -71,13 +72,12 @@ func Migrate(ctx context.Context, db neo4j.DriverWithContext) {
 			slog.Error("Failed to run query", "name", name, "error", err)
 			panic(err)
 		}
-
 	}
 
 	slog.Info("Migration complete")
 }
 
-func Clear(ctx context.Context, db neo4j.DriverWithContext) {
+func Clear(ctx context.Context, db *neo4j.DriverWithContext) {
 	/**
 	* Clears the database
 	 */
@@ -91,7 +91,7 @@ func Clear(ctx context.Context, db neo4j.DriverWithContext) {
 
 	if _, err := neo4j.ExecuteQuery(
 		ctx,
-		db,
+		*db,
 		"MATCH (n) DETACH DELETE n;",
 		map[string]interface{}{},
 		neo4j.EagerResultTransformer,

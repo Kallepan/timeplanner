@@ -35,11 +35,13 @@ func Init(init *config.Injector) *gin.Engine {
 		gatewayAPI.GET("/ping", init.SystemCtrl.Ping)
 
 		user := gatewayAPI.Group("/user")
-		user.GET("", init.UserCtrl.GetAll)
-		user.GET("/:userID", init.UserCtrl.Get)
-		user.POST("", init.UserCtrl.Create)
-		user.PUT("/:userID", init.UserCtrl.Update)
-		user.DELETE("/:userID", init.UserCtrl.Delete)
+		{
+			user.GET("", init.UserCtrl.GetAll)
+			user.GET("/detail", init.UserCtrl.Get)
+			user.POST("", init.UserCtrl.Create)
+			user.PUT("/:userID", init.UserCtrl.Update)
+			user.DELETE("/:userID", init.UserCtrl.Delete)
+		}
 		userPermission := user.Group("/:userID/permission")
 		userPermission.POST("/:permissionId", init.UserCtrl.AddPermission)
 		userPermission.DELETE("/:permissionId", init.UserCtrl.DeletePermission)

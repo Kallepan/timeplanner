@@ -9,10 +9,14 @@ export class messages {
   };
 
   public static GENERAL = {
-    BAD_REQUEST: 'Bad request',
-    UNKNOWN_ERROR: 'An unknown error occured',
-    UPDATE_FAILED: 'Update fehlgeschlagen',
-    SERVER_ERROR: 'Ein Serverfehler ist aufgetreten',
+    HTTP_ERROR: {
+      BAD_REQUEST: 'Bad request',
+      UNKNOWN_ERROR: 'An unknown error occured',
+      UPDATE_FAILED: 'Update fehlgeschlagen',
+      NOT_FOUND: 'Nicht gefunden',
+      SERVER_ERROR: 'Serverfehler',
+    },
+
     FEATURE_FLAG_DISABLED: 'Diese Funktion ist fuer Sie nicht verfügbar',
     FEATURE_NOT_IMPLEMENTED: 'Diese Funktion ist noch nicht implementiert',
     NO_RESULTS_FOUND: 'Keine Ergebnisse gefunden',
