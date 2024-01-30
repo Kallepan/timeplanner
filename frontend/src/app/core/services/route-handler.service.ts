@@ -15,7 +15,7 @@ export class RouteHandlerService {
     {
       path: '/viewer',
       title: 'MIBI',
-      id: 'bak',
+      id: 'BAK',
     },
   ]);
 }

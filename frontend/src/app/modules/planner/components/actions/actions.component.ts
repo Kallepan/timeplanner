@@ -12,5 +12,4 @@ export class ActionsComponent {
   @Output() toggleColors = new EventEmitter<boolean>();
   @Output() toggleTimeLabel = new EventEmitter<boolean>();
   @Output() togglePersonsLabel = new EventEmitter<boolean>();
-  @Output() toggleEditingMode = new EventEmitter<boolean>();
 }

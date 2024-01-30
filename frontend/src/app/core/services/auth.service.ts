@@ -92,14 +92,14 @@ export class AuthService {
 
     this.http
       .post<APIResponse<AuthResponse>>(`${constants.APIS.AUTH}/login`, data, httpOptions)
-      .pipe(
-        map((resp) => resp.data),
-        catchError(() => of(null)),
-      )
+      .pipe(map((resp) => resp.data))
       .subscribe({
         next: (data) => {
           this._authData.set(data);
           this._notificationService.infoMessage(messages.AUTH.LOGGED_IN);
+        },
+        error: () => {
+          this._notificationService.warnMessage(messages.AUTH.LOGIN_FAILED);
         },
       });
   }

@@ -1,19 +1,10 @@
-import {
-  HttpErrorResponse,
-  HttpEvent,
-  HttpHandlerFn,
-  HttpInterceptorFn,
-  HttpRequest,
-} from '@angular/common/http';
+import { HttpErrorResponse, HttpEvent, HttpHandlerFn, HttpInterceptorFn, HttpRequest } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Observable, catchError, throwError } from 'rxjs';
 import { messages } from '../../constants/messages';
 import { NotificationService } from '../services/notification.service';
 
-export const httpErrorInterceptor: HttpInterceptorFn = (
-  req: HttpRequest<unknown>,
-  next: HttpHandlerFn,
-): Observable<HttpEvent<unknown>> => {
+export const httpErrorInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown>, next: HttpHandlerFn): Observable<HttpEvent<unknown>> => {
   const notificationService = inject(NotificationService);
 
   return next(req).pipe(
@@ -25,8 +16,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (
           errorMessage = messages.GENERAL.HTTP_ERROR.BAD_REQUEST;
           break;
         case 401:
-          errorMessage = messages.AUTH.UNAUTHORIZED;
-          break;
+          return throwError(() => error);
         case 403:
           errorMessage = messages.AUTH.FORBIDDEN;
           break;

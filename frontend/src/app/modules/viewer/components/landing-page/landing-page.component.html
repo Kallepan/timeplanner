@@ -4,6 +4,7 @@
     (toggleColors)="timetableDataContainerService.colorize = $event"
     (togglePersonsLabel)="timetableDataContainerService.displayPersons = $event"
     (toggleTimeLabel)="timetableDataContainerService.displayTime = $event"></app-actions>
+  <button mat-raised-button color="accent" routerLink="/planner" [queryParams]="getEditRouterQueryParams()">Zum Editieren</button>
 </div>
 
 <app-view-only-timetable></app-view-only-timetable>

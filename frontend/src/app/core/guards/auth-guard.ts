@@ -1,45 +1,17 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject } from '@angular/core';
-import {
-  ActivatedRouteSnapshot,
-  CanActivateFn,
-  Router,
-  RouterStateSnapshot,
-} from '@angular/router';
-import { constants } from '@app/constants/constants';
-import { catchError, map, of } from 'rxjs';
+import { ActivatedRouteSnapshot, CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
+import { map } from 'rxjs';
 
-// Guard to check if a feature flag is enabled for the user
-export const featureFlagGuard: CanActivateFn = (
-  route: ActivatedRouteSnapshot,
-  state: RouterStateSnapshot,
-) => {
+// Guard to check if user has access to a department, TODO: fix me
+export const hasAccessToDepartmentGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
+  const authService = inject(AuthService);
   const router = inject(Router);
-  const http = inject(HttpClient);
 
-  const httpOptions = {
-    headers: new HttpHeaders({
-      'Content-Type': 'application/json',
-    }),
-    withCredentials: true,
-  };
+  const departmentFlag = (route.data['department'] as string).trim().toUpperCase();
 
-  const requestedFeatureFlag = (route.data['featureFlag'] as string)
-    .trim()
-    .toUpperCase();
-
-  return http
-    .get<any>(
-      `${constants.APIS.AUTH}/has_access/${requestedFeatureFlag}`,
-      httpOptions,
-    )
-    .pipe(
-      map(() => true),
-      catchError(() => of(false)),
-      // If the feature flag is disabled, redirect the user to the home page
-      map((isEnabled) => isEnabled || router.createUrlTree([''])),
-    );
+  // simply catch the error and return false if the user does not have access
+  return authService.hasAccessToDepartment(departmentFlag).pipe(map((hasAccess) => hasAccess || router.createUrlTree(['/'])));
 };
 
 // Simple guard to check if the user is authenticated

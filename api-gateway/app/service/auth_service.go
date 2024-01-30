@@ -56,7 +56,7 @@ func (a AuthServiceImpl) Login(c *gin.Context) {
 		break
 	case gorm.ErrRecordNotFound:
 		slog.Error("Error happened: when get data from database", "error", err)
-		pkg.PanicException(constant.InvalidRequest)
+		pkg.PanicException(constant.Unauthorized)
 	default:
 		slog.Error("Error happened: when get data from database", "error", err)
 		pkg.PanicException(constant.UnknownError)
@@ -64,7 +64,7 @@ func (a AuthServiceImpl) Login(c *gin.Context) {
 
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.Password)); err != nil {
 		slog.Error("Error happened: when compare password", "error", err)
-		pkg.PanicException(constant.InvalidRequest)
+		pkg.PanicException(constant.Unauthorized)
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, dco.JWTClaim{
