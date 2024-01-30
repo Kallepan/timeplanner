@@ -11,7 +11,8 @@ logging.basicConfig(
 )
 
 # This is the URL of the API
-URL = "http://localhost:8080/api/v1/planner"
+BASE_URL = "http://localhost:8080"
+URL = f"{BASE_URL}/api/v1/planner"
 
 # These are the paths to the data files
 DEPARTMENTS = os.path.join(os.path.dirname(__file__), "../data/departments.csv")

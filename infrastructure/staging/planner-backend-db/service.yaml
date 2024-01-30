@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: planner-backend-db
+  namespace: timeplanner
+spec:
+  ports:
+    - port: 7687
+      targetPort: 7687
+  selector:
+    app: planner-backend-db

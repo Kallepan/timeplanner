@@ -7,7 +7,8 @@ import csv
 import requests
 import logging
 
-URL = "http://localhost:8080/api/v1/planner"
+BASE_URL = "http://localhost:8080"
+URL = f"{BASE_URL}/api/v1/planner"
 FILE_PATH = os.path.join(os.path.dirname(__file__), "../data/persons.csv")
 
 logging.basicConfig(
