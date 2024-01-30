@@ -3,14 +3,14 @@ import { Routes } from '@angular/router';
 import { HomeComponent } from './core/components/home/home.component';
 import { PlannerModule } from './modules/planner/planner.module';
 import { ViewerModule } from './modules/viewer/viewer.module';
-import { isAuthenticated } from './core/guards/auth-guard';
+import { hasAccessToDepartmentGuard, isAuthenticated } from './core/guards/auth-guard';
 
 export const routes: Routes = [
   {
     path: 'planner',
     loadChildren: () => import('./modules/planner/planner.routes').then((m) => m.routes),
-    canActivate: [isAuthenticated],
-    canActivateChild: [isAuthenticated],
+    canActivate: [isAuthenticated, hasAccessToDepartmentGuard],
+    canActivateChild: [isAuthenticated, hasAccessToDepartmentGuard],
     providers: [importProvidersFrom(PlannerModule)],
   },
   {

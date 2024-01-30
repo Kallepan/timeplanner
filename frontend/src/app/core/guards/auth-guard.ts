@@ -8,7 +8,8 @@ export const hasAccessToDepartmentGuard: CanActivateFn = (route: ActivatedRouteS
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  const departmentFlag = (route.data['department'] as string).trim().toUpperCase();
+  // get department by query param
+  const departmentFlag = route.queryParams['department'];
 
   // simply catch the error and return false if the user does not have access
   return authService.hasAccessToDepartment(departmentFlag).pipe(map((hasAccess) => hasAccess || router.createUrlTree(['/'])));
