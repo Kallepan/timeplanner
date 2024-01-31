@@ -11,7 +11,7 @@ import (
 
 type TimeslotRepository interface {
 	FindAllTimeslots(departmentID string, workplaceID string) ([]dao.Timeslot, error)
-	FindTimeslotByName(departmentID string, workplaceID string, timeslotName string) (dao.Timeslot, error)
+	FindTimeslotByID(departmentID string, workplaceID string, timeslotID string) (dao.Timeslot, error)
 	Save(departmentID string, workplaceID string, timeslot *dao.Timeslot) (dao.Timeslot, error)
 	Delete(departmentID string, workplaceID string, timeslot *dao.Timeslot) error
 }
@@ -65,12 +65,12 @@ func (t TimeslotRepositoryImpl) FindAllTimeslots(departmentID string, workplaceI
 	return timeslots, nil
 }
 
-func (t TimeslotRepositoryImpl) FindTimeslotByName(departmentID string, workplaceID string, timeslotName string) (dao.Timeslot, error) {
+func (t TimeslotRepositoryImpl) FindTimeslotByID(departmentID string, workplaceID string, timeslotID string) (dao.Timeslot, error) {
 	/* Returns a timeslot by name */
 
 	timeslot := dao.Timeslot{}
 	query := `
-    MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(wp:Workplace {id: $workplaceID})-[:HAS_TIMESLOT]->(t:Timeslot {name: $timeslotName})
+    MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(wp:Workplace {id: $workplaceID})-[:HAS_TIMESLOT]->(t:Timeslot {id: $timeslotID})
     OPTIONAL MATCH (t)-[r:OFFERED_ON]->(wd:Weekday)
 	WHERE t.deleted_at IS NULL AND t.active = true AND d.deleted_at IS NULL AND wp.deleted_at IS NULL
     RETURN t, COLLECT({
@@ -83,7 +83,7 @@ func (t TimeslotRepositoryImpl) FindTimeslotByName(departmentID string, workplac
 	params := map[string]interface{}{
 		"departmentID": departmentID,
 		"workplaceID":  workplaceID,
-		"timeslotName": timeslotName,
+		"timeslotID":   timeslotID,
 	}
 
 	result, err := neo4j.ExecuteQuery(
@@ -114,14 +114,16 @@ func (t TimeslotRepositoryImpl) Save(departmentID string, workplaceID string, ti
 	query := `
 	MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(wp:Workplace {id: $workplaceID})
 	WHERE d.deleted_at IS NULL AND wp.deleted_at IS NULL
-	MERGE (t:Timeslot {name: $timeslotName}) <-[:HAS_TIMESLOT]- (wp)
+	MERGE (t:Timeslot {id: $timeslotID}) <-[:HAS_TIMESLOT]- (wp)
 	ON CREATE SET
-		t.created_at = datetime(), 
+		t.created_at = datetime(),
+		t.name = $timeslotName,
 		t.active = $active, 
 		t.updated_at = datetime(), 
 		t.deleted_at = NULL
 	ON MATCH SET 
 		t.updated_at = datetime(), 
+		t.name = $timeslotName,
 		t.active = $active, 
 		t.deleted_at = NULL
 	WITH t
@@ -136,6 +138,7 @@ func (t TimeslotRepositoryImpl) Save(departmentID string, workplaceID string, ti
 	params := map[string]interface{}{
 		"departmentID": departmentID,
 		"workplaceID":  workplaceID,
+		"timeslotID":   timeslot.ID,
 		"timeslotName": timeslot.Name,
 		"active":       timeslot.Active,
 	}
@@ -166,13 +169,13 @@ func (t TimeslotRepositoryImpl) Delete(departmentID string, workplaceID string, 
 	/* Deletes a timeslot */
 
 	query := `
-    MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(wp:Workplace {id: $workplaceID})-[:HAS_TIMESLOT]->(t:Timeslot {name: $timeslotName})
+    MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(wp:Workplace {id: $workplaceID})-[:HAS_TIMESLOT]->(t:Timeslot {id: $timeslotID})
     SET t.deleted_at = datetime()
     `
 	params := map[string]interface{}{
 		"departmentID": departmentID,
 		"workplaceID":  workplaceID,
-		"timeslotName": timeslot.Name,
+		"timeslotID":   timeslot.ID,
 	}
 
 	_, err := neo4j.ExecuteQuery(

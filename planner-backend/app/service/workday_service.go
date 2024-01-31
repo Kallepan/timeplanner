@@ -79,8 +79,8 @@ func (w WorkdayServiceImpl) GetWorkday(c *gin.Context) {
 	if workplaceID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	timeslotName := c.Query("timeslot")
-	if timeslotName == "" {
+	timeslotID := c.Query("timeslot")
+	if timeslotID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 	date := c.Query("date")
@@ -88,7 +88,7 @@ func (w WorkdayServiceImpl) GetWorkday(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	rawData, err := w.WorkdayRepository.GetWorkday(departmentID, workplaceID, timeslotName, date)
+	rawData, err := w.WorkdayRepository.GetWorkday(departmentID, workplaceID, timeslotID, date)
 	switch err {
 	case nil:
 		break
@@ -126,7 +126,7 @@ func (w WorkdayServiceImpl) AssignPersonToWorkday(c *gin.Context) {
 		request.PersonID,
 		request.DepartmentID,
 		request.WorkplaceID,
-		request.TimeslotName,
+		request.TimeslotID,
 		request.Date,
 	); err != nil {
 		slog.Error("Error when assigning person to workday", "error", err)
@@ -158,7 +158,7 @@ func (w WorkdayServiceImpl) UnassignPersonFromWorkday(c *gin.Context) {
 		request.PersonID,
 		request.DepartmentID,
 		request.WorkplaceID,
-		request.TimeslotName,
+		request.TimeslotID,
 		request.Date,
 	); err != nil {
 		slog.Error("Error when unassigning person from workday", "error", err)

@@ -82,7 +82,7 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date strin
 	MATCH  (d:Department) -[:HAS_WORKPLACE]-> (w:Workplace) -[:HAS_TIMESLOT]-> (t:Timeslot) -[r:OFFERED_ON]-> (wd:Weekday {id: $weekdayID})
 	WHERE t.deleted_at IS NULL AND t.active = true
 
-	WITH COLLECT({workplace:w.id, department: d.id, timeslot: t, start_time: r.start_time, end_time: r.end_time}) AS collection
+	WITH COLLECT({workplace:w.id, department: d.id, timeslot: t.id, start_time: r.start_time, end_time: r.end_time}) AS collection
 	UNWIND collection AS c
 	WITH c
 
@@ -90,7 +90,7 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date strin
 	MATCH (d:Date {date: date($date), week: date($date).week})
 	MATCH (d) -[:IS_ON_WEEKDAY]-> (wd:Weekday {id: $weekdayID})
 
-	MERGE (wkd:Workday {date: date($date), department: c.department, workplace: c.workplace, timeslot: c.timeslot.name, weekday: wd.id})
+	MERGE (wkd:Workday {date: date($date), department: c.department, workplace: c.workplace, timeslot: c.timeslot, weekday: wd.id})
 	ON CREATE SET
 		wkd.start_time = c.start_time,
 		wkd.end_time = c.end_time,
@@ -99,7 +99,7 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date strin
 		wkd.created_at = datetime()
 		
 	// Create the relationships
-	WITH wkd, c.timeslot AS t, d
+	WITH wkd, t, d
 	MERGE (wkd) -[:IS_TIMESLOT]-> (t)
 	MERGE (wkd) -[:IS_DATE]-> (d)
 	`

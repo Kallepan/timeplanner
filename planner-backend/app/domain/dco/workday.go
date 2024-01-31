@@ -9,7 +9,7 @@ type AssignPersonToWorkdayRequest struct {
 	PersonID     string `json:"person_id" binding:"required"`
 	DepartmentID string `json:"department_id" binding:"required"`
 	WorkplaceID  string `json:"workplace_id" binding:"required"`
-	TimeslotName string `json:"timeslot_name" binding:"required"`
+	TimeslotID   string `json:"timeslot_id" binding:"required"`
 	Date         string `json:"date" binding:"required"`
 }
 
@@ -27,7 +27,7 @@ type UnassignPersonFromWorkdayRequest struct {
 	PersonID     string `json:"person_id" binding:"required"`
 	DepartmentID string `json:"department_id" binding:"required"`
 	WorkplaceID  string `json:"workplace_id" binding:"required"`
-	TimeslotName string `json:"timeslot_name" binding:"required"`
+	TimeslotID   string `json:"timeslot_id" binding:"required"`
 	Date         string `json:"date" binding:"required"`
 }
 

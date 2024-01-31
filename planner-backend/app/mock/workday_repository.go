@@ -35,18 +35,18 @@ func (r *WorkdayRepositoryMock) GetWorkdaysForDepartmentAndDate(departmentID str
 	return r.dataContainer["GetWorkdaysForDepartmentAndDate"].([]dao.Workday), r.errorContainer["GetWorkdaysForDepartmentAndDate"]
 }
 
-func (r *WorkdayRepositoryMock) GetWorkday(departmentID string, workplaceID string, timeslotName string, date string) (dao.Workday, error) {
+func (r *WorkdayRepositoryMock) GetWorkday(departmentID string, workplaceID string, timeslotID string, date string) (dao.Workday, error) {
 	if r.dataContainer["GetWorkday"] == nil {
 		return dao.Workday{}, r.errorContainer["GetWorkday"]
 	}
 	return r.dataContainer["GetWorkday"].(dao.Workday), r.errorContainer["GetWorkday"]
 }
 
-func (r *WorkdayRepositoryMock) AssignPersonToWorkday(personID string, departmentID string, workplaceID string, timeslotName string, date string) error {
+func (r *WorkdayRepositoryMock) AssignPersonToWorkday(personID string, departmentID string, workplaceID string, timeslotID string, date string) error {
 	return r.errorContainer["AssignPersonToWorkday"]
 }
 
-func (r *WorkdayRepositoryMock) UnassignPersonFromWorkday(personID string, departmentID string, workplaceID string, timeslotName string, date string) error {
+func (r *WorkdayRepositoryMock) UnassignPersonFromWorkday(personID string, departmentID string, workplaceID string, timeslotID string, date string) error {
 	return r.errorContainer["UnassignPersonFromWorkday"]
 }
 

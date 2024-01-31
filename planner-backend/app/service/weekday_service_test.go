@@ -43,7 +43,7 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 			},
 		},
 		{
@@ -72,7 +72,7 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 			},
 		},
 		// Add more test steps here...
@@ -80,7 +80,7 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 
 	for i, testStep := range testSteps {
 		t.Run("Test Bulk Update Weekdays For Timeslot", func(t *testing.T) {
-			TimeslotRepository.On("FindTimeslotByName").Return(testStep.findValue, testStep.findError)
+			TimeslotRepository.On("FindTimeslotByID").Return(testStep.findValue, testStep.findError)
 			WeekdayRepository.On("DeleteAllWeekdaysFromTimeslot").Return(nil, testStep.additionalError)
 			WeekdayRepository.On("AddWeekdaysToTimeslot").Return(testStep.saveValue, testStep.saveError)
 
@@ -142,7 +142,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 			},
 		},
 		{
@@ -159,7 +159,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 			},
 		},
 		{
@@ -188,7 +188,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 			},
 		},
 		{
@@ -203,7 +203,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 
 	for i, testStep := range testSteps {
 		t.Run("Test Add Weekday To Timeslot", func(t *testing.T) {
-			TimeslotRepository.On("FindTimeslotByName").Return(testStep.findValue, testStep.findError)
+			TimeslotRepository.On("FindTimeslotByID").Return(testStep.findValue, testStep.findError)
 			WeekdayRepository.On("AddWeekdayToTimeslot").Return(testStep.saveValue, testStep.saveError)
 
 			// get GIN context
@@ -256,7 +256,7 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 				"weekdayName":  "test",
 			},
 		},
@@ -268,7 +268,7 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 				"weekdayName":  "test",
 			},
 		},
@@ -279,7 +279,7 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 				"weekdayName":  "test",
 			},
 		},

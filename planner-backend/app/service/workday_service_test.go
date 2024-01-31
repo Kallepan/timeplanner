@@ -333,7 +333,7 @@ func TestAssignPersonToWorkday(t *testing.T) {
 				"person_id":     "person1",
 				"department_id": "department1",
 				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
+				"timeslot_id":   "timeslot1",
 				"date":          "2021-01-01",
 			},
 			expectedStatusCode: http.StatusCreated,
@@ -344,7 +344,7 @@ func TestAssignPersonToWorkday(t *testing.T) {
 			mockRequestData: map[string]interface{}{
 				"department_id": "department1",
 				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
+				"timeslot_id":   "timeslot1",
 				"date":          "2021-01-01",
 			},
 			expectedStatusCode: http.StatusBadRequest,
@@ -353,10 +353,10 @@ func TestAssignPersonToWorkday(t *testing.T) {
 		{
 			// missing department_id
 			mockRequestData: map[string]interface{}{
-				"person_id":     "person1",
-				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
-				"date":          "2021-01-01",
+				"person_id":    "person1",
+				"workplace_id": "workplace1",
+				"timeslot_id":  "timeslot1",
+				"date":         "2021-01-01",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
@@ -367,7 +367,7 @@ func TestAssignPersonToWorkday(t *testing.T) {
 				"person_id":     "person1",
 				"department_id": "department1",
 				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
+				"timeslot_id":   "timeslot1",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
@@ -377,7 +377,7 @@ func TestAssignPersonToWorkday(t *testing.T) {
 				"person_id":     "person1",
 				"department_id": "department1",
 				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
+				"timeslot_id":   "timeslot1",
 				"date":          "2021-01-01",
 			},
 			// repository error
@@ -422,7 +422,7 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 				"person_id":     "person1",
 				"department_id": "department1",
 				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
+				"timeslot_id":   "timeslot1",
 				"date":          "2021-01-01",
 			},
 			expectedStatusCode: http.StatusOK,
@@ -433,7 +433,7 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 			mockRequestData: map[string]interface{}{
 				"department_id": "department1",
 				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
+				"timeslot_id":   "timeslot1",
 				"date":          "2021-01-01",
 			},
 			expectedStatusCode: http.StatusBadRequest,
@@ -442,10 +442,10 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 		{
 			// missing department_id
 			mockRequestData: map[string]interface{}{
-				"person_id":     "person1",
-				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
-				"date":          "2021-01-01",
+				"person_id":    "person1",
+				"workplace_id": "workplace1",
+				"timeslot_id":  "timeslot1",
+				"date":         "2021-01-01",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
@@ -456,7 +456,7 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 				"person_id":     "person1",
 				"department_id": "department1",
 				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
+				"timeslot_id":   "timeslot1",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
@@ -466,7 +466,7 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 				"person_id":     "person1",
 				"department_id": "department1",
 				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
+				"timeslot_id":   "timeslot1",
 				"date":          "2021-01-01",
 			},
 			// repository error

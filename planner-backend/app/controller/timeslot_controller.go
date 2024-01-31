@@ -24,7 +24,7 @@ func (u TimeslotControllerImpl) GetAll(ctx *gin.Context) {
 }
 
 func (u TimeslotControllerImpl) Get(ctx *gin.Context) {
-	u.TimeslotService.GetTimeslotByName(ctx)
+	u.TimeslotService.GetTimeslotByID(ctx)
 }
 
 func (u TimeslotControllerImpl) Create(ctx *gin.Context) {

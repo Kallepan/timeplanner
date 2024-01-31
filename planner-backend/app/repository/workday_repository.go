@@ -15,13 +15,13 @@ type WorkdayRepository interface {
 	 * for a given date
 	 */
 	GetWorkdaysForDepartmentAndDate(departmentID string, date string) ([]dao.Workday, error)
-	GetWorkday(departmentID string, workplaceID string, timeslotName string, date string) (dao.Workday, error)
+	GetWorkday(departmentID string, workplaceID string, timeslotID string, date string) (dao.Workday, error)
 	// UpdateWorkday()
 	// DeleteWorkday()
 
 	// Main interface to Assign people to a given workday
-	AssignPersonToWorkday(personID string, departmentID string, workplaceID string, timeslotName string, date string) error
-	UnassignPersonFromWorkday(personID string, departmentID string, workplaceID string, timeslotName string, date string) error
+	AssignPersonToWorkday(personID string, departmentID string, workplaceID string, timeslotID string, date string) error
+	UnassignPersonFromWorkday(personID string, departmentID string, workplaceID string, timeslotID string, date string) error
 }
 
 type WorkdayRepositoryImpl struct {
@@ -73,11 +73,11 @@ func (w WorkdayRepositoryImpl) GetWorkdaysForDepartmentAndDate(departmentID stri
 	return workdays, nil
 }
 
-func (w WorkdayRepositoryImpl) GetWorkday(departmentID string, workplaceID string, timeslotName string, date string) (dao.Workday, error) {
+func (w WorkdayRepositoryImpl) GetWorkday(departmentID string, workplaceID string, timeslotID string, date string) (dao.Workday, error) {
 
 	query := `
 	// fetch the workday
-	MATCH (wkd:Workday {date: date($date), department: $departmentID, workplace: $workplaceID, timeslot: $timeslotName})
+	MATCH (wkd:Workday {date: date($date), department: $departmentID, workplace: $workplaceID, timeslot: $timeslotID})
 	// fetch the Timeslot, department and workplace
 	MATCH (wkd) -[:IS_TIMESLOT]-> (t) <-[:HAS_TIMESLOT]- (w:Workplace) <-[:HAS_WORKPLACE]-(d: Department)
 	// fetch the person assigned to the workday
@@ -91,7 +91,7 @@ func (w WorkdayRepositoryImpl) GetWorkday(departmentID string, workplaceID strin
 		"date":         date,
 		"departmentID": departmentID,
 		"workplaceID":  workplaceID,
-		"timeslotName": timeslotName,
+		"timeslotID":   timeslotID,
 	}
 
 	result, err := neo4j.ExecuteQuery(
@@ -117,11 +117,11 @@ func (w WorkdayRepositoryImpl) GetWorkday(departmentID string, workplaceID strin
 	return workday, nil
 }
 
-func (w WorkdayRepositoryImpl) AssignPersonToWorkday(personID string, departmentID string, workplaceID string, timeslotName string, date string) error {
+func (w WorkdayRepositoryImpl) AssignPersonToWorkday(personID string, departmentID string, workplaceID string, timeslotID string, date string) error {
 
 	query := `
 	// delete the relationship between the person and the workday
-	MATCH (wkd:Workday {date: date($date), department: $departmentID, workplace: $workplaceID, timeslot: $timeslotName})
+	MATCH (wkd:Workday {date: date($date), department: $departmentID, workplace: $workplaceID, timeslot: $timeslotID})
 	// delete the relationship between the person and the workday
 	OPTIONAL MATCH (wkd)<-[r:ASSIGNED_TO]-(:Person)
 	DELETE r
@@ -138,7 +138,7 @@ func (w WorkdayRepositoryImpl) AssignPersonToWorkday(personID string, department
 		"date":         date,
 		"departmentID": departmentID,
 		"workplaceID":  workplaceID,
-		"timeslotName": timeslotName,
+		"timeslotID":   timeslotID,
 	}
 
 	result, err := neo4j.ExecuteQuery(
@@ -159,10 +159,10 @@ func (w WorkdayRepositoryImpl) AssignPersonToWorkday(personID string, department
 	return nil
 }
 
-func (w WorkdayRepositoryImpl) UnassignPersonFromWorkday(personID string, departmentID string, workplaceID string, timeslotName string, date string) error {
+func (w WorkdayRepositoryImpl) UnassignPersonFromWorkday(personID string, departmentID string, workplaceID string, timeslotID string, date string) error {
 
 	query := `
-	MATCH (wkd:Workday {date: date($date), department: $departmentID, workplace: $workplaceID, timeslot: $timeslotName})
+	MATCH (wkd:Workday {date: date($date), department: $departmentID, workplace: $workplaceID, timeslot: $timeslotID})
 	// delete the relationship between the person and the workday
 	MATCH (wkd)<-[r:ASSIGNED_TO]-(p:Person {id: $personID})
 	DELETE r
@@ -172,7 +172,7 @@ func (w WorkdayRepositoryImpl) UnassignPersonFromWorkday(personID string, depart
 		"date":         date,
 		"departmentID": departmentID,
 		"workplaceID":  workplaceID,
-		"timeslotName": timeslotName,
+		"timeslotID":   timeslotID,
 	}
 
 	_, err := neo4j.ExecuteQuery(
