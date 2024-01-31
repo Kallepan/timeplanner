@@ -92,7 +92,10 @@ export class TimetableDataContainerService {
     workdays.forEach((workdayTimeslot) => {
       const workplaceTimeslots = workdayTimeslotGroupedByWorkplaceMap.get(workdayTimeslot.workplace.id) || [];
       workplaceTimeslots.push(workdayTimeslot);
-      workdayTimeslotGroupedByWorkplaceMap.set(workdayTimeslot.workplace.id, workplaceTimeslots);
+      workdayTimeslotGroupedByWorkplaceMap.set(
+        workdayTimeslot.workplace.id,
+        workplaceTimeslots.sort((a, b) => a.timeslot.name.localeCompare(b.timeslot.name)),
+      );
     });
 
     // The workdays for each workplace are then further grouped by timeslot, as each timeslot is displayed in a separate subrow within the workplace row.
@@ -117,7 +120,7 @@ export class TimetableDataContainerService {
       displayWorkdayTimeslotMap.forEach((displayWorkdayTimeslots, timeslotName) => {
         timeslotGroups.push({
           name: timeslotName,
-          workdayTimeslots: displayWorkdayTimeslots.sort((a, b) => a.timeslot.name.localeCompare(b.timeslot.name)),
+          workdayTimeslots: displayWorkdayTimeslots,
           gridRow: gridRowCounter,
 
           startTime: displayWorkdayTimeslots[0].start_time,
