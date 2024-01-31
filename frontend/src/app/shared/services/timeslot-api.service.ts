@@ -21,10 +21,7 @@ import { CreateTimeslot, TimeslotWithMetadata } from '../interfaces/timeslot';
 export class TimeslotAPIService {
   private http = inject(HttpClient);
 
-  getTimeslots(
-    department: string,
-    workplace: string,
-  ): Observable<APIResponse<TimeslotWithMetadata[]>> {
+  getTimeslots(department: string, workplace: string): Observable<APIResponse<TimeslotWithMetadata[]>> {
     const url = `${constants.APIS.PLANNER}/department/${department}/workplace/${workplace}/timeslot`;
 
     const httpOptions = {
@@ -37,11 +34,7 @@ export class TimeslotAPIService {
     return this.http.get<APIResponse<TimeslotWithMetadata[]>>(url, httpOptions);
   }
 
-  getTimeslot(
-    department: string,
-    workplace: string,
-    timeslot: string,
-  ): Observable<APIResponse<TimeslotWithMetadata>> {
+  getTimeslot(department: string, workplace: string, timeslot: string): Observable<APIResponse<TimeslotWithMetadata>> {
     const url = `${constants.APIS.PLANNER}/department/${department}/workplace/${workplace}/timeslot/${timeslot}`;
 
     const httpOptions = {
@@ -54,11 +47,7 @@ export class TimeslotAPIService {
     return this.http.get<APIResponse<TimeslotWithMetadata>>(url, httpOptions);
   }
 
-  createTimeslot(
-    department: string,
-    workplace: string,
-    timeslot: CreateTimeslot,
-  ): Observable<APIResponse<TimeslotWithMetadata>> {
+  createTimeslot(department: string, workplace: string, timeslot: CreateTimeslot): Observable<APIResponse<TimeslotWithMetadata>> {
     const url = `${constants.APIS.PLANNER}/department/${department}/workplace/${workplace}/timeslot`;
 
     const httpOptions = {
@@ -68,18 +57,10 @@ export class TimeslotAPIService {
       withCredentials: true,
     };
 
-    return this.http.post<APIResponse<TimeslotWithMetadata>>(
-      url,
-      timeslot,
-      httpOptions,
-    );
+    return this.http.post<APIResponse<TimeslotWithMetadata>>(url, timeslot, httpOptions);
   }
 
-  deleteTimeslot(
-    department: string,
-    workplace: string,
-    timeslot: string,
-  ): Observable<APIResponse<TimeslotWithMetadata>> {
+  deleteTimeslot(department: string, workplace: string, timeslot: string): Observable<APIResponse<TimeslotWithMetadata>> {
     const url = `${constants.APIS.PLANNER}/department/${department}/workplace/${workplace}/timeslot/${timeslot}`;
 
     const httpOptions = {
@@ -89,19 +70,11 @@ export class TimeslotAPIService {
       withCredentials: true,
     };
 
-    return this.http.delete<APIResponse<TimeslotWithMetadata>>(
-      url,
-      httpOptions,
-    );
+    return this.http.delete<APIResponse<TimeslotWithMetadata>>(url, httpOptions);
   }
 
   // Relations
-  assignTimeslotToWeekday(
-    department: string,
-    workplace: string,
-    timeslot: string,
-    weekdayID: string,
-  ): Observable<APIResponse<TimeslotWithMetadata>> {
+  assignTimeslotToWeekday(department: string, workplace: string, timeslot: string, weekdayID: string): Observable<APIResponse<TimeslotWithMetadata>> {
     const url = `${constants.APIS.PLANNER}/department/${department}/workplace/${workplace}/timeslot/${timeslot}/weekday`;
 
     const httpOptions = {
@@ -115,19 +88,10 @@ export class TimeslotAPIService {
       id: weekdayID,
     };
 
-    return this.http.post<APIResponse<TimeslotWithMetadata>>(
-      url,
-      body,
-      httpOptions,
-    );
+    return this.http.post<APIResponse<TimeslotWithMetadata>>(url, body, httpOptions);
   }
 
-  unassignTimeslotFromWeekday(
-    department: string,
-    workplace: string,
-    timeslot: string,
-    weekdayID: string,
-  ): Observable<APIResponse<TimeslotWithMetadata>> {
+  unassignTimeslotFromWeekday(department: string, workplace: string, timeslot: string, weekdayID: string): Observable<APIResponse<TimeslotWithMetadata>> {
     const url = `${constants.APIS.PLANNER}/department/${department}/workplace/${workplace}/timeslot/${timeslot}/weekday`;
 
     const httpOptions = {
@@ -140,9 +104,6 @@ export class TimeslotAPIService {
       },
     };
 
-    return this.http.delete<APIResponse<TimeslotWithMetadata>>(
-      url,
-      httpOptions,
-    );
+    return this.http.delete<APIResponse<TimeslotWithMetadata>>(url, httpOptions);
   }
 }
