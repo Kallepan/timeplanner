@@ -12,14 +12,7 @@ import { SidenavComponent } from '../sidenav/sidenav.component';
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss'],
   standalone: true,
-  imports: [
-    CommonModule,
-    MatSidenavModule,
-    HeaderComponent,
-    FooterComponent,
-    SidenavComponent,
-    RouterOutlet,
-  ],
+  imports: [CommonModule, MatSidenavModule, HeaderComponent, FooterComponent, SidenavComponent, RouterOutlet],
 })
 export class MainComponent {
   // dependencies
