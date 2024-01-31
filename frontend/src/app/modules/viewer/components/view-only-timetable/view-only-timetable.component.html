@@ -56,7 +56,7 @@
               'grid-column': wts.gridColumn
             }">
             @if (timetableDataContainerService.displayPersons$) {
-              {{ wts.person?.id }} <br />
+              {{ wts.person?.last_name }} ({{ wts.person?.id }}) <br />
             }
             @if (timetableDataContainerService.displayTime$) {
               {{ wts.start_time }} - {{ wts.end_time }} ({{ wts.duration_in_minutes / 60 }})
