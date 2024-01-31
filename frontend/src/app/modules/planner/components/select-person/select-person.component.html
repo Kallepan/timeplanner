@@ -7,6 +7,10 @@
         <mat-option [value]="person"> {{ person.last_name }} ({{ person.id }}) </mat-option>
       }
     </mat-autocomplete>
+
+    @if (!control.value) {
+      <button matSuffix mat-icon-button color="warn">X</button>
+    }
   </mat-form-field>
 } @placeholder {
   <div></div>

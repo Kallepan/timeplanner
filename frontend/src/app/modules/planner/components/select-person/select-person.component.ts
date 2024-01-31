@@ -4,7 +4,7 @@ import { map, startWith } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { AsyncPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { PersonDataContainerService } from '@app/shared/services/person-data-container.service';
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { MatButtonModule } from '@angular/material/button';
@@ -12,7 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-select-person',
   standalone: true,
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, AsyncPipe, MatButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatButtonModule],
   templateUrl: './select-person.component.html',
   styleUrl: './select-person.component.scss',
 })
@@ -38,7 +38,7 @@ export class SelectPersonComponent implements OnInit, OnChanges {
   }
 
   displayFn(person: PersonWithMetadata): string {
-    return person ? `${person.last_name} (${person.id})` : 'NA';
+    return person ? `${person.last_name} (${person.id})` : '?';
   }
 
   private _filter(name: string): PersonWithMetadata[] {
