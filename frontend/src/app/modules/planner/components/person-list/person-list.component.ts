@@ -31,6 +31,8 @@ export class PersonListComponent {
     debounceTime(300),
     filter((value): value is string => typeof value === 'string'),
     map((value) => value.toLowerCase()),
-    map((value) => this.personDataContainerService.persons$.filter((person) => person.first_name.toLowerCase().includes(value) || person.last_name.toLowerCase().includes(value))),
+    map((value) =>
+      this.personDataContainerService.persons$.filter((person) => person.id.includes(value) || person.first_name.toLowerCase().includes(value) || person.last_name.toLowerCase().includes(value)),
+    ),
   );
 }
