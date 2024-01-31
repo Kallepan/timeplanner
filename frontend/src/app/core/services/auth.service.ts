@@ -32,7 +32,8 @@ export class AuthService {
   });
 
   isLoggedIn = computed(() => {
-    return this._authData() !== null && this._authData() !== undefined;
+    // Note this property gets populated by verifyLogin() at ngOnInit() in app.component.ts
+    return this._authData() !== null;
   });
 
   hasAccessToDepartment(departmentName: string): Observable<boolean> {
