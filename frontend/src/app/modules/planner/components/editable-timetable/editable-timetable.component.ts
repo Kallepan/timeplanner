@@ -22,5 +22,6 @@ export class EditableTimetableComponent {
   @Output() personDroppedIntoTimeslot = new EventEmitter<{
     person: PersonWithMetadata;
     timeslots: DisplayedWorkdayTimeslot[];
+    actionToBeExecutedOnFailedValidation?: () => void;
   }>();
 }

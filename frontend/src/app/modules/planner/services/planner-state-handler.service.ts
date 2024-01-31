@@ -107,7 +107,7 @@ export class PlannerStateHandlerService {
       });
   }
 
-  assignPersonToTimelots(event: { person: PersonWithMetadata; timeslots: WorkdayTimeslot[] }) {
+  assignPersonToTimelots(event: { person: PersonWithMetadata; timeslots: WorkdayTimeslot[]; actionToBeExecutedOnFailedValidation?: () => void }) {
     /**
      * This function is responsible for validating the timeslots and updating the timeslots in the service. Furthermore it uses the API to update the timeslots on the server.
      * Validation requirements:
@@ -116,28 +116,26 @@ export class PlannerStateHandlerService {
      *  - is not already assigned to a timeslot on the same day
      *
      */
-    const { person, timeslots } = event;
-    forkJoin(timeslots.map((timeslot) => this._assignPersonToTimeslot(person, timeslot))).subscribe((results) => {
+    const { person, timeslots, actionToBeExecutedOnFailedValidation } = event;
+    forkJoin(timeslots.map((timeslot) => this._assignPersonToTimeslot(person, timeslot, actionToBeExecutedOnFailedValidation))).subscribe((results) => {
       if (results.every((result) => result)) this.notificationService.infoMessage('Person erfolgreich zugeordnet');
     });
   }
 
-  private _assignPersonToTimeslot(person: PersonWithMetadata, workdayTimeslot: WorkdayTimeslot) {
+  private _assignPersonToTimeslot(person: PersonWithMetadata, workdayTimeslot: WorkdayTimeslot, actionToBeExecutedOnFailedValidation?: () => void) {
     return of(workdayTimeslot).pipe(
+      // check if the person is qualified for the workplace
       map((ts) => (person.workplaces ?? []).map((wp) => wp.id).includes(ts.workplace.id)),
       tap((isQualified) => {
-        if (!isQualified) this.notificationService.warnMessage('Person ist nicht für diesen Arbeitsplatz qualifiziert');
+        if (!isQualified) throw new Error('Person ist nicht für diesen Arbeitsplatz qualifiziert');
       }),
-      // check if the person is qualified for the workplace
-      filter((isQualified) => isQualified),
       // check if the person is absent on the day
-      switchMap(() => this.personAPIService.isAbsentOnDate(person.id, workdayTimeslot.date).pipe(catchError((err) => throwError(() => err)))),
+      switchMap(() => this.personAPIService.isAbsentOnDate(person.id, workdayTimeslot.date).pipe(catchError(() => throwError(() => new Error('Datenbankfehler'))))),
       tap((isAbsent) => {
-        if (isAbsent) this.notificationService.warnMessage('Person ist an diesem Tag abwesend (Krank, Urlaub, etc.)');
+        if (isAbsent) throw new Error('Person ist an diesem Tag abwesend (Krank, Urlaub, etc.)');
       }),
-      filter((isAbsent) => !isAbsent),
       // check if the person is already assigned to a timeslot on the same day
-      switchMap(() => this.workdayAPIService.getWorkdays(workdayTimeslot.department.id, workdayTimeslot.date).pipe(catchError((err) => throwError(() => err)))),
+      switchMap(() => this.workdayAPIService.getWorkdays(workdayTimeslot.department.id, workdayTimeslot.date).pipe(catchError(() => throwError(() => new Error('Datenbankfehler'))))),
       map((resp) => resp.data),
       map((workdays) =>
         workdays
@@ -147,17 +145,22 @@ export class PlannerStateHandlerService {
           .includes(person.id),
       ),
       tap((isAssigned) => {
-        if (isAssigned) this.notificationService.warnMessage('Person ist bereits einem anderen Timeslot zugeordnet');
+        if (isAssigned) throw new Error('Person ist bereits einem anderen Timeslot zugeordnet');
       }),
-      filter((isAssigned) => !isAssigned),
       // check if person is present on the day
       map(() => {
         return (person.weekdays ?? []).map((wd) => wd.id).includes(workdayTimeslot.weekday);
       }),
       tap((isPresent) => {
-        if (!isPresent) this.notificationService.warnMessage('Person ist an diesem Tag nicht anwesend');
+        if (!isPresent) throw new Error('Person ist an diesem Tag nicht anwesend');
       }),
-      filter((isPresent) => isPresent),
+      map(() => true),
+      catchError((err: Error) => {
+        this.notificationService.warnMessage(err.message);
+        actionToBeExecutedOnFailedValidation?.();
+        return of(false);
+      }),
+      filter((isValid) => isValid),
       // update the timeslot in the service
       switchMap(() => {
         return this.workdayAPIService.assignPerson(workdayTimeslot.department.id, workdayTimeslot.date, workdayTimeslot.workplace.id, workdayTimeslot.timeslot.name, person.id).pipe(

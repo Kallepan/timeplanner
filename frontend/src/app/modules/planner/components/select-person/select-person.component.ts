@@ -29,7 +29,7 @@ export class SelectPersonComponent implements OnInit, OnChanges {
     map((persons) => persons.filter((person) => person.weekdays?.map((wd) => wd.id).includes(this.weekday))),
   );
 
-  @Output() selected = new EventEmitter<PersonWithMetadata>();
+  @Output() selected = new EventEmitter<{ p: PersonWithMetadata; actionToBeExecutedOnFailedValidation?: () => void }>();
   @Input() selectedPerson: PersonWithMetadata | null = null;
   @Input() weekday: string;
 
@@ -55,5 +55,9 @@ export class SelectPersonComponent implements OnInit, OnChanges {
     if (changes['selectedPerson']) {
       this.control.setValue(this.selectedPerson);
     }
+  }
+
+  emitEvent(p: PersonWithMetadata): void {
+    this.selected.emit({ p, actionToBeExecutedOnFailedValidation: () => this.control.setValue(null) });
   }
 }
