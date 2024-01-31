@@ -2,13 +2,15 @@
   <div class="container">
     @defer {
       <app-search-bar [control]="control" placeholder="Max Mustermann" formHint="Filtern nach Vor- und Nachname"></app-search-bar>
-      <div class="card-container" cdkDropList [cdkDropListData]="personDataContainerService.persons$">
-        @for (person of filteredPersons$ | async; track $index) {
-          <mat-card [matTooltip]="person.last_name + ', ' + person.first_name" matTooltipPosition="above" cdkDrag [cdkDragData]="person"
-            ><mat-card-content class="card-content">{{ person.id }} ({{ person.working_hours }})</mat-card-content></mat-card
-          >
-        }
-      </div>
+      @if (filteredPersons$ | async; as persons) {
+        <div class="card-container" cdkDropList [cdkDropListData]="persons">
+          @for (person of persons; track person) {
+            <mat-card [matTooltip]="person.last_name + ', ' + person.first_name" matTooltipPosition="above" cdkDrag [cdkDragData]="person"
+              ><mat-card-content class="card-content"> {{ person.id }} ({{ person.working_hours }}) </mat-card-content></mat-card
+            >
+          }
+        </div>
+      }
     } @placeholder {
       <mat-progress-bar mode="indeterminate"></mat-progress-bar>
     }
