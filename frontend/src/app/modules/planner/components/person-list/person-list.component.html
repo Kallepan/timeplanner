@@ -4,7 +4,7 @@
     <div class="card-container" cdkDropList [cdkDropListData]="personDataContainerService.persons$">
       @for (person of filteredPersons$ | async; track $index) {
         <mat-card [matTooltip]="person.last_name + ', ' + person.first_name" matTooltipPosition="above" cdkDrag [cdkDragData]="person"
-          ><mat-card-content>{{ person.id }}</mat-card-content></mat-card
+          ><mat-card-content class="card-content">{{ person.id }} ({{ person.working_hours }})</mat-card-content></mat-card
         >
       }
     </div>
