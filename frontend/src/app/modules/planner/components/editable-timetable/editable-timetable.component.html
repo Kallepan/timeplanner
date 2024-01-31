@@ -67,7 +67,7 @@
               'grid-row': slot.gridRow,
               'grid-column': ts.gridColumn
             }">
-            @defer (on hover) {
+            @defer (on viewport) {
               <app-select-person
                 [selectedPerson]="ts.person"
                 [weekday]="ts.weekday"
