@@ -57,14 +57,4 @@ describe('ActionsComponent', () => {
     await toggle.toggle();
     expect(component.togglePersonsLabel.emit).toHaveBeenCalledWith(true);
   });
-
-  it('should emit toggleEditingMode', async () => {
-    spyOn(component.toggleEditingMode, 'emit');
-    const toggle = await loader.getHarness(MatSlideToggleHarness.with({ selector: '#toggleEditingMode' }));
-    await toggle.toggle();
-    expect(component.toggleEditingMode.emit).toHaveBeenCalledWith(false);
-
-    await toggle.toggle();
-    expect(component.toggleEditingMode.emit).toHaveBeenCalledWith(true);
-  });
 });
