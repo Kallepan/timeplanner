@@ -124,7 +124,7 @@ export class PlannerStateHandlerService {
 
   private _assignPersonToTimeslot(person: PersonWithMetadata, workdayTimeslot: WorkdayTimeslot) {
     return of(workdayTimeslot).pipe(
-      map((ts) => person.workplaces.map((wp) => wp.id).includes(ts.workplace.id)),
+      map((ts) => (person.workplaces ?? []).map((wp) => wp.id).includes(ts.workplace.id)),
       tap((isQualified) => {
         if (!isQualified) this.notificationService.warnMessage('Person ist nicht für diesen Arbeitsplatz qualifiziert');
       }),
@@ -133,7 +133,7 @@ export class PlannerStateHandlerService {
       // check if the person is absent on the day
       switchMap(() => this.personAPIService.isAbsentOnDate(person.id, workdayTimeslot.date).pipe(catchError((err) => throwError(() => err)))),
       tap((isAbsent) => {
-        if (isAbsent) this.notificationService.warnMessage('Person ist an diesem Tag abwesend');
+        if (isAbsent) this.notificationService.warnMessage('Person ist an diesem Tag abwesend (Krank, Urlaub, etc.)');
       }),
       filter((isAbsent) => !isAbsent),
       // check if the person is already assigned to a timeslot on the same day
@@ -150,6 +150,14 @@ export class PlannerStateHandlerService {
         if (isAssigned) this.notificationService.warnMessage('Person ist bereits einem anderen Timeslot zugeordnet');
       }),
       filter((isAssigned) => !isAssigned),
+      // check if person is present on the day
+      map(() => {
+        return (person.weekdays ?? []).map((wd) => wd.id).includes(workdayTimeslot.weekday);
+      }),
+      tap((isPresent) => {
+        if (!isPresent) this.notificationService.warnMessage('Person ist an diesem Tag nicht anwesend');
+      }),
+      filter((isPresent) => isPresent),
       // update the timeslot in the service
       switchMap(() => {
         return this.workdayAPIService.assignPerson(workdayTimeslot.department.id, workdayTimeslot.date, workdayTimeslot.workplace.id, workdayTimeslot.timeslot.name, person.id).pipe(

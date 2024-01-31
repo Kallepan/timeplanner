@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
-  selector: 'app-actions',
+  selector: 'app-actions-editable',
   standalone: true,
   imports: [MatSlideToggleModule],
   templateUrl: './actions.component.html',

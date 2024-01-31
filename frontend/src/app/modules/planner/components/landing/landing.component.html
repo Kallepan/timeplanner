@@ -1,8 +1,8 @@
 <div class="actions-container">
-  <app-actions
+  <app-actions-editable
     (toggleColors)="timetableDataContainerService.colorize = $event"
     (togglePersonsLabel)="timetableDataContainerService.displayPersons = $event"
-    (toggleTimeLabel)="timetableDataContainerService.displayTime = $event"></app-actions>
+    (toggleTimeLabel)="timetableDataContainerService.displayTime = $event"></app-actions-editable>
 </div>
 
 <app-editable-timetable (personDroppedIntoTimeslot)="plannerStateHandlerService.assignPersonToTimelots($event)"></app-editable-timetable>

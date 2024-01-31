@@ -68,7 +68,7 @@
               'grid-column': ts.gridColumn
             }">
             @defer (on hover) {
-              <app-select-person [selectedPerson]="ts.person" (selected)="personDroppedIntoTimeslot.emit({ person: $event, timeslots: [ts] })"></app-select-person>
+              <app-select-person [selectedPerson]="ts.person" [weekday]="ts.weekday" (selected)="personDroppedIntoTimeslot.emit({ person: $event, timeslots: [ts] })"></app-select-person>
             } @placeholder {
               <app-edit-person-preview [person]="ts.person"></app-edit-person-preview>
             }

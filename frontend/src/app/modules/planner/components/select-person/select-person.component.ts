@@ -1,5 +1,4 @@
 import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, inject } from '@angular/core';
-
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { map, startWith } from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,10 +26,12 @@ export class SelectPersonComponent implements OnInit, OnChanges {
       const name = typeof value === 'string' ? value : value?.last_name;
       return name ? this._filter(name) : this.personDataContainerService.persons$;
     }),
+    map((persons) => persons.filter((person) => person.weekdays?.map((wd) => wd.id).includes(this.weekday))),
   );
 
   @Output() selected = new EventEmitter<PersonWithMetadata>();
   @Input() selectedPerson: PersonWithMetadata | null = null;
+  @Input() weekday: string;
 
   ngOnInit(): void {
     this.control.setValue(this.selectedPerson);

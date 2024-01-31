@@ -14,9 +14,9 @@ export interface Person {
   email: string;
   active: boolean;
   working_hours: number;
-  workplaces: Workplace[];
-  departments: Department[];
-  weekdays: OnWeekday[];
+  workplaces?: Workplace[];
+  departments?: Department[];
+  weekdays?: OnWeekday[];
 }
 
 export type PersonWithMetadata = Person & Metadata;
