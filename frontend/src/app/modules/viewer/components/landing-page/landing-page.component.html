@@ -1,9 +1,9 @@
 <!-- TODO: add actions to modify values in viewerstatehandlerservice-->
 <div class="actions-container">
-  <app-actions
+  <app-actions-viewer
     (toggleColors)="timetableDataContainerService.colorize = $event"
     (togglePersonsLabel)="timetableDataContainerService.displayPersons = $event"
-    (toggleTimeLabel)="timetableDataContainerService.displayTime = $event"></app-actions>
+    (toggleTimeLabel)="timetableDataContainerService.displayTime = $event"></app-actions-viewer>
   <button mat-raised-button color="accent" routerLink="/planner" [queryParams]="getEditRouterQueryParams()">Zum Editieren</button>
 </div>
 
