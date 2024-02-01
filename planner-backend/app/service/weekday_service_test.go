@@ -86,7 +86,10 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "POST", testStep.ParamsToGinParams(), testStep.mockRequestData)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithMapParams(testStep.params).WithBody(testStep.mockRequestData).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when getting GIN context", i)
+			}
 
 			weekdayService.BulkUpdateWeekdaysForTimeslot(c)
 			response := w.Result()
@@ -208,7 +211,10 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "POST", testStep.ParamsToGinParams(), testStep.mockRequestData)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithMapParams(testStep.params).WithBody(testStep.mockRequestData).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when getting GIN context", i)
+			}
 
 			weekdayService.AddWeekdayToTimeslot(c)
 			response := w.Result()
@@ -291,7 +297,10 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "DELETE", testStep.ParamsToGinParams(), testStep.mockRequestData)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("DELETE").WithMapParams(testStep.params).WithBody(testStep.mockRequestData).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when getting GIN context", i)
+			}
 
 			weekdayService.DeleteWeekdayFromTimeslot(c)
 			response := w.Result()

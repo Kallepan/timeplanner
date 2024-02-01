@@ -11,8 +11,6 @@ import (
 	"planner-backend/app/mock"
 	"planner-backend/app/pkg"
 	"testing"
-
-	"github.com/gin-gonic/gin"
 )
 
 func TestDeleteDepartment(t *testing.T) {
@@ -48,7 +46,11 @@ func TestDeleteDepartment(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "DELETE", gin.Params{}, nil)
+		c, err := mock.NewTestContextBuilder(w).
+			WithMethod("DELETE").Build()
+		if err != nil {
+			t.Errorf("Test Step %d: Error while building context: %s", i, err)
+		}
 
 		departmentService.DeleteDepartment(c)
 		response := w.Result()
@@ -122,7 +124,11 @@ func TestUpdateDepartment(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "PUT", gin.Params{}, testStep.mockRequestData)
+		c, err := mock.NewTestContextBuilder(w).
+			WithMethod("PUT").WithBody(testStep.mockRequestData).Build()
+		if err != nil {
+			t.Errorf("Test Step %d: Error while building context: %s", i, err)
+		}
 
 		departmentService.UpdateDepartment(c)
 		response := w.Result()
@@ -217,7 +223,11 @@ func TestAddDepartment(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "POST", gin.Params{}, testStep.mockRequestData)
+			c, err := mock.NewTestContextBuilder(w).
+				WithMethod("POST").WithBody(testStep.mockRequestData).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error while building context: %s", i, err)
+			}
 
 			departmentService.AddDepartment(c)
 			response := w.Result()
@@ -283,7 +293,11 @@ func TestGetAllDepartments(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "GET", gin.Params{}, nil)
+			c, err := mock.NewTestContextBuilder(w).
+				WithMethod("GET").Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error while building context: %s", i, err)
+			}
 
 			departmentService.GetAllDepartments(c)
 			response := w.Result()
@@ -347,7 +361,11 @@ func TestGetDepartmentByID(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "GET", testStep.ParamsToGinParams(), nil)
+			c, err := mock.NewTestContextBuilder(w).
+				WithMethod("GET").WithMapParams(testStep.params).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error while building context: %s", i, err)
+			}
 
 			departmentService.GetDepartmentByID(c)
 			response := w.Result()

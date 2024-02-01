@@ -114,15 +114,15 @@ func (w WorkdayServiceImpl) UpdateWorkday(c *gin.Context) {
 	slog.Info("start to execute program update workday")
 
 	// get params from request
-	departmentID := c.Query("department")
+	departmentID := c.Query("departmentID")
 	if departmentID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	workplaceID := c.Query("workplace")
+	workplaceID := c.Query("workplaceID")
 	if workplaceID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	timeslotID := c.Query("timeslot")
+	timeslotID := c.Query("timeslotID")
 	if timeslotID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}

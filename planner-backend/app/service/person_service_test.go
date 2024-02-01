@@ -57,7 +57,10 @@ func TestDeletePerson(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "DELETE", testStep.ParamsToGinParams(), nil)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("DELETE").WithMapParams(testStep.params).WithBody(nil).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when building context", i)
+			}
 
 			personService.DeletePerson(c)
 			response := w.Result()
@@ -182,7 +185,10 @@ func TestUpdatePerson(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "PUT", testStep.ParamsToGinParams(), testStep.mockRequestData)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("PUT").WithMapParams(testStep.params).WithBody(testStep.mockRequestData).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when building context", i)
+			}
 
 			personService.UpdatePerson(c)
 			response := w.Result()
@@ -263,7 +269,10 @@ func TestAddPerson(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "POST", nil, testStep.mockRequestData)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithBody(testStep.mockRequestData).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when building context", i)
+			}
 
 			personService.AddPerson(c)
 			response := w.Result()
@@ -528,7 +537,10 @@ func TestGetPerson(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "GET", testStep.ParamsToGinParams(), nil)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("GET").WithMapParams(testStep.params).WithBody(nil).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when building context", i)
+			}
 
 			personService.GetPersonByID(c)
 			response := w.Result()

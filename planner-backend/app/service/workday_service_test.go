@@ -330,7 +330,24 @@ func TestUpdateWorkday(t *testing.T) {
 	trueValue := true
 	testSteps := []ServiceTestPOST{
 		{
-			// valid request
+			// save error
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+				"active":     &falseValue,
+			},
+			expectedStatusCode: http.StatusInternalServerError,
+			saveError:          errors.New("repository error"),
+			params: map[string]string{
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
+			},
+		},
+		{
+			// valid request with false active
 			mockRequestData: map[string]interface{}{
 				"start_time": "08:00:00",
 				"end_time":   "16:00:00",
@@ -340,14 +357,32 @@ func TestUpdateWorkday(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			saveError:          nil,
 			params: map[string]string{
-				"department": "department1",
-				"workplace":  "workplace1",
-				"timeslot":   "timeslot1",
-				"date":       "2021-01-01",
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
 			},
 		},
 		{
-			// valid request
+			// invalid request with no row found
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+				"active":     &falseValue,
+			},
+			expectedStatusCode: http.StatusNotFound,
+			findError:          pkg.ErrNoRows,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
+			},
+		},
+		{
+			// valid request with true active
 			mockRequestData: map[string]interface{}{
 				"start_time": "08:00:00",
 				"end_time":   "16:00:00",
@@ -357,14 +392,14 @@ func TestUpdateWorkday(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			saveError:          nil,
 			params: map[string]string{
-				"department": "department1",
-				"workplace":  "workplace1",
-				"timeslot":   "timeslot1",
-				"date":       "2021-01-01",
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
 			},
 		},
 		{
-			// valid request
+			// missing date
 			mockRequestData: map[string]interface{}{
 				"start_time": "08:00:00",
 				"end_time":   "16:00:00",
@@ -374,13 +409,13 @@ func TestUpdateWorkday(t *testing.T) {
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 			params: map[string]string{
-				"department": "department1",
-				"workplace":  "workplace1",
-				"timeslot":   "timeslot1",
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
 			},
 		},
 		{
-			// valid request
+			// missing timeslot
 			mockRequestData: map[string]interface{}{
 				"start_time": "08:00:00",
 				"end_time":   "16:00:00",
@@ -390,13 +425,13 @@ func TestUpdateWorkday(t *testing.T) {
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 			params: map[string]string{
-				"department": "department1",
-				"workplace":  "workplace1",
-				"date":       "2021-01-01",
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"date":         "2021-01-01",
 			},
 		},
 		{
-			// valid request
+			// missing workplace
 			mockRequestData: map[string]interface{}{
 				"start_time": "08:00:00",
 				"end_time":   "16:00:00",
@@ -406,13 +441,13 @@ func TestUpdateWorkday(t *testing.T) {
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 			params: map[string]string{
-				"department": "department1",
-				"timeslot":   "timeslot1",
-				"date":       "2021-01-01",
+				"departmentID": "department1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
 			},
 		},
 		{
-			// valid request
+			// missing department
 			mockRequestData: map[string]interface{}{
 				"start_time": "08:00:00",
 				"end_time":   "16:00:00",
@@ -422,13 +457,13 @@ func TestUpdateWorkday(t *testing.T) {
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 			params: map[string]string{
-				"workplace": "workplace1",
-				"timeslot":  "timeslot1",
-				"date":      "2021-01-01",
+				"workplaceID": "workplace1",
+				"timeslotID":  "timeslot1",
+				"date":        "2021-01-01",
 			},
 		},
 		{
-			// valid request
+			// missing comment
 			mockRequestData: map[string]interface{}{
 				"start_time": "08:00:00",
 				"end_time":   "16:00:00",
@@ -437,14 +472,14 @@ func TestUpdateWorkday(t *testing.T) {
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 			params: map[string]string{
-				"department": "department1",
-				"workplace":  "workplace1",
-				"timeslot":   "timeslot1",
-				"date":       "2021-01-01",
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
 			},
 		},
 		{
-			// valid request
+			// missing end_time
 			mockRequestData: map[string]interface{}{
 				"start_time": "08:00:00",
 				"comment":    "comment",
@@ -453,14 +488,14 @@ func TestUpdateWorkday(t *testing.T) {
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 			params: map[string]string{
-				"department": "department1",
-				"workplace":  "workplace1",
-				"timeslot":   "timeslot1",
-				"date":       "2021-01-01",
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
 			},
 		},
 		{
-			// valid request
+			// missing start_time
 			mockRequestData: map[string]interface{}{
 				"end_time": "16:00:00",
 				"comment":  "comment",
@@ -469,14 +504,14 @@ func TestUpdateWorkday(t *testing.T) {
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 			params: map[string]string{
-				"department": "department1",
-				"workplace":  "workplace1",
-				"timeslot":   "timeslot1",
-				"date":       "2021-01-01",
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
 			},
 		},
 		{
-			// valid request
+			// missing active
 			mockRequestData: map[string]interface{}{
 				"start_time": "08:00:00",
 				"end_time":   "16:00:00",
@@ -485,14 +520,14 @@ func TestUpdateWorkday(t *testing.T) {
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 			params: map[string]string{
-				"department": "department1",
-				"workplace":  "workplace1",
-				"timeslot":   "timeslot1",
-				"date":       "2021-01-01",
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
 			},
 		},
 		{
-			// valid request
+			// invalid start_time and end_time
 			mockRequestData: map[string]interface{}{
 				"start_time": "16:00:00",
 				"end_time":   "08:00:00",
@@ -502,10 +537,10 @@ func TestUpdateWorkday(t *testing.T) {
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
 			params: map[string]string{
-				"department": "department1",
-				"workplace":  "workplace1",
-				"timeslot":   "timeslot1",
-				"date":       "2021-01-01",
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
 			},
 		},
 	}

@@ -61,7 +61,10 @@ func TestDeleteTimeslot(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "DELETE", testStep.ParamsToGinParams(), nil)
+		c, err := mock.NewTestContextBuilder(w).WithMethod("DELETE").WithMapParams(testStep.params).Build()
+		if err != nil {
+			t.Errorf("Test Step %d: Error when building context", i)
+		}
 
 		timeslotService.DeleteTimeslot(c)
 		response := w.Result()
@@ -187,7 +190,10 @@ func TestUpdateTimeslot(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "PUT", testStep.ParamsToGinParams(), testStep.mockRequestData)
+		c, err := mock.NewTestContextBuilder(w).WithMethod("PUT").WithMapParams(testStep.params).WithBody(testStep.mockRequestData).Build()
+		if err != nil {
+			t.Errorf("Test Step %d: Error when building context", i)
+		}
 
 		timeslotService.UpdateTimeslot(c)
 		response := w.Result()
@@ -365,7 +371,10 @@ func TestAddTimeslot(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "POST", testStep.ParamsToGinParams(), testStep.mockRequestData)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithMapParams(testStep.params).WithBody(testStep.mockRequestData).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when building context", i)
+			}
 
 			timeslotService.AddTimeslot(c)
 			response := w.Result()
@@ -439,7 +448,10 @@ func TestGetAllTimeslots(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "GET", testStep.ParamsToGinParams(), nil)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("GET").WithMapParams(testStep.params).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when building context", i)
+			}
 
 			timeslotService.GetAllTimeslots(c)
 			response := w.Result()
@@ -544,7 +556,10 @@ func TestGetTimeslotByID(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "GET", testStep.ParamsToGinParams(), nil)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("GET").WithMapParams(testStep.params).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when building context", i)
+			}
 
 			timeslotService.GetTimeslotByID(c)
 			response := w.Result()

@@ -52,6 +52,18 @@ func (b *TestContextBuilder) WithMethod(method string) *TestContextBuilder {
 	return b
 }
 
+func (b *TestContextBuilder) WithMapParams(params map[string]string) *TestContextBuilder {
+	/**
+	 * Sets the parameters of the TestContextBuilder.
+	 * params is a map with string string
+	 **/
+	for key, value := range params {
+		b.params = append(b.params, gin.Param{Key: key, Value: value})
+	}
+
+	return b
+}
+
 func (b *TestContextBuilder) WithGinParams(params gin.Params) *TestContextBuilder {
 	/**
 	 * Sets the parameters of the TestContextBuilder.
@@ -76,18 +88,6 @@ func (b *TestContextBuilder) WithHeader(key, value string) *TestContextBuilder {
 	* The header is the HTTP header of the request.
 	**/
 	b.header.Set(key, value)
-	return b
-}
-
-func (b *TestContextBuilder) WithParamsRaw(params map[string]string) *TestContextBuilder {
-	/**
-	* Sets the parameters of the TestContextBuilder.
-	* gin.Params is a struct that represents the parameters of a Gin request.
-	**/
-	for key, value := range params {
-		b.params = append(b.params, gin.Param{Key: key, Value: value})
-	}
-
 	return b
 }
 
