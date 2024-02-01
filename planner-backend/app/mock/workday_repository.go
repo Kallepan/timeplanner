@@ -42,6 +42,10 @@ func (r *WorkdayRepositoryMock) GetWorkday(departmentID string, workplaceID stri
 	return r.dataContainer["GetWorkday"].(dao.Workday), r.errorContainer["GetWorkday"]
 }
 
+func (r *WorkdayRepositoryMock) Save(wd *dao.Workday) error {
+	return r.errorContainer["Save"]
+}
+
 func (r *WorkdayRepositoryMock) AssignPersonToWorkday(personID string, departmentID string, workplaceID string, timeslotID string, date string) error {
 	return r.errorContainer["AssignPersonToWorkday"]
 }

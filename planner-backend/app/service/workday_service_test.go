@@ -320,6 +320,221 @@ func TestGetWorkday(t *testing.T) {
 	}
 }
 
+func TestUpdateWorkday(t *testing.T) {
+	workdayRepository := mock.NewWorkdayRepositoryMock()
+	workdayService := WorkdayServiceImpl{
+		WorkdayRepository: workdayRepository,
+	}
+
+	falseValue := false
+	trueValue := true
+	testSteps := []ServiceTestPOST{
+		{
+			// valid request
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+				"active":     &falseValue,
+			},
+			expectedStatusCode: http.StatusOK,
+			saveError:          nil,
+			params: map[string]string{
+				"department": "department1",
+				"workplace":  "workplace1",
+				"timeslot":   "timeslot1",
+				"date":       "2021-01-01",
+			},
+		},
+		{
+			// valid request
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+				"active":     &trueValue,
+			},
+			expectedStatusCode: http.StatusOK,
+			saveError:          nil,
+			params: map[string]string{
+				"department": "department1",
+				"workplace":  "workplace1",
+				"timeslot":   "timeslot1",
+				"date":       "2021-01-01",
+			},
+		},
+		{
+			// valid request
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+				"active":     &trueValue,
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"department": "department1",
+				"workplace":  "workplace1",
+				"timeslot":   "timeslot1",
+			},
+		},
+		{
+			// valid request
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+				"active":     &trueValue,
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"department": "department1",
+				"workplace":  "workplace1",
+				"date":       "2021-01-01",
+			},
+		},
+		{
+			// valid request
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+				"active":     &trueValue,
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"department": "department1",
+				"timeslot":   "timeslot1",
+				"date":       "2021-01-01",
+			},
+		},
+		{
+			// valid request
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+				"active":     &trueValue,
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"workplace": "workplace1",
+				"timeslot":  "timeslot1",
+				"date":      "2021-01-01",
+			},
+		},
+		{
+			// valid request
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"active":     &trueValue,
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"department": "department1",
+				"workplace":  "workplace1",
+				"timeslot":   "timeslot1",
+				"date":       "2021-01-01",
+			},
+		},
+		{
+			// valid request
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"comment":    "comment",
+				"active":     &trueValue,
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"department": "department1",
+				"workplace":  "workplace1",
+				"timeslot":   "timeslot1",
+				"date":       "2021-01-01",
+			},
+		},
+		{
+			// valid request
+			mockRequestData: map[string]interface{}{
+				"end_time": "16:00:00",
+				"comment":  "comment",
+				"active":   &trueValue,
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"department": "department1",
+				"workplace":  "workplace1",
+				"timeslot":   "timeslot1",
+				"date":       "2021-01-01",
+			},
+		},
+		{
+			// valid request
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"department": "department1",
+				"workplace":  "workplace1",
+				"timeslot":   "timeslot1",
+				"date":       "2021-01-01",
+			},
+		},
+		{
+			// valid request
+			mockRequestData: map[string]interface{}{
+				"start_time": "16:00:00",
+				"end_time":   "08:00:00",
+				"comment":    "comment",
+				"active":     &trueValue,
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"department": "department1",
+				"workplace":  "workplace1",
+				"timeslot":   "timeslot1",
+				"date":       "2021-01-01",
+			},
+		},
+	}
+
+	for i, testStep := range testSteps {
+		t.Run("Test Update Workday", func(t *testing.T) {
+			workdayRepository.On("GetWorkday").Return(testStep.findValue, testStep.findError)
+			workdayRepository.On("Save").Return(testStep.saveValue, testStep.saveError)
+
+			// get GIN context
+			w := httptest.NewRecorder()
+			c, err := mock.NewTestContextBuilder(w).
+				WithQueries(testStep.params).
+				WithBody(testStep.mockRequestData).
+				WithMethod("POST").Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error while building context: %s", i, err)
+			}
+
+			workdayService.UpdateWorkday(c)
+			response := w.Result()
+
+			if response.StatusCode != testStep.expectedStatusCode {
+				t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
+			}
+		})
+	}
+}
+
 func TestAssignPersonToWorkday(t *testing.T) {
 	workdayRepository := mock.NewWorkdayRepositoryMock()
 	workdayService := WorkdayServiceImpl{

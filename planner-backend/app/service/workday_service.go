@@ -20,6 +20,7 @@ type WorkdayService interface {
 	 */
 	GetWorkdaysForDepartmentAndDate(c *gin.Context)
 	GetWorkday(c *gin.Context)
+	UpdateWorkday(c *gin.Context)
 
 	AssignPersonToWorkday(c *gin.Context)
 	UnassignPersonFromWorkday(c *gin.Context)
@@ -104,6 +105,70 @@ func (w WorkdayServiceImpl) GetWorkday(c *gin.Context) {
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
 }
 
+func (w WorkdayServiceImpl) UpdateWorkday(c *gin.Context) {
+	/*
+	 * Updates a workday
+	 */
+
+	defer pkg.PanicHandler(c)
+	slog.Info("start to execute program update workday")
+
+	// get params from request
+	departmentID := c.Query("department")
+	if departmentID == "" {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+	workplaceID := c.Query("workplace")
+	if workplaceID == "" {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+	timeslotID := c.Query("timeslot")
+	if timeslotID == "" {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+	date := c.Query("date")
+	if date == "" {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+
+	// validate params
+
+	// get request body
+	var request dco.UpdateWorkdayRequest
+	if err := c.ShouldBindJSON(&request); err != nil {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+	if err := request.Validate(); err != nil {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+
+	// get workday
+	workday, err := w.WorkdayRepository.GetWorkday(departmentID, workplaceID, timeslotID, date)
+	switch err {
+	case nil:
+		break
+	case pkg.ErrNoRows:
+		pkg.PanicException(constant.DataNotFound)
+	default:
+		slog.Error("Error when fetching data from database", "error", err)
+		pkg.PanicException(constant.UnknownError)
+	}
+
+	// map request to workday
+	workday.StartTime = request.StartTime
+	workday.EndTime = request.EndTime
+	workday.Active = *request.Active
+	workday.Comment = request.Comment
+
+	// save workday
+	if err := w.WorkdayRepository.Save(&workday); err != nil {
+		slog.Error("Error when saving workday", "error", err)
+		pkg.PanicException(constant.UnknownError)
+	}
+
+	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, mapWorkdayToWorkdayResponse(workday)))
+}
+
 func (w WorkdayServiceImpl) AssignPersonToWorkday(c *gin.Context) {
 	/*
 	 * Assigns a person to a workday
@@ -113,12 +178,10 @@ func (w WorkdayServiceImpl) AssignPersonToWorkday(c *gin.Context) {
 
 	var request dco.AssignPersonToWorkdayRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
-		slog.Error("Error when binding request", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
 	if err := request.Validate(); err != nil {
-		slog.Error("Error when validating request", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
@@ -145,12 +208,10 @@ func (w WorkdayServiceImpl) UnassignPersonFromWorkday(c *gin.Context) {
 
 	var request dco.UnassignPersonFromWorkdayRequest
 	if err := c.ShouldBindJSON(&request); err != nil {
-		slog.Error("Error when binding request", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
 	if err := request.Validate(); err != nil {
-		slog.Error("Error when validating request", "error", err)
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
@@ -195,6 +256,7 @@ func mapWorkdayToWorkdayResponse(workday dao.Workday) dco.WorkdayResponse {
 		DurationInMinutes: workday.DurationInMinutes,
 		Person:            mapWorkdayPersonToWorkdayPersonResponse(workday.Person),
 		Weekday:           workday.Weekday,
+		Comment:           workday.Comment,
 	}
 }
 

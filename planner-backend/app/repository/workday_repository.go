@@ -16,6 +16,7 @@ type WorkdayRepository interface {
 	 */
 	GetWorkdaysForDepartmentAndDate(departmentID string, date string) ([]dao.Workday, error)
 	GetWorkday(departmentID string, workplaceID string, timeslotID string, date string) (dao.Workday, error)
+	Save(workday *dao.Workday) error
 	// UpdateWorkday()
 	// DeleteWorkday()
 
@@ -32,14 +33,12 @@ type WorkdayRepositoryImpl struct {
 func (w WorkdayRepositoryImpl) GetWorkdaysForDepartmentAndDate(departmentID string, date string) ([]dao.Workday, error) {
 
 	query := `
-	// fetch the workdays for a given date
-	MATCH (wkd:Workday {date: date($date), department: $departmentID})
-	// fetch the Timeslot, department and workplace
-	MATCH (wkd) -[:IS_TIMESLOT]-> (t) <-[:HAS_TIMESLOT]- (w:Workplace) <-[:HAS_WORKPLACE]-(d: Department)
+	// fetch the department
+	MATCH (d:Department {id: $departmentID}) -[:HAS_WORKPLACE]-> (w:Workplace) -[:HAS_TIMESLOT]-> (t:Timeslot) <-[:IS_TIMESLOT]- (wkd:Workday {date: date($date)})
 	// fetch the person assigned to the workday
 	OPTIONAL MATCH (wkd)<-[:ASSIGNED_TO]-(p:Person)
 	// if workday is active
-	WHERE wkd.active = true AND wkd.deleted_at IS NULL
+	WHERE wkd.active = true
 	// return the workday and the person
 	RETURN wkd, p, t, w, d
 	ORDER BY w.id, t.name
@@ -74,16 +73,13 @@ func (w WorkdayRepositoryImpl) GetWorkdaysForDepartmentAndDate(departmentID stri
 }
 
 func (w WorkdayRepositoryImpl) GetWorkday(departmentID string, workplaceID string, timeslotID string, date string) (dao.Workday, error) {
-
 	query := `
-	// fetch the workday
-	MATCH (wkd:Workday {date: date($date), department: $departmentID, workplace: $workplaceID, timeslot: $timeslotID})
-	// fetch the Timeslot, department and workplace
-	MATCH (wkd) -[:IS_TIMESLOT]-> (t) <-[:HAS_TIMESLOT]- (w:Workplace) <-[:HAS_WORKPLACE]-(d: Department)
+	// fetch the department, workplace, timeslot, and the workday
+	MATCH (d:Department {id: $departmentID}) -[:HAS_WORKPLACE]-> (w:Workplace {id: $workplaceID}) -[:HAS_TIMESLOT]-> (t:Timeslot {id: $timeslotID}) <-[:IS_TIMESLOT]- (wkd:Workday {date: date($date)})
 	// fetch the person assigned to the workday
 	OPTIONAL MATCH (wkd)<-[:ASSIGNED_TO]-(p:Person)
 	// if workday is active
-	WHERE wkd.active = true AND wkd.deleted_at IS NULL
+	WHERE wkd.active = true
 	// return the workday and the person
 	RETURN wkd, p, t, w, d`
 
@@ -117,11 +113,61 @@ func (w WorkdayRepositoryImpl) GetWorkday(departmentID string, workplaceID strin
 	return workday, nil
 }
 
+func (w WorkdayRepositoryImpl) Save(workday *dao.Workday) error {
+	query := `
+	MATCH (d:Department {id: $departmentID}) -[:HAS_WORKPLACE]-> (w:Workplace {id: $workplaceID}) -[:HAS_TIMESLOT]-> (t:Timeslot {id: $timeslotID})
+	MATCH (dt:Date {date: date($date)})
+	MATCH (t) <-[:IS_TIMESLOT]- (wkd:Workday) -[:IS_DATE]-> (dt)
+	SET
+		wkd.start_time = time($startTime),
+		wkd.end_time = time($endTime),
+		wkd.duration_in_minutes = duration.between(time($startTime), time($endTime)).minutes,
+		wkd.active = $active,
+		wkd.updated_at = datetime(),
+		wkd.comment = $comment
+	// fetch the person assigned to the workday
+	WITH wkd, t, d, w, dt
+	OPTIONAL MATCH (wkd)<-[:ASSIGNED_TO]-(p:Person)
+	RETURN wkd, t, d, w, dt, p
+	`
+	params := map[string]interface{}{
+		"departmentID": workday.Department.ID,
+		"workplaceID":  workday.Workplace.ID,
+		"timeslotID":   workday.Timeslot.ID,
+		"date":         workday.Date,
+		"startTime":    workday.StartTime,
+		"endTime":      workday.EndTime,
+		"active":       workday.Active,
+		"comment":      workday.Comment,
+	}
+
+	result, err := neo4j.ExecuteQuery(
+		w.ctx,
+		*w.db,
+		query,
+		params,
+		neo4j.EagerResultTransformer,
+	)
+	if err != nil {
+		return err
+	}
+
+	if len(result.Records) == 0 {
+		return pkg.ErrNoRows
+	}
+
+	if err := workday.ParseFromDBRecord(result.Records[0], workday.Date); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (w WorkdayRepositoryImpl) AssignPersonToWorkday(personID string, departmentID string, workplaceID string, timeslotID string, date string) error {
 
 	query := `
 	// delete the relationship between the person and the workday
-	MATCH (wkd:Workday {date: date($date), department: $departmentID, workplace: $workplaceID, timeslot: $timeslotID})
+	MATCH (wkd:Workday {date: date($date), department: $departmentID, workplace: $workplaceID, timeslot: $timeslotID, active: true})
 	// delete the relationship between the person and the workday
 	OPTIONAL MATCH (wkd)<-[r:ASSIGNED_TO]-(:Person)
 	DELETE r
@@ -162,7 +208,7 @@ func (w WorkdayRepositoryImpl) AssignPersonToWorkday(personID string, department
 func (w WorkdayRepositoryImpl) UnassignPersonFromWorkday(personID string, departmentID string, workplaceID string, timeslotID string, date string) error {
 
 	query := `
-	MATCH (wkd:Workday {date: date($date), department: $departmentID, workplace: $workplaceID, timeslot: $timeslotID})
+	MATCH (wkd:Workday {date: date($date), department: $departmentID, workplace: $workplaceID, timeslot: $timeslotID, active: true})
 	// delete the relationship between the person and the workday
 	MATCH (wkd)<-[r:ASSIGNED_TO]-(p:Person {id: $personID})
 	DELETE r

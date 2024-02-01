@@ -52,7 +52,7 @@ func (b *TestContextBuilder) WithMethod(method string) *TestContextBuilder {
 	return b
 }
 
-func (b *TestContextBuilder) WithParams(params gin.Params) *TestContextBuilder {
+func (b *TestContextBuilder) WithGinParams(params gin.Params) *TestContextBuilder {
 	/**
 	 * Sets the parameters of the TestContextBuilder.
 	 * gin.Params is a struct that represents the parameters of a Gin request.

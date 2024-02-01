@@ -76,6 +76,7 @@ func Init(init *config.Injector) *gin.Engine {
 		{
 			workday.GET("/", init.WorkdayCtrl.GetWorkdaysForDepartmentAndDate) // ?departmentID=...&date=...
 			workday.GET("/detail", init.WorkdayCtrl.GetWorkday)                // ?departmentID=...&date=...&workplaceID=...&timeslotID=...
+			workday.PUT("/", init.WorkdayCtrl.UpdateWorkday)
 			workday.POST("/assign", init.WorkdayCtrl.AssignPersonToWorkday)
 			workday.DELETE("/assign", init.WorkdayCtrl.UnassignPersonFromWorkday)
 		}

@@ -399,7 +399,7 @@ func TestGetAllPersons(t *testing.T) {
 			w := httptest.NewRecorder()
 			contextBuilder := mock.NewTestContextBuilder(w)
 			contextBuilder.WithMethod("GET")
-			contextBuilder.WithParams(testStep.ParamsToGinParams())
+			contextBuilder.WithGinParams(testStep.ParamsToGinParams())
 			contextBuilder.WithBody(nil)
 			contextBuilder.WithQueries(testStep.queries)
 			c, err := contextBuilder.Build()
