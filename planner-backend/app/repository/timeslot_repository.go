@@ -28,7 +28,7 @@ func (t TimeslotRepositoryImpl) FindAllTimeslots(departmentID string, workplaceI
 	query := `
     MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(wp:Workplace {id: $workplaceID})-[:HAS_TIMESLOT]->(t:Timeslot)
     OPTIONAL MATCH (t)-[r:OFFERED_ON]->(wd:Weekday)
-	WHERE t.deleted_at IS NULL AND t.active = true
+	WHERE t.deleted_at IS NULL
     RETURN t,
         COLLECT({
             id: wd.id,
@@ -72,7 +72,7 @@ func (t TimeslotRepositoryImpl) FindTimeslotByID(departmentID string, workplaceI
 	query := `
     MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(wp:Workplace {id: $workplaceID})-[:HAS_TIMESLOT]->(t:Timeslot {id: $timeslotID})
     OPTIONAL MATCH (t)-[r:OFFERED_ON]->(wd:Weekday)
-	WHERE t.deleted_at IS NULL AND t.active = true AND d.deleted_at IS NULL AND wp.deleted_at IS NULL
+	WHERE t.deleted_at IS NULL AND d.deleted_at IS NULL AND wp.deleted_at IS NULL
     RETURN t, COLLECT({
         id: wd.id,
         name: wd.name,
@@ -118,13 +118,11 @@ func (t TimeslotRepositoryImpl) Save(departmentID string, workplaceID string, ti
 	ON CREATE SET
 		t.created_at = datetime(),
 		t.name = $timeslotName,
-		t.active = $active, 
 		t.updated_at = datetime(), 
 		t.deleted_at = NULL
 	ON MATCH SET 
 		t.updated_at = datetime(), 
 		t.name = $timeslotName,
-		t.active = $active, 
 		t.deleted_at = NULL
 	WITH t
 	OPTIONAL MATCH (t)-[r:OFFERED_ON]->(wd:Weekday)
@@ -140,7 +138,6 @@ func (t TimeslotRepositoryImpl) Save(departmentID string, workplaceID string, ti
 		"workplaceID":  workplaceID,
 		"timeslotID":   timeslot.ID,
 		"timeslotName": timeslot.Name,
-		"active":       timeslot.Active,
 	}
 
 	result, err := neo4j.ExecuteQuery(

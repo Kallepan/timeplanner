@@ -84,9 +84,8 @@ func TestUpdateTimeslot(t *testing.T) {
 	testSteps := []ServiceTestPUT{
 		{
 			mockRequestData: map[string]interface{}{
-				"id":     "test",
-				"name":   "newName",
-				"active": true,
+				"id":   "test",
+				"name": "newName",
 			},
 			findValue: dao.Timeslot{
 				ID:   "oldID",
@@ -106,9 +105,8 @@ func TestUpdateTimeslot(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"id":     "test",
-				"name":   "newName",
-				"active": false,
+				"id":   "test",
+				"name": "newName",
 			},
 			findValue: dao.Timeslot{
 				ID:   "oldID",
@@ -225,29 +223,10 @@ func TestAddTimeslot(t *testing.T) {
 
 	testSteps := []ServiceTestPOST{
 		{
+			// valid request
 			mockRequestData: map[string]interface{}{
-				"id":     "test",
-				"name":   "test",
-				"active": true,
-			},
-			findValue: nil,
-			saveValue: dao.Timeslot{
-				ID:   "test",
-				Name: "test",
-			},
-			expectedStatusCode: http.StatusCreated,
-			findError:          pkg.ErrNoRows,
-			saveError:          nil,
-			params: map[string]string{
-				"departmentID": "test",
-				"workplaceID":  "test",
-			},
-		},
-		{
-			mockRequestData: map[string]interface{}{
-				"id":     "test",
-				"name":   "test",
-				"active": false,
+				"id":   "test",
+				"name": "test",
 			},
 			findValue: nil,
 			saveValue: dao.Timeslot{
@@ -267,25 +246,8 @@ func TestAddTimeslot(t *testing.T) {
 				"id":   "test",
 				"name": "test",
 			},
-			findValue: nil,
-			saveValue: dao.Timeslot{
-				Name: "test",
-			},
-			expectedStatusCode: http.StatusBadRequest,
-			findError:          pkg.ErrNoRows,
-			saveError:          nil,
-			params: map[string]string{
-				"departmentID": "test",
-				"workplaceID":  "test",
-			},
-		},
-		{
-			mockRequestData: map[string]interface{}{
-				"id":     "test",
-				"name":   "test",
-				"active": true,
-			},
 			findValue: dao.Timeslot{
+				ID:   "test",
 				Name: "test",
 			},
 			saveValue:          nil,
@@ -299,12 +261,12 @@ func TestAddTimeslot(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"id":     "test",
-				"name":   "test",
-				"active": true,
+				"id":   "test",
+				"name": "test",
 			},
 			findValue: nil,
 			saveValue: dao.Timeslot{
+				ID:   "test",
 				Name: "test",
 			},
 			expectedStatusCode: http.StatusBadRequest,
@@ -313,11 +275,8 @@ func TestAddTimeslot(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"id":     "test",
-				"active": true,
+				"id": "test",
 			},
-			findValue:          nil,
-			saveValue:          nil,
 			expectedStatusCode: http.StatusBadRequest,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
@@ -328,8 +287,6 @@ func TestAddTimeslot(t *testing.T) {
 		},
 		{
 			mockRequestData:    map[string]interface{}{},
-			findValue:          nil,
-			saveValue:          nil,
 			expectedStatusCode: http.StatusBadRequest,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
@@ -340,13 +297,11 @@ func TestAddTimeslot(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"id":     "test",
-				"name":   "test",
-				"active": true,
+				"id":   "test",
+				"name": "test",
 			},
 			findValue:          dao.Timeslot{},
-			saveValue:          nil,
-			expectedStatusCode: 500,
+			expectedStatusCode: http.StatusInternalServerError,
 			findError:          pkg.ErrNoRows,
 			saveError:          errors.New("Save error"),
 			params: map[string]string{

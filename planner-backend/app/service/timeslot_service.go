@@ -172,7 +172,6 @@ func (t TimeslotServiceImpl) UpdateTimeslot(c *gin.Context) {
 	}
 
 	timeslot.Name = timeslotRequest.Name
-	timeslot.Active = *timeslotRequest.Active
 
 	rawData, err := t.TimeslotRepository.Save(departmentID, workplaceID, &timeslot)
 	switch err {
@@ -234,7 +233,6 @@ func mapTimeslotToTimeslotResponse(timeslot dao.Timeslot) dco.TimeslotResponse {
 	return dco.TimeslotResponse{
 		ID:           timeslot.ID,
 		Name:         timeslot.Name,
-		Active:       &timeslot.Active,
 		DepartmentID: timeslot.DepartmentID,
 		WorkplaceID:  timeslot.WorkplaceID,
 		Weekdays:     mapOnWeekdayListToWeekdayResponseList(timeslot.Weekdays),
@@ -266,15 +264,9 @@ func mapTimeslotRequestToTimeslot(timeslot dco.TimeslotRequest) dao.Timeslot {
 	 * @return dco.TimeslotRequest
 	 */
 
-	var active bool
-	if timeslot.Active != nil {
-		active = *timeslot.Active
-	}
-
 	return dao.Timeslot{
-		ID:     timeslot.ID,
-		Name:   timeslot.Name,
-		Active: active,
+		ID:   timeslot.ID,
+		Name: timeslot.Name,
 	}
 }
 

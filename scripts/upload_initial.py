@@ -98,7 +98,6 @@ def create_timeslots() -> None:
             data = {
                 "id": timeslot_id,
                 "name": timeslot_name,
-                "active": True,
             }
 
             req = requests.post(
