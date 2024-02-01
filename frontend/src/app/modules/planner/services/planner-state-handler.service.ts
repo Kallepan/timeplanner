@@ -165,7 +165,7 @@ export class PlannerStateHandlerService {
       filter((isValid) => isValid),
       // update the timeslot in the service
       switchMap(() => {
-        return this.workdayAPIService.assignPerson(workdayTimeslot.department.id, workdayTimeslot.date, workdayTimeslot.workplace.id, workdayTimeslot.timeslot.name, person.id).pipe(
+        return this.workdayAPIService.assignPerson(workdayTimeslot.department.id, workdayTimeslot.date, workdayTimeslot.workplace.id, workdayTimeslot.timeslot.id, person.id).pipe(
           catchError((err) => throwError(() => err)),
           map((resp) => resp.data),
         );
