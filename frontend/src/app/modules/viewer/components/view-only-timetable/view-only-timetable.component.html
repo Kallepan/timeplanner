@@ -24,7 +24,7 @@
           'grid-row-end': workplace.gridRowEnd,
           'grid-column': 1
         }">
-        {{ workplace.workplace.name }}
+        {{ workplace.name }}
       </div>
       <!-- Now display the slots by using the respective gridRow !-->
       @for (slot of workplace.timeslotGroups; track slot) {
@@ -55,11 +55,14 @@
               'grid-row': slot.gridRow,
               'grid-column': wts.gridColumn
             }">
-            @if (timetableDataContainerService.displayPersons$) {
-              {{ wts.person?.last_name }} ({{ wts.person?.id }}) <br />
+            @if (timetableDataContainerService.displayPersons$ && wts.person) {
+              {{ wts.person.last_name }} ({{ wts.person.id }}) <br />
             }
-            @if (timetableDataContainerService.displayTime$) {
-              {{ wts.start_time }} - {{ wts.end_time }} ({{ wts.duration_in_minutes / 60 }})
+            @if (timetableDataContainerService.displayTimes$) {
+              {{ wts.start_time }} - {{ wts.end_time }} ({{ wts.duration_in_minutes / 60 }}) <br />
+            }
+            @if (timetableDataContainerService.displayComments$ && wts.comment) {
+              {{ wts.comment }} <br />
             }
           </div>
         }

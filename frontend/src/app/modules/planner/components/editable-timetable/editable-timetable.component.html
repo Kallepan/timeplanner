@@ -40,12 +40,7 @@
             'grid-column': 2
           }"
           cdkDropList
-          (cdkDropListDropped)="
-            personDroppedIntoTimeslot.emit({
-              person: $event.item.data,
-              timeslots: slot.workdayTimeslots
-            })
-          ">
+          (cdkDropListDropped)="personDroppedIntoTimeslotHandler($event.item.data, getSlotsFromMonToFri(slot.workdayTimeslots))">
           {{ slot.name }}
         </div>
 
@@ -71,13 +66,12 @@
               <app-select-person
                 [selectedPerson]="ts.person"
                 [weekday]="ts.weekday"
-                (selected)="
-                  personDroppedIntoTimeslot.emit({ person: $event.p, timeslots: [ts], actionToBeExecutedOnFailedValidation: $event.actionToBeExecutedOnFailedValidation })
-                "></app-select-person>
+                (selected)="personDroppedIntoTimeslotHandler($event.p, [ts], $event.actionToBeExecutedOnFailedValidation)"
+                (commentEditRequest)="plannerStateHandlerService.handleCommentEditRequest(ts)"></app-select-person>
             } @placeholder {
-              <app-edit-person-preview [person]="ts.person"></app-edit-person-preview>
+              <div class="placeholder">{{ ts.person?.id }}</div>
             }
-            @if (timetableDataContainerService.displayTime$) {
+            @if (timetableDataContainerService.displayTimes$) {
               {{ ts.start_time }} - {{ ts.end_time }} ({{ ts.duration_in_minutes / 60 }})
             }
           </div>

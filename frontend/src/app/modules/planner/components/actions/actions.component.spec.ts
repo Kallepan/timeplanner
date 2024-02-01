@@ -37,24 +37,24 @@ describe('ActionsComponent', () => {
     expect(component.toggleColors.emit).toHaveBeenCalledWith(true);
   });
 
-  it('should emit toggleTimeLabel', async () => {
-    spyOn(component.toggleTimeLabel, 'emit');
+  it('should emit toggleTimes', async () => {
+    spyOn(component.toggleTimes, 'emit');
 
-    const toggle = await loader.getHarness(MatSlideToggleHarness.with({ selector: '#toggleTimeLabel' }));
+    const toggle = await loader.getHarness(MatSlideToggleHarness.with({ selector: '#toggleTimes' }));
     await toggle.toggle();
-    expect(component.toggleTimeLabel.emit).toHaveBeenCalledWith(false);
+    expect(component.toggleTimes.emit).toHaveBeenCalledWith(false);
 
     await toggle.toggle();
-    expect(component.toggleTimeLabel.emit).toHaveBeenCalledWith(true);
+    expect(component.toggleTimes.emit).toHaveBeenCalledWith(true);
   });
 
-  it('should emit togglePersonsLabel', async () => {
-    spyOn(component.togglePersonsLabel, 'emit');
-    const toggle = await loader.getHarness(MatSlideToggleHarness.with({ selector: '#togglePersonsLabel' }));
-    await toggle.toggle();
-    expect(component.togglePersonsLabel.emit).toHaveBeenCalledWith(false);
+  it('should display times', async () => {
+    const toggle = await loader.getHarness(MatSlideToggleHarness.with({ selector: '#toggleTimes' }));
+    expect(await toggle.isChecked()).toBe(true);
+  });
 
-    await toggle.toggle();
-    expect(component.togglePersonsLabel.emit).toHaveBeenCalledWith(true);
+  it('should display colors', async () => {
+    const toggle = await loader.getHarness(MatSlideToggleHarness.with({ selector: '#toggleColors' }));
+    expect(await toggle.isChecked()).toBe(true);
   });
 });

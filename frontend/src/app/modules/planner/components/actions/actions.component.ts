@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
@@ -10,6 +10,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 })
 export class ActionsComponent {
   @Output() toggleColors = new EventEmitter<boolean>();
-  @Output() toggleTimeLabel = new EventEmitter<boolean>();
-  @Output() togglePersonsLabel = new EventEmitter<boolean>();
+  @Output() toggleTimes = new EventEmitter<boolean>();
+
+  @Input() displayTimes = true;
+  @Input() displayColors = true;
 }

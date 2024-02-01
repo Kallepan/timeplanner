@@ -4,7 +4,7 @@
 
 .timetable {
   display: grid;
-  grid-template-columns: 1fr min-content repeat(7, 1fr);
+  grid-template-columns: min-content min-content repeat(7, 1fr);
   grid-auto-rows: auto;
   border: 2px solid var(--border-color);
   border-radius: 5px;
