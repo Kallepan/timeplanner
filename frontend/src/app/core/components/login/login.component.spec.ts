@@ -1,8 +1,4 @@
-import {
-  ComponentFixture,
-  DeferBlockState,
-  TestBed,
-} from '@angular/core/testing';
+import { ComponentFixture, DeferBlockState, TestBed } from '@angular/core/testing';
 
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
@@ -23,20 +19,13 @@ describe('LoginComponent', () => {
   let loader: HarnessLoader;
 
   beforeEach(() => {
-    authService = jasmine.createSpyObj(
-      'AuthService',
-      ['login', 'verifyLogin', 'logout', 'isLoggedIn', 'authData'],
-      {
-        initialized: signal(false),
-      },
-    );
+    authService = jasmine.createSpyObj('AuthService', ['login', 'verifyLogin', 'logout', 'isLoggedIn', 'authData'], {
+      initialized: signal(false),
+    });
 
     TestBed.configureTestingModule({
       imports: [LoginComponent, MatMenuModule, MatSnackBarModule],
-      providers: [
-        provideNoopAnimations(),
-        { provide: AuthService, useValue: authService },
-      ],
+      providers: [provideNoopAnimations(), { provide: AuthService, useValue: authService }],
     });
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
@@ -99,9 +88,7 @@ describe('LoginComponent', () => {
     const menu = await loader.getHarness(MatMenuHarness);
     expect(menu).toBeTruthy();
 
-    const loginFormButton = fixture.debugElement.query(
-      By.css('#login-confirm'),
-    );
+    const loginFormButton = fixture.debugElement.query(By.css('#login-confirm'));
     expect(loginFormButton.nativeElement.disabled).toBe(true);
 
     // Fill in username
@@ -114,7 +101,7 @@ describe('LoginComponent', () => {
     expect(loginFormButton.nativeElement.disabled).toBe(false);
   });
 
-  it('should display department after successful login', async () => {
+  it('should display user after successful login', async () => {
     const deferBlockFixture = (await fixture.getDeferBlocks())[0];
     await deferBlockFixture.render(DeferBlockState.Complete);
 
@@ -125,9 +112,7 @@ describe('LoginComponent', () => {
     const menu = await loader.getHarness(MatMenuHarness);
     expect(menu).toBeTruthy();
 
-    const loginFormButton = fixture.debugElement.query(
-      By.css('#login-confirm'),
-    );
+    const loginFormButton = fixture.debugElement.query(By.css('#login-confirm'));
     expect(loginFormButton.nativeElement.disabled).toBe(true);
 
     // Fill in username
@@ -143,7 +128,8 @@ describe('LoginComponent', () => {
     loginFormButton.nativeElement.click();
 
     authService.authData.and.returnValue({
-      department: 'test',
+      username: 'test',
+      email: 'test@example.com',
     });
     authService.isLoggedIn.and.returnValue(true);
     fixture.detectChanges();

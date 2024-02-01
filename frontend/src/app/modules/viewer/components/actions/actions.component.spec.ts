@@ -57,4 +57,14 @@ describe('ActionsComponent', () => {
     await toggle.toggle();
     expect(component.togglePersonsLabel.emit).toHaveBeenCalledWith(true);
   });
+
+  it('should emit toggleComments', async () => {
+    spyOn(component.toggleComments, 'emit');
+    const toggle = await loader.getHarness(MatSlideToggleHarness.with({ selector: '#toggleComments' }));
+    await toggle.toggle();
+    expect(component.toggleComments.emit).toHaveBeenCalledWith(false);
+
+    await toggle.toggle();
+    expect(component.toggleComments.emit).toHaveBeenCalledWith(true);
+  });
 });

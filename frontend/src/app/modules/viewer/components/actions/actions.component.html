@@ -1,5 +1,6 @@
 <div class="actions">
-  <mat-slide-toggle id="toggleColors" color="accent" [checked]="true" (change)="toggleColors.emit($event.checked)">Zeitslots farbig markieren</mat-slide-toggle>
-  <mat-slide-toggle id="toggleTimeLabel" color="accent" [checked]="true" (change)="toggleTimeLabel.emit($event.checked)">Zeiten anzeigen</mat-slide-toggle>
-  <mat-slide-toggle id="togglePersonsLabel" color="accent" [checked]="true" (change)="togglePersonsLabel.emit($event.checked)">Personen anzeigen</mat-slide-toggle>
+  <mat-slide-toggle id="toggleColors" color="accent" [checked]="displayColors" (change)="toggleColors.emit($event.checked)">Zeitslots farbig markieren</mat-slide-toggle>
+  <mat-slide-toggle id="toggleTimeLabel" color="accent" [checked]="displayTimes" (change)="toggleTimeLabel.emit($event.checked)">Zeiten anzeigen</mat-slide-toggle>
+  <mat-slide-toggle id="togglePersonsLabel" color="accent" [checked]="displayPersons" (change)="togglePersonsLabel.emit($event.checked)">Personen anzeigen</mat-slide-toggle>
+  <mat-slide-toggle id="toggleCommentsLabel" color="accent" [checked]="displayComments" (change)="toggleComments.emit($event.checked)">Kommentare anzeigen</mat-slide-toggle>
 </div>

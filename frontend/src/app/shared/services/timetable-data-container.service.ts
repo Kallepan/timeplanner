@@ -46,6 +46,14 @@ export class TimetableDataContainerService {
     this._fullHeight.set(value);
   }
 
+  protected _displayComments = signal<boolean>(false);
+  get displayComments$(): boolean {
+    return this._displayComments();
+  }
+  set displayComments(value: boolean) {
+    this._displayComments.set(value);
+  }
+
   protected _displayPersons = signal<boolean>(true);
   get displayPersons$(): boolean {
     return this._displayPersons();
@@ -54,12 +62,12 @@ export class TimetableDataContainerService {
     this._displayPersons.set(value);
   }
 
-  protected _displayTime = signal<boolean>(true);
-  get displayTime$(): boolean {
-    return this._displayTime();
+  protected _displayTimes = signal<boolean>(false);
+  get displayTimes$(): boolean {
+    return this._displayTimes();
   }
-  set displayTime(value: boolean) {
-    this._displayTime.set(value);
+  set displayTimes(value: boolean) {
+    this._displayTimes.set(value);
   }
 
   protected _colorize = signal<boolean>(true);
@@ -123,6 +131,7 @@ export class TimetableDataContainerService {
           workdayTimeslots: displayWorkdayTimeslots,
           gridRow: gridRowCounter,
 
+          id: displayWorkdayTimeslots[0].timeslot.id,
           startTime: displayWorkdayTimeslots[0].start_time,
           endTime: displayWorkdayTimeslots[0].end_time,
         });
@@ -137,6 +146,7 @@ export class TimetableDataContainerService {
       // The workplace groups are then created, each with its timeslot groups and grid row start and end numbers.
       workplaceGroups.push({
         workplace: workdayTimeslots[0].workplace,
+        name: workdayTimeslots[0].workplace.name,
         timeslotGroups: timeslotGroups,
         gridRowStart: minGridRow,
         gridRowEnd: maxGridRow,

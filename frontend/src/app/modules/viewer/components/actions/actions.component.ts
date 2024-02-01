@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 @Component({
@@ -9,6 +9,12 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
   styleUrl: './actions.component.scss',
 })
 export class ActionsComponent {
+  @Input() displayComments = false;
+  @Input() displayPersons = true;
+  @Input() displayTimes = true;
+  @Input() displayColors = true;
+
+  @Output() toggleComments = new EventEmitter<boolean>();
   @Output() toggleColors = new EventEmitter<boolean>();
   @Output() toggleTimeLabel = new EventEmitter<boolean>();
   @Output() togglePersonsLabel = new EventEmitter<boolean>();

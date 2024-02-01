@@ -8,11 +8,13 @@ import { CommonModule } from '@angular/common';
 import { PersonDataContainerService } from '@app/shared/services/person-data-container.service';
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-select-person',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatButtonModule],
+  imports: [CommonModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatButtonModule, MatIconModule, MatTooltipModule],
   templateUrl: './select-person.component.html',
   styleUrl: './select-person.component.scss',
 })
@@ -29,6 +31,7 @@ export class SelectPersonComponent implements OnInit, OnChanges {
     map((persons) => persons.filter((person) => person.weekdays?.map((wd) => wd.id).includes(this.weekday))),
   );
 
+  @Output() commentEditRequest = new EventEmitter<void>();
   @Output() selected = new EventEmitter<{ p: PersonWithMetadata; actionToBeExecutedOnFailedValidation?: () => void }>();
   @Input() selectedPerson: PersonWithMetadata | null = null;
   @Input() weekday: string;

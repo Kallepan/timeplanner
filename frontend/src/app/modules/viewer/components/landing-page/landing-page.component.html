@@ -3,7 +3,12 @@
   <app-actions-viewer
     (toggleColors)="timetableDataContainerService.colorize = $event"
     (togglePersonsLabel)="timetableDataContainerService.displayPersons = $event"
-    (toggleTimeLabel)="timetableDataContainerService.displayTime = $event"></app-actions-viewer>
+    (toggleTimeLabel)="timetableDataContainerService.displayTimes = $event"
+    (toggleComments)="timetableDataContainerService.displayComments = $event"
+    [displayComments]="timetableDataContainerService.displayComments$"
+    [displayPersons]="timetableDataContainerService.displayPersons$"
+    [displayTimes]="timetableDataContainerService.displayTimes$"
+    [displayColors]="timetableDataContainerService.colorize$"></app-actions-viewer>
   <button mat-raised-button color="accent" routerLink="/planner" [queryParams]="getEditRouterQueryParams()">Zum Editieren</button>
 </div>
 

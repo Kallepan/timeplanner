@@ -9,6 +9,7 @@ import { WorkdayAPIService } from '@app/shared/services/workday-api.service';
 import { Subject, catchError, filter, forkJoin, from, map, mergeMap, of, reduce, switchMap, tap, throwError } from 'rxjs';
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { messages } from '@app/constants/messages';
+import { DisplayedWorkdayTimeslot } from '@app/modules/viewer/interfaces/workplace';
 const getWeekFromDate = (date: Date) => {
   // Create a new date object from the input date
   const currentDate = new Date(date.getTime());
@@ -179,5 +180,9 @@ export class PlannerStateHandlerService {
         return of(false);
       }),
     );
+  }
+
+  handleCommentEditRequest(ts: DisplayedWorkdayTimeslot) {
+    // Open dialog to edit comment
   }
 }

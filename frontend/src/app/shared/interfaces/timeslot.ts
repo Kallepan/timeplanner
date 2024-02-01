@@ -8,6 +8,7 @@ interface OfferedOnWeekdays {
 }
 
 export interface Timeslot {
+  id: string;
   name: string;
   active: boolean;
   department_name: string;
@@ -17,4 +18,4 @@ export interface Timeslot {
 }
 
 export type TimeslotWithMetadata = Timeslot & Metadata;
-export type CreateTimeslot = Pick<Timeslot, 'name' | 'active'>;
+export type CreateTimeslot = Pick<Timeslot, 'name' | 'id' | 'active'>;
