@@ -1,0 +1,16 @@
+<div class="content" mat-dialog-content>
+  <mat-form-field>
+    <mat-label>{{ label }}</mat-label>
+    <textarea matInput [formControl]="control" placeholder="placeholder"> </textarea>
+    <mat-hint>{{ hint }}</mat-hint>
+  </mat-form-field>
+
+  <div class="actions">
+    <button id="save-button" mat-mini-fab color="accent" [disabled]="control.invalid" [mat-dialog-close]="control.value">
+      <mat-icon>save</mat-icon>
+    </button>
+    <button id="abort-button" [mat-dialog-close]="null" mat-mini-fab color="warn">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
