@@ -1,0 +1,11 @@
+<div class="card-container">
+  @if (person) {
+    <mat-card>
+      <mat-card-content>{{ person.last_name }}, {{ person.first_name }} <br />{{ comment }}</mat-card-content>
+    </mat-card>
+  } @else {
+    <mat-card>
+      <mat-card-content>Kein Person <br />{{ comment }}</mat-card-content>
+    </mat-card>
+  }
+</div>

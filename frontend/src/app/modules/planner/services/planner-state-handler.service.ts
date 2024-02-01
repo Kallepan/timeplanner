@@ -10,6 +10,9 @@ import { Subject, catchError, filter, forkJoin, from, map, mergeMap, of, reduce,
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { messages } from '@app/constants/messages';
 import { DisplayedWorkdayTimeslot } from '@app/modules/viewer/interfaces/workplace';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { EditTextareaDialogComponent, EditTextareaDialogData } from '@app/shared/components/edit-textarea-dialog/edit-textarea-dialog.component';
+import { FormControl } from '@angular/forms';
 const getWeekFromDate = (date: Date) => {
   // Create a new date object from the input date
   const currentDate = new Date(date.getTime());
@@ -40,6 +43,10 @@ type ActiveWeek = {
   providedIn: null,
 })
 export class PlannerStateHandlerService {
+  // dialog
+  private dialog = inject(MatDialog);
+
+  // services
   private notificationService = inject(NotificationService);
   private personAPIService = inject(PersonAPIService);
   private timetableDataContainerService = inject(TimetableDataContainerService);
@@ -183,6 +190,40 @@ export class PlannerStateHandlerService {
   }
 
   handleCommentEditRequest(ts: DisplayedWorkdayTimeslot) {
+    // generate data for dialog
+    const data: EditTextareaDialogData = {
+      control: new FormControl(ts.comment),
+      label: 'Kommentar zum Timeslot',
+      placeholder: 'Blah blah blah',
+      hint: 'Dieser Kommentar wird für diesen Timeslot gespeichert.',
+    };
+    // generate dialogConfig
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = data;
+
     // Open dialog to edit comment
+    const dialogRef = this.dialog.open(EditTextareaDialogComponent, dialogConfig);
+    dialogRef
+      .afterClosed()
+      .pipe(
+        filter((result): result is string => typeof result === 'string'),
+        map((comment) => ({
+          department_id: ts.department.id,
+          workplace_id: ts.workplace.id,
+          timeslot_id: ts.timeslot.id,
+          date: ts.date,
+          comment,
+          start_time: ts.start_time,
+          end_time: ts.end_time,
+          active: true,
+        })),
+        switchMap((data) => this.workdayAPIService.updateWorkday(data).pipe(catchError((err) => throwError(() => err)))),
+        map((resp) => resp.data),
+      )
+      .subscribe({
+        next: (workday) => {
+          ts.comment = workday.comment;
+        },
+      });
   }
 }

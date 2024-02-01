@@ -14,16 +14,21 @@ type UpdateWorkdayRequest struct {
 }
 
 func (r *UpdateWorkdayRequest) Validate() error {
-	// validate time in format: hh:mm:ss
+	// validate time in format: hh:mm:ss or hh:mm
 	s, err := time.Parse("15:04:05", r.StartTime)
 	if err != nil {
-		return err
+		s, err = time.Parse("15:04", r.StartTime)
+		if err != nil {
+			return err
+		}
 	}
 
-	// validate time in format: hh:mm:ss
 	e, err := time.Parse("15:04:05", r.EndTime)
 	if err != nil {
-		return err
+		e, err = time.Parse("15:04", r.EndTime)
+		if err != nil {
+			return err
+		}
 	}
 
 	// check if start time is before end time

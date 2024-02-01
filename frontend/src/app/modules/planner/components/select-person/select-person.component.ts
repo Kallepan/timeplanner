@@ -21,6 +21,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export class SelectPersonComponent implements OnInit, OnChanges {
   personDataContainerService = inject(PersonDataContainerService);
 
+  @Input() comment: string | null = null;
+
   control = new FormControl<string | PersonWithMetadata>('');
   filteredPersons$ = this.control.valueChanges.pipe(
     startWith(''),

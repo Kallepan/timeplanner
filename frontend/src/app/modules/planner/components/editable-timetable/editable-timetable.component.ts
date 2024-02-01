@@ -7,11 +7,12 @@ import { SelectPersonComponent } from '../select-person/select-person.component'
 import { PlannerStateHandlerService } from '../../services/planner-state-handler.service';
 import { PersonListComponent } from '../person-list/person-list.component';
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
+import { EditPersonPreviewComponent } from '../edit-person-preview/edit-person-preview.component';
 
 @Component({
   selector: 'app-editable-timetable',
   standalone: true,
-  imports: [CommonModule, SelectPersonComponent, CdkDropList, CdkDropListGroup, PersonListComponent],
+  imports: [CommonModule, SelectPersonComponent, CdkDropList, CdkDropListGroup, PersonListComponent, EditPersonPreviewComponent],
   templateUrl: './editable-timetable.component.html',
   styleUrl: './editable-timetable.component.scss',
 })

@@ -59,7 +59,7 @@ export class WorkdayAPIService {
     return this.http.get<APIResponse<WorkdayTimeslot[]>>(url, httpOptions);
   }
 
-  updateWorkday(updateWorkdayRequest: UpdateWorkdayRequest): Observable<WorkdayTimeslot> {
+  updateWorkday(updateWorkdayRequest: UpdateWorkdayRequest): Observable<APIResponse<WorkdayTimeslot>> {
     const url = `${constants.APIS.PLANNER}/workday`;
 
     const httpOptions = {
@@ -67,9 +67,24 @@ export class WorkdayAPIService {
         'Content-Type': 'application/json',
       }),
       withCredentials: true,
+      params: new HttpParams({
+        fromObject: {
+          departmentID: updateWorkdayRequest.department_id,
+          date: updateWorkdayRequest.date,
+          workplaceID: updateWorkdayRequest.workplace_id,
+          timeslotID: updateWorkdayRequest.timeslot_id,
+        },
+      }),
     };
 
-    return this.http.put<WorkdayTimeslot>(url, updateWorkdayRequest, httpOptions);
+    const body = {
+      comment: updateWorkdayRequest.comment,
+      start_time: updateWorkdayRequest.start_time,
+      end_time: updateWorkdayRequest.end_time,
+      active: updateWorkdayRequest.active,
+    };
+
+    return this.http.put<APIResponse<WorkdayTimeslot>>(url, body, httpOptions);
   }
 
   assignPerson(department_id: string, date: string, workplace_id: string, timeslot_id: string, person_id: string): Observable<APIResponse<null>> {

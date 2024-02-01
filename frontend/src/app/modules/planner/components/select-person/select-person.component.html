@@ -10,6 +10,7 @@
   </mat-form-field>
 
   <div class="actions">
-    <button mat-mini-fab color="primary" matTooltip="Kommentar editieren"><mat-icon>edit</mat-icon></button>
+    <button mat-mini-fab color="primary" matTooltip="Kommentar editieren" (click)="commentEditRequest.emit()"><mat-icon>edit</mat-icon></button>
   </div>
 </div>
+{{ comment }}

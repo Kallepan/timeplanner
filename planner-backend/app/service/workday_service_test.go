@@ -330,6 +330,23 @@ func TestUpdateWorkday(t *testing.T) {
 	trueValue := true
 	testSteps := []ServiceTestPOST{
 		{
+			// alternate formatting of time
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00",
+				"end_time":   "16:00",
+				"comment":    "comment",
+				"active":     &falseValue,
+			},
+			expectedStatusCode: http.StatusOK,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
+			},
+		},
+		{
 			// save error
 			mockRequestData: map[string]interface{}{
 				"start_time": "08:00:00",

@@ -66,10 +66,12 @@
               <app-select-person
                 [selectedPerson]="ts.person"
                 [weekday]="ts.weekday"
+                [comment]="ts.comment"
                 (selected)="personDroppedIntoTimeslotHandler($event.p, [ts], $event.actionToBeExecutedOnFailedValidation)"
                 (commentEditRequest)="plannerStateHandlerService.handleCommentEditRequest(ts)"></app-select-person>
             } @placeholder {
-              <div class="placeholder">{{ ts.person?.id }}</div>
+              <!-- This is just a cheap placeholder to make push the content down !-->
+              <app-edit-person-preview [person]="ts.person" [comment]="ts.comment"></app-edit-person-preview>
             }
             @if (timetableDataContainerService.displayTimes$) {
               {{ ts.start_time }} - {{ ts.end_time }} ({{ ts.duration_in_minutes / 60 }})
