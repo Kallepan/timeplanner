@@ -29,6 +29,7 @@ const MOCK_WORKDAY: WorkdayTimeslot = {
   end_time: '10:00',
   weekday: 'MON',
   duration_in_minutes: 60,
+  comment: '',
 
   person: null,
 };

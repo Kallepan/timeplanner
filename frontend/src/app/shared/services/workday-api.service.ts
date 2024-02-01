@@ -11,7 +11,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { constants } from '@app/constants/constants';
 import { APIResponse } from '@app/core/interfaces/response';
-import { AssignPersonToWorkdayTimeslotRequest, UnassignPersonFromWorkdayTimeslotRequest, WorkdayTimeslot } from '../interfaces/workday_timeslot';
+import { AssignPersonToWorkdayTimeslotRequest, UnassignPersonFromWorkdayTimeslotRequest, UpdateWorkdayRequest, WorkdayTimeslot } from '../interfaces/workday_timeslot';
 
 @Injectable({
   providedIn: null,
@@ -57,6 +57,19 @@ export class WorkdayAPIService {
     };
 
     return this.http.get<APIResponse<WorkdayTimeslot[]>>(url, httpOptions);
+  }
+
+  updateWorkday(updateWorkdayRequest: UpdateWorkdayRequest): Observable<WorkdayTimeslot> {
+    const url = `${constants.APIS.PLANNER}/workday`;
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      withCredentials: true,
+    };
+
+    return this.http.put<WorkdayTimeslot>(url, updateWorkdayRequest, httpOptions);
   }
 
   assignPerson(department_id: string, date: string, workplace_id: string, timeslot_id: string, person_id: string): Observable<APIResponse<null>> {
