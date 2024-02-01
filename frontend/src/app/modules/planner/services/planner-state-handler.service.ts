@@ -8,6 +8,7 @@ import { TimetableDataContainerService } from '@app/shared/services/timetable-da
 import { WorkdayAPIService } from '@app/shared/services/workday-api.service';
 import { Subject, catchError, filter, forkJoin, from, map, mergeMap, of, reduce, switchMap, tap, throwError } from 'rxjs';
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
+import { messages } from '@app/constants/messages';
 const getWeekFromDate = (date: Date) => {
   // Create a new date object from the input date
   const currentDate = new Date(date.getTime());
@@ -107,7 +108,7 @@ export class PlannerStateHandlerService {
       });
   }
 
-  assignPersonToTimelots(event: { person: PersonWithMetadata; timeslots: WorkdayTimeslot[]; actionToBeExecutedOnFailedValidation?: () => void }) {
+  assignPersonToTimelots(person: PersonWithMetadata, timeslots: WorkdayTimeslot[], actionToBeExecutedOnFailedValidation?: () => void) {
     /**
      * This function is responsible for validating the timeslots and updating the timeslots in the service. Furthermore it uses the API to update the timeslots on the server.
      * Validation requirements:
@@ -116,9 +117,8 @@ export class PlannerStateHandlerService {
      *  - is not already assigned to a timeslot on the same day
      *
      */
-    const { person, timeslots, actionToBeExecutedOnFailedValidation } = event;
     forkJoin(timeslots.map((timeslot) => this._assignPersonToTimeslot(person, timeslot, actionToBeExecutedOnFailedValidation))).subscribe((results) => {
-      if (results.every((result) => result)) this.notificationService.infoMessage('Person erfolgreich zugeordnet');
+      if (results.every((result) => result)) this.notificationService.infoMessage(messages.PLANNER.TIMESLOT_ASSIGNMENT.SUCCESS);
     });
   }
 
@@ -127,15 +127,17 @@ export class PlannerStateHandlerService {
       // check if the person is qualified for the workplace
       map((ts) => (person.workplaces ?? []).map((wp) => wp.id).includes(ts.workplace.id)),
       tap((isQualified) => {
-        if (!isQualified) throw new Error('Person ist nicht für diesen Arbeitsplatz qualifiziert');
+        if (!isQualified) throw new Error(messages.PLANNER.TIMESLOT_ASSIGNMENT.PERSON_NOT_QUALIFIED);
       }),
       // check if the person is absent on the day
-      switchMap(() => this.personAPIService.isAbsentOnDate(person.id, workdayTimeslot.date).pipe(catchError(() => throwError(() => new Error('Datenbankfehler'))))),
+      switchMap(() => this.personAPIService.isAbsentOnDate(person.id, workdayTimeslot.date).pipe(catchError(() => throwError(() => new Error(messages.GENERAL.HTTP_ERROR.SERVER_ERROR))))),
       tap((isAbsent) => {
-        if (isAbsent) throw new Error('Person ist an diesem Tag abwesend (Krank, Urlaub, etc.)');
+        if (isAbsent) throw new Error(messages.PLANNER.TIMESLOT_ASSIGNMENT.PERSON_ABSENT);
       }),
       // check if the person is already assigned to a timeslot on the same day
-      switchMap(() => this.workdayAPIService.getWorkdays(workdayTimeslot.department.id, workdayTimeslot.date).pipe(catchError(() => throwError(() => new Error('Datenbankfehler'))))),
+      switchMap(() =>
+        this.workdayAPIService.getWorkdays(workdayTimeslot.department.id, workdayTimeslot.date).pipe(catchError(() => throwError(() => new Error(messages.GENERAL.HTTP_ERROR.SERVER_ERROR)))),
+      ),
       map((resp) => resp.data),
       map((workdays) =>
         workdays
@@ -145,14 +147,14 @@ export class PlannerStateHandlerService {
           .includes(person.id),
       ),
       tap((isAssigned) => {
-        if (isAssigned) throw new Error('Person ist bereits einem anderen Timeslot zugeordnet');
+        if (isAssigned) throw new Error(messages.PLANNER.TIMESLOT_ASSIGNMENT.PERSON_ALREADY_ASSIGNED);
       }),
       // check if person is present on the day
       map(() => {
         return (person.weekdays ?? []).map((wd) => wd.id).includes(workdayTimeslot.weekday);
       }),
       tap((isPresent) => {
-        if (!isPresent) throw new Error('Person ist an diesem Tag nicht anwesend');
+        if (!isPresent) throw new Error(messages.PLANNER.TIMESLOT_ASSIGNMENT.PERSON_NOT_WORKING);
       }),
       map(() => true),
       catchError((err: Error) => {
