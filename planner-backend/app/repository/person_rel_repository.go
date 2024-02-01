@@ -48,6 +48,9 @@ func (p PersonRelRepositoryImpl) AddAbsencyToPerson(person dao.Person, absence d
 	MERGE (p) -[r:ABSENT_ON]-> (d)
 	ON CREATE SET r.created_at = datetime()
 	SET r.reason = $reason
+	WITH d, p
+	OPTIONAL MATCH (d) <-[:IS_DATE]- (wkd: Workday) <-[r:ASSIGNED_TO]- (p)
+	DELETE r
 	`
 
 	params := map[string]interface{}{
