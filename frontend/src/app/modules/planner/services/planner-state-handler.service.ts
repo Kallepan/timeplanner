@@ -1,18 +1,18 @@
 import { Injectable, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormControl } from '@angular/forms';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { messages } from '@app/constants/messages';
 import { NotificationService } from '@app/core/services/notification.service';
+import { DisplayedWorkdayTimeslot } from '@app/modules/viewer/interfaces/workplace';
+import { EditTextareaDialogComponent, EditTextareaDialogData } from '@app/shared/components/edit-textarea-dialog/edit-textarea-dialog.component';
+import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { WorkdayTimeslot } from '@app/shared/interfaces/workday_timeslot';
 import { PersonAPIService } from '@app/shared/services/person-api.service';
 import { PersonDataContainerService } from '@app/shared/services/person-data-container.service';
 import { TimetableDataContainerService } from '@app/shared/services/timetable-data-container.service';
 import { WorkdayAPIService } from '@app/shared/services/workday-api.service';
 import { Subject, catchError, filter, forkJoin, from, map, mergeMap, of, reduce, switchMap, tap, throwError } from 'rxjs';
-import { PersonWithMetadata } from '@app/shared/interfaces/person';
-import { messages } from '@app/constants/messages';
-import { DisplayedWorkdayTimeslot } from '@app/modules/viewer/interfaces/workplace';
-import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { EditTextareaDialogComponent, EditTextareaDialogData } from '@app/shared/components/edit-textarea-dialog/edit-textarea-dialog.component';
-import { FormControl } from '@angular/forms';
 const getWeekFromDate = (date: Date) => {
   // Create a new date object from the input date
   const currentDate = new Date(date.getTime());
@@ -192,6 +192,7 @@ export class PlannerStateHandlerService {
   handleCommentEditRequest(ts: DisplayedWorkdayTimeslot) {
     // generate data for dialog
     const data: EditTextareaDialogData = {
+      title: 'Kommentar bearbeiten',
       control: new FormControl(ts.comment),
       label: 'Kommentar zum Timeslot',
       placeholder: 'Blah blah blah',
@@ -200,6 +201,8 @@ export class PlannerStateHandlerService {
     // generate dialogConfig
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = data;
+    dialogConfig.enterAnimationDuration = 300;
+    dialogConfig.exitAnimationDuration = 300;
 
     // Open dialog to edit comment
     const dialogRef = this.dialog.open(EditTextareaDialogComponent, dialogConfig);

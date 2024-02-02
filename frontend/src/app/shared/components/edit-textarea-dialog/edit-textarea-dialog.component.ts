@@ -1,12 +1,12 @@
 import { Component, Inject, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MAT_DIALOG_DATA, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { DialogLayoutComponent } from '../dialog-layout/dialog-layout.component';
 
 export type EditTextareaDialogData = {
+  title: string;
   label: string;
   placeholder: string;
   hint: string;
@@ -16,7 +16,7 @@ export type EditTextareaDialogData = {
 @Component({
   selector: 'app-edit-textarea-dialog',
   standalone: true,
-  imports: [ReactiveFormsModule, MatButtonModule, MatInputModule, MatFormFieldModule, MatDialogModule, MatIconModule],
+  imports: [ReactiveFormsModule, MatInputModule, MatFormFieldModule, DialogLayoutComponent],
   templateUrl: './edit-textarea-dialog.component.html',
   styleUrl: './edit-textarea-dialog.component.scss',
 })
@@ -25,6 +25,7 @@ export class EditTextareaDialogComponent {
   text: string;
   placeholder: string;
   hint: string;
+  title: string;
 
   control: FormControl;
 
@@ -34,6 +35,7 @@ export class EditTextareaDialogComponent {
     this.label = data.label;
     this.placeholder = data.placeholder;
     this.hint = data.hint;
+    this.title = data.title;
 
     this.control = data.control;
   }
