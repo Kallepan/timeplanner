@@ -47,7 +47,7 @@ func TestLoginSimple(t *testing.T) {
 				Username: "test",
 				Password: string(hashedPassword),
 			},
-			expectedStatusCode: http.StatusBadRequest, // Assuming 400 is the status code for bad request
+			expectedStatusCode: http.StatusUnauthorized, // Assuming 400 is the status code for bad request
 			cookieExpected:     false,
 			mockError:          gorm.ErrRecordNotFound,
 		},
@@ -83,7 +83,7 @@ func TestLoginSimple(t *testing.T) {
 				"password": "test",
 			},
 			expectedValue:      dao.User{},
-			expectedStatusCode: http.StatusBadRequest,
+			expectedStatusCode: http.StatusUnauthorized,
 			cookieExpected:     false,
 			mockError:          nil,
 		},

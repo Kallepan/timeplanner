@@ -1,13 +1,13 @@
+import { AsyncPipe } from '@angular/common';
 import { Component, DestroyRef, OnInit, inject } from '@angular/core';
-import { ViewerStateHandlerService } from '../../services/viewer-state-handler.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatButtonModule } from '@angular/material/button';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { filter, map } from 'rxjs';
-import { AsyncPipe } from '@angular/common';
 import { ViewOnlyTimetableComponent } from '@app/modules/viewer/components/view-only-timetable/view-only-timetable.component';
-import { ActionsComponent } from '../actions/actions.component';
 import { TimetableDataContainerService } from '@app/shared/services/timetable-data-container.service';
+import { filter, map } from 'rxjs';
+import { ViewerStateHandlerService } from '../../services/viewer-state-handler.service';
+import { ActionsComponent } from '../actions/actions.component';
 
 @Component({
   selector: 'app-landing-page',
@@ -17,8 +17,8 @@ import { TimetableDataContainerService } from '@app/shared/services/timetable-da
   styleUrl: './landing-page.component.scss',
 })
 export class LandingPageComponent implements OnInit {
-  timetableDataContainerService = inject(TimetableDataContainerService);
   // inject the services here
+  timetableDataContainerService = inject(TimetableDataContainerService);
   viewerStateHandlerService = inject(ViewerStateHandlerService);
   private destroyRef$ = inject(DestroyRef);
 
