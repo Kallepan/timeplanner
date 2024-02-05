@@ -34,17 +34,17 @@ describe('AuthService', () => {
 
   it('logout should set authData to null', () => {
     service.logout();
-    const req = httpMock.expectOne(`${constants.APIS.AUTH}/logout/`);
+    const req = httpMock.expectOne(`${constants.APIS.AUTH}/logout`);
     expect(req.request.method).toBe('POST');
-    req.flush({});
+    req.flush(null);
     expect(service.authData()).toBeNull();
   });
 
   it('login should set authData', () => {
     service.login('test', 'test');
-    const req = httpMock.expectOne(`${constants.APIS.AUTH}/`);
+    const req = httpMock.expectOne(`${constants.APIS.AUTH}/login`);
     expect(req.request.method).toBe('POST');
-    req.flush({ username: 'test', email: 'test@example.com' });
+    req.flush({data: { username: 'test', email: 'test@example.com' }});
     expect(service.authData()).toEqual({ username: 'test', email: 'test@example.com' });
   });
 
