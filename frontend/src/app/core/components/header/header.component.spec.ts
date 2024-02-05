@@ -1,4 +1,4 @@
-import { type ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed, type ComponentFixture } from '@angular/core/testing';
 
 import { type HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
@@ -6,7 +6,6 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MatSlideToggleHarness } from '@angular/material/slide-toggle/testing';
 import { By } from '@angular/platform-browser';
-import { ActivatedRoute } from '@angular/router';
 import { HeaderComponent } from './header.component';
 
 describe('HeaderComponent', () => {
@@ -17,7 +16,7 @@ describe('HeaderComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HeaderComponent],
-      providers: [{ provide: ActivatedRoute, useValue: { snapshot: { data: { title: 'Test' } } } }, provideHttpClientTesting(), provideHttpClient()],
+      providers: [provideHttpClientTesting(), provideHttpClient()],
     });
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
@@ -36,22 +35,22 @@ describe('HeaderComponent', () => {
   });
 
   it('should emit open sidenav event', () => {
-    spyOn(component.onToggleSidenav, 'emit');
+    spyOn(component.sidenavToggled, 'emit');
     // Fetch by 'button' tag
     const nodes = fixture.debugElement.nativeElement.querySelectorAll('button');
     nodes[0].click();
 
-    expect(component.onToggleSidenav.emit).toHaveBeenCalled();
+    expect(component.sidenavToggled.emit).toHaveBeenCalled();
   });
 
   it('should emit toggle theme event', async () => {
-    spyOn(component.onToggleTheme, 'emit');
+    spyOn(component.themeToggled, 'emit');
 
-    const matSlideToggle = await loader.getHarness(MatSlideToggleHarness);
+    const matSlideToggle = await loader.getHarness(MatSlideToggleHarness.with({ selector: '#toggleTheme' }));
     expect(await matSlideToggle.isChecked()).toBe(false);
 
     await matSlideToggle.toggle();
 
-    expect(component.onToggleTheme.emit).toHaveBeenCalled();
+    expect(component.themeToggled.emit).toHaveBeenCalled();
   });
 });

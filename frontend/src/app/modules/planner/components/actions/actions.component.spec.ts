@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ActionsComponent } from './actions.component';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSlideToggleHarness } from '@angular/material/slide-toggle/testing';
+import { ActionsComponent } from './actions.component';
 
 describe('ActionsComponent', () => {
   let component: ActionsComponent;
@@ -75,5 +75,4 @@ describe('ActionsComponent', () => {
 
     expect(component.shiftWeek.emit).toHaveBeenCalledWith(-1);
   });
-
 });
