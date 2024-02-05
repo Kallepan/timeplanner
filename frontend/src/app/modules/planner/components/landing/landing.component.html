@@ -3,7 +3,10 @@
     (toggleColors)="timetableDataContainerService.colorize = $event"
     (toggleTimes)="timetableDataContainerService.displayTimes = $event"
     [displayColors]="timetableDataContainerService.colorize$"
-    [displayTimes]="timetableDataContainerService.displayTimes$"></app-actions-editable>
+    [displayTimes]="timetableDataContainerService.displayTimes$"
+    (shiftWeek)="activeWeekHandlerService.shiftWeek($event)"></app-actions-editable>
 </div>
 
 <app-editable-timetable></app-editable-timetable>
+
+<div id="overlay" [ngStyle]="{ display: timetableDataContainerService.isLoading$ ? 'block' : 'none' }"></div>

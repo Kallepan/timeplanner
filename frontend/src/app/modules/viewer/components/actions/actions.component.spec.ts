@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ActionsComponent } from './actions.component';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSlideToggleHarness } from '@angular/material/slide-toggle/testing';
+import { ActionsComponent } from './actions.component';
 
 describe('ActionsComponent', () => {
   let component: ActionsComponent;
@@ -66,5 +66,28 @@ describe('ActionsComponent', () => {
 
     await toggle.toggle();
     expect(component.toggleComments.emit).toHaveBeenCalledWith(true);
+  });
+
+  it('should emit shiftWeek positive', async () => {
+    spyOn(component.shiftWeek, 'emit');
+    const button = fixture.nativeElement.querySelector('#shift-forward-button');
+
+    button.click();
+
+    expect(component.shiftWeek.emit).toHaveBeenCalledWith(1);
+  });
+
+  it('should emit shiftWeek negative', async () => {
+    spyOn(component.shiftWeek, 'emit');
+    const button = fixture.nativeElement.querySelector('#shift-backward-button');
+
+    button.click();
+
+    expect(component.shiftWeek.emit).toHaveBeenCalledWith(-1);
+  });
+
+  it('should route to department', async () => {
+    const routerLink = fixture.nativeElement.querySelector('#edit-route-button');
+    expect(routerLink.getAttribute('href')).toBe('/department/departmentId');
   });
 });

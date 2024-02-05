@@ -10,7 +10,7 @@
     <div class="cell header">Slot</div>
 
     <!-- Add headers from weekdays array-->
-    @for (data of timetableDataContainerService.weekdays$; track $index) {
+    @for (data of activeWeekHandlerService.activeWeek$; track $index) {
       <div class="cell header">{{ data.date | date: 'dd.MM.yyyy' }} ({{ data.shortName | titlecase }})</div>
       <div
         class="vertical-line"

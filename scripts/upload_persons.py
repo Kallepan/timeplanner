@@ -103,20 +103,19 @@ def main() -> None:
     workplaces = [
         "psl",
         "var",
-        "gro",
         "anl",
         "arz",
-        "iso",
         "stu",
         "ate",
         "mal",
         "vit",
         "tbl",
         "hyg",
-        "aus",
+        "spa",
         "cha",
         "jok",
         "azu",
+        "rve",
     ]
     create_persons(
         department_id=department_id,

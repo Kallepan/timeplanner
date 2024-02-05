@@ -3,4 +3,8 @@
   <mat-slide-toggle id="toggleTimeLabel" color="accent" [checked]="displayTimes" (change)="toggleTimeLabel.emit($event.checked)">Zeiten anzeigen</mat-slide-toggle>
   <mat-slide-toggle id="togglePersonsLabel" color="accent" [checked]="displayPersons" (change)="togglePersonsLabel.emit($event.checked)">Personen anzeigen</mat-slide-toggle>
   <mat-slide-toggle id="toggleCommentsLabel" color="accent" [checked]="displayComments" (change)="toggleComments.emit($event.checked)">Kommentare anzeigen</mat-slide-toggle>
+  <span class="spacer"></span>
+  <button mat-raised-button id="edit-route-button" color="accent" routerLink="/planner" [queryParams]="{ department: departmentId }">Editieransicht</button>
+  <button color="accent" id="shift-backward-button" mat-raised-button (click)="shiftWeek.emit(-1)"><<</button>
+  <button color="accent" id="shift-forward-button" mat-raised-button (click)="shiftWeek.emit(1)">>></button>
 </div>

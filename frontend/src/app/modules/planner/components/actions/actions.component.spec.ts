@@ -57,4 +57,23 @@ describe('ActionsComponent', () => {
     const toggle = await loader.getHarness(MatSlideToggleHarness.with({ selector: '#toggleColors' }));
     expect(await toggle.isChecked()).toBe(true);
   });
+
+  it('should emit shiftWeek positive', async () => {
+    spyOn(component.shiftWeek, 'emit');
+    const button = fixture.nativeElement.querySelector('#shift-forward-button');
+
+    button.click();
+
+    expect(component.shiftWeek.emit).toHaveBeenCalledWith(1);
+  });
+
+  it('should emit shiftWeek negative', async () => {
+    spyOn(component.shiftWeek, 'emit');
+    const button = fixture.nativeElement.querySelector('#shift-backward-button');
+
+    button.click();
+
+    expect(component.shiftWeek.emit).toHaveBeenCalledWith(-1);
+  });
+
 });

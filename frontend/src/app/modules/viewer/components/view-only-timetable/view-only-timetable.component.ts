@@ -6,6 +6,7 @@
  **/
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { ActiveWeekHandlerService } from '@app/shared/services/active-week-handler.service';
 import { TimetableDataContainerService } from '../../../../shared/services/timetable-data-container.service';
 import { ActionsComponent } from '../actions/actions.component';
 
@@ -18,4 +19,5 @@ import { ActionsComponent } from '../actions/actions.component';
 })
 export class ViewOnlyTimetableComponent {
   timetableDataContainerService = inject(TimetableDataContainerService);
+  activeWeekdayService = inject(ActiveWeekHandlerService);
 }

@@ -8,8 +8,11 @@
     [displayComments]="timetableDataContainerService.displayComments$"
     [displayPersons]="timetableDataContainerService.displayPersons$"
     [displayTimes]="timetableDataContainerService.displayTimes$"
-    [displayColors]="timetableDataContainerService.colorize$"></app-actions-viewer>
-  <button mat-raised-button color="accent" routerLink="/planner" [queryParams]="getEditRouterQueryParams()">Editieransicht</button>
+    [displayColors]="timetableDataContainerService.colorize$"
+    (shiftWeek)="activeWeekHandlerService.shiftWeek($event)"
+    [departmentId]="activeDepartmentHandlerService.activeDepartment$"></app-actions-viewer>
 </div>
 
 <app-view-only-timetable></app-view-only-timetable>
+
+<div id="overlay" [ngStyle]="{ display: timetableDataContainerService.isLoading$ ? 'block' : 'none' }"></div>
