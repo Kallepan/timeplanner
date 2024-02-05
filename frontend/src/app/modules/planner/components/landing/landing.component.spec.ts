@@ -1,21 +1,23 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { LandingComponent } from './landing.component';
+import { TimetableDataContainerService } from '@app/shared/services/timetable-data-container.service';
 import { PlannerStateHandlerService } from '../../services/planner-state-handler.service';
-import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
+import { LandingComponent } from './landing.component';
 
 describe('LandingComponent', () => {
   let component: LandingComponent;
   let fixture: ComponentFixture<LandingComponent>;
   let mockPlannerStateHandlerService: jasmine.SpyObj<PlannerStateHandlerService>;
-  let activatedRoute: jasmine.SpyObj<ActivatedRoute>;
+  let mockTimetableDataContainerService: jasmine.SpyObj<TimetableDataContainerService>;
 
   beforeEach(async () => {
-    activatedRoute = jasmine.createSpyObj('ActivatedRoute', ['data'], {
-      queryParams: of({ department: 'department1' }),
-    });
     mockPlannerStateHandlerService = jasmine.createSpyObj('PlannerStateHandlerService', ['setActiveView']);
+    mockTimetableDataContainerService = jasmine.createSpyObj('TimetableDataContainerService', [''], {
+      colorize: true,
+      displaytimes: true,
+      displayTimes$: true,
+      colorize$: true,
+    });
 
     await TestBed.configureTestingModule({
       imports: [LandingComponent],
@@ -25,8 +27,8 @@ describe('LandingComponent', () => {
           useValue: mockPlannerStateHandlerService,
         },
         {
-          provide: ActivatedRoute,
-          useValue: activatedRoute,
+          provide: TimetableDataContainerService,
+          useValue: mockTimetableDataContainerService,
         },
       ],
     }).compileComponents();
@@ -38,36 +40,5 @@ describe('LandingComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-  });
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should set the department from the activated route', () => {
-    expect(mockPlannerStateHandlerService.setActiveView).toHaveBeenCalledWith('department1', jasmine.any(Date));
-  });
-
-  it('should not set null department', () => {
-    activatedRoute.queryParams = of({ department: null });
-    component.ngOnInit();
-    expect(
-      mockPlannerStateHandlerService.setActiveView,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ).not.toHaveBeenCalledWith(null as any, jasmine.any(Date));
-  });
-
-  it('should turn department to lowercase', () => {
-    activatedRoute.queryParams = of({ department: 'Department1' });
-    component.ngOnInit();
-    expect(mockPlannerStateHandlerService.setActiveView).toHaveBeenCalledWith('department1', jasmine.any(Date));
-  });
-
-  it('should not set undefined department', () => {
-    activatedRoute.queryParams = of({ department: undefined });
-    component.ngOnInit();
-    expect(
-      mockPlannerStateHandlerService.setActiveView,
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ).not.toHaveBeenCalledWith(undefined as any, jasmine.any(Date));
   });
 });

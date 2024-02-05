@@ -38,8 +38,8 @@ func (w WeekdayServiceImpl) BulkUpdateWeekdaysForTimeslot(c *gin.Context) {
 
 	departmentID := c.Param("departmentID")
 	workplaceID := c.Param("workplaceID")
-	timeslotName := c.Param("timeslotName")
-	if departmentID == "" || workplaceID == "" || timeslotName == "" {
+	timeslotID := c.Param("timeslotID")
+	if departmentID == "" || workplaceID == "" || timeslotID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
@@ -49,7 +49,7 @@ func (w WeekdayServiceImpl) BulkUpdateWeekdaysForTimeslot(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	timeslot, err := w.TimeslotRepository.FindTimeslotByName(departmentID, workplaceID, timeslotName)
+	timeslot, err := w.TimeslotRepository.FindTimeslotByID(departmentID, workplaceID, timeslotID)
 	switch err {
 	case nil:
 		break
@@ -88,8 +88,8 @@ func (w WeekdayServiceImpl) AddWeekdayToTimeslot(c *gin.Context) {
 
 	departmentID := c.Param("departmentID")
 	workplaceID := c.Param("workplaceID")
-	timeslotName := c.Param("timeslotName")
-	if departmentID == "" || workplaceID == "" || timeslotName == "" {
+	timeslotID := c.Param("timeslotID")
+	if departmentID == "" || workplaceID == "" || timeslotID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
@@ -101,7 +101,7 @@ func (w WeekdayServiceImpl) AddWeekdayToTimeslot(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	timeslot, err := w.TimeslotRepository.FindTimeslotByName(departmentID, workplaceID, timeslotName)
+	timeslot, err := w.TimeslotRepository.FindTimeslotByID(departmentID, workplaceID, timeslotID)
 	switch err {
 	case nil:
 		break
@@ -138,8 +138,8 @@ func (w WeekdayServiceImpl) DeleteWeekdayFromTimeslot(c *gin.Context) {
 
 	departmentID := c.Param("departmentID")
 	workplaceID := c.Param("workplaceID")
-	timeslotName := c.Param("timeslotName")
-	if departmentID == "" || workplaceID == "" || timeslotName == "" {
+	timeslotID := c.Param("timeslotID")
+	if departmentID == "" || workplaceID == "" || timeslotID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
@@ -152,7 +152,7 @@ func (w WeekdayServiceImpl) DeleteWeekdayFromTimeslot(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	timeslot, err := w.TimeslotRepository.FindTimeslotByName(departmentID, workplaceID, timeslotName)
+	timeslot, err := w.TimeslotRepository.FindTimeslotByID(departmentID, workplaceID, timeslotID)
 	switch err {
 	case nil:
 		break
@@ -185,8 +185,8 @@ func (w WeekdayServiceImpl) DeleteWeekdayFromTimeslot(c *gin.Context) {
 
 		departmentID := c.Param("departmentID")
 		workplaceID := c.Param("workplaceID")
-		timeslotName := c.Param("timeslotName")
-		if departmentID == "" || workplaceID == "" || timeslotName == "" {
+		timeslotID := c.Param("timeslotID")
+		if departmentID == "" || workplaceID == "" || timeslotID == "" {
 			pkg.PanicException(constant.InvalidRequest)
 		}
 
@@ -196,7 +196,7 @@ func (w WeekdayServiceImpl) DeleteWeekdayFromTimeslot(c *gin.Context) {
 			pkg.PanicException(constant.InvalidRequest)
 		}
 
-		timeslot, err := w.TimeslotRepository.FindTimeslotByName(departmentID, workplaceID, timeslotName)
+		timeslot, err := w.TimeslotRepository.FindTimeslotByID(departmentID, workplaceID, timeslotID)
 		switch err {
 		case nil:
 			break

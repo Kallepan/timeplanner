@@ -58,7 +58,10 @@ func TestDeleteWorkplace(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "DELETE", testStep.ParamsToGinParams(), nil)
+		c, err := mock.NewTestContextBuilder(w).WithMethod("DELETE").WithMapParams(testStep.params).Build()
+		if err != nil {
+			t.Errorf("Test Step %d: Error when building context", i)
+		}
 
 		workplaceService.DeleteWorkplace(c)
 		response := w.Result()
@@ -138,7 +141,10 @@ func TestUpdateWorkplace(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "PUT", testStep.ParamsToGinParams(), testStep.mockRequestData)
+		c, err := mock.NewTestContextBuilder(w).WithMethod("PUT").WithBody(testStep.mockRequestData).WithMapParams(testStep.params).Build()
+		if err != nil {
+			t.Errorf("Test Step %d: Error when building context", i)
+		}
 
 		workplaceService.UpdateWorkplace(c)
 		response := w.Result()
@@ -256,7 +262,10 @@ func TestAddWorkplace(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "POST", testStep.ParamsToGinParams(), testStep.mockRequestData)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithBody(testStep.mockRequestData).WithMapParams(testStep.params).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when building context", i)
+			}
 
 			workplaceService.AddWorkplace(c)
 			response := w.Result()
@@ -328,7 +337,10 @@ func TestGetAllWorkplaces(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "GET", testStep.ParamsToGinParams(), nil)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("GET").WithMapParams(testStep.params).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when building context", i)
+			}
 
 			workplaceService.GetAllWorkplaces(c)
 			response := w.Result()
@@ -431,7 +443,10 @@ func TestGetWorkplaceByID(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "GET", testStep.ParamsToGinParams(), nil)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("GET").WithMapParams(testStep.params).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when building context", i)
+			}
 
 			workplaceService.GetWorkplaceByName(c)
 			response := w.Result()

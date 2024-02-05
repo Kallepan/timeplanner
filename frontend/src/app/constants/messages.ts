@@ -31,4 +31,14 @@ export class messages {
       PATTERN: 'Ungültiges Format',
     },
   };
+
+  public static PLANNER = {
+    TIMESLOT_ASSIGNMENT: {
+      PERSON_ALREADY_ASSIGNED: 'Person ist bereits an einem anderen Zeitpunkt zugewiesen',
+      PERSON_NOT_WORKING: 'Person arbeitet regulär an diesem Tag nicht',
+      PERSON_NOT_QUALIFIED: 'Person ist nicht für diesen Arbeitsplatz qualifiziert',
+      PERSON_ABSENT: 'Person ist an diesem Tag abwesend (Krank, Urlaub, etc.)',
+      SUCCESS: 'Person erfolgreich zugeordnet',
+    },
+  };
 }

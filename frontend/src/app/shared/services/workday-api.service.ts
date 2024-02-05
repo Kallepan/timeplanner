@@ -11,7 +11,7 @@ import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { constants } from '@app/constants/constants';
 import { APIResponse } from '@app/core/interfaces/response';
-import { AssignPersonToWorkdayTimeslotRequest, UnassignPersonFromWorkdayTimeslotRequest, WorkdayTimeslot } from '../interfaces/workday_timeslot';
+import { AssignPersonToWorkdayTimeslotRequest, UnassignPersonFromWorkdayTimeslotRequest, UpdateWorkdayRequest, WorkdayTimeslot } from '../interfaces/workday_timeslot';
 
 @Injectable({
   providedIn: null,
@@ -59,7 +59,35 @@ export class WorkdayAPIService {
     return this.http.get<APIResponse<WorkdayTimeslot[]>>(url, httpOptions);
   }
 
-  assignPerson(department_id: string, date: string, workplace_id: string, timeslot_name: string, person_id: string): Observable<APIResponse<null>> {
+  updateWorkday(updateWorkdayRequest: UpdateWorkdayRequest): Observable<APIResponse<WorkdayTimeslot>> {
+    const url = `${constants.APIS.PLANNER}/workday`;
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      withCredentials: true,
+      params: new HttpParams({
+        fromObject: {
+          departmentID: updateWorkdayRequest.department_id,
+          date: updateWorkdayRequest.date,
+          workplaceID: updateWorkdayRequest.workplace_id,
+          timeslotID: updateWorkdayRequest.timeslot_id,
+        },
+      }),
+    };
+
+    const body = {
+      comment: updateWorkdayRequest.comment,
+      start_time: updateWorkdayRequest.start_time,
+      end_time: updateWorkdayRequest.end_time,
+      active: updateWorkdayRequest.active,
+    };
+
+    return this.http.put<APIResponse<WorkdayTimeslot>>(url, body, httpOptions);
+  }
+
+  assignPerson(department_id: string, date: string, workplace_id: string, timeslot_id: string, person_id: string): Observable<APIResponse<null>> {
     const url = `${constants.APIS.PLANNER}/workday/assign`;
 
     const httpOptions = {
@@ -73,14 +101,14 @@ export class WorkdayAPIService {
       department_id,
       date,
       workplace_id,
-      timeslot_name,
+      timeslot_id,
       person_id,
     };
 
     return this.http.post<APIResponse<null>>(url, body, httpOptions);
   }
 
-  unassignPerson(department_id: string, date: string, workplace_id: string, timeslot_name: string, person_id: string): Observable<APIResponse<null>> {
+  unassignPerson(department_id: string, date: string, workplace_id: string, timeslot_id: string, person_id: string): Observable<APIResponse<null>> {
     const url = `${constants.APIS.PLANNER}/workday/unassign`;
 
     const httpOptions = {
@@ -94,7 +122,7 @@ export class WorkdayAPIService {
       department_id,
       date,
       workplace_id,
-      timeslot_name,
+      timeslot_id,
       person_id,
     };
 

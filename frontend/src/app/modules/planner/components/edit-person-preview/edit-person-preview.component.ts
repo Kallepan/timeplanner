@@ -12,4 +12,5 @@ import { PersonWithMetadata } from '@app/shared/interfaces/person';
 })
 export class EditPersonPreviewComponent {
   @Input() person: PersonWithMetadata | null = null;
+  @Input({ required: true }) comment: string;
 }

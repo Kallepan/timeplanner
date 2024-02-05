@@ -31,6 +31,7 @@ describe('DepartmentAPIService', () => {
     const mockDepartment: APIResponse<DepartmentWithMetadata[]> = {
       data: [
         {
+          id: 'department1',
           name: 'department1',
           created_at: new Date(),
           updated_at: new Date(),
@@ -56,6 +57,7 @@ describe('DepartmentAPIService', () => {
   it('should get a department', () => {
     const mockDepartment: APIResponse<DepartmentWithMetadata> = {
       data: {
+        id: 'Engineering',
         name: 'Engineering',
         created_at: new Date(),
         updated_at: new Date(),
@@ -83,6 +85,7 @@ describe('DepartmentAPIService', () => {
     const mockDepartment: APIResponse<DepartmentWithMetadata> = {
       data: {
         name: 'Engineering',
+        id: 'Engineering',
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: null,
@@ -92,6 +95,7 @@ describe('DepartmentAPIService', () => {
     };
 
     const department: Department = {
+      id: 'Engineering',
       name: 'Engineering',
     };
 

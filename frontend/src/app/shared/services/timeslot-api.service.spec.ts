@@ -1,10 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { TimeslotAPIService } from './timeslot-api.service';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 
 describe('TimeslotAPIService', () => {
@@ -13,11 +10,7 @@ describe('TimeslotAPIService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        TimeslotAPIService,
-      ],
+      providers: [provideHttpClient(), provideHttpClientTesting(), TimeslotAPIService],
     });
     service = TestBed.inject(TimeslotAPIService);
 
@@ -36,6 +29,7 @@ describe('TimeslotAPIService', () => {
     const mockTimeslot = {
       data: [
         {
+          id: 'timeslot1',
           name: 'timeslot1',
           department_name: 'department1',
           workplace_name: 'workplace1',
@@ -54,9 +48,7 @@ describe('TimeslotAPIService', () => {
       expect(result).toEqual(mockTimeslot);
     });
 
-    const req = httpController.expectOne(
-      'http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1/timeslot',
-    );
+    const req = httpController.expectOne('http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1/timeslot');
     expect(req.request.method).toEqual('GET');
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
@@ -67,6 +59,7 @@ describe('TimeslotAPIService', () => {
   it('should get a timeslot', () => {
     const mockTimeslot = {
       data: {
+        id: 'timeslot1',
         name: 'timeslot1',
         department_name: 'department1',
         workplace_name: 'workplace1',
@@ -80,15 +73,11 @@ describe('TimeslotAPIService', () => {
       message: 'success',
     };
 
-    service
-      .getTimeslot('department1', 'workplace1', 'timeslot1')
-      .subscribe((result) => {
-        expect(result).toEqual(mockTimeslot);
-      });
+    service.getTimeslot('department1', 'workplace1', 'timeslot1').subscribe((result) => {
+      expect(result).toEqual(mockTimeslot);
+    });
 
-    const req = httpController.expectOne(
-      'http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1/timeslot/timeslot1',
-    );
+    const req = httpController.expectOne('http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1/timeslot/timeslot1');
     expect(req.request.method).toEqual('GET');
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
@@ -99,6 +88,7 @@ describe('TimeslotAPIService', () => {
   it('should create a timeslot', () => {
     const mockTimeslot = {
       data: {
+        id: 'timeslot1',
         name: 'timeslot1',
         department_name: 'department1',
         workplace_name: 'workplace1',
@@ -114,6 +104,7 @@ describe('TimeslotAPIService', () => {
 
     service
       .createTimeslot('department1', 'workplace1', {
+        id: 'timeslot1',
         name: 'timeslot1',
         active: true,
       })
@@ -121,14 +112,13 @@ describe('TimeslotAPIService', () => {
         expect(result).toEqual(mockTimeslot);
       });
 
-    const req = httpController.expectOne(
-      'http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1/timeslot',
-    );
+    const req = httpController.expectOne('http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1/timeslot');
     expect(req.request.method).toEqual('POST');
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
     expect(req.request.body).toEqual({
       name: 'timeslot1',
+      id: 'timeslot1',
       active: true,
     });
     req.flush(mockTimeslot);
@@ -138,6 +128,7 @@ describe('TimeslotAPIService', () => {
     const mockTimeslot = {
       data: {
         name: 'timeslot1',
+        id: 'timeslot1',
         department_name: 'department1',
         workplace_name: 'workplace1',
         active: true,
@@ -150,15 +141,11 @@ describe('TimeslotAPIService', () => {
       message: 'success',
     };
 
-    service
-      .deleteTimeslot('department1', 'workplace1', 'timeslot1')
-      .subscribe((result) => {
-        expect(result).toEqual(mockTimeslot);
-      });
+    service.deleteTimeslot('department1', 'workplace1', 'timeslot1').subscribe((result) => {
+      expect(result).toEqual(mockTimeslot);
+    });
 
-    const req = httpController.expectOne(
-      'http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1/timeslot/timeslot1',
-    );
+    const req = httpController.expectOne('http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1/timeslot/timeslot1');
     expect(req.request.method).toEqual('DELETE');
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
@@ -170,6 +157,7 @@ describe('TimeslotAPIService', () => {
     const mockTimeslot = {
       data: {
         name: 'timeslot1',
+        id: 'timeslot1',
         department_name: 'department1',
         workplace_name: 'workplace1',
         active: true,
@@ -189,15 +177,11 @@ describe('TimeslotAPIService', () => {
       message: 'success',
     };
 
-    service
-      .assignTimeslotToWeekday('department1', 'workplace1', 'timeslot1', 'MON')
-      .subscribe((result) => {
-        expect(result).toEqual(mockTimeslot);
-      });
+    service.assignTimeslotToWeekday('department1', 'workplace1', 'timeslot1', 'MON').subscribe((result) => {
+      expect(result).toEqual(mockTimeslot);
+    });
 
-    const req = httpController.expectOne(
-      'http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1/timeslot/timeslot1/weekday',
-    );
+    const req = httpController.expectOne('http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1/timeslot/timeslot1/weekday');
     expect(req.request.method).toEqual('POST');
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
@@ -212,6 +196,7 @@ describe('TimeslotAPIService', () => {
     const mockTimeslot = {
       data: {
         name: 'timeslot1',
+        id: 'timeslot1',
         department_name: 'department1',
         workplace_name: 'workplace1',
         active: true,
@@ -224,20 +209,11 @@ describe('TimeslotAPIService', () => {
       message: 'success',
     };
 
-    service
-      .unassignTimeslotFromWeekday(
-        'department1',
-        'workplace1',
-        'timeslot1',
-        'MON',
-      )
-      .subscribe((result) => {
-        expect(result).toEqual(mockTimeslot);
-      });
+    service.unassignTimeslotFromWeekday('department1', 'workplace1', 'timeslot1', 'MON').subscribe((result) => {
+      expect(result).toEqual(mockTimeslot);
+    });
 
-    const req = httpController.expectOne(
-      'http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1/timeslot/timeslot1/weekday',
-    );
+    const req = httpController.expectOne('http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1/timeslot/timeslot1/weekday');
     expect(req.request.method).toEqual('DELETE');
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');

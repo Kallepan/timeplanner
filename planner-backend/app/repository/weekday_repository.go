@@ -30,7 +30,7 @@ type WeekdayRepositoryImpl struct {
 func (w WeekdayRepositoryImpl) AddWeekdaysToTimeslot(timeslot *dao.Timeslot, weekdays []dao.OnWeekday) ([]dao.OnWeekday, error) {
 	/* Adds a list of weekdays to a timeslot */
 	query := `
-	MATCH (d:Department {id: $departmentID}) -[:HAS_WORKPLACE]-> (wp:Workplace {id: $workplaceID}) -[:HAS_TIMESLOT]-> (t:Timeslot {name: $timeslotName})
+	MATCH (d:Department {id: $departmentID}) -[:HAS_WORKPLACE]-> (wp:Workplace {id: $workplaceID}) -[:HAS_TIMESLOT]-> (t:Timeslot {id: $timeslotID})
 	UNWIND $weekdays AS weekday
 	MATCH (wd:Weekday {id: weekday.id})
 	MERGE (t)-[r:OFFERED_ON]->(wd)
@@ -56,7 +56,7 @@ func (w WeekdayRepositoryImpl) AddWeekdaysToTimeslot(timeslot *dao.Timeslot, wee
 	params := map[string]interface{}{
 		"departmentID": timeslot.DepartmentID,
 		"workplaceID":  timeslot.WorkplaceID,
-		"timeslotName": timeslot.Name,
+		"timeslotID":   timeslot.ID,
 		"weekdays":     weekdaysMap,
 	}
 
@@ -102,7 +102,7 @@ func (w WeekdayRepositoryImpl) AddWeekdaysToTimeslot(timeslot *dao.Timeslot, wee
 func (w WeekdayRepositoryImpl) DeleteAllWeekdaysFromTimeslot(timeslot *dao.Timeslot) error {
 	/* Deletes all weekdays from a timeslot */
 	query := `
-	MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(wp:Workplace {id: $workplaceID})-[:HAS_TIMESLOT]->(t:Timeslot {name: $timeslotName})
+	MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(wp:Workplace {id: $workplaceID})-[:HAS_TIMESLOT]->(t:Timeslot {id: $timeslotID})
 	MATCH (t) -[r:OFFERED_ON]-> (wd:Weekday)
 	DELETE r
 	`
@@ -110,7 +110,7 @@ func (w WeekdayRepositoryImpl) DeleteAllWeekdaysFromTimeslot(timeslot *dao.Times
 	params := map[string]interface{}{
 		"departmentID": timeslot.DepartmentID,
 		"workplaceID":  timeslot.WorkplaceID,
-		"timeslotName": timeslot.Name,
+		"timeslotID":   timeslot.ID,
 	}
 
 	_, err := neo4j.ExecuteQuery(
@@ -132,7 +132,7 @@ func (w WeekdayRepositoryImpl) AddWeekdayToTimeslot(timeslot *dao.Timeslot, week
 	/* Adds a weekday to a timeslot */
 
 	query := `
-    MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(wp:Workplace {id: $workplaceID})-[:HAS_TIMESLOT]->(t:Timeslot {name: $timeslotName})
+    MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(wp:Workplace {id: $workplaceID})-[:HAS_TIMESLOT]->(t:Timeslot {id: $timeslotID})
     MATCH (wd:Weekday {id: $weekdayID})
     MERGE (t)-[r:OFFERED_ON]->(wd)
     ON CREATE SET 
@@ -152,7 +152,7 @@ func (w WeekdayRepositoryImpl) AddWeekdayToTimeslot(timeslot *dao.Timeslot, week
 	params := map[string]interface{}{
 		"departmentID": timeslot.DepartmentID,
 		"workplaceID":  timeslot.WorkplaceID,
-		"timeslotName": timeslot.Name,
+		"timeslotID":   timeslot.ID,
 		"weekdayID":    weekday.ID,
 		"startTime":    weekday.StartTime,
 		"endTime":      weekday.EndTime,
@@ -201,7 +201,7 @@ func (w WeekdayRepositoryImpl) DeleteWeekdayFromTimeslot(timeslot *dao.Timeslot,
 	/* Deletes a weekday from a timeslot */
 
 	query := `
-    MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(wp:Workplace {id: $workplaceID})-[:HAS_TIMESLOT]->(t:Timeslot {name: $timeslotName})
+    MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(wp:Workplace {id: $workplaceID})-[:HAS_TIMESLOT]->(t:Timeslot {id: $timeslotID})
     MATCH (wd:Weekday {id: $weekdayID})
     MATCH (t)-[r:OFFERED_ON]->(wd)
     DELETE r
@@ -209,7 +209,7 @@ func (w WeekdayRepositoryImpl) DeleteWeekdayFromTimeslot(timeslot *dao.Timeslot,
 	params := map[string]interface{}{
 		"departmentID": timeslot.DepartmentID,
 		"workplaceID":  timeslot.WorkplaceID,
-		"timeslotName": timeslot.Name,
+		"timeslotID":   timeslot.ID,
 		"weekdayID":    weekday.ID,
 	}
 
@@ -231,7 +231,7 @@ func (w WeekdayRepositoryImpl) DeleteWeekdayFromTimeslot(timeslot *dao.Timeslot,
 func (w WeekdayRepositoryImpl) UpdateWeekdayForTimeslot(timeslot *dao.Timeslot, weekday *dao.OnWeekday) ([]dao.OnWeekday, error) {
 
 		query := `
-	    MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(wp:Workplace {id: $workplaceID})-[:HAS_TIMESLOT]->(t:Timeslot {name: $timeslotName})
+	    MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(wp:Workplace {id: $workplaceID})-[:HAS_TIMESLOT]->(t:Timeslot {id: $timeslotID})
 	    MATCH (wd:Weekday {id: $weekdayID})
 	    MATCH (t)-[r:OFFERED_ON]->(wd)
 	    SET r.start_time = time($startTime), r.end_time = time($endTime)
@@ -242,7 +242,7 @@ func (w WeekdayRepositoryImpl) UpdateWeekdayForTimeslot(timeslot *dao.Timeslot, 
 		params := map[string]interface{}{
 			"departmentID": timeslot.DepartmentID,
 			"workplaceID":  timeslot.WorkplaceName,
-			"timeslotName":   timeslot.Name,
+			"timeslotID":   timeslot.ID,
 			"weekdayID":      weekday.ID,
 			"startTime":      weekday.StartTime,
 			"endTime":        weekday.EndTime,

@@ -91,12 +91,13 @@ def create_timeslots() -> None:
             )
 
             timeslot_name = timeslot["name"]
+            timeslot_id = timeslot["id"]
             department_id = timeslot["department_id"]
             workplace_id = timeslot["workplace_id"]
 
             data = {
+                "id": timeslot_id,
                 "name": timeslot_name,
-                "active": True,
             }
 
             req = requests.post(
@@ -118,22 +119,22 @@ def create_timeslot_offered_on() -> None:
 
         for i, timeslot in enumerate(offered_on):
             logging.info(
-                f"Uploading timeslot offered on {i+1}/{len(offered_on)}: {timeslot['timeslot_name']}"
+                f"Uploading timeslot offered on {i+1}/{len(offered_on)}: {timeslot['timeslot_id']}"
             )
 
-            timeslot_name = timeslot["timeslot_name"]
+            timeslot_id = timeslot["timeslot_id"]
             department_id = timeslot["department_id"]
             workplace_id = timeslot["workplace_id"]
             data = timeslot["data"]
 
             req = requests.post(
-                f"{URL}/department/{department_id}/workplace/{workplace_id}/timeslot/{timeslot_name}/weekday/bulk",
+                f"{URL}/department/{department_id}/workplace/{workplace_id}/timeslot/{timeslot_id}/weekday/bulk",
                 json=data,
             )
 
             if req.status_code != 201:
                 logging.info(
-                    f"Error uploading timeslot offered on {timeslot_name}: {req.text}. Status: {req.status_code}"
+                    f"Error uploading timeslot offered on {timeslot_id}: {req.text}. Status: {req.status_code}"
                 )
                 continue
 

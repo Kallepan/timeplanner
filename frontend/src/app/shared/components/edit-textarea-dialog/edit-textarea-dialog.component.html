@@ -1,0 +1,7 @@
+<app-dialog-layout [control]="control" [title]="title">
+  <mat-form-field body>
+    <mat-label>{{ label }}</mat-label>
+    <textarea matInput [formControl]="control" [placeholder]="placeholder"> </textarea>
+    <mat-hint>{{ hint }}</mat-hint>
+  </mat-form-field>
+</app-dialog-layout>

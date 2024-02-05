@@ -1,13 +1,11 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
-import { EditableTimetableComponent } from '../editable-timetable/editable-timetable.component';
-import { ActionsComponent } from '../actions/actions.component';
-import { PlannerStateHandlerService } from '../../services/planner-state-handler.service';
-import { PersonListComponent } from '../person-list/person-list.component';
-import { ActivatedRoute } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { filter, map } from 'rxjs';
+import { Component, inject } from '@angular/core';
 import { TimetableDataContainerService } from '@app/shared/services/timetable-data-container.service';
+import { PlannerStateHandlerService } from '../../services/planner-state-handler.service';
+import { ActionsComponent } from '../actions/actions.component';
+import { EditableTimetableComponent } from '../editable-timetable/editable-timetable.component';
+import { PersonListComponent } from '../person-list/person-list.component';
+import { ActiveWeekHandlerService } from '@app/shared/services/active-week-handler.service';
 
 @Component({
   selector: 'app-landing',
@@ -17,40 +15,8 @@ import { TimetableDataContainerService } from '@app/shared/services/timetable-da
   styleUrl: './landing.component.scss',
   providers: [],
 })
-export class LandingComponent implements OnInit {
+export class LandingComponent {
   timetableDataContainerService = inject(TimetableDataContainerService);
+  activeWeekHandlerService = inject(ActiveWeekHandlerService);
   plannerStateHandlerService = inject(PlannerStateHandlerService);
-  private destroyRef$ = inject(DestroyRef);
-
-  // router
-  private route = inject(ActivatedRoute);
-
-  ngOnInit(): void {
-    // fetch department query param
-    this.route.queryParams
-      .pipe(
-        takeUntilDestroyed(this.destroyRef$),
-        // set the department
-        map((params) => params['department']),
-        filter((department): department is string => !!department),
-        map((department) => department.toLowerCase()),
-        // fetch the current date
-        map((department) => {
-          const currentDate = new Date();
-
-          return {
-            department,
-            currentDate,
-          };
-        }),
-      )
-      .subscribe(({ department, currentDate }) => {
-        // set both the department and the current date
-        // This will cause the activeWeek signal to be updated
-        // and fetch all workdays for the current week we want to view
-        setTimeout(() => {
-          this.plannerStateHandlerService.setActiveView(department, currentDate);
-        }, 0);
-      });
-  }
 }

@@ -4,22 +4,21 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterLink } from '@angular/router';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { constants } from '@app/constants/constants';
 import { CustomHeaderComponent } from '../custom-header/custom-header.component';
 import { LoginComponent } from '../login/login.component';
-import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatSlideToggleModule, MatTooltipModule, MatToolbarModule, MatIconModule, MatButtonModule, LoginComponent, CustomHeaderComponent, RouterLink],
+  imports: [CommonModule, MatSlideToggleModule, MatTooltipModule, MatToolbarModule, MatIconModule, MatButtonModule, LoginComponent, CustomHeaderComponent],
 })
 export class HeaderComponent {
   title = constants.TITLE_SHORT;
   @Input() isDark = false;
-  @Output() onToggleTheme = new EventEmitter<void>();
-  @Output() onToggleSidenav = new EventEmitter<void>();
+  @Output() themeToggled = new EventEmitter<void>();
+  @Output() sidenavToggled = new EventEmitter<void>();
 }

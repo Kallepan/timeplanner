@@ -1,19 +1,31 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ActionsComponent } from './actions.component';
-import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSlideToggleHarness } from '@angular/material/slide-toggle/testing';
+import { ActivatedRoute } from '@angular/router';
+import { ActionsComponent } from './actions.component';
 
 describe('ActionsComponent', () => {
   let component: ActionsComponent;
   let fixture: ComponentFixture<ActionsComponent>;
   let loader: HarnessLoader;
+  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
 
   beforeEach(async () => {
+    mockActivatedRoute = jasmine.createSpyObj('ActivatedRoute', [''], {
+      snapshot: {
+        data: {
+          title: 'Test',
+          departmentId: 'departmentId',
+        },
+      },
+    });
+
     await TestBed.configureTestingModule({
       imports: [ActionsComponent, MatSlideToggleModule],
+      providers: [{ provide: ActivatedRoute, useValue: mockActivatedRoute }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ActionsComponent);
@@ -56,5 +68,46 @@ describe('ActionsComponent', () => {
 
     await toggle.toggle();
     expect(component.togglePersonsLabel.emit).toHaveBeenCalledWith(true);
+  });
+
+  it('should emit toggleComments', async () => {
+    spyOn(component.toggleComments, 'emit');
+    const toggle = await loader.getHarness(MatSlideToggleHarness.with({ selector: '#toggleCommentsLabel' }));
+    await toggle.toggle();
+    expect(component.toggleComments.emit).toHaveBeenCalledWith(true);
+
+    await toggle.toggle();
+    expect(component.toggleComments.emit).toHaveBeenCalledWith(false);
+  });
+
+  it('should emit shiftWeek positive', async () => {
+    spyOn(component.shiftWeek, 'emit');
+    const button = fixture.nativeElement.querySelector('#shift-forward-button');
+
+    button.click();
+
+    expect(component.shiftWeek.emit).toHaveBeenCalledWith(1);
+  });
+
+  it('should emit shiftWeek negative', async () => {
+    spyOn(component.shiftWeek, 'emit');
+    const button = fixture.nativeElement.querySelector('#shift-backward-button');
+
+    button.click();
+
+    expect(component.shiftWeek.emit).toHaveBeenCalledWith(-1);
+  });
+
+  it('should route to department', async () => {
+    const editRouteButton = fixture.nativeElement.querySelector('#edit-route-button');
+    expect(editRouteButton).toBeTruthy();
+    expect(editRouteButton.textContent).toContain('Editieransicht');
+
+    editRouteButton.click();
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      expect(location.pathname).toContain('planner');
+      expect(location.pathname).toContain('departmentId');
+    });
   });
 });

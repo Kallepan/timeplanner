@@ -43,7 +43,7 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 			},
 		},
 		{
@@ -72,7 +72,7 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 			},
 		},
 		// Add more test steps here...
@@ -80,13 +80,16 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 
 	for i, testStep := range testSteps {
 		t.Run("Test Bulk Update Weekdays For Timeslot", func(t *testing.T) {
-			TimeslotRepository.On("FindTimeslotByName").Return(testStep.findValue, testStep.findError)
+			TimeslotRepository.On("FindTimeslotByID").Return(testStep.findValue, testStep.findError)
 			WeekdayRepository.On("DeleteAllWeekdaysFromTimeslot").Return(nil, testStep.additionalError)
 			WeekdayRepository.On("AddWeekdaysToTimeslot").Return(testStep.saveValue, testStep.saveError)
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "POST", testStep.ParamsToGinParams(), testStep.mockRequestData)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithMapParams(testStep.params).WithBody(testStep.mockRequestData).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when getting GIN context", i)
+			}
 
 			weekdayService.BulkUpdateWeekdaysForTimeslot(c)
 			response := w.Result()
@@ -142,7 +145,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 			},
 		},
 		{
@@ -159,7 +162,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 			},
 		},
 		{
@@ -188,7 +191,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 			},
 		},
 		{
@@ -203,12 +206,15 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 
 	for i, testStep := range testSteps {
 		t.Run("Test Add Weekday To Timeslot", func(t *testing.T) {
-			TimeslotRepository.On("FindTimeslotByName").Return(testStep.findValue, testStep.findError)
+			TimeslotRepository.On("FindTimeslotByID").Return(testStep.findValue, testStep.findError)
 			WeekdayRepository.On("AddWeekdayToTimeslot").Return(testStep.saveValue, testStep.saveError)
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "POST", testStep.ParamsToGinParams(), testStep.mockRequestData)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithMapParams(testStep.params).WithBody(testStep.mockRequestData).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when getting GIN context", i)
+			}
 
 			weekdayService.AddWeekdayToTimeslot(c)
 			response := w.Result()
@@ -256,7 +262,7 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 				"weekdayName":  "test",
 			},
 		},
@@ -268,7 +274,7 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 				"weekdayName":  "test",
 			},
 		},
@@ -279,7 +285,7 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 				"weekdayName":  "test",
 			},
 		},
@@ -291,7 +297,10 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "DELETE", testStep.ParamsToGinParams(), testStep.mockRequestData)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("DELETE").WithMapParams(testStep.params).WithBody(testStep.mockRequestData).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when getting GIN context", i)
+			}
 
 			weekdayService.DeleteWeekdayFromTimeslot(c)
 			response := w.Result()

@@ -17,16 +17,8 @@ describe('MainComponent', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [
-        MainComponent,
-        BrowserAnimationsModule,
-        RouterTestingModule,
-        HttpClientTestingModule,
-        MatSnackBarModule
-      ],
-      providers: [
-        OverlayContainer
-      ]
+      imports: [MainComponent, BrowserAnimationsModule, RouterTestingModule, HttpClientTestingModule, MatSnackBarModule],
+      providers: [OverlayContainer],
     });
     fixture = TestBed.createComponent(MainComponent);
     overlayContainer = TestBed.inject(OverlayContainer);

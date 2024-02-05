@@ -14,8 +14,8 @@ type OnWeekdayResponse struct {
 
 type TimeslotResponse struct {
 	Base
+	ID           string              `json:"id"`
 	Name         string              `json:"name"`
-	Active       *bool               `json:"active"`
 	DepartmentID string              `json:"department_id"`
 	WorkplaceID  string              `json:"workplace_id"`
 	Weekdays     []OnWeekdayResponse `json:"weekdays"`
@@ -56,6 +56,6 @@ func (w *WeekdaysRequest) Validate() error {
 }
 
 type TimeslotRequest struct {
-	Name   string `json:"name" binding:"required"`
-	Active *bool  `json:"active" binding:"required"`
+	ID   string `json:"id" binding:"required"`
+	Name string `json:"name" binding:"required"`
 }

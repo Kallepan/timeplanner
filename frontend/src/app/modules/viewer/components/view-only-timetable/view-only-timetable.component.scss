@@ -4,7 +4,7 @@
 
 .timetable {
   display: grid;
-  grid-template-columns: 1fr min-content repeat(7, 1fr);
+  grid-template-columns: min-content min-content repeat(7, 1fr);
   grid-auto-rows: auto;
   border: 2px solid var(--border-color);
   border-radius: 5px;
@@ -26,6 +26,7 @@
 .vertical-line {
   height: 100%;
   border-right: 1px solid var(--border-color);
+  z-index: 100;
 }
 
 .horizontal-line {
@@ -33,6 +34,7 @@
   grid-column-start: 3;
   grid-column-end: 10;
   border-bottom: 1px solid var(--border-color);
+  z-index: 100;
 }
 
 .not-occupied {

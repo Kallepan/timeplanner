@@ -320,6 +320,273 @@ func TestGetWorkday(t *testing.T) {
 	}
 }
 
+func TestUpdateWorkday(t *testing.T) {
+	workdayRepository := mock.NewWorkdayRepositoryMock()
+	workdayService := WorkdayServiceImpl{
+		WorkdayRepository: workdayRepository,
+	}
+
+	falseValue := false
+	trueValue := true
+	testSteps := []ServiceTestPOST{
+		{
+			// alternate formatting of time
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00",
+				"end_time":   "16:00",
+				"comment":    "comment",
+				"active":     &falseValue,
+			},
+			expectedStatusCode: http.StatusOK,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
+			},
+		},
+		{
+			// save error
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+				"active":     &falseValue,
+			},
+			expectedStatusCode: http.StatusInternalServerError,
+			saveError:          errors.New("repository error"),
+			params: map[string]string{
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
+			},
+		},
+		{
+			// valid request with false active
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+				"active":     &falseValue,
+			},
+			expectedStatusCode: http.StatusOK,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
+			},
+		},
+		{
+			// invalid request with no row found
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+				"active":     &falseValue,
+			},
+			expectedStatusCode: http.StatusNotFound,
+			findError:          pkg.ErrNoRows,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
+			},
+		},
+		{
+			// valid request with true active
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+				"active":     &trueValue,
+			},
+			expectedStatusCode: http.StatusOK,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
+			},
+		},
+		{
+			// missing date
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+				"active":     &trueValue,
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+			},
+		},
+		{
+			// missing timeslot
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+				"active":     &trueValue,
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"date":         "2021-01-01",
+			},
+		},
+		{
+			// missing workplace
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+				"active":     &trueValue,
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "department1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
+			},
+		},
+		{
+			// missing department
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+				"active":     &trueValue,
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"workplaceID": "workplace1",
+				"timeslotID":  "timeslot1",
+				"date":        "2021-01-01",
+			},
+		},
+		{
+			// missing comment
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"active":     &trueValue,
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
+			},
+		},
+		{
+			// missing end_time
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"comment":    "comment",
+				"active":     &trueValue,
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
+			},
+		},
+		{
+			// missing start_time
+			mockRequestData: map[string]interface{}{
+				"end_time": "16:00:00",
+				"comment":  "comment",
+				"active":   &trueValue,
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
+			},
+		},
+		{
+			// missing active
+			mockRequestData: map[string]interface{}{
+				"start_time": "08:00:00",
+				"end_time":   "16:00:00",
+				"comment":    "comment",
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
+			},
+		},
+		{
+			// invalid start_time and end_time
+			mockRequestData: map[string]interface{}{
+				"start_time": "16:00:00",
+				"end_time":   "08:00:00",
+				"comment":    "comment",
+				"active":     &trueValue,
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "department1",
+				"workplaceID":  "workplace1",
+				"timeslotID":   "timeslot1",
+				"date":         "2021-01-01",
+			},
+		},
+	}
+
+	for i, testStep := range testSteps {
+		t.Run("Test Update Workday", func(t *testing.T) {
+			workdayRepository.On("GetWorkday").Return(testStep.findValue, testStep.findError)
+			workdayRepository.On("Save").Return(testStep.saveValue, testStep.saveError)
+
+			// get GIN context
+			w := httptest.NewRecorder()
+			c, err := mock.NewTestContextBuilder(w).
+				WithQueries(testStep.params).
+				WithBody(testStep.mockRequestData).
+				WithMethod("POST").Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error while building context: %s", i, err)
+			}
+
+			workdayService.UpdateWorkday(c)
+			response := w.Result()
+
+			if response.StatusCode != testStep.expectedStatusCode {
+				t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
+			}
+		})
+	}
+}
+
 func TestAssignPersonToWorkday(t *testing.T) {
 	workdayRepository := mock.NewWorkdayRepositoryMock()
 	workdayService := WorkdayServiceImpl{
@@ -333,7 +600,7 @@ func TestAssignPersonToWorkday(t *testing.T) {
 				"person_id":     "person1",
 				"department_id": "department1",
 				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
+				"timeslot_id":   "timeslot1",
 				"date":          "2021-01-01",
 			},
 			expectedStatusCode: http.StatusCreated,
@@ -344,7 +611,7 @@ func TestAssignPersonToWorkday(t *testing.T) {
 			mockRequestData: map[string]interface{}{
 				"department_id": "department1",
 				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
+				"timeslot_id":   "timeslot1",
 				"date":          "2021-01-01",
 			},
 			expectedStatusCode: http.StatusBadRequest,
@@ -353,10 +620,10 @@ func TestAssignPersonToWorkday(t *testing.T) {
 		{
 			// missing department_id
 			mockRequestData: map[string]interface{}{
-				"person_id":     "person1",
-				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
-				"date":          "2021-01-01",
+				"person_id":    "person1",
+				"workplace_id": "workplace1",
+				"timeslot_id":  "timeslot1",
+				"date":         "2021-01-01",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
@@ -367,7 +634,7 @@ func TestAssignPersonToWorkday(t *testing.T) {
 				"person_id":     "person1",
 				"department_id": "department1",
 				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
+				"timeslot_id":   "timeslot1",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
@@ -377,7 +644,7 @@ func TestAssignPersonToWorkday(t *testing.T) {
 				"person_id":     "person1",
 				"department_id": "department1",
 				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
+				"timeslot_id":   "timeslot1",
 				"date":          "2021-01-01",
 			},
 			// repository error
@@ -422,7 +689,7 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 				"person_id":     "person1",
 				"department_id": "department1",
 				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
+				"timeslot_id":   "timeslot1",
 				"date":          "2021-01-01",
 			},
 			expectedStatusCode: http.StatusOK,
@@ -433,7 +700,7 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 			mockRequestData: map[string]interface{}{
 				"department_id": "department1",
 				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
+				"timeslot_id":   "timeslot1",
 				"date":          "2021-01-01",
 			},
 			expectedStatusCode: http.StatusBadRequest,
@@ -442,10 +709,10 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 		{
 			// missing department_id
 			mockRequestData: map[string]interface{}{
-				"person_id":     "person1",
-				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
-				"date":          "2021-01-01",
+				"person_id":    "person1",
+				"workplace_id": "workplace1",
+				"timeslot_id":  "timeslot1",
+				"date":         "2021-01-01",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
@@ -456,7 +723,7 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 				"person_id":     "person1",
 				"department_id": "department1",
 				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
+				"timeslot_id":   "timeslot1",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 			saveError:          nil,
@@ -466,7 +733,7 @@ func TestUnassignPersonFromWorkday(t *testing.T) {
 				"person_id":     "person1",
 				"department_id": "department1",
 				"workplace_id":  "workplace1",
-				"timeslot_name": "timeslot1",
+				"timeslot_id":   "timeslot1",
 				"date":          "2021-01-01",
 			},
 			// repository error

@@ -40,7 +40,7 @@ export class NotificationService {
   constructor() {
     this._message.pipe(concatMap((message) => this._getSnackBarDelay(message))).subscribe((res) => {
       this._snackBar.open(res.message, 'Dismiss', {
-        duration: 3000,
+        duration: 2500,
         horizontalPosition: this._horizontalPosition,
         verticalPosition: this._verticalPosition,
         panelClass: `${res.type}-snackbar`,

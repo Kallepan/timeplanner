@@ -7,15 +7,29 @@ import { APIResponse } from '@app/core/interfaces/response';
 import { constants } from '@app/constants/constants';
 import { provideHttpClient } from '@angular/common/http';
 import { AssignPersonToWorkdayTimeslotRequest, UnassignPersonFromWorkdayTimeslotRequest, WorkdayTimeslot } from '../interfaces/workday_timeslot';
+import { DepartmentWithMetadata } from '../interfaces/department';
+import { WorkplaceWithMetadata } from '../interfaces/workplace';
+import { TimeslotWithMetadata } from '../interfaces/timeslot';
 
 const MOCK_WORKDAY: WorkdayTimeslot = {
-  department: 'department1',
+  department: {
+    name: 'department1',
+    id: 'department1',
+  } as DepartmentWithMetadata,
   date: '2022-01-01',
-  workplace: 'workplace1',
-  timeslot: 'timeslot1',
+  workplace: {
+    name: 'workplace1',
+    id: 'workplace1',
+  } as WorkplaceWithMetadata,
+  timeslot: {
+    name: 'timeslot1',
+    id: 'timeslot1',
+  } as TimeslotWithMetadata,
   start_time: '09:00',
   end_time: '10:00',
   weekday: 'MON',
+  duration_in_minutes: 60,
+  comment: '',
 
   person: null,
 };
@@ -109,10 +123,10 @@ describe('WorkdayAPIService', () => {
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
 
     const expectedBody: UnassignPersonFromWorkdayTimeslotRequest = {
-      department_name: departmentName,
+      department_id: departmentName,
       date: date,
-      workplace_name: workplace,
-      timeslot_name: timeslot,
+      workplace_id: workplace,
+      timeslot_id: timeslot,
       person_id: personId,
     };
     expect(req.request.body).toEqual(expectedBody);
@@ -143,10 +157,10 @@ describe('WorkdayAPIService', () => {
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
 
     const expectedBody: AssignPersonToWorkdayTimeslotRequest = {
-      department_name: departmentName,
+      department_id: departmentName,
       date: date,
-      workplace_name: workplace,
-      timeslot_name: timeslot,
+      workplace_id: workplace,
+      timeslot_id: timeslot,
       person_id: personId,
     };
     expect(req.request.body).toEqual(expectedBody);

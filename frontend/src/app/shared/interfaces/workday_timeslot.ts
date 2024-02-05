@@ -14,6 +14,7 @@ export type WorkdayTimeslot = {
   start_time: string;
   end_time: string;
   duration_in_minutes: number;
+  comment: string;
 
   person: PersonWithMetadata | null;
 };
@@ -22,7 +23,7 @@ export type AssignPersonToWorkdayTimeslotRequest = {
   date: string;
   department_id: string;
   workplace_id: string;
-  timeslot_name: string;
+  timeslot_id: string;
   person_id: string;
 };
 
@@ -30,6 +31,19 @@ export type UnassignPersonFromWorkdayTimeslotRequest = {
   date: string;
   department_id: string;
   workplace_id: string;
-  timeslot_name: string;
+  timeslot_id: string;
   person_id: string;
+};
+
+export type UpdateWorkdayRequest = {
+  date: string;
+  department_id: string;
+  workplace_id: string;
+  timeslot_id: string;
+
+  // attributes to update
+  start_time: string;
+  end_time: string;
+  comment: string;
+  active: boolean;
 };

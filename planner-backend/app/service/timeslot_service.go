@@ -15,7 +15,7 @@ import (
 
 type TimeslotService interface {
 	GetAllTimeslots(c *gin.Context)
-	GetTimeslotByName(c *gin.Context)
+	GetTimeslotByID(c *gin.Context)
 	AddTimeslot(c *gin.Context)
 	UpdateTimeslot(c *gin.Context)
 	DeleteTimeslot(c *gin.Context)
@@ -59,23 +59,23 @@ func (t TimeslotServiceImpl) GetAllTimeslots(c *gin.Context) {
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
 }
 
-func (t TimeslotServiceImpl) GetTimeslotByName(c *gin.Context) {
-	/* GetTimeslotByName is a function to get timeslot by name
+func (t TimeslotServiceImpl) GetTimeslotByID(c *gin.Context) {
+	/* GetTimeslotByID is a function to get timeslot by id
 	 * @param c is gin context
 	 * @return void
 	 */
 
 	defer pkg.PanicHandler(c)
-	slog.Info("start to execute program get timeslot by name")
+	slog.Info("start to execute program get timeslot by id")
 
 	departmentID := c.Param("departmentID")
 	workplaceID := c.Param("workplaceID")
-	timeslotName := c.Param("timeslotName")
-	if departmentID == "" || workplaceID == "" || timeslotName == "" {
+	timeslotID := c.Param("timeslotID")
+	if departmentID == "" || workplaceID == "" || timeslotID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	rawData, err := t.TimeslotRepository.FindTimeslotByName(departmentID, workplaceID, timeslotName)
+	rawData, err := t.TimeslotRepository.FindTimeslotByID(departmentID, workplaceID, timeslotID)
 	switch err {
 	case nil:
 		break
@@ -110,7 +110,7 @@ func (t TimeslotServiceImpl) AddTimeslot(c *gin.Context) {
 	if departmentID == "" || workplaceID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	_, err := t.TimeslotRepository.FindTimeslotByName(departmentID, workplaceID, timeslotRequest.Name)
+	_, err := t.TimeslotRepository.FindTimeslotByID(departmentID, workplaceID, timeslotRequest.Name)
 	switch err {
 	case nil:
 		pkg.PanicException(constant.Conflict)
@@ -149,12 +149,12 @@ func (t TimeslotServiceImpl) UpdateTimeslot(c *gin.Context) {
 
 	departmentID := c.Param("departmentID")
 	workplaceID := c.Param("workplaceID")
-	timeslotName := c.Param("timeslotName")
-	if timeslotName == "" || departmentID == "" || workplaceID == "" {
+	timeslotID := c.Param("timeslotID")
+	if timeslotID == "" || departmentID == "" || workplaceID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	timeslot, err := t.TimeslotRepository.FindTimeslotByName(departmentID, workplaceID, timeslotName)
+	timeslot, err := t.TimeslotRepository.FindTimeslotByID(departmentID, workplaceID, timeslotID)
 	switch err {
 	case nil:
 		break
@@ -172,7 +172,6 @@ func (t TimeslotServiceImpl) UpdateTimeslot(c *gin.Context) {
 	}
 
 	timeslot.Name = timeslotRequest.Name
-	timeslot.Active = *timeslotRequest.Active
 
 	rawData, err := t.TimeslotRepository.Save(departmentID, workplaceID, &timeslot)
 	switch err {
@@ -201,12 +200,12 @@ func (t TimeslotServiceImpl) DeleteTimeslot(c *gin.Context) {
 
 	departmentID := c.Param("departmentID")
 	workplaceID := c.Param("workplaceID")
-	timeslotName := c.Param("timeslotName")
-	if departmentID == "" || workplaceID == "" || timeslotName == "" {
+	timeslotID := c.Param("timeslotID")
+	if departmentID == "" || workplaceID == "" || timeslotID == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	timeslot, err := t.TimeslotRepository.FindTimeslotByName(departmentID, workplaceID, timeslotName)
+	timeslot, err := t.TimeslotRepository.FindTimeslotByID(departmentID, workplaceID, timeslotID)
 	switch err {
 	case nil:
 		break
@@ -232,8 +231,8 @@ func mapTimeslotToTimeslotResponse(timeslot dao.Timeslot) dco.TimeslotResponse {
 	 */
 
 	return dco.TimeslotResponse{
+		ID:           timeslot.ID,
 		Name:         timeslot.Name,
-		Active:       &timeslot.Active,
 		DepartmentID: timeslot.DepartmentID,
 		WorkplaceID:  timeslot.WorkplaceID,
 		Weekdays:     mapOnWeekdayListToWeekdayResponseList(timeslot.Weekdays),
@@ -265,14 +264,9 @@ func mapTimeslotRequestToTimeslot(timeslot dco.TimeslotRequest) dao.Timeslot {
 	 * @return dco.TimeslotRequest
 	 */
 
-	var active bool
-	if timeslot.Active != nil {
-		active = *timeslot.Active
-	}
-
 	return dao.Timeslot{
-		Name:   timeslot.Name,
-		Active: active,
+		ID:   timeslot.ID,
+		Name: timeslot.Name,
 	}
 }
 

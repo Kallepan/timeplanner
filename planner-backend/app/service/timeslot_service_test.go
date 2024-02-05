@@ -27,7 +27,7 @@ func TestDeleteTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 			},
 			mockError:          nil,
 			expectedStatusCode: http.StatusOK,
@@ -49,7 +49,7 @@ func TestDeleteTimeslot(t *testing.T) {
 			},
 			params: map[string]string{
 				"departmentID": "test",
-				"timeslotName": "test",
+				"timeslotID":   "test",
 			},
 			mockError:          pkg.ErrNoRows,
 			expectedStatusCode: http.StatusBadRequest,
@@ -61,7 +61,10 @@ func TestDeleteTimeslot(t *testing.T) {
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "DELETE", testStep.ParamsToGinParams(), nil)
+		c, err := mock.NewTestContextBuilder(w).WithMethod("DELETE").WithMapParams(testStep.params).Build()
+		if err != nil {
+			t.Errorf("Test Step %d: Error when building context", i)
+		}
 
 		timeslotService.DeleteTimeslot(c)
 		response := w.Result()
@@ -81,10 +84,11 @@ func TestUpdateTimeslot(t *testing.T) {
 	testSteps := []ServiceTestPUT{
 		{
 			mockRequestData: map[string]interface{}{
-				"name":   "newName",
-				"active": true,
+				"id":   "test",
+				"name": "newName",
 			},
 			findValue: dao.Timeslot{
+				ID:   "oldID",
 				Name: "oldName",
 			},
 			saveValue: dao.Timeslot{
@@ -96,15 +100,16 @@ func TestUpdateTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "oldName",
+				"timeslotID":   "oldID",
 			},
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"name":   "newName",
-				"active": false,
+				"id":   "test",
+				"name": "newName",
 			},
 			findValue: dao.Timeslot{
+				ID:   "oldID",
 				Name: "oldName",
 			},
 			saveValue: dao.Timeslot{
@@ -116,7 +121,7 @@ func TestUpdateTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "oldName",
+				"timeslotID":   "oldID",
 			},
 		},
 		{
@@ -135,12 +140,12 @@ func TestUpdateTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "oldName",
+				"timeslotID":   "oldName",
 			},
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"name": "newName",
+				"id": "test",
 			},
 			findValue:          nil,
 			saveValue:          nil,
@@ -150,7 +155,7 @@ func TestUpdateTimeslot(t *testing.T) {
 			params: map[string]string{
 				"departmentID": "test",
 				"workplaceID":  "test",
-				"timeslotName": "oldName",
+				"timeslotID":   "oldName",
 			},
 		},
 		{
@@ -178,12 +183,15 @@ func TestUpdateTimeslot(t *testing.T) {
 	}
 
 	for i, testStep := range testSteps {
-		TimeslotRepository.On("FindTimeslotByName").Return(testStep.findValue, testStep.findError)
+		TimeslotRepository.On("FindTimeslotByID").Return(testStep.findValue, testStep.findError)
 		TimeslotRepository.On("Save").Return(testStep.saveValue, testStep.saveError)
 
 		// get GIN context
 		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "PUT", testStep.ParamsToGinParams(), testStep.mockRequestData)
+		c, err := mock.NewTestContextBuilder(w).WithMethod("PUT").WithMapParams(testStep.params).WithBody(testStep.mockRequestData).Build()
+		if err != nil {
+			t.Errorf("Test Step %d: Error when building context", i)
+		}
 
 		timeslotService.UpdateTimeslot(c)
 		response := w.Result()
@@ -215,48 +223,17 @@ func TestAddTimeslot(t *testing.T) {
 
 	testSteps := []ServiceTestPOST{
 		{
+			// valid request
 			mockRequestData: map[string]interface{}{
-				"name":   "test",
-				"active": true,
-			},
-			findValue: nil,
-			saveValue: dao.Timeslot{
-				Name: "test",
-			},
-			expectedStatusCode: http.StatusCreated,
-			findError:          pkg.ErrNoRows,
-			saveError:          nil,
-			params: map[string]string{
-				"departmentID": "test",
-				"workplaceID":  "test",
-			},
-		},
-		{
-			mockRequestData: map[string]interface{}{
-				"name":   "test",
-				"active": false,
-			},
-			findValue: nil,
-			saveValue: dao.Timeslot{
-				Name: "test",
-			},
-			expectedStatusCode: http.StatusCreated,
-			findError:          pkg.ErrNoRows,
-			saveError:          nil,
-			params: map[string]string{
-				"departmentID": "test",
-				"workplaceID":  "test",
-			},
-		},
-		{
-			mockRequestData: map[string]interface{}{
+				"id":   "test",
 				"name": "test",
 			},
 			findValue: nil,
 			saveValue: dao.Timeslot{
+				ID:   "test",
 				Name: "test",
 			},
-			expectedStatusCode: http.StatusBadRequest,
+			expectedStatusCode: http.StatusCreated,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
 			params: map[string]string{
@@ -266,10 +243,11 @@ func TestAddTimeslot(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"name":   "test",
-				"active": true,
+				"id":   "test",
+				"name": "test",
 			},
 			findValue: dao.Timeslot{
+				ID:   "test",
 				Name: "test",
 			},
 			saveValue:          nil,
@@ -283,11 +261,12 @@ func TestAddTimeslot(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"name":   "test",
-				"active": true,
+				"id":   "test",
+				"name": "test",
 			},
 			findValue: nil,
 			saveValue: dao.Timeslot{
+				ID:   "test",
 				Name: "test",
 			},
 			expectedStatusCode: http.StatusBadRequest,
@@ -295,9 +274,19 @@ func TestAddTimeslot(t *testing.T) {
 			saveError:          nil,
 		},
 		{
+			mockRequestData: map[string]interface{}{
+				"id": "test",
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			findError:          pkg.ErrNoRows,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "test",
+				"workplaceID":  "test",
+			},
+		},
+		{
 			mockRequestData:    map[string]interface{}{},
-			findValue:          nil,
-			saveValue:          nil,
 			expectedStatusCode: http.StatusBadRequest,
 			findError:          pkg.ErrNoRows,
 			saveError:          nil,
@@ -308,12 +297,11 @@ func TestAddTimeslot(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"name":   "test",
-				"active": true,
+				"id":   "test",
+				"name": "test",
 			},
 			findValue:          dao.Timeslot{},
-			saveValue:          nil,
-			expectedStatusCode: 500,
+			expectedStatusCode: http.StatusInternalServerError,
 			findError:          pkg.ErrNoRows,
 			saveError:          errors.New("Save error"),
 			params: map[string]string{
@@ -333,12 +321,15 @@ func TestAddTimeslot(t *testing.T) {
 
 	for i, testStep := range testSteps {
 		t.Run("Test Add Timeslot", func(t *testing.T) {
-			TimeslotRepository.On("FindTimeslotByName").Return(testStep.findValue, testStep.findError)
+			TimeslotRepository.On("FindTimeslotByID").Return(testStep.findValue, testStep.findError)
 			TimeslotRepository.On("Save").Return(testStep.saveValue, testStep.saveError)
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "POST", testStep.ParamsToGinParams(), testStep.mockRequestData)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithMapParams(testStep.params).WithBody(testStep.mockRequestData).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when building context", i)
+			}
 
 			timeslotService.AddTimeslot(c)
 			response := w.Result()
@@ -412,7 +403,10 @@ func TestGetAllTimeslots(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "GET", testStep.ParamsToGinParams(), nil)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("GET").WithMapParams(testStep.params).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when building context", i)
+			}
 
 			timeslotService.GetAllTimeslots(c)
 			response := w.Result()
@@ -439,7 +433,7 @@ func TestGetAllTimeslots(t *testing.T) {
 	}
 }
 
-func TestGetTimeslotByName(t *testing.T) {
+func TestGetTimeslotByID(t *testing.T) {
 	TimeslotRepository := mock.NewTimeslotRepositoryMock()
 	timeslotService := TimeslotServiceImpl{
 		TimeslotRepository: TimeslotRepository,
@@ -448,6 +442,7 @@ func TestGetTimeslotByName(t *testing.T) {
 	testSteps := []ServiceTestGET{
 		{
 			mockValue: dao.Timeslot{
+				ID:   "test",
 				Name: "test",
 			},
 			expectedResponse: dao.Timeslot{
@@ -456,13 +451,14 @@ func TestGetTimeslotByName(t *testing.T) {
 			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
 			params: map[string]string{
-				"timeslotName": "test",
+				"timeslotID":   "test",
 				"departmentID": "test",
 				"workplaceID":  "test",
 			},
 		},
 		{
 			mockValue: dao.Timeslot{
+				ID:   "test",
 				Name: "test",
 			},
 			expectedResponse: dao.Timeslot{
@@ -485,7 +481,7 @@ func TestGetTimeslotByName(t *testing.T) {
 			expectedStatusCode: http.StatusBadRequest,
 			mockError:          nil,
 			params: map[string]string{
-				"timeslotName": "test",
+				"timeslotID":   "test",
 				"departmentID": "test",
 			},
 		},
@@ -502,7 +498,7 @@ func TestGetTimeslotByName(t *testing.T) {
 			expectedStatusCode: http.StatusNotFound,
 			mockError:          pkg.ErrNoRows,
 			params: map[string]string{
-				"timeslotName": "test",
+				"timeslotID":   "test",
 				"departmentID": "test",
 				"workplaceID":  "test",
 			},
@@ -511,13 +507,16 @@ func TestGetTimeslotByName(t *testing.T) {
 
 	for i, testStep := range testSteps {
 		t.Run("Test Get Timeslot By Name", func(t *testing.T) {
-			TimeslotRepository.On("FindTimeslotByName").Return(testStep.mockValue, testStep.mockError)
+			TimeslotRepository.On("FindTimeslotByID").Return(testStep.mockValue, testStep.mockError)
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c := mock.GetGinTestContext(w, "GET", testStep.ParamsToGinParams(), nil)
+			c, err := mock.NewTestContextBuilder(w).WithMethod("GET").WithMapParams(testStep.params).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when building context", i)
+			}
 
-			timeslotService.GetTimeslotByName(c)
+			timeslotService.GetTimeslotByID(c)
 			response := w.Result()
 
 			if response.StatusCode != testStep.expectedStatusCode {

@@ -3,10 +3,7 @@
     <app-sidenav (closeSidenav)="sidenav.close()"></app-sidenav>
   </mat-sidenav>
   <mat-sidenav-content class="app-frame">
-    <app-header
-      (onToggleTheme)="toggleTheme()"
-      (onToggleSidenav)="sidenav.toggle()"
-      [isDark]="isDark"></app-header>
+    <app-header (themeToggled)="toggleTheme()" (sidenavToggled)="sidenav.toggle()" [isDark]="isDark"></app-header>
     <router-outlet></router-outlet>
     <br />
   </mat-sidenav-content>

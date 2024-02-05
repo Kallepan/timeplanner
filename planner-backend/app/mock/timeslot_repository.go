@@ -37,12 +37,12 @@ func (r *TimeslotRepositoryMock) FindAllTimeslots(departmentID string, workplace
 	return r.dataContainer["FindAllTimeslots"].([]dao.Timeslot), r.errorContainer["FindAllTimeslots"]
 }
 
-func (r *TimeslotRepositoryMock) FindTimeslotByName(departmentID string, workplaceID string, timeslotName string) (dao.Timeslot, error) {
-	if r.dataContainer["FindTimeslotByName"] == nil {
-		return dao.Timeslot{}, r.errorContainer["FindTimeslotByName"]
+func (r *TimeslotRepositoryMock) FindTimeslotByID(departmentID string, workplaceID string, timeslotID string) (dao.Timeslot, error) {
+	if r.dataContainer["FindTimeslotByID"] == nil {
+		return dao.Timeslot{}, r.errorContainer["FindTimeslotByID"]
 	}
 
-	return r.dataContainer["FindTimeslotByName"].(dao.Timeslot), r.errorContainer["FindTimeslotByName"]
+	return r.dataContainer["FindTimeslotByID"].(dao.Timeslot), r.errorContainer["FindTimeslotByID"]
 }
 
 func (r *TimeslotRepositoryMock) Save(departmentID string, workplaceID string, timeslot *dao.Timeslot) (dao.Timeslot, error) {

@@ -8,5 +8,6 @@
   "trailingComma": "all",
   "bracketSameLine": true,
   "printWidth": 200,
-  "endOfLine": "auto"
+  "endOfLine": "auto",
+  "plugins": ["prettier-plugin-organize-imports"]
 }

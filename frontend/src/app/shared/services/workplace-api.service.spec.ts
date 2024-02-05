@@ -1,10 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { WorkplaceAPIService } from './workplace-api.service';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 
 describe('WorkplaceAPIService', () => {
@@ -13,11 +10,7 @@ describe('WorkplaceAPIService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        WorkplaceAPIService,
-      ],
+      providers: [provideHttpClient(), provideHttpClientTesting(), WorkplaceAPIService],
     });
     service = TestBed.inject(WorkplaceAPIService);
     httpController = TestBed.inject(HttpTestingController);
@@ -35,6 +28,7 @@ describe('WorkplaceAPIService', () => {
     const mockWorkplace = {
       data: [
         {
+          id: 'workplace1',
           name: 'workplace1',
           created_at: new Date(),
           updated_at: new Date(),
@@ -49,9 +43,7 @@ describe('WorkplaceAPIService', () => {
       expect(result).toEqual(mockWorkplace);
     });
 
-    const req = httpController.expectOne(
-      'http://localhost:8080/api/v1/planner/department/department1/workplace',
-    );
+    const req = httpController.expectOne('http://localhost:8080/api/v1/planner/department/department1/workplace');
     expect(req.request.method).toEqual('GET');
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
@@ -63,6 +55,8 @@ describe('WorkplaceAPIService', () => {
     const mockWorkplace = {
       data: {
         name: 'workplace1',
+
+        id: 'workplace1',
         department: 'department1',
         created_at: new Date(),
         updated_at: new Date(),
@@ -76,9 +70,7 @@ describe('WorkplaceAPIService', () => {
       expect(result).toEqual(mockWorkplace);
     });
 
-    const req = httpController.expectOne(
-      'http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1',
-    );
+    const req = httpController.expectOne('http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1');
     expect(req.request.method).toEqual('GET');
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
@@ -90,6 +82,7 @@ describe('WorkplaceAPIService', () => {
     const mockWorkplace = {
       data: {
         name: 'workplace1',
+        id: 'workplace1',
         department: 'department1',
         created_at: new Date(),
         updated_at: new Date(),
@@ -101,15 +94,14 @@ describe('WorkplaceAPIService', () => {
 
     service
       .createWorkplace('department1', {
+        id: 'workplace1',
         name: 'workplace1',
       })
       .subscribe((result) => {
         expect(result).toEqual(mockWorkplace);
       });
 
-    const req = httpController.expectOne(
-      'http://localhost:8080/api/v1/planner/department/department1/workplace',
-    );
+    const req = httpController.expectOne('http://localhost:8080/api/v1/planner/department/department1/workplace');
     expect(req.request.method).toEqual('POST');
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
@@ -121,6 +113,7 @@ describe('WorkplaceAPIService', () => {
     const mockWorkplace = {
       data: {
         name: 'workplace1',
+        id: 'workplace1',
         department: 'department1',
         created_at: new Date(),
         updated_at: new Date(),
@@ -134,9 +127,7 @@ describe('WorkplaceAPIService', () => {
       expect(result).toEqual(mockWorkplace);
     });
 
-    const req = httpController.expectOne(
-      'http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1',
-    );
+    const req = httpController.expectOne('http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1');
     expect(req.request.method).toEqual('DELETE');
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');

@@ -17,6 +17,10 @@ func (m *WorkdayControllerMock) GetWorkday(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "GetWorkday"})
 }
 
+func (m *WorkdayControllerMock) UpdateWorkday(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{"message": "UpdateWorkday"})
+}
+
 func (m *WorkdayControllerMock) AssignPersonToWorkday(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "AssignPersonToWorkday"})
 }

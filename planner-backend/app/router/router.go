@@ -37,12 +37,12 @@ func Init(init *config.Injector) *gin.Engine {
 
 			timeslot := workplace.Group("/:workplaceID/timeslot")
 			timeslot.GET("/", init.TimeslotCtrl.GetAll)
-			timeslot.GET("/:timeslotName", init.TimeslotCtrl.Get)
+			timeslot.GET("/:timeslotID", init.TimeslotCtrl.Get)
 			timeslot.POST("/", init.TimeslotCtrl.Create)
-			timeslot.PUT("/:timeslotName", init.TimeslotCtrl.Update)
-			timeslot.DELETE("/:timeslotName", init.TimeslotCtrl.Delete)
+			timeslot.PUT("/:timeslotID", init.TimeslotCtrl.Update)
+			timeslot.DELETE("/:timeslotID", init.TimeslotCtrl.Delete)
 
-			weekday := timeslot.Group("/:timeslotName/weekday")
+			weekday := timeslot.Group("/:timeslotID/weekday")
 			weekday.POST("/", init.WeekdayCtrl.AddWeekdayToTimeslot)
 			weekday.DELETE("/", init.WeekdayCtrl.RemoveWeekdayFromTimeslot)
 			weekday.POST("/bulk", init.WeekdayCtrl.BulkUpdateWeekdaysForTimeslot)
@@ -75,7 +75,8 @@ func Init(init *config.Injector) *gin.Engine {
 		workday := plannerAPI.Group("/workday")
 		{
 			workday.GET("/", init.WorkdayCtrl.GetWorkdaysForDepartmentAndDate) // ?departmentID=...&date=...
-			workday.GET("/detail", init.WorkdayCtrl.GetWorkday)                // ?departmentID=...&date=...&workplaceID=...&timeslotName=...
+			workday.GET("/detail", init.WorkdayCtrl.GetWorkday)                // ?departmentID=...&date=...&workplaceID=...&timeslotID=...
+			workday.PUT("/", init.WorkdayCtrl.UpdateWorkday)
 			workday.POST("/assign", init.WorkdayCtrl.AssignPersonToWorkday)
 			workday.DELETE("/assign", init.WorkdayCtrl.UnassignPersonFromWorkday)
 		}

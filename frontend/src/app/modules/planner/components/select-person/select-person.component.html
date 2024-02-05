@@ -1,4 +1,4 @@
-@defer (on viewport) {
+<div class="inline">
   <mat-form-field>
     <mat-label>Person</mat-label>
     <input type="text" matInput autocomplete="off" [formControl]="control" [matAutocomplete]="auto" />
@@ -7,11 +7,10 @@
         <mat-option [value]="person"> {{ person.last_name }} ({{ person.id }}) </mat-option>
       }
     </mat-autocomplete>
-
-    @if (!control.value) {
-      <button matSuffix mat-icon-button color="warn">X</button>
-    }
   </mat-form-field>
-} @placeholder {
-  <div></div>
-}
+
+  <div class="actions">
+    <button mat-mini-fab color="primary" matTooltip="Kommentar editieren" (click)="commentEditRequest.emit()"><mat-icon>edit</mat-icon></button>
+  </div>
+</div>
+{{ comment }}

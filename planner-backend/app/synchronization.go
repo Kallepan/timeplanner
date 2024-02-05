@@ -1,3 +1,4 @@
+/* Here there are functions that are used to synchronize the database periodically */
 package app
 
 import (

@@ -1,0 +1,19 @@
+.footer {
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
+  margin: 1rem 0 0 0;
+}
+
+.header {
+  margin: 0;
+  padding: 0;
+}
+
+.dialog {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+}

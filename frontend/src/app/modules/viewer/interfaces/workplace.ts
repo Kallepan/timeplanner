@@ -7,6 +7,7 @@ export type DisplayedWorkdayTimeslot = WorkdayTimeslot & {
 
 export type DisplayedWorkdayTimeslotGroup = {
   name: string;
+  id: string;
   workdayTimeslots: DisplayedWorkdayTimeslot[];
 
   // This is a concatenation of the start and end time of the first timeslot in the group.
@@ -19,6 +20,7 @@ export type DisplayedWorkdayTimeslotGroup = {
 
 export type DisplayedWorkplace = {
   workplace: WorkplaceWithMetadata;
+  name: string;
   timeslotGroups: DisplayedWorkdayTimeslotGroup[];
 
   // for display

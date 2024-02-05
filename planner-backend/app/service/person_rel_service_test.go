@@ -120,7 +120,7 @@ func TestAddAbsencyToPerson(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithBody(testStep.mockRequest).WithParamsRaw(testStep.params).Build()
+			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithBody(testStep.mockRequest).WithMapParams(testStep.params).Build()
 			if err != nil {
 				t.Errorf("Test Step %d: Error while building context: %s", i, err)
 			}
@@ -220,7 +220,7 @@ func TestRemoveAbsencyFromPerson(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithBody(testStep.mockRequest).WithParamsRaw(testStep.params).Build()
+			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithBody(testStep.mockRequest).WithMapParams(testStep.params).Build()
 			if err != nil {
 				t.Errorf("Test Step %d: Error while building context: %s", i, err)
 			}
@@ -292,7 +292,7 @@ func TestFindAbsencyForPerson(t *testing.T) {
 			PersonRelRepository.On("FindAbsencyForPerson").Return(testStep.findValue, testStep.findError)
 			// get GIN context
 			w := httptest.NewRecorder()
-			c, err := mock.NewTestContextBuilder(w).WithMethod("GET").WithParamsRaw(testStep.params).Build()
+			c, err := mock.NewTestContextBuilder(w).WithMethod("GET").WithMapParams(testStep.params).Build()
 			if err != nil {
 				t.Errorf("Test Step %d: Error while building context: %s", i, err)
 			}
@@ -423,7 +423,7 @@ func TestAddDepartmentToPerson(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithBody(testStep.mockRequest).WithParamsRaw(testStep.params).Build()
+			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithBody(testStep.mockRequest).WithMapParams(testStep.params).Build()
 			if err != nil {
 				t.Errorf("Test Step %d: Error while building context: %s", i, err)
 			}
@@ -519,7 +519,7 @@ func TestRemoveDepartmentFromPerson(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c, err := mock.NewTestContextBuilder(w).WithMethod("DELETE").WithParamsRaw(testStep.params).Build()
+			c, err := mock.NewTestContextBuilder(w).WithMethod("DELETE").WithMapParams(testStep.params).Build()
 			if err != nil {
 				t.Errorf("Test Step %d: Error while building context: %s", i, err)
 			}
@@ -651,7 +651,7 @@ func TestAddWorkplaceToPerson(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithBody(testStep.mockRequest).WithParamsRaw(testStep.params).Build()
+			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithBody(testStep.mockRequest).WithMapParams(testStep.params).Build()
 			if err != nil {
 				t.Errorf("Test Step %d: Error while building context: %s", i, err)
 			}
@@ -760,7 +760,7 @@ func TestRemoveWorkplaceFromPerson(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c, err := mock.NewTestContextBuilder(w).WithMethod("DELETE").WithParamsRaw(testStep.params).WithBody(testStep.mockRequest).Build()
+			c, err := mock.NewTestContextBuilder(w).WithMethod("DELETE").WithMapParams(testStep.params).WithBody(testStep.mockRequest).Build()
 			if err != nil {
 				t.Errorf("Test Step %d: Error while building context: %s", i, err)
 			}
@@ -876,7 +876,7 @@ func TestAddWeekdayToPerson(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithBody(testStep.mockRequest).WithParamsRaw(testStep.params).Build()
+			c, err := mock.NewTestContextBuilder(w).WithMethod("POST").WithBody(testStep.mockRequest).WithMapParams(testStep.params).Build()
 			if err != nil {
 				t.Errorf("Test Step %d: Error while building context: %s", i, err)
 			}
@@ -981,7 +981,7 @@ func TestRemoveWeekdayFromPerson(t *testing.T) {
 
 			// get GIN context
 			w := httptest.NewRecorder()
-			c, err := mock.NewTestContextBuilder(w).WithMethod("DELETE").WithParamsRaw(testStep.params).Build()
+			c, err := mock.NewTestContextBuilder(w).WithMethod("DELETE").WithMapParams(testStep.params).Build()
 			if err != nil {
 				t.Errorf("Test Step %d: Error while building context: %s", i, err)
 			}

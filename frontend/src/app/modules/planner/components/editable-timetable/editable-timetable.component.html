@@ -10,7 +10,7 @@
     <div class="cell header">Slot</div>
 
     <!-- Add headers from weekdays array-->
-    @for (data of timetableDataContainerService.weekdays$; track $index) {
+    @for (data of activeWeekHandlerService.activeWeek$; track $index) {
       <div class="cell header">{{ data.date | date: 'dd.MM.yyyy' }} ({{ data.shortName | titlecase }})</div>
       <div
         class="vertical-line"
@@ -40,12 +40,7 @@
             'grid-column': 2
           }"
           cdkDropList
-          (cdkDropListDropped)="
-            personDroppedIntoTimeslot.emit({
-              person: $event.item.data,
-              timeslots: slot.workdayTimeslots
-            })
-          ">
+          (cdkDropListDropped)="personDroppedIntoTimeslotHandler($event.item.data, getSlotsFromMonToFri(slot.workdayTimeslots))">
           {{ slot.name }}
         </div>
 
@@ -71,13 +66,14 @@
               <app-select-person
                 [selectedPerson]="ts.person"
                 [weekday]="ts.weekday"
-                (selected)="
-                  personDroppedIntoTimeslot.emit({ person: $event.p, timeslots: [ts], actionToBeExecutedOnFailedValidation: $event.actionToBeExecutedOnFailedValidation })
-                "></app-select-person>
+                [comment]="ts.comment"
+                (selected)="personDroppedIntoTimeslotHandler($event.p, [ts], $event.actionToBeExecutedOnFailedValidation)"
+                (commentEditRequest)="plannerStateHandlerService.handleCommentEditRequest(ts)"></app-select-person>
             } @placeholder {
-              <app-edit-person-preview [person]="ts.person"></app-edit-person-preview>
+              <!-- This is just a cheap placeholder to make push the content down !-->
+              <app-edit-person-preview [person]="ts.person" [comment]="ts.comment"></app-edit-person-preview>
             }
-            @if (timetableDataContainerService.displayTime$) {
+            @if (timetableDataContainerService.displayTimes$) {
               {{ ts.start_time }} - {{ ts.end_time }} ({{ ts.duration_in_minutes / 60 }})
             }
           </div>
