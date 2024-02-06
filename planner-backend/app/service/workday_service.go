@@ -229,16 +229,18 @@ func (w WorkdayServiceImpl) UnassignPersonFromWorkday(c *gin.Context) {
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, pkg.Null()))
 }
 
-func mapWorkdayPersonToWorkdayPersonResponse(person *dao.Person) *dco.PersonResponse {
+func mapWorkdayPersonToWorkdayPersonResponse(person []dao.Person) []dco.PersonResponse {
 	/*
 	 * Maps a WorkdayPerson to a WorkdayPersonResponse
 	 */
-	if person == nil {
-		return nil
-	}
-	p := mapPersonToPersonResponse(*person)
 
-	return &p
+	personsResponse := make([]dco.PersonResponse, 0)
+	for _, p := range person {
+		personResponse := mapPersonToPersonResponse(p)
+		personsResponse = append(personsResponse, personResponse)
+	}
+
+	return personsResponse
 }
 
 func mapWorkdayToWorkdayResponse(workday dao.Workday) dco.WorkdayResponse {
@@ -254,7 +256,7 @@ func mapWorkdayToWorkdayResponse(workday dao.Workday) dco.WorkdayResponse {
 		StartTime:         workday.StartTime,
 		EndTime:           workday.EndTime,
 		DurationInMinutes: workday.DurationInMinutes,
-		Person:            mapWorkdayPersonToWorkdayPersonResponse(workday.Person),
+		Persons:           mapWorkdayPersonToWorkdayPersonResponse(workday.Persons),
 		Weekday:           workday.Weekday,
 		Comment:           workday.Comment,
 	}

@@ -40,7 +40,7 @@ func (w WorkdayRepositoryImpl) GetWorkdaysForDepartmentAndDate(departmentID stri
 	// if workday is active
 	WHERE wkd.active = true
 	// return the workday and the person
-	RETURN wkd, p, t, w, d
+	RETURN wkd, collect(p) as persons, t, w, d
 	ORDER BY w.id, t.name
 	`
 	params := map[string]interface{}{
@@ -81,7 +81,7 @@ func (w WorkdayRepositoryImpl) GetWorkday(departmentID string, workplaceID strin
 	// if workday is active
 	WHERE wkd.active = true
 	// return the workday and the person
-	RETURN wkd, p, t, w, d`
+	RETURN wkd, collect(p) as persons, t, w, d`
 
 	params := map[string]interface{}{
 		"date":         date,
@@ -128,7 +128,7 @@ func (w WorkdayRepositoryImpl) Save(workday *dao.Workday) error {
 	// fetch the person assigned to the workday
 	WITH wkd, t, d, w, dt
 	OPTIONAL MATCH (wkd)<-[:ASSIGNED_TO]-(p:Person)
-	RETURN wkd, t, d, w, dt, p
+	RETURN wkd, t, d, w, dt, collect(p) as persons
 	`
 	params := map[string]interface{}{
 		"departmentID": workday.Department.ID,

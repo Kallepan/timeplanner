@@ -119,7 +119,7 @@ func (t *Timeslot) ParseFromDB(record *neo4j.Record, departmentID string, workpl
 	for _, weekdayInterface := range weekdaysInterface {
 		weekdayMap, ok := weekdayInterface.(map[string]interface{})
 		if !ok {
-			return err
+			continue
 		}
 
 		weekday := OnWeekday{}

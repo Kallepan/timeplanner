@@ -12,9 +12,7 @@ type Workday struct {
 	Workplace  Workplace
 	Timeslot   Timeslot
 	Date       string
-
-	// Assigned Person can be nil
-	Person *Person
+	Persons    []Person
 
 	// StartTime and EndTime
 	StartTime         string
@@ -93,12 +91,25 @@ func (w *Workday) ParseFromDBRecord(record *neo4j.Record, date string) error {
 	// get person Node
 	// If the person is not assigned to the workday, the person Node will be nil
 	// I am sorry for this ugly code
-	person := Person{}
-	if err := person.ParseFromDBRecord(record); err != nil {
+	var persons []Person
+	personsInterfaces, _, err := neo4j.GetRecordValue[[]any](record, "persons")
+	if err != nil {
 		return err
-	} else if person.ID != "" {
-		w.Person = &person
 	}
+	for _, personInterface := range personsInterfaces {
+		personNode, ok := personInterface.(neo4j.Node)
+		if !ok {
+			continue
+		}
+
+		person := Person{}
+		if err := person.ParseFromNode(&personNode); err != nil {
+			continue
+		}
+
+		persons = append(persons, person)
+	}
+	w.Persons = persons
 
 	// set values on workday
 	w.Department = department

@@ -88,5 +88,5 @@ type WorkdayResponse struct {
 	Comment           string             `json:"comment"`
 
 	// Assigned Person can be nil
-	Person *PersonResponse `json:"person"`
+	Persons []PersonResponse `json:"persons"`
 }
