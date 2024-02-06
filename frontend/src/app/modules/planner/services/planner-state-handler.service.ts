@@ -23,6 +23,32 @@ export class PlannerStateHandlerService {
   private personAPIService = inject(PersonAPIService);
   private workdayAPIService = inject(WorkdayAPIService);
 
+  assignPersonToTimeslot(person: PersonWithMetadata, workdayTimeslot: WorkdayTimeslot, actionToBeExecutedOnFailedValidation?: () => void) {
+    this._assignPersonToTimeslot(person, workdayTimeslot, actionToBeExecutedOnFailedValidation).subscribe({
+      next: () => {
+        this.notificationService.infoMessage(messages.PLANNER.TIMESLOT_ASSIGNMENT.SUCCESS);
+      },
+      // on error do nothing as the error is handled in the http interceptor
+    });
+  }
+
+  unAssignPersonFromTimeslot(person: PersonWithMetadata, workdayTimeslot: WorkdayTimeslot) {
+    return this.workdayAPIService
+      .unassignPerson(workdayTimeslot.department.id, workdayTimeslot.date, workdayTimeslot.workplace.id, workdayTimeslot.timeslot.id, person.id)
+      .pipe(
+        map((resp) => resp.data),
+        map(() => {
+          workdayTimeslot.person = null;
+        }),
+      )
+      .subscribe({
+        next: () => {
+          this.notificationService.infoMessage(messages.PLANNER.TIMESLOT_UNASSIGNMENT.SUCCESS);
+        },
+        // on error do nothing as the error is handled in the http interceptor
+      });
+  }
+
   assignPersonToTimelots(person: PersonWithMetadata, timeslots: WorkdayTimeslot[], actionToBeExecutedOnFailedValidation?: () => void) {
     /**
      * This function is responsible for validating the timeslots and updating the timeslots in the service. Furthermore it uses the API to update the timeslots on the server.

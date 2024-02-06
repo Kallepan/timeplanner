@@ -109,14 +109,7 @@ export class WorkdayAPIService {
   }
 
   unassignPerson(department_id: string, date: string, workplace_id: string, timeslot_id: string, person_id: string): Observable<APIResponse<null>> {
-    const url = `${constants.APIS.PLANNER}/workday/unassign`;
-
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-      }),
-      withCredentials: true,
-    };
+    const url = `${constants.APIS.PLANNER}/workday/assign`;
 
     const body: UnassignPersonFromWorkdayTimeslotRequest = {
       department_id,
@@ -126,6 +119,14 @@ export class WorkdayAPIService {
       person_id,
     };
 
-    return this.http.post<APIResponse<null>>(url, body, httpOptions);
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      withCredentials: true,
+      body,
+    };
+
+    return this.http.delete<APIResponse<null>>(url, httpOptions);
   }
 }

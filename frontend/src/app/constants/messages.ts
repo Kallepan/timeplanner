@@ -40,5 +40,9 @@ export class messages {
       PERSON_ABSENT: 'Person ist an diesem Tag abwesend (Krank, Urlaub, etc.)',
       SUCCESS: 'Person erfolgreich zugeordnet',
     },
+
+    TIMESLOT_UNASSIGNMENT: {
+      SUCCESS: 'Person erfolgreich entfernt',
+    },
   };
 }

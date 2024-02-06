@@ -1,6 +1,7 @@
 import { CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
+import { ThemeHandlerService } from '@app/core/services/theme-handler.service';
 import { DisplayedWorkdayTimeslot } from '@app/modules/viewer/interfaces/workplace';
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { ActiveWeekHandlerService } from '@app/shared/services/active-week-handler.service';
@@ -21,9 +22,18 @@ export class EditableTimetableComponent {
   plannerStateHandlerService = inject(PlannerStateHandlerService);
   activeWeekHandlerService = inject(ActiveWeekHandlerService);
   timetableDataContainerService = inject(TimetableDataContainerService);
+  themeHandlerService = inject(ThemeHandlerService);
 
   personDroppedIntoTimeslotHandler(person: PersonWithMetadata, timeslots: DisplayedWorkdayTimeslot[], actionToBeExecutedOnFailedValidation?: () => void): void {
     this.plannerStateHandlerService.assignPersonToTimelots(person, timeslots, actionToBeExecutedOnFailedValidation);
+  }
+
+  personAssignedToTimeslotEventHandler(person: PersonWithMetadata, timeslot: DisplayedWorkdayTimeslot, actionToBeExecutedOnFailedValidation: () => void): void {
+    this.plannerStateHandlerService.assignPersonToTimeslot(person, timeslot, actionToBeExecutedOnFailedValidation);
+  }
+
+  personUnassignedFromTimeslotEventHandler(person: PersonWithMetadata, timeslot: DisplayedWorkdayTimeslot): void {
+    this.plannerStateHandlerService.unAssignPersonFromTimeslot(person, timeslot);
   }
 
   weekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI'];

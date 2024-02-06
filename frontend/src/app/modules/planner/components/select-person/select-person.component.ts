@@ -35,12 +35,13 @@ export class SelectPersonComponent implements OnInit, OnChanges {
   );
 
   @Output() commentEditRequest = new EventEmitter<void>();
-  @Output() selected = new EventEmitter<{ p: PersonWithMetadata; actionToBeExecutedOnFailedValidation?: () => void }>();
-  @Input() selectedPerson: PersonWithMetadata | null = null;
+  @Output() personAssignedToTimeslot = new EventEmitter<{ p: PersonWithMetadata; actionToBeExecutedOnFailedValidation: () => void }>();
+  @Output() personUnassignedFromTimeslot = new EventEmitter<{ p: PersonWithMetadata }>();
+  @Input() initiallySelectedPersonFromParent: PersonWithMetadata | null = null;
   @Input() weekday: string;
 
   ngOnInit(): void {
-    this.control.setValue(this.selectedPerson);
+    this.control.setValue(this.initiallySelectedPersonFromParent);
   }
 
   displayFn(person: PersonWithMetadata): string {
@@ -58,12 +59,20 @@ export class SelectPersonComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['selectedPerson']) {
-      this.control.setValue(this.selectedPerson);
+    if (changes['initiallySelectedPersonFromParent']) {
+      this.control.setValue(this.initiallySelectedPersonFromParent);
     }
   }
 
-  emitEvent(p: PersonWithMetadata): void {
-    this.selected.emit({ p, actionToBeExecutedOnFailedValidation: () => this.control.setValue(null) });
+  emitPersonAssignedToTimeslotEvent(p: PersonWithMetadata): void {
+    this.personAssignedToTimeslot.emit({ p, actionToBeExecutedOnFailedValidation: () => this.control.setValue(null) });
+  }
+
+  emitPersonUnassignedFromTimeslotEvent(p: string | PersonWithMetadata): void {
+    if (typeof p === 'string') {
+      this.control.setValue('');
+      return;
+    }
+    this.personUnassignedFromTimeslot.emit({ p });
   }
 }
