@@ -1,5 +1,5 @@
 import { Injectable, effect, inject, signal } from '@angular/core';
-import { catchError, map, of, switchMap, throwError } from 'rxjs';
+import { map } from 'rxjs';
 import { PersonWithMetadata } from '../interfaces/person';
 import { ActiveDepartmentHandlerService } from './active-department-handler.service';
 import { PersonAPIService } from './person-api.service';
@@ -20,11 +20,9 @@ export class PersonDataContainerService {
   constructor() {
     effect(
       () => {
-        of(this.activeDepartmentHandlerService.activeDepartment$)
-          .pipe(
-            switchMap((department) => this.personAPISerivce.getPersons(department).pipe(catchError((err) => throwError(() => err)))),
-            map((resp) => resp.data),
-          )
+        this.personAPISerivce
+          .getPersons(this.activeDepartmentHandlerService.activeDepartment$)
+          .pipe(map((resp) => resp.data))
           .subscribe({
             next: (persons) => {
               this._persons.set(persons);
