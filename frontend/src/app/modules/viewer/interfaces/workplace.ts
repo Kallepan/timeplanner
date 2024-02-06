@@ -3,6 +3,8 @@ import { WorkplaceWithMetadata } from '@app/shared/interfaces/workplace';
 
 export type DisplayedWorkdayTimeslot = WorkdayTimeslot & {
   gridColumn: number;
+  colorForLightMode: string | null;
+  colorForDarkMode: string | null;
 };
 
 export type DisplayedWorkdayTimeslotGroup = {

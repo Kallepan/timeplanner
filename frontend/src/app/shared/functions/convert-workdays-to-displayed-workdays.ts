@@ -1,5 +1,6 @@
 import { DisplayedWorkdayTimeslot, DisplayedWorkdayTimeslotGroup, DisplayedWorkplace } from '@app/modules/viewer/interfaces/workplace';
 import { WorkdayTimeslot } from '../interfaces/workday_timeslot';
+import { startTimeToColorForDarkMode, startTimeToColorForLightMode } from './start-time-to-color';
 import { WeekdayIDToGridColumn } from './weekday-to-grid-column.function';
 
 export const convertWorkdaysToDisplayedWorkday = (workdays: WorkdayTimeslot[]) => {
@@ -30,6 +31,8 @@ export const convertWorkdaysToDisplayedWorkday = (workdays: WorkdayTimeslot[]) =
       timeslotsArray.push({
         ...workdayTimeslot,
         gridColumn: WeekdayIDToGridColumn(workdayTimeslot.weekday),
+        colorForLightMode: startTimeToColorForLightMode(workdayTimeslot.start_time),
+        colorForDarkMode: startTimeToColorForDarkMode(workdayTimeslot.start_time),
       });
       displayWorkdayTimeslotMap.set(workdayTimeslot.timeslot.name, timeslotsArray);
     });

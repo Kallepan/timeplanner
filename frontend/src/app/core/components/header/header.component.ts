@@ -8,13 +8,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { constants } from '@app/constants/constants';
 import { CustomHeaderComponent } from '../custom-header/custom-header.component';
 import { LoginComponent } from '../login/login.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   standalone: true,
-  imports: [CommonModule, MatSlideToggleModule, MatTooltipModule, MatToolbarModule, MatIconModule, MatButtonModule, LoginComponent, CustomHeaderComponent],
+  imports: [CommonModule, RouterLink, MatSlideToggleModule, MatTooltipModule, MatToolbarModule, MatIconModule, MatButtonModule, LoginComponent, CustomHeaderComponent],
 })
 export class HeaderComponent {
   title = constants.TITLE_SHORT;

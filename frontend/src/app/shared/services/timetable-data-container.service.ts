@@ -30,14 +30,6 @@ export class TimetableDataContainerService {
     return this._isLoading();
   }
 
-  protected _fullHeight = signal<number>(0);
-  get fullHeight$(): number {
-    return this._fullHeight();
-  }
-  set fullHeight(value: number) {
-    this._fullHeight.set(value);
-  }
-
   protected _displayComments = signal<boolean>(false);
   get displayComments$(): boolean {
     return this._displayComments();
@@ -102,11 +94,6 @@ export class TimetableDataContainerService {
             reduce((acc, workdays) => [...acc, ...workdays], [] as WorkdayTimeslot[]), // reduce the workdays into a single array
             map((workdays) => workdays.sort((a, b) => a.workplace.id.localeCompare(b.workplace.id))),
             map((workdays) => convertWorkdaysToDisplayedWorkday(workdays)),
-            tap((workplaceGroups) => {
-              // The maximum grid row end number is calculated and set as the full height of the grid.
-              const fullHeight = Math.max(...workplaceGroups.map((workplace) => workplace.gridRowEnd));
-              this._fullHeight.set(fullHeight);
-            }),
           )
           .subscribe((workplaceGroups) => {
             this._isLoading.set(false);

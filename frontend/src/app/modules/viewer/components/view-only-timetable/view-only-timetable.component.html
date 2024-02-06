@@ -7,13 +7,6 @@
     <!-- Add headers from weekdays array-->
     @for (data of activeWeekdayService.activeWeek$; track $index) {
       <div class="cell header">{{ data.date | date: 'dd.MM.yyyy' }} ({{ data.shortName | titlecase }})</div>
-      <div
-        class="vertical-line"
-        [ngStyle]="{
-          'grid-row-start': 2,
-          'grid-row-end': timetableDataContainerService.fullHeight$,
-          'grid-column': $index + 3
-        }"></div>
     }
 
     @for (workplace of timetableDataContainerService.workplaces$; track $index) {
@@ -37,23 +30,17 @@
           {{ slot.name }}
         </div>
 
-        <!-- Seperate each slot by a line-->
-        <div
-          class="horizontal-line"
-          [ngStyle]="{
-            'grid-row': slot.gridRow
-          }"></div>
-
         <!-- Now display the timeslots by using their respective gridRow and gridColumn !-->
         @for (wts of slot.workdayTimeslots; track wts) {
           <div
-            class="cell"
+            class="cell content"
             [ngClass]="{
               'not-occupied': !wts.person
             }"
             [ngStyle]="{
               'grid-row': slot.gridRow,
-              'grid-column': wts.gridColumn
+              'grid-column': wts.gridColumn,
+              'background-color': timetableDataContainerService.colorize$ ? (themeHandlerService.isDark$ ? wts.colorForDarkMode : wts.colorForLightMode) : null
             }">
             @if (timetableDataContainerService.displayPersons$ && wts.person) {
               {{ wts.person.last_name }} ({{ wts.person.id }}) <br />
