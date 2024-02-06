@@ -25,7 +25,9 @@ export class EditableTimetableComponent {
   themeHandlerService = inject(ThemeHandlerService);
 
   personDroppedIntoTimeslotHandler(person: PersonWithMetadata, timeslots: DisplayedWorkdayTimeslot[], actionToBeExecutedOnFailedValidation?: () => void): void {
-    this.plannerStateHandlerService.assignPersonToTimelots(person, timeslots, actionToBeExecutedOnFailedValidation);
+    timeslots.forEach((timeslot) => {
+      this.plannerStateHandlerService.assignPersonToTimeslot(person, timeslot, actionToBeExecutedOnFailedValidation);
+    });
   }
 
   personAssignedToTimeslotEventHandler(person: PersonWithMetadata, timeslot: DisplayedWorkdayTimeslot, actionToBeExecutedOnFailedValidation: () => void): void {

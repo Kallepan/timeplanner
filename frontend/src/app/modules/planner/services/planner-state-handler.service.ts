@@ -9,7 +9,7 @@ import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { WorkdayTimeslot } from '@app/shared/interfaces/workday_timeslot';
 import { PersonAPIService } from '@app/shared/services/person-api.service';
 import { WorkdayAPIService } from '@app/shared/services/workday-api.service';
-import { catchError, filter, forkJoin, map, of, switchMap, tap, throwError } from 'rxjs';
+import { catchError, filter, map, of, switchMap, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: null,
@@ -24,12 +24,69 @@ export class PlannerStateHandlerService {
   private workdayAPIService = inject(WorkdayAPIService);
 
   assignPersonToTimeslot(person: PersonWithMetadata, workdayTimeslot: WorkdayTimeslot, actionToBeExecutedOnFailedValidation?: () => void) {
-    this._assignPersonToTimeslot(person, workdayTimeslot, actionToBeExecutedOnFailedValidation).subscribe({
-      next: () => {
-        this.notificationService.infoMessage(messages.PLANNER.TIMESLOT_ASSIGNMENT.SUCCESS);
-      },
-      // on error do nothing as the error is handled in the http interceptor
-    });
+    of(workdayTimeslot)
+      .pipe(
+        // check if the person is qualified for the workplace
+        map((ts) => (person.workplaces ?? []).map((wp) => wp.id).includes(ts.workplace.id)),
+        tap((isQualified) => {
+          if (!isQualified) throw new Error(messages.PLANNER.TIMESLOT_ASSIGNMENT.PERSON_NOT_QUALIFIED);
+        }),
+        // check if the person is absent on the day
+        switchMap(() => this.personAPIService.isAbsentOnDate(person.id, workdayTimeslot.date).pipe(catchError(() => throwError(() => new Error(messages.GENERAL.HTTP_ERROR.SERVER_ERROR))))),
+        tap((isAbsent) => {
+          if (isAbsent) throw new Error(messages.PLANNER.TIMESLOT_ASSIGNMENT.PERSON_ABSENT);
+        }),
+        // check if the person is already assigned to a timeslot on the same day
+        switchMap(() =>
+          this.workdayAPIService.getWorkdays(workdayTimeslot.department.id, workdayTimeslot.date).pipe(catchError(() => throwError(() => new Error(messages.GENERAL.HTTP_ERROR.SERVER_ERROR)))),
+        ),
+        map((resp) => resp.data),
+        map((workdays) =>
+          workdays
+            .filter((wd) => wd.date === workdayTimeslot.date)
+            .map((wd) => wd.person?.id)
+            .filter((id) => !!id)
+            .includes(person.id),
+        ),
+        tap((isAssigned) => {
+          if (isAssigned) throw new Error(messages.PLANNER.TIMESLOT_ASSIGNMENT.PERSON_ALREADY_ASSIGNED);
+        }),
+        // check if person is present on the day
+        map(() => {
+          return (person.weekdays ?? []).map((wd) => wd.id).includes(workdayTimeslot.weekday);
+        }),
+        tap((isPresent) => {
+          if (!isPresent) throw new Error(messages.PLANNER.TIMESLOT_ASSIGNMENT.PERSON_NOT_WORKING);
+        }),
+        map(() => true),
+        catchError((err: Error) => {
+          this.notificationService.warnMessage(err.message);
+          actionToBeExecutedOnFailedValidation?.();
+          return of(false);
+        }),
+        filter((isValid) => isValid),
+        // update the timeslot in the service
+        switchMap(() => {
+          return this.workdayAPIService.assignPerson(workdayTimeslot.department.id, workdayTimeslot.date, workdayTimeslot.workplace.id, workdayTimeslot.timeslot.id, person.id).pipe(
+            catchError((err) => throwError(() => err)),
+            map((resp) => resp.data),
+          );
+        }),
+        map(() => {
+          workdayTimeslot.person = person;
+          return of(true);
+        }),
+        catchError((err) => {
+          console.error(err);
+          return of(false);
+        }),
+      )
+      .subscribe({
+        next: () => {
+          this.notificationService.infoMessage(messages.PLANNER.TIMESLOT_ASSIGNMENT.SUCCESS);
+        },
+        // on error do nothing as the error is handled in the http interceptor
+      });
   }
 
   unAssignPersonFromTimeslot(person: PersonWithMetadata, workdayTimeslot: WorkdayTimeslot) {
@@ -47,79 +104,6 @@ export class PlannerStateHandlerService {
         },
         // on error do nothing as the error is handled in the http interceptor
       });
-  }
-
-  assignPersonToTimelots(person: PersonWithMetadata, timeslots: WorkdayTimeslot[], actionToBeExecutedOnFailedValidation?: () => void) {
-    /**
-     * This function is responsible for validating the timeslots and updating the timeslots in the service. Furthermore it uses the API to update the timeslots on the server.
-     * Validation requirements:
-     *  - is qualified for the workplace
-     *  - is not absent on the day
-     *  - is not already assigned to a timeslot on the same day
-     *
-     */
-    forkJoin(timeslots.map((timeslot) => this._assignPersonToTimeslot(person, timeslot, actionToBeExecutedOnFailedValidation))).subscribe((results) => {
-      if (results.every((result) => result)) this.notificationService.infoMessage(messages.PLANNER.TIMESLOT_ASSIGNMENT.SUCCESS);
-    });
-  }
-
-  private _assignPersonToTimeslot(person: PersonWithMetadata, workdayTimeslot: WorkdayTimeslot, actionToBeExecutedOnFailedValidation?: () => void) {
-    return of(workdayTimeslot).pipe(
-      // check if the person is qualified for the workplace
-      map((ts) => (person.workplaces ?? []).map((wp) => wp.id).includes(ts.workplace.id)),
-      tap((isQualified) => {
-        if (!isQualified) throw new Error(messages.PLANNER.TIMESLOT_ASSIGNMENT.PERSON_NOT_QUALIFIED);
-      }),
-      // check if the person is absent on the day
-      switchMap(() => this.personAPIService.isAbsentOnDate(person.id, workdayTimeslot.date).pipe(catchError(() => throwError(() => new Error(messages.GENERAL.HTTP_ERROR.SERVER_ERROR))))),
-      tap((isAbsent) => {
-        if (isAbsent) throw new Error(messages.PLANNER.TIMESLOT_ASSIGNMENT.PERSON_ABSENT);
-      }),
-      // check if the person is already assigned to a timeslot on the same day
-      switchMap(() =>
-        this.workdayAPIService.getWorkdays(workdayTimeslot.department.id, workdayTimeslot.date).pipe(catchError(() => throwError(() => new Error(messages.GENERAL.HTTP_ERROR.SERVER_ERROR)))),
-      ),
-      map((resp) => resp.data),
-      map((workdays) =>
-        workdays
-          .filter((wd) => wd.date === workdayTimeslot.date)
-          .map((wd) => wd.person?.id)
-          .filter((id) => !!id)
-          .includes(person.id),
-      ),
-      tap((isAssigned) => {
-        if (isAssigned) throw new Error(messages.PLANNER.TIMESLOT_ASSIGNMENT.PERSON_ALREADY_ASSIGNED);
-      }),
-      // check if person is present on the day
-      map(() => {
-        return (person.weekdays ?? []).map((wd) => wd.id).includes(workdayTimeslot.weekday);
-      }),
-      tap((isPresent) => {
-        if (!isPresent) throw new Error(messages.PLANNER.TIMESLOT_ASSIGNMENT.PERSON_NOT_WORKING);
-      }),
-      map(() => true),
-      catchError((err: Error) => {
-        this.notificationService.warnMessage(err.message);
-        actionToBeExecutedOnFailedValidation?.();
-        return of(false);
-      }),
-      filter((isValid) => isValid),
-      // update the timeslot in the service
-      switchMap(() => {
-        return this.workdayAPIService.assignPerson(workdayTimeslot.department.id, workdayTimeslot.date, workdayTimeslot.workplace.id, workdayTimeslot.timeslot.id, person.id).pipe(
-          catchError((err) => throwError(() => err)),
-          map((resp) => resp.data),
-        );
-      }),
-      map(() => {
-        workdayTimeslot.person = person;
-        return of(true);
-      }),
-      catchError((err) => {
-        console.error(err);
-        return of(false);
-      }),
-    );
   }
 
   handleCommentEditRequest(ts: DisplayedWorkdayTimeslot) {
