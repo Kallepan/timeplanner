@@ -74,7 +74,7 @@ export class PlannerStateHandlerService {
         }),
         map(() => {
           workdayTimeslot.person = person;
-          return of(true);
+          return true;
         }),
         catchError((err) => {
           console.error(err);
