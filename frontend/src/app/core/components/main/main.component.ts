@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Component, HostBinding, effect, inject, signal } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
+import { ThemeHandlerService } from '@app/core/services/theme-handler.service';
 import { FooterComponent } from '../footer/footer.component';
 import { HeaderComponent } from '../header/header.component';
 import { SidenavComponent } from '../sidenav/sidenav.component';
@@ -17,25 +18,25 @@ import { SidenavComponent } from '../sidenav/sidenav.component';
 export class MainComponent {
   // dependencies
   private _overlayContainer = inject(OverlayContainer);
+  private _themeHandlerService = inject(ThemeHandlerService);
 
   // theme
-  private _isDark = signal(true);
   @HostBinding('class') get themeMode() {
-    return this._isDark() ? 'theme-dark' : 'theme-light';
+    return this._themeHandlerService.isDark$ ? 'theme-dark' : 'theme-light';
   }
 
   get isDark() {
-    return this._isDark();
+    return this._themeHandlerService.isDark$;
   }
 
   toggleTheme() {
-    this._isDark.set(!this._isDark());
+    this._themeHandlerService.toggleTheme();
   }
 
   // lifecycle hooks
   constructor() {
     effect(() => {
-      if (this._isDark()) {
+      if (this._themeHandlerService.isDark$) {
         this._overlayContainer.getContainerElement().classList.add('theme-dark');
         this._overlayContainer.getContainerElement().classList.remove('theme-light');
       } else {

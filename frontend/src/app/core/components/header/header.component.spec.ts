@@ -1,4 +1,4 @@
-import { TestBed, type ComponentFixture } from '@angular/core/testing';
+import { TestBed, fakeAsync, type ComponentFixture } from '@angular/core/testing';
 
 import { type HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
@@ -43,7 +43,7 @@ describe('HeaderComponent', () => {
     expect(component.sidenavToggled.emit).toHaveBeenCalled();
   });
 
-  it('should emit toggle theme event', async () => {
+  it('should emit toggle theme event', fakeAsync(async () => {
     spyOn(component.themeToggled, 'emit');
 
     const matSlideToggle = await loader.getHarness(MatSlideToggleHarness.with({ selector: '#toggleTheme' }));
@@ -52,5 +52,5 @@ describe('HeaderComponent', () => {
     await matSlideToggle.toggle();
 
     expect(component.themeToggled.emit).toHaveBeenCalled();
-  });
+  }));
 });

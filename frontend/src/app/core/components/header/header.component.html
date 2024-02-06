@@ -9,7 +9,7 @@
     </div>
   </span>
   <span class="small-spacer"></span>
-  <mat-slide-toggle id="toggleTheme" (change)="themeToggled.emit()" class="header-link" matTooltip="Toggle dark mode" [checked]="isDark" matTooltip="Farbmodus wechseln"></mat-slide-toggle>
+  <mat-slide-toggle id="toggleTheme" (change)="themeToggled.emit()" class="header-link" [checked]="isDark" matTooltip="Farbmodus wechseln"></mat-slide-toggle>
   <span class="small-spacer"></span>
   <app-custom-header></app-custom-header>
   <span class="large-spacer"></span>
