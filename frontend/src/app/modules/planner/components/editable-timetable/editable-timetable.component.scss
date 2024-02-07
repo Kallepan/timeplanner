@@ -22,6 +22,7 @@
   grid-auto-rows: minmax(min-content, auto);
   gap: var(--gap);
   align-items: stretch;
+  justify-content: stretch;
 
   .header {
     grid-row: 1;
@@ -56,7 +57,7 @@
   // Columns lines
   .cell::before {
     inline-size: var(--line-thickness);
-    block-size: calc(100vh * 4); // I know this is shit, but it works
+    block-size: calc(100vh * 10); // I know this is shit, but it works
     inset-block-start: calc(var(--line-offset) * -1);
     inset-inline-start: calc(var(--line-offset) * -1);
   }

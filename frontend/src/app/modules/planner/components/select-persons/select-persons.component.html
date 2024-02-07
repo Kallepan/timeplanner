@@ -2,7 +2,7 @@
   <mat-form-field>
     <mat-chip-grid #chipGrid>
       @for (person of persons; track person) {
-        <mat-chip-row (removed)="remove(person)" color="accent" highlighted="true">
+        <mat-chip-row (removed)="remove(person)" color="primary" highlighted="true">
           {{ person.last_name }} ({{ person.id }})
           <button matChipRemove>
             <mat-icon>cancel</mat-icon>
