@@ -30,7 +30,7 @@ type AbsenceReponse = {
 };
 
 @Injectable({
-  providedIn: null,
+  providedIn: 'root',
 })
 export class PersonAPIService {
   private http = inject(HttpClient);

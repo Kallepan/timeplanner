@@ -14,7 +14,7 @@ import { APIResponse } from '@app/core/interfaces/response';
 import { AssignPersonToWorkdayTimeslotRequest, UnassignPersonFromWorkdayTimeslotRequest, UpdateWorkdayRequest, WorkdayTimeslot } from '../interfaces/workday_timeslot';
 
 @Injectable({
-  providedIn: null,
+  providedIn: 'root',
 })
 export class WorkdayAPIService {
   private http = inject(HttpClient);

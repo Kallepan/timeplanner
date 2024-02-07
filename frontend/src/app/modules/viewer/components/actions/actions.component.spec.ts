@@ -60,16 +60,6 @@ describe('ActionsComponent', () => {
     expect(component.toggleTimeLabel.emit).toHaveBeenCalledWith(true);
   });
 
-  it('should emit togglePersonsLabel', async () => {
-    spyOn(component.togglePersonsLabel, 'emit');
-    const toggle = await loader.getHarness(MatSlideToggleHarness.with({ selector: '#togglePersonsLabel' }));
-    await toggle.toggle();
-    expect(component.togglePersonsLabel.emit).toHaveBeenCalledWith(false);
-
-    await toggle.toggle();
-    expect(component.togglePersonsLabel.emit).toHaveBeenCalledWith(true);
-  });
-
   it('should emit toggleComments', async () => {
     spyOn(component.toggleComments, 'emit');
     const toggle = await loader.getHarness(MatSlideToggleHarness.with({ selector: '#toggleCommentsLabel' }));

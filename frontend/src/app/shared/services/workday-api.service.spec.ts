@@ -31,7 +31,7 @@ const MOCK_WORKDAY: WorkdayTimeslot = {
   duration_in_minutes: 60,
   comment: '',
 
-  person: null,
+  persons: [],
 };
 
 describe('WorkdayAPIService', () => {
@@ -117,8 +117,8 @@ describe('WorkdayAPIService', () => {
       expect(response).toEqual(mockResponse);
     });
 
-    const req = httpController.expectOne(`${constants.APIS.PLANNER}/workday/unassign`);
-    expect(req.request.method).toEqual('POST');
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/workday/assign`);
+    expect(req.request.method).toEqual('DELETE');
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
 
