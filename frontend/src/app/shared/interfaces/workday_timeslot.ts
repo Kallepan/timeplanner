@@ -16,7 +16,7 @@ export type WorkdayTimeslot = {
   duration_in_minutes: number;
   comment: string;
 
-  person: PersonWithMetadata | null;
+  persons: PersonWithMetadata[];
 };
 
 export type AssignPersonToWorkdayTimeslotRequest = {

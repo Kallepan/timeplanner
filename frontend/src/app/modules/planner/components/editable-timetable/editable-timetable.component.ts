@@ -7,14 +7,14 @@ import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { ActiveWeekHandlerService } from '@app/shared/services/active-week-handler.service';
 import { TimetableDataContainerService } from '@app/shared/services/timetable-data-container.service';
 import { PlannerStateHandlerService } from '../../services/planner-state-handler.service';
-import { EditPersonPreviewComponent } from '../edit-person-preview/edit-person-preview.component';
+import { PersonPreviewComponent } from '../../../../shared/components/person-preview/person-preview.component';
 import { PersonListComponent } from '../person-list/person-list.component';
-import { SelectPersonComponent } from '../select-person/select-person.component';
+import { SelectPersonsComponent } from '../select-persons/select-persons.component';
 
 @Component({
   selector: 'app-editable-timetable',
   standalone: true,
-  imports: [CommonModule, SelectPersonComponent, CdkDropList, CdkDropListGroup, PersonListComponent, EditPersonPreviewComponent],
+  imports: [CommonModule, SelectPersonsComponent, CdkDropList, CdkDropListGroup, PersonListComponent, PersonPreviewComponent],
   templateUrl: './editable-timetable.component.html',
   styleUrl: './editable-timetable.component.scss',
 })
@@ -24,12 +24,14 @@ export class EditableTimetableComponent {
   timetableDataContainerService = inject(TimetableDataContainerService);
   themeHandlerService = inject(ThemeHandlerService);
 
-  personDroppedIntoTimeslotHandler(person: PersonWithMetadata, timeslots: DisplayedWorkdayTimeslot[], actionToBeExecutedOnFailedValidation?: () => void): void {
-    this.plannerStateHandlerService.assignPersonToTimelots(person, timeslots, actionToBeExecutedOnFailedValidation);
+  personDroppedIntoTimeslotHandler(person: PersonWithMetadata, timeslots: DisplayedWorkdayTimeslot[]): void {
+    timeslots.forEach((timeslot) => {
+      this.plannerStateHandlerService.assignPersonToTimeslot(person, timeslot);
+    });
   }
 
-  personAssignedToTimeslotEventHandler(person: PersonWithMetadata, timeslot: DisplayedWorkdayTimeslot, actionToBeExecutedOnFailedValidation: () => void): void {
-    this.plannerStateHandlerService.assignPersonToTimeslot(person, timeslot, actionToBeExecutedOnFailedValidation);
+  personAssignedToTimeslotEventHandler(person: PersonWithMetadata, timeslot: DisplayedWorkdayTimeslot): void {
+    this.plannerStateHandlerService.assignPersonToTimeslot(person, timeslot);
   }
 
   personUnassignedFromTimeslotEventHandler(person: PersonWithMetadata, timeslot: DisplayedWorkdayTimeslot): void {

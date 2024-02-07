@@ -104,19 +104,7 @@ func (p *Person) ParseAdditionalFieldsFromDBRecord(record *neo4j.Record) error {
 	return nil
 }
 
-func (p *Person) ParseFromDBRecord(record *neo4j.Record) error {
-	/**
-	 * Parses a person from a neo4j record and sets the values on this person
-	 */
-
-	personNode, isNil, err := neo4j.GetRecordValue[neo4j.Node](record, "p")
-	if err != nil {
-		return err
-	}
-	if isNil {
-		return nil
-	}
-
+func (p *Person) ParseFromNode(personNode *neo4j.Node) error {
 	id, err := neo4j.GetProperty[string](personNode, "id")
 	if err != nil {
 		return err
@@ -164,6 +152,26 @@ func (p *Person) ParseFromDBRecord(record *neo4j.Record) error {
 	p.Base.CreatedAt = createdAt
 	p.Base.UpdatedAt = updatedAt
 	p.Base.DeletedAt = deletedAt
+
+	return nil
+}
+
+func (p *Person) ParseFromDBRecord(record *neo4j.Record) error {
+	/**
+	 * Parses a person from a neo4j record and sets the values on this person
+	 */
+
+	personNode, isNil, err := neo4j.GetRecordValue[neo4j.Node](record, "p")
+	if err != nil {
+		return err
+	}
+	if isNil {
+		return nil
+	}
+
+	if err := p.ParseFromNode(&personNode); err != nil {
+		return err
+	}
 
 	return nil
 }

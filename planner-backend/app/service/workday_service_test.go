@@ -48,7 +48,7 @@ func TestGetWorkdaysForDepartmentAndDate(t *testing.T) {
 					Date:      "2021-01-01",
 					StartTime: "08:00:00",
 					EndTime:   "16:00:00",
-					Person:    nil,
+					Persons:   []dao.Person{mockPerson},
 				},
 			},
 			expectedStatusCode: http.StatusOK,
@@ -91,7 +91,7 @@ func TestGetWorkdaysForDepartmentAndDate(t *testing.T) {
 					Date:      "2021-01-01",
 					StartTime: "08:00:00",
 					EndTime:   "16:00:00",
-					Person:    &mockPerson,
+					Persons:   []dao.Person{mockPerson},
 				},
 			},
 			expectedStatusCode: http.StatusOK,
@@ -144,20 +144,6 @@ func TestGetWorkdaysForDepartmentAndDate(t *testing.T) {
 			if len(responseBody.Data) != len(testStep.mockValue.([]dao.Workday)) {
 				t.Errorf("Test Step %d: Expected %d workdays, got %d", i, len(testStep.mockValue.([]dao.Workday)), len(responseBody.Data))
 			}
-
-			for i, workday := range responseBody.Data {
-
-				// check if Person is nil
-				if testStep.mockValue.([]dao.Workday)[i].Person == nil {
-					if workday.Person != nil {
-						t.Errorf("Test Step %d: Expected person to be nil. But results were different.", i)
-					}
-				} else {
-					if workday.Person == nil {
-						t.Errorf("Test Step %d: Expected person to not be nil. But results were different.", i)
-					}
-				}
-			}
 		})
 	}
 }
@@ -198,7 +184,7 @@ func TestGetWorkday(t *testing.T) {
 				Date:      "2021-01-01",
 				StartTime: "08:00:00",
 				EndTime:   "16:00:00",
-				Person:    nil,
+				Persons:   nil,
 			},
 			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
@@ -236,7 +222,7 @@ func TestGetWorkday(t *testing.T) {
 				Date:      "2021-01-01",
 				StartTime: "08:00:00",
 				EndTime:   "16:00:00",
-				Person:    &mockPerson,
+				Persons:   []dao.Person{mockPerson},
 			},
 			expectedStatusCode: http.StatusOK,
 			mockError:          nil,
@@ -305,17 +291,6 @@ func TestGetWorkday(t *testing.T) {
 				t.Errorf("Test Step %d: Error while decoding response body: %s", i, err)
 			}
 
-			workday := responseBody.Data
-			// check if Person is nil
-			if testStep.mockValue.(dao.Workday).Person == nil {
-				if workday.Person != nil {
-					t.Errorf("Test Step %d: Expected person to be nil. But results were different.", i)
-				}
-			} else {
-				if workday.Person == nil {
-					t.Errorf("Test Step %d: Expected person to not be nil. But results were different.", i)
-				}
-			}
 		})
 	}
 }

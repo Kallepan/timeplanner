@@ -10,11 +10,12 @@ import { ThemeHandlerService } from '@app/core/services/theme-handler.service';
 import { ActiveWeekHandlerService } from '@app/shared/services/active-week-handler.service';
 import { TimetableDataContainerService } from '@app/shared/services/timetable-data-container.service';
 import { ActionsComponent } from '../actions/actions.component';
+import { PersonPreviewComponent } from '@app/shared/components/person-preview/person-preview.component';
 
 @Component({
   selector: 'app-view-only-timetable',
   standalone: true,
-  imports: [CommonModule, ActionsComponent],
+  imports: [CommonModule, ActionsComponent, PersonPreviewComponent],
   templateUrl: './view-only-timetable.component.html',
   styleUrl: './view-only-timetable.component.scss',
 })
