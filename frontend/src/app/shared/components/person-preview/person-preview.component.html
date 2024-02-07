@@ -1,0 +1,8 @@
+<div class="container">
+  @for (personString of displayedPersonStrings; track $index) {
+    {{ personString }}
+  } @empty {
+    -
+  }
+  <ng-content></ng-content>
+</div>

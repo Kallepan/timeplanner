@@ -23,7 +23,7 @@ export class PlannerStateHandlerService {
   private personAPIService = inject(PersonAPIService);
   private workdayAPIService = inject(WorkdayAPIService);
 
-  assignPersonToTimeslot(person: PersonWithMetadata, workdayTimeslot: WorkdayTimeslot, actionToBeExecutedOnFailedValidation?: () => void) {
+  assignPersonToTimeslot(person: PersonWithMetadata, workdayTimeslot: WorkdayTimeslot) {
     of(workdayTimeslot)
       .pipe(
         // check if the person is qualified for the workplace
@@ -42,10 +42,11 @@ export class PlannerStateHandlerService {
         ),
         map((resp) => resp.data),
         map((workdays) =>
+          // check if the person is already assigned to a timeslot on the same day
           workdays
-            .filter((wd) => wd.date === workdayTimeslot.date)
-            .map((wd) => wd.person?.id)
-            .filter((id) => !!id)
+            .filter((wd) => wd.date === workdayTimeslot.date && !!wd.persons.length)
+            .map((wd) => wd.persons.map((p) => p.id))
+            .flat()
             .includes(person.id),
         ),
         tap((isAssigned) => {
@@ -61,7 +62,6 @@ export class PlannerStateHandlerService {
         map(() => true),
         catchError((err: Error) => {
           this.notificationService.warnMessage(err.message);
-          actionToBeExecutedOnFailedValidation?.();
           return of(false);
         }),
         filter((isValid) => isValid),
@@ -73,7 +73,7 @@ export class PlannerStateHandlerService {
           );
         }),
         map(() => {
-          workdayTimeslot.person = person;
+          workdayTimeslot.persons = [...workdayTimeslot.persons, person];
           return true;
         }),
         catchError((err) => {
@@ -93,9 +93,11 @@ export class PlannerStateHandlerService {
     return this.workdayAPIService
       .unassignPerson(workdayTimeslot.department.id, workdayTimeslot.date, workdayTimeslot.workplace.id, workdayTimeslot.timeslot.id, person.id)
       .pipe(
+        // update the timeslot in the service
         map((resp) => resp.data),
+        // remove person from timeslot
         map(() => {
-          workdayTimeslot.person = null;
+          workdayTimeslot.persons = workdayTimeslot.persons.filter((p) => p.id !== person.id);
         }),
       )
       .subscribe({

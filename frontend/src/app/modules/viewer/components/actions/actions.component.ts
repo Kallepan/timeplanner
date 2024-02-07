@@ -12,14 +12,14 @@ import { RouterLink } from '@angular/router';
 })
 export class ActionsComponent {
   @Input() displayComments = false;
-  @Input() displayPersons = true;
   @Input() displayTimes = true;
   @Input() displayColors = true;
+  @Input() displayColorsMissing = true;
 
   @Output() toggleComments = new EventEmitter<boolean>();
   @Output() toggleColors = new EventEmitter<boolean>();
   @Output() toggleTimeLabel = new EventEmitter<boolean>();
-  @Output() togglePersonsLabel = new EventEmitter<boolean>();
+  @Output() toggleColorsMissing = new EventEmitter<boolean>();
 
   @Output() shiftWeek = new EventEmitter<number>();
 

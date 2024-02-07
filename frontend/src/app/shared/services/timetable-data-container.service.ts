@@ -25,25 +25,25 @@ import { WorkdayAPIService } from './workday-api.service';
   providedIn: null,
 })
 export class TimetableDataContainerService {
+  protected _colorizeMissing = signal<boolean>(true);
+  get colorizeMissing$(): boolean {
+    return this._colorizeMissing();
+  }
+  set colorizeMissing(value: boolean) {
+    this._colorizeMissing.set(value);
+  }
+
   protected _isLoading = signal<boolean>(true);
   get isLoading$(): boolean {
     return this._isLoading();
   }
 
-  protected _displayComments = signal<boolean>(false);
+  protected _displayComments = signal<boolean>(true);
   get displayComments$(): boolean {
     return this._displayComments();
   }
   set displayComments(value: boolean) {
     this._displayComments.set(value);
-  }
-
-  protected _displayPersons = signal<boolean>(true);
-  get displayPersons$(): boolean {
-    return this._displayPersons();
-  }
-  set displayPersons(value: boolean) {
-    this._displayPersons.set(value);
   }
 
   protected _displayTimes = signal<boolean>(false);

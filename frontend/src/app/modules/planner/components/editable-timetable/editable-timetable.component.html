@@ -43,7 +43,7 @@
           <div
             class="cell content"
             [ngClass]="{
-              'not-occupied': !ts.person
+              'not-occupied': !ts.persons.length
             }"
             [ngStyle]="{
               'grid-row': slot.gridRow,
@@ -51,16 +51,16 @@
               'background-color': timetableDataContainerService.colorize$ ? (themeHandlerService.isDark$ ? ts.colorForDarkMode : ts.colorForLightMode) : null
             }">
             @defer (on viewport) {
-              <app-select-person
-                [initiallySelectedPersonFromParent]="ts.person"
+              <app-select-persons
+                [persons]="ts.persons"
                 [weekday]="ts.weekday"
                 [comment]="ts.comment"
-                (personAssignedToTimeslot)="personAssignedToTimeslotEventHandler($event.p, ts, $event.actionToBeExecutedOnFailedValidation)"
+                (personAssignedToTimeslot)="personAssignedToTimeslotEventHandler($event.p, ts)"
                 (personUnassignedFromTimeslot)="personUnassignedFromTimeslotEventHandler($event.p, ts)"
-                (commentEditRequest)="plannerStateHandlerService.handleCommentEditRequest(ts)"></app-select-person>
+                (commentEditRequest)="plannerStateHandlerService.handleCommentEditRequest(ts)"></app-select-persons>
             } @placeholder {
               <!-- This is just a cheap placeholder to make push the content down !-->
-              <app-edit-person-preview [person]="ts.person" [comment]="ts.comment"></app-edit-person-preview>
+              <app-person-preview [persons]="ts.persons"></app-person-preview>
             }
             @if (timetableDataContainerService.displayTimes$) {
               {{ ts.start_time }} - {{ ts.end_time }} ({{ ts.duration_in_minutes / 60 }})

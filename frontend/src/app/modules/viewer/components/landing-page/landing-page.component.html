@@ -2,11 +2,11 @@
 <div class="actions-container">
   <app-actions-viewer
     (toggleColors)="timetableDataContainerService.colorize = $event"
-    (togglePersonsLabel)="timetableDataContainerService.displayPersons = $event"
+    (toggleColorsMissing)="timetableDataContainerService.colorizeMissing = $event"
     (toggleTimeLabel)="timetableDataContainerService.displayTimes = $event"
     (toggleComments)="timetableDataContainerService.displayComments = $event"
     [displayComments]="timetableDataContainerService.displayComments$"
-    [displayPersons]="timetableDataContainerService.displayPersons$"
+    [displayColorsMissing]="timetableDataContainerService.colorizeMissing$"
     [displayTimes]="timetableDataContainerService.displayTimes$"
     [displayColors]="timetableDataContainerService.colorize$"
     (shiftWeek)="activeWeekHandlerService.shiftWeek($event)"

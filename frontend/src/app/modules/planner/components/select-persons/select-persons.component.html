@@ -1,0 +1,37 @@
+<form>
+  <mat-form-field>
+    <mat-chip-grid #chipGrid>
+      @for (person of persons; track person) {
+        <mat-chip-row (removed)="remove(person)" color="accent" highlighted="true">
+          {{ person.last_name }} ({{ person.id }})
+          <button matChipRemove>
+            <mat-icon>cancel</mat-icon>
+          </button>
+        </mat-chip-row>
+      }
+    </mat-chip-grid>
+    <input
+      #personInput
+      placeholder="kank..."
+      type="text"
+      matInput
+      [matAutocomplete]="auto"
+      [formControl]="control"
+      autocomplete="off"
+      [matChipInputFor]="chipGrid"
+      (matChipInputTokenEnd)="add($event)"
+      [matChipInputSeparatorKeyCodes]="seperatorKeysCode" />
+    <mat-label>Person</mat-label>
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="selected($event)">
+      @for (person of filteredPersons$ | async; track person) {
+        <mat-option [value]="person"> {{ person.last_name }} ({{ person.id }}) </mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+  <div class="actions">
+    <button mat-mini-fab color="primary" matTooltip="Kommentar editieren" (click)="commentEditRequest.emit(); $event.preventDefault()"><mat-icon>edit</mat-icon></button>
+  </div>
+  <div class="comment">
+    {{ comment }}
+  </div>
+</form>

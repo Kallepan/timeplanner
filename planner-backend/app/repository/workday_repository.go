@@ -168,10 +168,6 @@ func (w WorkdayRepositoryImpl) AssignPersonToWorkday(personID string, department
 	query := `
 	// delete the relationship between the person and the workday
 	MATCH (wkd:Workday {date: date($date), department: $departmentID, workplace: $workplaceID, timeslot: $timeslotID, active: true})
-	// delete the relationship between the person and the workday
-	OPTIONAL MATCH (wkd)<-[r:ASSIGNED_TO]-(:Person)
-	DELETE r
-	WITH wkd
 	// fetch the person
 	MATCH (p:Person {id: $personID})
 	// create a relationship between the person and the workday
