@@ -4,7 +4,7 @@ metadata:
   name: planner-backend
   namespace: timeplanner
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: planner-backend
