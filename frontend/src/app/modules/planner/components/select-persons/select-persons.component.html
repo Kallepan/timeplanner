@@ -29,7 +29,7 @@
     </mat-autocomplete>
   </mat-form-field>
   <div class="actions">
-    <button mat-mini-fab color="primary" matTooltip="Kommentar editieren" (click)="commentEditRequest.emit(); $event.preventDefault()"><mat-icon>edit</mat-icon></button>
+    <button id="edit-comment-button" mat-mini-fab color="primary" matTooltip="Kommentar editieren" (click)="commentEditRequest.emit(); $event.preventDefault()"><mat-icon>edit</mat-icon></button>
   </div>
   <div class="comment">
     {{ comment }}
