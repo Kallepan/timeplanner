@@ -16,9 +16,9 @@ spec:
     spec:
       # set the user and group for the container
       initContainers:
-        - name: planner-backend-db-init
+        - name: init-chmod
           image: busybox
-          command: ["sh", "-c", "chown neo4j:neo4j /data"]
+          command: ["sh", "-c", "chmod -R 777 /data"]
           volumeMounts:
             - name: planner-backend-db
               mountPath: /data
