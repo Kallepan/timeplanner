@@ -27,6 +27,11 @@ export class AuthService {
 
   private readonly _authData = signal<AuthData | null | undefined>(undefined);
 
+  private _loading = signal(false);
+  get loading$() {
+    return this._loading();
+  }
+
   initialized = computed(() => {
     return this._authData() !== undefined;
   });
@@ -90,16 +95,18 @@ export class AuthService {
       }),
       withCredentials: true,
     };
-
+    this._loading.set(true);
     this.http
       .post<APIResponse<AuthResponse>>(`${constants.APIS.AUTH}/login`, data, httpOptions)
       .pipe(map((resp) => resp.data))
       .subscribe({
         next: (data) => {
+          this._loading.set(false);
           this._authData.set(data);
           this._notificationService.infoMessage(messages.AUTH.LOGGED_IN);
         },
         error: () => {
+          this._loading.set(false);
           this._notificationService.warnMessage(messages.AUTH.LOGIN_FAILED);
         },
       });

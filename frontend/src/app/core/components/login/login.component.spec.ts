@@ -3,29 +3,32 @@ import { ComponentFixture, DeferBlockState, TestBed } from '@angular/core/testin
 import { HarnessLoader } from '@angular/cdk/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { signal } from '@angular/core';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatMenuHarness } from '@angular/material/menu/testing';
 import { MatProgressSpinnerHarness } from '@angular/material/progress-spinner/testing';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { By } from '@angular/platform-browser';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { AuthService } from '@app/core/services/auth.service';
 import { LoginComponent } from './login.component';
+import { NotificationService } from '@app/core/services/notification.service';
+import { MatProgressBarHarness } from '@angular/material/progress-bar/testing';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let authService: jasmine.SpyObj<AuthService>;
+  let mockNotificationService: jasmine.SpyObj<NotificationService>;
   let loader: HarnessLoader;
 
   beforeEach(() => {
-    authService = jasmine.createSpyObj('AuthService', ['login', 'verifyLogin', 'logout', 'isLoggedIn', 'authData'], {
+    authService = jasmine.createSpyObj('AuthService', ['login', 'verifyLogin', 'logout', 'isLoggedIn', 'authData', 'loading'], {
       initialized: signal(false),
     });
 
+    mockNotificationService = jasmine.createSpyObj('NotificationService', ['warnMessage', 'infoMessage']);
+
     TestBed.configureTestingModule({
-      imports: [LoginComponent, MatMenuModule, MatSnackBarModule],
-      providers: [provideNoopAnimations(), { provide: AuthService, useValue: authService }],
+      imports: [LoginComponent],
+      providers: [provideNoopAnimations(), { provide: AuthService, useValue: authService }, { provide: NotificationService, useValue: mockNotificationService }],
     });
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
@@ -89,14 +92,34 @@ describe('LoginComponent', () => {
     expect(menu).toBeTruthy();
 
     const loginFormButton = fixture.debugElement.query(By.css('#login-confirm'));
-    expect(loginFormButton.nativeElement.disabled).toBe(true);
 
     // Fill in username
+    component.loginForm.setValue({
+      identifier: 'test',
+      password: '',
+    });
+    fixture.detectChanges();
+
+    expect(component.loginForm.valid).toBeFalsy();
+    expect(loginFormButton.nativeElement.disabled).toBe(true);
+
+    // Fill in password
+    component.loginForm.setValue({
+      identifier: '',
+      password: 'test',
+    });
+    fixture.detectChanges();
+
+    expect(component.loginForm.valid).toBeFalsy();
+    expect(loginFormButton.nativeElement.disabled).toBe(true);
+
+    // Fill in both
     component.loginForm.setValue({
       identifier: 'test',
       password: 'test',
     });
     fixture.detectChanges();
+
     expect(component.loginForm.valid).toBeTruthy();
     expect(loginFormButton.nativeElement.disabled).toBe(false);
   });
@@ -138,5 +161,24 @@ describe('LoginComponent', () => {
     const department = fixture.debugElement.query(By.css('.info'));
     expect(department).toBeTruthy();
     expect(department.nativeElement.textContent).toContain('TEST'); // Uppercase!
+  });
+
+  it('should display progress bar when logging in', async () => {
+    const deferBlockFixture = (await fixture.getDeferBlocks())[0];
+    await deferBlockFixture.render(DeferBlockState.Complete);
+
+    // Click on login button
+    const loginButton = fixture.debugElement.query(By.css('button'));
+    loginButton.nativeElement.click();
+
+    const menu = await loader.getHarness(MatMenuHarness);
+    expect(menu).toBeTruthy();
+
+    spyOn(component, 'isLoading').and.returnValue(true);
+    fixture.detectChanges();
+
+    // Verify that spinner is displayed
+    const bar = await loader.getHarness(MatProgressBarHarness);
+    expect(bar).toBeTruthy();
   });
 });

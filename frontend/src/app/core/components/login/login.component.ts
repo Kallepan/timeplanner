@@ -6,13 +6,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { AuthService } from '@app/core/services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, MatIconModule, MatButtonModule, MatMenuModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatProgressSpinnerModule],
+  imports: [CommonModule, MatProgressBarModule, MatIconModule, MatButtonModule, MatMenuModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatProgressSpinnerModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
@@ -31,5 +32,10 @@ export class LoginComponent implements OnInit {
 
   onSubmitLogin(): void {
     this.authService.login(this.loginForm.controls.identifier.value, this.loginForm.controls.password.value);
+    this.loginForm.reset();
+  }
+
+  isLoading() {
+    return this.authService.loading$;
   }
 }
