@@ -73,15 +73,12 @@ describe('MainComponent', () => {
     // Check if the sidenav is closed by default
     expect(await sidenav.isOpen()).toBe(false);
   });
-
 });
 
 describe('MainComponent (injected)', () => {
   let mockOverlayContainer: jasmine.SpyObj<OverlayContainer>;
   let themeHandlerService: ThemeHandlerService;
-
   let fixture: ComponentFixture<MainComponent>;
-  let loader: HarnessLoader;
 
   beforeEach(() => {
     mockOverlayContainer = jasmine.createSpyObj('OverlayContainer', ['getContainerElement']);
@@ -100,7 +97,6 @@ describe('MainComponent (injected)', () => {
     fixture = TestBed.createComponent(MainComponent);
     themeHandlerService = TestBed.inject(ThemeHandlerService);
     fixture.detectChanges();
-    loader = TestbedHarnessEnvironment.loader(fixture);
   });
 
   it('should call getContainerElement of OverlayContainer', () => {
@@ -118,5 +114,13 @@ describe('MainComponent (injected)', () => {
 
     // The method should be called again when the theme changes
     expect(mockOverlayContainer.getContainerElement).toHaveBeenCalledTimes(6);
+  });
+
+  it('should call toggleTheme of ThemeHandlerService', () => {
+    const spy = spyOn(themeHandlerService, 'toggleTheme');
+    fixture.componentInstance.toggleTheme();
+    fixture.detectChanges();
+
+    expect(spy).toHaveBeenCalledTimes(1);
   });
 });
