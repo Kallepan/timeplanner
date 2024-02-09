@@ -133,6 +133,54 @@ export class PlannerStateHandlerService {
       });
   }
 
+  handleCommentEditRequestForManySlots(tss: DisplayedWorkdayTimeslot[]) {
+    // generate data for dialog
+    const data: EditTextareaDialogData = {
+      title: 'Kommentar bearbeiten',
+      control: new FormControl(''),
+      label: 'Kommentar zum Timeslot',
+      placeholder: 'Blah blah blah',
+      hint: 'Dieser Kommentar wird für diesen Timeslot gespeichert.',
+    };
+    // generate dialogConfig
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = data;
+    dialogConfig.enterAnimationDuration = 300;
+    dialogConfig.exitAnimationDuration = 300;
+
+    // Open dialog to edit comment
+    const dialogRef = this.dialog.open(EditTextareaDialogComponent, dialogConfig);
+    dialogRef
+      .afterClosed()
+      .pipe(filter((result): result is string => typeof result === 'string'))
+      .subscribe({
+        next: (comment) => {
+          tss.forEach((ts) => {
+            this.workdayAPIService
+              .updateWorkday({
+                department_id: ts.department.id,
+                workplace_id: ts.workplace.id,
+                timeslot_id: ts.timeslot.id,
+                date: ts.date,
+                comment,
+                start_time: ts.start_time,
+                end_time: ts.end_time,
+                active: true,
+              })
+              .pipe(
+                catchError((err) => throwError(() => err)),
+                map((resp) => resp.data),
+              )
+              .subscribe({
+                next: (workday) => {
+                  ts.comment = workday.comment;
+                },
+              });
+          });
+        },
+      });
+  }
+
   handleCommentEditRequest(ts: DisplayedWorkdayTimeslot) {
     // generate data for dialog
     const data: EditTextareaDialogData = {

@@ -10,11 +10,13 @@ import { PlannerStateHandlerService } from '../../services/planner-state-handler
 import { PersonPreviewComponent } from '../../../../shared/components/person-preview/person-preview.component';
 import { PersonListComponent } from '../person-list/person-list.component';
 import { SelectPersonsComponent } from '../select-persons/select-persons.component';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-editable-timetable',
   standalone: true,
-  imports: [CommonModule, SelectPersonsComponent, CdkDropList, CdkDropListGroup, PersonListComponent, PersonPreviewComponent],
+  imports: [CommonModule, SelectPersonsComponent, CdkDropList, CdkDropListGroup, PersonListComponent, PersonPreviewComponent, MatIconModule, MatButtonModule],
   templateUrl: './editable-timetable.component.html',
   styleUrl: './editable-timetable.component.scss',
 })

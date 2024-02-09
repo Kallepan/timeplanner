@@ -28,7 +28,7 @@
       <!-- Now display the slots by using the respective gridRow !-->
       @for (slot of workplace.timeslotGroups; track slot) {
         <div
-          class="cell header"
+          class="cell header slot-header"
           [ngStyle]="{
             'grid-row': slot.gridRow,
             'grid-column': 2
@@ -36,6 +36,7 @@
           cdkDropList
           (cdkDropListDropped)="personDroppedIntoTimeslotHandler($event.item.data, getSlotsFromMonToFri(slot.workdayTimeslots))">
           {{ slot.name }}
+          <button mat-mini-fab color="primary" (click)="plannerStateHandlerService.handleCommentEditRequestForManySlots(slot.workdayTimeslots)"><mat-icon>edit</mat-icon></button>
         </div>
 
         <!-- Now display the timeslots by using their respective gridRow and gridColumn !-->
