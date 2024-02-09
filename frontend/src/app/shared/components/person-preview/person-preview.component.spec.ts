@@ -37,15 +37,24 @@ describe('PersonPreviewComponent', () => {
     component.persons = [{ id: '1', last_name: 'Doe', first_name: 'John' } as PersonWithMetadata];
     fixture.detectChanges();
 
-    expect(component.displayedPersonStrings).toEqual(['Doe (1)']);
+    expect(component.displayedPersonString).toEqual('Doe (1)');
 
     expect(fixture.nativeElement.textContent).toContain('Doe (1)');
   });
 
   it('should display empty card if no person', async () => {
-    expect(component.displayedPersonStrings).toEqual([]);
+    expect(component.displayedPersonString).toEqual('');
 
     expect(fixture.nativeElement.textContent).toContain(' - ');
+  });
+
+  it('should display person name', async () => {
+    component.persons = [{ id: '1', last_name: 'Doe', first_name: 'John' } as PersonWithMetadata, { id: '2', last_name: 'Doe', first_name: 'Jane' } as PersonWithMetadata];
+    fixture.detectChanges();
+
+    expect(component.displayedPersonString).toEqual('Doe (1), Doe (2)');
+
+    expect(fixture.nativeElement.textContent).toContain('Doe (1), Doe (2)');
   });
 });
 
