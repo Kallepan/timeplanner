@@ -78,6 +78,7 @@ export class SelectPersonsComponent {
     this.control.setValue('', { emitEvent: false });
   }
 
+  @Output() commentDeleteRequest = new EventEmitter<void>();
   @Output() commentEditRequest = new EventEmitter<void>();
   @Output() personAssignedToTimeslot = new EventEmitter<{ p: PersonWithMetadata }>();
   @Output() personUnassignedFromTimeslot = new EventEmitter<{ p: PersonWithMetadata }>();

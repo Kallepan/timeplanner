@@ -108,6 +108,31 @@ export class PlannerStateHandlerService {
       });
   }
 
+  handleCommentDeleteRequest(ts: DisplayedWorkdayTimeslot) {
+    if (!confirm('Sind Sie sicher, dass Sie den Kommentar löschen möchten?')) return;
+
+    this.workdayAPIService
+      .updateWorkday({
+        department_id: ts.department.id,
+        workplace_id: ts.workplace.id,
+        timeslot_id: ts.timeslot.id,
+        date: ts.date,
+        comment: '',
+        start_time: ts.start_time,
+        end_time: ts.end_time,
+        active: true,
+      })
+      .pipe(
+        catchError((err) => throwError(() => err)),
+        map((resp) => resp.data),
+      )
+      .subscribe({
+        next: (workday) => {
+          ts.comment = workday.comment;
+        },
+      });
+  }
+
   handleCommentEditRequest(ts: DisplayedWorkdayTimeslot) {
     // generate data for dialog
     const data: EditTextareaDialogData = {

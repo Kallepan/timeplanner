@@ -34,4 +34,27 @@ describe('SelectPersonsComponent', () => {
 
     expect(component.commentEditRequest.emit).toHaveBeenCalled();
   });
+
+  it('should not display delete button if comment is empty', () => {
+    component.comment = '';
+    expect(component.comment).toBe('');
+    fixture.detectChanges();
+
+    const button = fixture.nativeElement.querySelector('button#delete-comment-button');
+    expect(button).toBeFalsy();
+  });
+
+  it('should emit commentDeleteRequest', () => {
+    component.comment = 'Test comment';
+    expect(component.comment).toBe('Test comment');
+    fixture.detectChanges();
+
+    const button = fixture.nativeElement.querySelector('button#delete-comment-button');
+    expect(button).toBeTruthy();
+    spyOn(component.commentDeleteRequest, 'emit');
+
+    button.click();
+
+    expect(component.commentDeleteRequest.emit).toHaveBeenCalled();
+  });
 });

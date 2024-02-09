@@ -7,10 +7,10 @@ import (
 
 /* Requests */
 type UpdateWorkdayRequest struct {
-	StartTime string `json:"start_time" binding:"required"`
-	EndTime   string `json:"end_time" binding:"required"`
-	Comment   string `json:"comment" binding:"required"`
-	Active    *bool  `json:"active" binding:"required"` // must be pointer due to the implementation in go
+	StartTime string  `json:"start_time" binding:"required"`
+	EndTime   string  `json:"end_time" binding:"required"`
+	Comment   *string `json:"comment" binding:"required"`
+	Active    *bool   `json:"active" binding:"required"` // must be pointer due to the implementation in go
 }
 
 func (r *UpdateWorkdayRequest) Validate() error {

@@ -57,7 +57,8 @@
                 [comment]="ts.comment"
                 (personAssignedToTimeslot)="personAssignedToTimeslotEventHandler($event.p, ts)"
                 (personUnassignedFromTimeslot)="personUnassignedFromTimeslotEventHandler($event.p, ts)"
-                (commentEditRequest)="plannerStateHandlerService.handleCommentEditRequest(ts)"></app-select-persons>
+                (commentEditRequest)="plannerStateHandlerService.handleCommentEditRequest(ts)"
+                (commentDeleteRequest)="plannerStateHandlerService.handleCommentDeleteRequest(ts)"></app-select-persons>
             } @placeholder {
               <!-- This is just a cheap placeholder to make push the content down !-->
               <app-person-preview [persons]="ts.persons"></app-person-preview>

@@ -60,6 +60,29 @@
     inset-block-start: calc(var(--line-offset) * -1);
     inset-inline-start: calc(var(--line-offset) * -1);
   }
+
+  .header::after,
+  .header::before {
+    content: '';
+    background-color: var(--border-color);
+    position: absolute;
+  }
+
+  // Rows lines
+  .header::after {
+    inline-size: 100vw;
+    block-size: var(--line-thickness);
+    inset-block-start: calc(var(--line-offset) * -1);
+    inset-inline-start: calc(var(--line-offset) * -1);
+  }
+
+  // Columns lines
+  .header::before {
+    inline-size: var(--line-thickness);
+    block-size: calc(100vh * 10); // I know this is shit, but it works
+    inset-block-start: calc(var(--line-offset) * -1);
+    inset-inline-start: calc(var(--line-offset) * -1);
+  }
 }
 
 .not-occupied {
