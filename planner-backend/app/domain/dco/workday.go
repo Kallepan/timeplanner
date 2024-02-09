@@ -14,6 +14,7 @@ type UpdateWorkdayRequest struct {
 }
 
 func (r *UpdateWorkdayRequest) Validate() error {
+	// start_time and end_time can be set to 00:00 if no time is needed
 	// validate time in format: hh:mm:ss or hh:mm
 	s, err := time.Parse("15:04:05", r.StartTime)
 	if err != nil {

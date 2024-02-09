@@ -38,6 +38,8 @@ export const convertWorkdaysToDisplayedWorkday = (workdays: WorkdayTimeslot[]) =
         gridColumn: WeekdayIDToGridColumn(workdayTimeslot.weekday),
         colorForLightMode: startTimeToColorForLightMode(workdayTimeslot.start_time),
         colorForDarkMode: startTimeToColorForDarkMode(workdayTimeslot.start_time),
+        // check if start_time and end_time is 00:00, if so then we dont want to display the time, thus we store a boolean to check if it is valid
+        validTime: workdayTimeslot.start_time !== '00:00' && workdayTimeslot.end_time !== '00:00',
       });
       displayWorkdayTimeslotMap.set(workdayTimeslot.timeslot.name, timeslotsArray);
     });

@@ -43,7 +43,7 @@
               'background-color': timetableDataContainerService.colorize$ ? (themeHandlerService.isDark$ ? wts.colorForDarkMode : wts.colorForLightMode) : null
             }">
             <app-person-preview [persons]="wts.persons">
-              @if (timetableDataContainerService.displayTimes$) {
+              @if (timetableDataContainerService.displayTimes$ && wts.validTime) {
                 <span> {{ wts.start_time }} - {{ wts.end_time }} ({{ wts.duration_in_minutes / 60 }}) </span>
               }
               @if (timetableDataContainerService.displayComments$ && wts.comment) {

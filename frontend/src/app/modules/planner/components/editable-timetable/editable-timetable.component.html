@@ -62,7 +62,7 @@
               <!-- This is just a cheap placeholder to make push the content down !-->
               <app-person-preview [persons]="ts.persons"></app-person-preview>
             }
-            @if (timetableDataContainerService.displayTimes$) {
+            @if (timetableDataContainerService.displayTimes$ && ts.validTime) {
               {{ ts.start_time }} - {{ ts.end_time }} ({{ ts.duration_in_minutes / 60 }})
             }
           </div>
