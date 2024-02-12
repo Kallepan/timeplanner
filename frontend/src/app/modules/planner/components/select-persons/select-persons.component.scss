@@ -1,11 +1,6 @@
-.container {
-  display: flex;
-  flex-direction: column;
-  align-items: baseline;
-  justify-content: flex-start;
-}
-mat-form-field {
-  width: 100%;
+.person-selector {
+  min-width: 100%;
+  max-width: 100%;
 }
 
 .actions {

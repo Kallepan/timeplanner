@@ -1,5 +1,5 @@
 <form>
-  <mat-form-field>
+  <mat-form-field class="person-selector">
     <mat-chip-grid #chipGrid>
       @for (person of persons; track person) {
         <mat-chip-row (removed)="remove(person)" color="primary" highlighted="true">

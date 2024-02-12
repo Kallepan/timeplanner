@@ -1,8 +1,7 @@
+@defer (on timer(500ms)) {
+  <app-person-list></app-person-list>
+}
 <div class="timetable-container" cdkDropListGroup>
-  @defer (on timer(500ms)) {
-    <app-person-list class="person-list"></app-person-list>
-  }
-
   <!-- This is the parent container for all cdkDropLists !-->
   <div class="timetable mat-elevation-z8">
     <!-- Add static headers -->

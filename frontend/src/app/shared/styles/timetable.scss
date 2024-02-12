@@ -1,9 +1,6 @@
 .timetable-container {
   margin: 1rem;
-}
-
-.person-list {
-  margin: 1rem;
+  overflow-x: scroll;
 }
 
 .timetable {
@@ -17,6 +14,8 @@
   --line-thickness: 1px;
   // --border-color: from styles.scss
 
+  min-width: max-content;
+  width: auto;
   display: grid;
   grid-template-columns: min-content min-content repeat(7, 1fr);
   grid-auto-rows: minmax(min-content, auto);
@@ -87,5 +86,4 @@
 
 .not-occupied {
   background-color: var(--highlight-color);
-  margin: 1px;
 }
