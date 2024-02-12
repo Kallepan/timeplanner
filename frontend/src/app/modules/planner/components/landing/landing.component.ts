@@ -6,6 +6,7 @@ import { ActionsComponent } from '../actions/actions.component';
 import { EditableTimetableComponent } from '../editable-timetable/editable-timetable.component';
 import { PersonListComponent } from '../person-list/person-list.component';
 import { ActiveWeekHandlerService } from '@app/shared/services/active-week-handler.service';
+import { ActiveDepartmentHandlerService } from '@app/shared/services/active-department-handler.service';
 
 @Component({
   selector: 'app-landing',
@@ -18,5 +19,6 @@ import { ActiveWeekHandlerService } from '@app/shared/services/active-week-handl
 export class LandingComponent {
   timetableDataContainerService = inject(TimetableDataContainerService);
   activeWeekHandlerService = inject(ActiveWeekHandlerService);
+  activeDepartmentHandlerService = inject(ActiveDepartmentHandlerService);
   plannerStateHandlerService = inject(PlannerStateHandlerService);
 }
