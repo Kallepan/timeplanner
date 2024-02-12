@@ -181,4 +181,29 @@ describe('LoginComponent', () => {
     const bar = await loader.getHarness(MatProgressBarHarness);
     expect(bar).toBeTruthy();
   });
+
+  it('should prevent event propagation originating from form', async () => {
+    const deferBlockFixture = (await fixture.getDeferBlocks())[0];
+    await deferBlockFixture.render(DeferBlockState.Complete);
+
+    // open login menu
+    const loginButton = fixture.debugElement.query(By.css('button'));
+    loginButton.nativeElement.click();
+
+    const menu = await loader.getHarness(MatMenuHarness);
+    expect(menu).toBeTruthy();
+
+    // select the Form
+    const formElement = fixture.debugElement.query(By.css('form')).nativeElement as HTMLFormElement;
+    expect(formElement).toBeTruthy();
+
+    const dummyEvent = new KeyboardEvent('keydown', {
+      key: ' ',
+    });
+    const spy = spyOn(dummyEvent, 'stopPropagation');
+    formElement.dispatchEvent(dummyEvent);
+    fixture.detectChanges();
+
+    expect(spy).toHaveBeenCalled();
+  });
 });

@@ -4,7 +4,7 @@
       <mat-icon>account_circle</mat-icon>
     </button>
     <mat-menu #menu="matMenu">
-      <form action="submit" [formGroup]="loginForm" class="mat-app-background menu" (click)="$event.stopPropagation()" (keydown.tab)="$event.stopPropagation()" tabindex="0">
+      <form action="submit" [formGroup]="loginForm" class="mat-app-background menu" (click)="$event.stopPropagation()" (keydown)="$event.stopPropagation()" tabindex="0">
         <mat-form-field appearance="fill">
           <mat-label>Identifier</mat-label>
           <input matInput placeholder="Identifier" formControlName="identifier" type="text" autocomplete="off" />
