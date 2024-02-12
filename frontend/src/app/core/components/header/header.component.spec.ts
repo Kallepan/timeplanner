@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @angular-eslint/directive-selector */
+/* eslint-disable @angular-eslint/directive-class-suffix */
 import { TestBed, fakeAsync, type ComponentFixture } from '@angular/core/testing';
 
 import { type HarnessLoader } from '@angular/cdk/testing';
@@ -7,16 +10,23 @@ import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { MatSlideToggleHarness } from '@angular/material/slide-toggle/testing';
 import { By } from '@angular/platform-browser';
 import { HeaderComponent } from './header.component';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { constants } from '@app/constants/constants';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
   let loader: HarnessLoader;
+  let mockActivatedRotue: jasmine.SpyObj<ActivatedRoute>;
+  let routerLinks: any[];
+  let linkDes: any[];
 
   beforeEach(() => {
+    mockActivatedRotue = jasmine.createSpyObj('ActivatedRoute', ['snapshot'], { snapshot: { data: { title: 'Test' } } });
+
     TestBed.configureTestingModule({
       imports: [HeaderComponent],
-      providers: [provideHttpClientTesting(), provideHttpClient()],
+      providers: [provideHttpClientTesting(), provideHttpClient(), { provide: ActivatedRoute, useValue: mockActivatedRotue }],
     });
     fixture = TestBed.createComponent(HeaderComponent);
     component = fixture.componentInstance;
@@ -53,4 +63,17 @@ describe('HeaderComponent', () => {
 
     expect(component.themeToggled.emit).toHaveBeenCalled();
   }));
+
+  it('should have correct title', () => {
+    expect(component.title).toBe(constants.TITLE_SHORT);
+  });
+
+  it('should fetch routerLinks', () => {
+    linkDes = fixture.debugElement.queryAll(By.directive(RouterLink));
+    routerLinks = linkDes.map((de) => de.injector.get(RouterLink));
+
+    expect(routerLinks.length).toBe(1);
+    expect(routerLinks[0].navigatedTo).toBe(undefined);
+    expect(routerLinks[0].commands[0]).toBe('/');
+  });
 });

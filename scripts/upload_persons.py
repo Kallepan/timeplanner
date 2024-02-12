@@ -116,6 +116,7 @@ def main() -> None:
         "jok",
         "azu",
         "rve",
+        "not",
     ]
     create_persons(
         department_id=department_id,

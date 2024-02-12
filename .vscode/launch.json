@@ -49,6 +49,14 @@
     {
       "name": "Launch Backend",
       "configurations": ["Launch API Gateway", "Launch Planner Backend"]
+    },
+    {
+      "name": "Launch Fullstack",
+      "configurations": [
+        "Launch API Gateway",
+        "Launch Planner Backend",
+        "Launch Frontend"
+      ]
     }
   ]
 }

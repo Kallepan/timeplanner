@@ -11,7 +11,7 @@ import (
 )
 
 type SynchronizeRepository interface {
-	Synchronize(datesInAdvance int) error
+	Synchronize(weeksInAdvance int) error
 
 	createWorkday(ctx context.Context, date string, weekday string) error
 }
@@ -21,36 +21,37 @@ type SynchronizeRepositoryImpl struct {
 	ctx context.Context
 }
 
-func (d SynchronizeRepositoryImpl) Synchronize(datesInAdvance int) error {
+func (d SynchronizeRepositoryImpl) Synchronize(weeksInAdvance int) error {
 	/*
 		Synchronize:
-			- Get all dates from next Monday to 1 week from then
-			- Create Date nodes for each of them
-			- Create Workday nodes for each of them
+			- Get monday of the current week
+			- calculate all dates from monday to sunday * weeksInAdvance
 	*/
 
+	// Get the current date
 	now := time.Now()
 
-	// Calculate the difference between the current day of the week and the next Monday
-	diff := (int(time.Monday) - int(now.Weekday())) % 7
+	// Get the monday of the current week
+	monday := now.AddDate(0, 0, -int(now.Weekday())+1)
 
-	// Start from the next Monday
-	start := now.AddDate(0, 0, diff)
+	for i := 0; i < weeksInAdvance; i++ {
+		for j := 0; j < 7; j++ {
+			date := monday.AddDate(0, 0, 7*i+j)
+			dateStr := date.Format("2006-01-02")
+			weekday := TimeDateToWeekdayID(date)
 
-	// Get all dates from next Monday to 1 week from then
-	for n := start; n.Before(start.AddDate(0, 0, datesInAdvance)); n = n.AddDate(0, 0, 1) {
-		date := n.Format("2006-01-02")
-		weekday := TimeDateToWeekdayID(n)
+			// Create the date node
+			if err := EnsureDateExists(d.db, d.ctx, dateStr); err != nil {
+				return err
+			}
 
-		if err := EnsureDateExists(d.db, d.ctx, date); err != nil {
-			return err
+			// Create the workday nodes
+			if err := d.createWorkday(d.ctx, dateStr, weekday); err != nil {
+				return fmt.Errorf("error creating workday nodes: %w", err)
+			}
+
+			slog.Info(fmt.Sprintf("Synchronized date %s", dateStr))
 		}
-
-		if err := d.createWorkday(d.ctx, date, weekday); err != nil {
-			return err
-		}
-
-		slog.Info(fmt.Sprintf("Synchronized date %s", date))
 	}
 	return nil
 }

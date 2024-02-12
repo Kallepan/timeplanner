@@ -89,31 +89,33 @@ func TestLoginSimple(t *testing.T) {
 		},
 	}
 
-	for _, testStep := range testSteps {
-		// Set mock data
-		mockUserRepository.On("FindUserByUsername").Return(testStep.expectedValue, testStep.mockError)
+	for i, testStep := range testSteps {
+		t.Run(fmt.Sprintf("Test Step: %d", i), func(t *testing.T) {
+			// Set mock data
+			mockUserRepository.On("FindUserByUsername").Return(testStep.expectedValue, testStep.mockError)
 
-		w := httptest.NewRecorder()
-		ctx := mock.GetGinTestContext(w, "POST", gin.Params{}, testStep.mockRequestData)
+			w := httptest.NewRecorder()
+			ctx := mock.GetGinTestContext(w, "POST", gin.Params{}, testStep.mockRequestData)
 
-		authService.Login(ctx)
+			authService.Login(ctx)
 
-		if w.Code != testStep.expectedStatusCode {
-			t.Errorf("Expected status code %d but got %d", testStep.expectedStatusCode, w.Code)
-		}
-
-		// check the httpOnly cookie
-		cookie := w.Header().Get("Set-Cookie")
-
-		if testStep.cookieExpected {
-			if cookie == "" {
-				t.Errorf("Expected cookie to be set but got empty")
+			if w.Code != testStep.expectedStatusCode {
+				t.Errorf("Expected status code %d but got %d", testStep.expectedStatusCode, w.Code)
 			}
-		} else {
-			if cookie != "" {
-				t.Errorf("Expected cookie to be empty but got %s", cookie)
+
+			// check the httpOnly cookie
+			cookie := w.Header().Get("Set-Cookie")
+
+			if testStep.cookieExpected {
+				if cookie == "" {
+					t.Errorf("Expected cookie to be set but got empty")
+				}
+			} else {
+				if cookie != "" {
+					t.Errorf("Expected cookie to be empty but got %s", cookie)
+				}
 			}
-		}
+		})
 	}
 }
 
@@ -325,8 +327,8 @@ func TestLogoutSimple(t *testing.T) {
 		},
 	}
 
-	for _, testStep := range testSteps {
-		t.Run(fmt.Sprintf("Test step %d", testStep.expectedStatusCode), func(t *testing.T) {
+	for i, testStep := range testSteps {
+		t.Run(fmt.Sprintf("Test step %d", i), func(t *testing.T) {
 			w := httptest.NewRecorder()
 			ctx := mock.GetGinTestContext(w, "POST", gin.Params{}, nil)
 

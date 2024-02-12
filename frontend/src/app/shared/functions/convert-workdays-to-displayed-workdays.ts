@@ -3,10 +3,7 @@ import { WorkdayTimeslot } from '../interfaces/workday_timeslot';
 import { startTimeToColorForDarkMode, startTimeToColorForLightMode } from './start-time-to-color';
 import { WeekdayIDToGridColumn } from './weekday-to-grid-column.function';
 
-export const convertWorkdaysToDisplayedWorkday = (workdays: WorkdayTimeslot[]) => {
-  // This counter is used to keep track of the current grid row to be added to the final elements
-  let gridRowCounter = 2;
-
+export const _groupWorkdaysByWorkplace = (workdays: WorkdayTimeslot[]) => {
   // The workdays are first grouped by workplace, as each workplace is displayed in a separate row.
   // This is done using a Map where the key is the workplace id and the value is an array of workday timeslots for that workplace.
   const workdayTimeslotGroupedByWorkplaceMap = new Map<string, WorkdayTimeslot[]>();
@@ -18,6 +15,14 @@ export const convertWorkdaysToDisplayedWorkday = (workdays: WorkdayTimeslot[]) =
       workplaceTimeslots.sort((a, b) => a.timeslot.name.localeCompare(b.timeslot.name)),
     );
   });
+  return workdayTimeslotGroupedByWorkplaceMap;
+};
+
+export const convertWorkdaysToDisplayedWorkday = (workdays: WorkdayTimeslot[]) => {
+  // This counter is used to keep track of the current grid row to be added to the final elements
+  let gridRowCounter = 2;
+
+  const workdayTimeslotGroupedByWorkplaceMap = _groupWorkdaysByWorkplace(workdays);
 
   // The workdays for each workplace are then further grouped by timeslot, as each timeslot is displayed in a separate subrow within the workplace row.
   // This is done using a Map where the key is the timeslot name and the value is an array of workday timeslots for that timeslot.
@@ -33,6 +38,8 @@ export const convertWorkdaysToDisplayedWorkday = (workdays: WorkdayTimeslot[]) =
         gridColumn: WeekdayIDToGridColumn(workdayTimeslot.weekday),
         colorForLightMode: startTimeToColorForLightMode(workdayTimeslot.start_time),
         colorForDarkMode: startTimeToColorForDarkMode(workdayTimeslot.start_time),
+        // check if start_time and end_time is 00:00, if so then we dont want to display the time, thus we store a boolean to check if it is valid
+        validTime: workdayTimeslot.start_time !== '00:00' && workdayTimeslot.end_time !== '00:00',
       });
       displayWorkdayTimeslotMap.set(workdayTimeslot.timeslot.name, timeslotsArray);
     });

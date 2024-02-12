@@ -7,13 +7,14 @@ import (
 
 /* Requests */
 type UpdateWorkdayRequest struct {
-	StartTime string `json:"start_time" binding:"required"`
-	EndTime   string `json:"end_time" binding:"required"`
-	Comment   string `json:"comment" binding:"required"`
-	Active    *bool  `json:"active" binding:"required"` // must be pointer due to the implementation in go
+	StartTime string  `json:"start_time" binding:"required"`
+	EndTime   string  `json:"end_time" binding:"required"`
+	Comment   *string `json:"comment" binding:"required"`
+	Active    *bool   `json:"active" binding:"required"` // must be pointer due to the implementation in go
 }
 
 func (r *UpdateWorkdayRequest) Validate() error {
+	// start_time and end_time can be set to 00:00 if no time is needed
 	// validate time in format: hh:mm:ss or hh:mm
 	s, err := time.Parse("15:04:05", r.StartTime)
 	if err != nil {

@@ -1,8 +1,8 @@
 <form>
-  <mat-form-field>
+  <mat-form-field class="person-selector">
     <mat-chip-grid #chipGrid>
       @for (person of persons; track person) {
-        <mat-chip-row (removed)="remove(person)" color="accent" highlighted="true">
+        <mat-chip-row (removed)="remove(person)" color="primary" highlighted="true">
           {{ person.last_name }} ({{ person.id }})
           <button matChipRemove>
             <mat-icon>cancel</mat-icon>
@@ -29,7 +29,12 @@
     </mat-autocomplete>
   </mat-form-field>
   <div class="actions">
-    <button mat-mini-fab color="primary" matTooltip="Kommentar editieren" (click)="commentEditRequest.emit(); $event.preventDefault()"><mat-icon>edit</mat-icon></button>
+    <button id="edit-comment-button" mat-mini-fab color="primary" matTooltip="Kommentar editieren" (click)="commentEditRequest.emit(); $event.preventDefault()"><mat-icon>edit</mat-icon></button>
+    @if (comment !== '') {
+      <button id="delete-comment-button" mat-mini-fab color="primary" matTooltip="Kommentar Löschen" (click)="commentDeleteRequest.emit(); $event.preventDefault()" color="warn">
+        <mat-icon>delete_forever</mat-icon>
+      </button>
+    }
   </div>
   <div class="comment">
     {{ comment }}

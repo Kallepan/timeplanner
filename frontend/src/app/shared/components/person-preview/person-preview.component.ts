@@ -11,8 +11,8 @@ import { PersonWithMetadata } from '@app/shared/interfaces/person';
   styleUrl: './person-preview.component.scss',
 })
 export class PersonPreviewComponent {
-  displayedPersonStrings: string[] = [];
+  displayedPersonString: string = '';
   @Input() set persons(value: PersonWithMetadata[]) {
-    this.displayedPersonStrings = value.map((person) => `${person.last_name} (${person.id})`);
+    this.displayedPersonString = value.map((person) => `${person.last_name} (${person.id})`).join(', ');
   }
 }

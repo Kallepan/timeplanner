@@ -7,6 +7,7 @@ import (
 	"api-gateway/app/mock"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -227,44 +228,46 @@ func TestUpdateUser(t *testing.T) {
 	}
 
 	for i, testStep := range testSteps {
-		// Set mock data
-		userRepoMock.On("FindUserById").Return(testStep.findValue, testStep.findError)
-		userRepoMock.On("Save").Return(testStep.saveValue, testStep.saveError)
+		t.Run(fmt.Sprintf("Test step %d", i), func(t *testing.T) {
+			// Set mock data
+			userRepoMock.On("FindUserById").Return(testStep.findValue, testStep.findError)
+			userRepoMock.On("Save").Return(testStep.saveValue, testStep.saveError)
 
-		// get GIN context
-		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "PUT", testStep.ParamsToGinParams(), testStep.mockRequestData)
+			// get GIN context
+			w := httptest.NewRecorder()
+			c := mock.GetGinTestContext(w, "PUT", testStep.ParamsToGinParams(), testStep.mockRequestData)
 
-		// Call function
-		userService.UpdateUser(c)
+			// Call function
+			userService.UpdateUser(c)
 
-		response := w.Result()
-		if response.StatusCode != testStep.expectedStatusCode {
-			t.Errorf("Step: %d. Expected status code %d, but got %d", i, testStep.expectedStatusCode, response.StatusCode)
-		}
+			response := w.Result()
+			if response.StatusCode != testStep.expectedStatusCode {
+				t.Errorf("Step: %d. Expected status code %d, but got %d", i, testStep.expectedStatusCode, response.StatusCode)
+			}
 
-		if testStep.saveValue == nil {
-			continue
-		}
+			if testStep.saveValue == nil {
+				return
+			}
 
-		// Read response body
-		var responseBody dto.APIResponse[dco.UserResponse]
-		if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
-			t.Errorf("Step: %d. Error when decoding response body: %s", i, err.Error())
-		}
+			// Read response body
+			var responseBody dto.APIResponse[dco.UserResponse]
+			if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
+				t.Errorf("Step: %d. Error when decoding response body: %s", i, err.Error())
+			}
 
-		// compare attributes
-		if responseBody.Data.Username != testStep.saveValue.(dao.User).Username {
-			t.Errorf("Step: %d. Expected username %s, but got %s", i, testStep.saveValue.(dao.User).Username, responseBody.Data.Username)
-		}
+			// compare attributes
+			if responseBody.Data.Username != testStep.saveValue.(dao.User).Username {
+				t.Errorf("Step: %d. Expected username %s, but got %s", i, testStep.saveValue.(dao.User).Username, responseBody.Data.Username)
+			}
 
-		if responseBody.Data.Email != testStep.saveValue.(dao.User).Email {
-			t.Errorf("Step: %d. Expected email %s, but got %s", i, testStep.saveValue.(dao.User).Email, responseBody.Data.Email)
-		}
+			if responseBody.Data.Email != testStep.saveValue.(dao.User).Email {
+				t.Errorf("Step: %d. Expected email %s, but got %s", i, testStep.saveValue.(dao.User).Email, responseBody.Data.Email)
+			}
 
-		if responseBody.Data.IsAdmin != testStep.saveValue.(dao.User).IsAdmin {
-			t.Errorf("Step: %d. Expected is_admin %t, but got %t", i, testStep.saveValue.(dao.User).IsAdmin, responseBody.Data.IsAdmin)
-		}
+			if responseBody.Data.IsAdmin != testStep.saveValue.(dao.User).IsAdmin {
+				t.Errorf("Step: %d. Expected is_admin %t, but got %t", i, testStep.saveValue.(dao.User).IsAdmin, responseBody.Data.IsAdmin)
+			}
+		})
 	}
 }
 
@@ -301,21 +304,23 @@ func TestDeleteUser(t *testing.T) {
 		},
 	}
 
-	for _, testStep := range testSteps {
-		// Prime mock
-		userRepoMock.On("DeleteUser").Return(nil, testStep.mockError)
+	for i, testStep := range testSteps {
+		t.Run(fmt.Sprintf("Test step %d", i), func(t *testing.T) {
+			// Prime mock
+			userRepoMock.On("DeleteUser").Return(nil, testStep.mockError)
 
-		// get GIN context
-		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "DELETE", testStep.ParamsToGinParams(), nil)
+			// get GIN context
+			w := httptest.NewRecorder()
+			c := mock.GetGinTestContext(w, "DELETE", testStep.ParamsToGinParams(), nil)
 
-		// Call function
-		userService.DeleteUser(c)
+			// Call function
+			userService.DeleteUser(c)
 
-		response := w.Result()
-		if response.StatusCode != testStep.expectedStatusCode {
-			t.Errorf("Expected status code %d, but got %d", testStep.expectedStatusCode, response.StatusCode)
-		}
+			response := w.Result()
+			if response.StatusCode != testStep.expectedStatusCode {
+				t.Errorf("Expected status code %d, but got %d", testStep.expectedStatusCode, response.StatusCode)
+			}
+		})
 	}
 }
 
@@ -419,48 +424,50 @@ func TestAddUser(t *testing.T) {
 	}
 
 	for i, testStep := range testSteps {
-		// Prime mock
-		userRepoMock.On("FindUserByUsername").Return(testStep.findValue, testStep.findError)
-		userRepoMock.On("Save").Return(testStep.saveValue, testStep.saveError)
+		t.Run(fmt.Sprintf("Test step %d", i), func(t *testing.T) {
+			// Prime mock
+			userRepoMock.On("FindUserByUsername").Return(testStep.findValue, testStep.findError)
+			userRepoMock.On("Save").Return(testStep.saveValue, testStep.saveError)
 
-		// get GIN context
-		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "POST", gin.Params{}, testStep.mockRequestData)
+			// get GIN context
+			w := httptest.NewRecorder()
+			c := mock.GetGinTestContext(w, "POST", gin.Params{}, testStep.mockRequestData)
 
-		// Call function
-		userService.AddUser(c)
+			// Call function
+			userService.AddUser(c)
 
-		response := w.Result()
-		if response.StatusCode != testStep.expectedStatusCode {
-			t.Errorf("Step: %d. Expected status code %d, but got %d", i, testStep.expectedStatusCode, response.StatusCode)
-		}
+			response := w.Result()
+			if response.StatusCode != testStep.expectedStatusCode {
+				t.Errorf("Step: %d. Expected status code %d, but got %d", i, testStep.expectedStatusCode, response.StatusCode)
+			}
 
-		if testStep.saveValue == nil {
-			continue
-		}
+			if testStep.saveValue == nil {
+				return
+			}
 
-		// Read response body
-		var responseBody dto.APIResponse[dco.UserResponse]
-		if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
-			t.Errorf("Step: %d. Error when decoding response body: %s", i, err.Error())
-		}
+			// Read response body
+			var responseBody dto.APIResponse[dco.UserResponse]
+			if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
+				t.Errorf("Step: %d. Error when decoding response body: %s", i, err.Error())
+			}
 
-		// Compare response body
-		if responseBody.Data.Username != testStep.saveValue.(dao.User).Username {
-			t.Errorf("Step: %d. Expected username %s, but got %s", i, testStep.saveValue.(dao.User).Username, responseBody.Data.Username)
-		}
+			// Compare response body
+			if responseBody.Data.Username != testStep.saveValue.(dao.User).Username {
+				t.Errorf("Step: %d. Expected username %s, but got %s", i, testStep.saveValue.(dao.User).Username, responseBody.Data.Username)
+			}
 
-		if responseBody.Data.Email != testStep.saveValue.(dao.User).Email {
-			t.Errorf("Step: %d. Expected email %s, but got %s", i, testStep.saveValue.(dao.User).Email, responseBody.Data.Email)
-		}
+			if responseBody.Data.Email != testStep.saveValue.(dao.User).Email {
+				t.Errorf("Step: %d. Expected email %s, but got %s", i, testStep.saveValue.(dao.User).Email, responseBody.Data.Email)
+			}
 
-		if responseBody.Data.IsAdmin != testStep.saveValue.(dao.User).IsAdmin {
-			t.Errorf("Step: %d. Expected is_admin %t, but got %t", i, testStep.saveValue.(dao.User).IsAdmin, responseBody.Data.IsAdmin)
-		}
+			if responseBody.Data.IsAdmin != testStep.saveValue.(dao.User).IsAdmin {
+				t.Errorf("Step: %d. Expected is_admin %t, but got %t", i, testStep.saveValue.(dao.User).IsAdmin, responseBody.Data.IsAdmin)
+			}
 
-		if responseBody.Data.Department.ID != testStep.saveValue.(dao.User).DepartmentID {
-			t.Errorf("Step: %d. Expected department_id %s, but got %s", i, testStep.saveValue.(dao.User).DepartmentID, responseBody.Data.Department.ID)
-		}
+			if responseBody.Data.Department.ID != testStep.saveValue.(dao.User).DepartmentID {
+				t.Errorf("Step: %d. Expected department_id %s, but got %s", i, testStep.saveValue.(dao.User).DepartmentID, responseBody.Data.Department.ID)
+			}
+		})
 	}
 }
 
@@ -540,48 +547,50 @@ func TestGetAllUsers(t *testing.T) {
 	}
 
 	for i, testStep := range testSteps {
-		// Prime mock
-		userRepoMock.On("FindAllUsers").Return(testStep.mockValue, testStep.mockError)
+		t.Run(fmt.Sprintf("Test step %d", i), func(t *testing.T) {
+			// Prime mock
+			userRepoMock.On("FindAllUsers").Return(testStep.mockValue, testStep.mockError)
 
-		// get GIN context
-		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "GET", gin.Params{}, nil)
+			// get GIN context
+			w := httptest.NewRecorder()
+			c := mock.GetGinTestContext(w, "GET", gin.Params{}, nil)
 
-		// Call function
-		userService.GetAllUsers(c)
+			// Call function
+			userService.GetAllUsers(c)
 
-		response := w.Result()
-		if response.StatusCode != testStep.expectedStatusCode {
-			t.Errorf("Step: %d. Expected status code %d, but got %d", i, testStep.expectedStatusCode, response.StatusCode)
-		}
-		if testStep.expectedResponse == nil {
-			continue
-		}
-
-		// Read response body
-		var responseBody dto.APIResponse[[]dco.UserResponse]
-		if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
-			t.Errorf("Step: %d. Error when decoding response body: %s", i, err.Error())
-		}
-
-		// Compare response body
-		for j, user := range responseBody.Data {
-			if user.Username != testStep.expectedResponse.([]dao.User)[j].Username {
-				t.Errorf("Step: %d. Expected username %s, but got %s", i, testStep.expectedResponse.([]dao.User)[j].Username, user.Username)
+			response := w.Result()
+			if response.StatusCode != testStep.expectedStatusCode {
+				t.Errorf("Step: %d. Expected status code %d, but got %d", i, testStep.expectedStatusCode, response.StatusCode)
+			}
+			if testStep.expectedResponse == nil {
+				return
 			}
 
-			if user.Email != testStep.expectedResponse.([]dao.User)[j].Email {
-				t.Errorf("Step: %d. Expected email %s, but got %s", i, testStep.expectedResponse.([]dao.User)[j].Email, user.Email)
+			// Read response body
+			var responseBody dto.APIResponse[[]dco.UserResponse]
+			if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
+				t.Errorf("Step: %d. Error when decoding response body: %s", i, err.Error())
 			}
 
-			if user.IsAdmin != testStep.expectedResponse.([]dao.User)[j].IsAdmin {
-				t.Errorf("Step: %d. Expected is_admin %t, but got %t", i, testStep.expectedResponse.([]dao.User)[j].IsAdmin, user.IsAdmin)
-			}
+			// Compare response body
+			for j, user := range responseBody.Data {
+				if user.Username != testStep.expectedResponse.([]dao.User)[j].Username {
+					t.Errorf("Step: %d. Expected username %s, but got %s", i, testStep.expectedResponse.([]dao.User)[j].Username, user.Username)
+				}
 
-			if user.Department.ID != testStep.expectedResponse.([]dao.User)[j].DepartmentID {
-				t.Errorf("Step: %d. Expected department_id %s, but got %s", i, testStep.expectedResponse.([]dao.User)[j].DepartmentID, user.Department.ID)
+				if user.Email != testStep.expectedResponse.([]dao.User)[j].Email {
+					t.Errorf("Step: %d. Expected email %s, but got %s", i, testStep.expectedResponse.([]dao.User)[j].Email, user.Email)
+				}
+
+				if user.IsAdmin != testStep.expectedResponse.([]dao.User)[j].IsAdmin {
+					t.Errorf("Step: %d. Expected is_admin %t, but got %t", i, testStep.expectedResponse.([]dao.User)[j].IsAdmin, user.IsAdmin)
+				}
+
+				if user.Department.ID != testStep.expectedResponse.([]dao.User)[j].DepartmentID {
+					t.Errorf("Step: %d. Expected department_id %s, but got %s", i, testStep.expectedResponse.([]dao.User)[j].DepartmentID, user.Department.ID)
+				}
 			}
-		}
+		})
 	}
 }
 
@@ -686,49 +695,51 @@ func TestGetUser(t *testing.T) {
 	}
 
 	for i, testStep := range testSteps {
-		// Prime mock
-		userRepoMock.On("FindUserById").Return(testStep.mockValue, testStep.mockError)
+		t.Run(fmt.Sprintf("Test step %d", i), func(t *testing.T) {
+			// Prime mock
+			userRepoMock.On("FindUserById").Return(testStep.mockValue, testStep.mockError)
 
-		// get GIN context
-		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "GET", gin.Params{
-			{Key: "userID", Value: "00000000-0000-0000-0000-000000000001"},
-		}, nil)
+			// get GIN context
+			w := httptest.NewRecorder()
+			c := mock.GetGinTestContext(w, "GET", gin.Params{
+				{Key: "userID", Value: "00000000-0000-0000-0000-000000000001"},
+			}, nil)
 
-		// Call function
-		userService.GetUserById(c)
+			// Call function
+			userService.GetUserById(c)
 
-		response := w.Result()
-		if response.StatusCode != testStep.expectedStatusCode {
-			t.Errorf("Step: %d. Expected status code %d, but got %d", i, testStep.expectedStatusCode, response.StatusCode)
-		}
+			response := w.Result()
+			if response.StatusCode != testStep.expectedStatusCode {
+				t.Errorf("Step: %d. Expected status code %d, but got %d", i, testStep.expectedStatusCode, response.StatusCode)
+			}
 
-		if testStep.expectedResponse == nil {
-			continue
-		}
+			if testStep.expectedResponse == nil {
+				return
+			}
 
-		// Read response body
-		var responseBody dto.APIResponse[dco.UserResponse]
-		if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
-			t.Errorf("Step: %d. Error when decoding response body: %s", i, err.Error())
-		}
+			// Read response body
+			var responseBody dto.APIResponse[dco.UserResponse]
+			if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
+				t.Errorf("Step: %d. Error when decoding response body: %s", i, err.Error())
+			}
 
-		// Compare response body
-		if responseBody.Data.Username != testStep.expectedResponse.(dao.User).Username {
-			t.Errorf("Step: %d. Expected username %s, but got %s", i, testStep.expectedResponse.(dao.User).Username, responseBody.Data.Username)
-		}
+			// Compare response body
+			if responseBody.Data.Username != testStep.expectedResponse.(dao.User).Username {
+				t.Errorf("Step: %d. Expected username %s, but got %s", i, testStep.expectedResponse.(dao.User).Username, responseBody.Data.Username)
+			}
 
-		if responseBody.Data.Email != testStep.expectedResponse.(dao.User).Email {
-			t.Errorf("Step: %d. Expected email %s, but got %s", i, testStep.expectedResponse.(dao.User).Email, responseBody.Data.Email)
-		}
+			if responseBody.Data.Email != testStep.expectedResponse.(dao.User).Email {
+				t.Errorf("Step: %d. Expected email %s, but got %s", i, testStep.expectedResponse.(dao.User).Email, responseBody.Data.Email)
+			}
 
-		if responseBody.Data.IsAdmin != testStep.expectedResponse.(dao.User).IsAdmin {
-			t.Errorf("Step: %d. Expected is_admin %t, but got %t", i, testStep.expectedResponse.(dao.User).IsAdmin, responseBody.Data.IsAdmin)
-		}
+			if responseBody.Data.IsAdmin != testStep.expectedResponse.(dao.User).IsAdmin {
+				t.Errorf("Step: %d. Expected is_admin %t, but got %t", i, testStep.expectedResponse.(dao.User).IsAdmin, responseBody.Data.IsAdmin)
+			}
 
-		if responseBody.Data.Department.ID != testStep.expectedResponse.(dao.User).DepartmentID {
-			t.Errorf("Step: %d. Expected department_id %s, but got %s", i, testStep.expectedResponse.(dao.User).DepartmentID, responseBody.Data.Department.ID)
-		}
+			if responseBody.Data.Department.ID != testStep.expectedResponse.(dao.User).DepartmentID {
+				t.Errorf("Step: %d. Expected department_id %s, but got %s", i, testStep.expectedResponse.(dao.User).DepartmentID, responseBody.Data.Department.ID)
+			}
+		})
 	}
 }
 
@@ -765,23 +776,25 @@ func TestAddPermissionToUser(t *testing.T) {
 	}
 
 	for i, testStep := range testSteps {
-		// Prime mock
-		userRepoMock.On("AddPermissionToUser").Return(testStep.saveValue, testStep.saveError)
+		t.Run(fmt.Sprintf("Test step %d", i), func(t *testing.T) {
+			// Prime mock
+			userRepoMock.On("AddPermissionToUser").Return(testStep.saveValue, testStep.saveError)
 
-		// get GIN context
-		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "POST", gin.Params{
-			{Key: "userID", Value: "00000000-0000-0000-0000-000000000001"},
-			{Key: "permissionID", Value: "00000000-0000-0000-0000-000000000001"},
-		}, testStep.mockRequestData)
+			// get GIN context
+			w := httptest.NewRecorder()
+			c := mock.GetGinTestContext(w, "POST", gin.Params{
+				{Key: "userID", Value: "00000000-0000-0000-0000-000000000001"},
+				{Key: "permissionID", Value: "00000000-0000-0000-0000-000000000001"},
+			}, testStep.mockRequestData)
 
-		// Call function
-		userService.AddPermission(c)
+			// Call function
+			userService.AddPermission(c)
 
-		response := w.Result()
-		if response.StatusCode != testStep.expectedStatusCode {
-			t.Errorf("Step: %d. Expected status code %d, but got %d", i, testStep.expectedStatusCode, response.StatusCode)
-		}
+			response := w.Result()
+			if response.StatusCode != testStep.expectedStatusCode {
+				t.Errorf("Step: %d. Expected status code %d, but got %d", i, testStep.expectedStatusCode, response.StatusCode)
+			}
+		})
 	}
 }
 
@@ -811,22 +824,24 @@ func TestDeletePermissionFromUser(t *testing.T) {
 	}
 
 	for i, testStep := range testSteps {
-		// Prime mock
-		userRepoMock.On("DeletePermissionFromUser").Return(nil, testStep.mockError)
+		t.Run(fmt.Sprintf("Test step %d", i), func(t *testing.T) {
+			// Prime mock
+			userRepoMock.On("DeletePermissionFromUser").Return(nil, testStep.mockError)
 
-		// get GIN context
-		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "DELETE", gin.Params{
-			{Key: "userID", Value: "00000000-0000-0000-0000-000000000001"},
-			{Key: "permissionID", Value: "00000000-0000-0000-0000-000000000001"},
-		}, nil)
+			// get GIN context
+			w := httptest.NewRecorder()
+			c := mock.GetGinTestContext(w, "DELETE", gin.Params{
+				{Key: "userID", Value: "00000000-0000-0000-0000-000000000001"},
+				{Key: "permissionID", Value: "00000000-0000-0000-0000-000000000001"},
+			}, nil)
 
-		// Call function
-		userService.DeletePermission(c)
+			// Call function
+			userService.DeletePermission(c)
 
-		response := w.Result()
-		if response.StatusCode != testStep.expectedStatusCode {
-			t.Errorf("Step: %d. Expected status code %d, but got %d", i, testStep.expectedStatusCode, response.StatusCode)
-		}
+			response := w.Result()
+			if response.StatusCode != testStep.expectedStatusCode {
+				t.Errorf("Step: %d. Expected status code %d, but got %d", i, testStep.expectedStatusCode, response.StatusCode)
+			}
+		})
 	}
 }

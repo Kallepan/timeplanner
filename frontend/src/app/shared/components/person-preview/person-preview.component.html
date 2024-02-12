@@ -1,7 +1,7 @@
 <div class="container">
-  @for (personString of displayedPersonStrings; track $index) {
-    {{ personString }}
-  } @empty {
+  @if (displayedPersonString !== '') {
+    {{ displayedPersonString }}
+  } @else {
     -
   }
   <ng-content></ng-content>

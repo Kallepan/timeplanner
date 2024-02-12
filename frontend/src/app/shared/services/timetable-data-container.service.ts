@@ -62,10 +62,6 @@ export class TimetableDataContainerService {
     this._colorize.set(value);
   }
 
-  // the data for the timetable
-  get workplaces$(): DisplayedWorkplace[] {
-    return this._workplaces() ?? [];
-  }
   /**
    * This method is a setter for the `workdays` property. It takes an array of `WorkdayTimeslot` objects as input.
    * Each `WorkdayTimeslot` object represents a timeslot in a workday at a specific workplace.
@@ -76,6 +72,9 @@ export class TimetableDataContainerService {
   private _activeWeekHandlerService = inject(ActiveWeekHandlerService);
   private _workdayAPIService = inject(WorkdayAPIService);
   protected _workplaces = signal<DisplayedWorkplace[]>([]);
+  get workplaces$(): DisplayedWorkplace[] {
+    return this._workplaces() ?? [];
+  }
 
   constructor() {
     effect(

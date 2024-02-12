@@ -14,7 +14,7 @@ describe('AuthService', () => {
   let notificationService: jasmine.SpyObj<NotificationService>;
 
   beforeEach(() => {
-    notificationService = jasmine.createSpyObj('NotificationService', ['infoMessage', 'errorMessage']);
+    notificationService = jasmine.createSpyObj('NotificationService', ['infoMessage', 'warnMessage']);
 
     TestBed.configureTestingModule({
       imports: [MatSnackBarModule, BrowserAnimationsModule],
@@ -44,7 +44,7 @@ describe('AuthService', () => {
     service.login('test', 'test');
     const req = httpMock.expectOne(`${constants.APIS.AUTH}/login`);
     expect(req.request.method).toBe('POST');
-    req.flush({data: { username: 'test', email: 'test@example.com' }});
+    req.flush({ data: { username: 'test', email: 'test@example.com' } });
     expect(service.authData()).toEqual({ username: 'test', email: 'test@example.com' });
   });
 
@@ -60,5 +60,13 @@ describe('AuthService', () => {
     const req = httpMock.expectOne(`${constants.APIS.AUTH}/me?department=test`);
     expect(req.request.method).toBe('GET');
     req.flush({}, { status: 401, statusText: 'Unauthorized' });
+  });
+
+  it('should display error message if login failed', () => {
+    service.login('test', 'test');
+    const req = httpMock.expectOne(`${constants.APIS.AUTH}/login`);
+    expect(req.request.method).toBe('POST');
+    req.flush({}, { status: 401, statusText: 'Unauthorized' });
+    expect(notificationService.warnMessage).toHaveBeenCalled();
   });
 });

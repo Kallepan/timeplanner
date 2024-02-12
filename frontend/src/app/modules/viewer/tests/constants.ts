@@ -2,12 +2,52 @@ import { DepartmentWithMetadata } from '@app/shared/interfaces/department';
 import { TimeslotWithMetadata } from '@app/shared/interfaces/timeslot';
 import { WorkdayTimeslot } from '@app/shared/interfaces/workday_timeslot';
 import { WorkplaceWithMetadata } from '@app/shared/interfaces/workplace';
+import { Weekday } from '@app/shared/services/active-week-handler.service';
 
-export const mockActiveWeek = {
-  department: 'department1',
-  dates: [new Date(2022, 1, 1), new Date(2022, 1, 2)],
-};
-
+export const mockActiveWeek: Weekday[] = [
+  {
+    name: 'Monday',
+    shortName: 'Mo',
+    date: new Date('2024-01-01'),
+    dateString: '2024-01-01',
+  },
+  {
+    name: 'Tuesday',
+    shortName: 'Tu',
+    date: new Date('2024-01-02'),
+    dateString: '2024-01-02',
+  },
+  {
+    name: 'Wednesday',
+    shortName: 'We',
+    date: new Date('2024-01-03'),
+    dateString: '2024-01-03',
+  },
+  {
+    name: 'Thursday',
+    shortName: 'Th',
+    date: new Date('2024-01-04'),
+    dateString: '2024-01-04',
+  },
+  {
+    name: 'Friday',
+    shortName: 'Fr',
+    date: new Date('2024-01-05'),
+    dateString: '2024-01-05',
+  },
+  {
+    name: 'Saturday',
+    shortName: 'Sa',
+    date: new Date('2024-01-06'),
+    dateString: '2024-01-06',
+  },
+  {
+    name: 'Sunday',
+    shortName: 'Su',
+    date: new Date('2024-01-07'),
+    dateString: '2024-01-07',
+  },
+];
 export const mockDepartment: DepartmentWithMetadata = {
   id: 'dep',
   name: 'department1',
@@ -52,9 +92,10 @@ export const mockWorkdays: WorkdayTimeslot[] = [
     timeslot: mockTimeslot,
     start_time: '08:00:00',
     end_time: '16:00:00',
-    person: null,
+    persons: [],
     weekday: 'MON',
     duration_in_minutes: 60,
+    comment: '',
   },
   {
     date: '2022-02-01',
@@ -63,8 +104,9 @@ export const mockWorkdays: WorkdayTimeslot[] = [
     timeslot: mockTimeslot,
     start_time: '08:00:00',
     end_time: '16:00:00',
-    person: null,
+    persons: [],
     weekday: 'MON',
     duration_in_minutes: 60,
+    comment: 'comment',
   },
 ];

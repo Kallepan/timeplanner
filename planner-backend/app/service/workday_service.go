@@ -158,7 +158,9 @@ func (w WorkdayServiceImpl) UpdateWorkday(c *gin.Context) {
 	workday.StartTime = request.StartTime
 	workday.EndTime = request.EndTime
 	workday.Active = *request.Active
-	workday.Comment = request.Comment
+	if request.Comment != nil {
+		workday.Comment = *request.Comment
+	}
 
 	// save workday
 	if err := w.WorkdayRepository.Save(&workday); err != nil {
