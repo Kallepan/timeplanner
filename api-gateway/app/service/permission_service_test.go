@@ -7,6 +7,7 @@ import (
 	"api-gateway/app/mock"
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -123,41 +124,43 @@ func TestUpdatePermission(t *testing.T) {
 
 	// Run test
 	for i, testStep := range testSteps {
-		// Set mock data
-		permissionRepositoryMock.On("FindPermissionById").Return(testStep.findValue, testStep.findError)
-		permissionRepositoryMock.On("Save").Return(testStep.saveValue, testStep.saveError)
+		t.Run(fmt.Sprintf("Test step %d", i), func(t *testing.T) {
+			// Set mock data
+			permissionRepositoryMock.On("FindPermissionById").Return(testStep.findValue, testStep.findError)
+			permissionRepositoryMock.On("Save").Return(testStep.saveValue, testStep.saveError)
 
-		// get GIN context
-		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "PUT", testStep.ParamsToGinParams(), testStep.mockRequestData)
+			// get GIN context
+			w := httptest.NewRecorder()
+			c := mock.GetGinTestContext(w, "PUT", testStep.ParamsToGinParams(), testStep.mockRequestData)
 
-		// Run function
-		permissionService.UpdatePermission(c)
+			// Run function
+			permissionService.UpdatePermission(c)
 
-		// Check result
-		response := w.Result()
-		if response.StatusCode != testStep.expectedStatusCode {
-			t.Errorf("Step: %d. Expected status code %d but got %d", i, testStep.expectedStatusCode, response.StatusCode)
-		}
+			// Check result
+			response := w.Result()
+			if response.StatusCode != testStep.expectedStatusCode {
+				t.Errorf("Step: %d. Expected status code %d but got %d", i, testStep.expectedStatusCode, response.StatusCode)
+			}
 
-		if testStep.saveValue == nil {
-			continue
-		}
+			if testStep.saveValue == nil {
+				return
+			}
 
-		// Check mock data
-		var responseBody dto.APIResponse[dco.PermissionResponse]
-		if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
-			t.Errorf("Step: %d. Error when unmarshalling response body: %s", i, err.Error())
-		}
+			// Check mock data
+			var responseBody dto.APIResponse[dco.PermissionResponse]
+			if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
+				t.Errorf("Step: %d. Error when unmarshalling response body: %s", i, err.Error())
+			}
 
-		// compare name
-		if responseBody.Data.Name != testStep.saveValue.(dao.Permission).Name {
-			t.Errorf("Step: %d. Expected name %s but got %s", i, testStep.saveValue.(dao.Permission).Name, responseBody.Data.Name)
-		}
-		// compare description
-		if *responseBody.Data.Description != testStep.saveValue.(dao.Permission).Description.String {
-			t.Errorf("Step: %d. Expected description %s but got %s", i, testStep.saveValue.(dao.Permission).Description.String, *responseBody.Data.Description)
-		}
+			// compare name
+			if responseBody.Data.Name != testStep.saveValue.(dao.Permission).Name {
+				t.Errorf("Step: %d. Expected name %s but got %s", i, testStep.saveValue.(dao.Permission).Name, responseBody.Data.Name)
+			}
+			// compare description
+			if *responseBody.Data.Description != testStep.saveValue.(dao.Permission).Description.String {
+				t.Errorf("Step: %d. Expected description %s but got %s", i, testStep.saveValue.(dao.Permission).Description.String, *responseBody.Data.Description)
+			}
+		})
 	}
 }
 
@@ -201,24 +204,26 @@ func TestDeletePermission(t *testing.T) {
 	}
 
 	// Run test
-	for _, testStep := range testSteps {
-		// Set mock data
-		permissionRepositoryMock.On("DeletePermissionById").Return(testStep.mockValue, testStep.mockError)
+	for i, testStep := range testSteps {
+		t.Run(fmt.Sprintf("Test step %d", i), func(t *testing.T) {
+			// Set mock data
+			permissionRepositoryMock.On("DeletePermissionById").Return(testStep.mockValue, testStep.mockError)
 
-		// get GIN context
-		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "DELETE", gin.Params{
-			{Key: "permissionID", Value: testStep.mockValue.(dao.Permission).ID.String()},
-		}, nil)
+			// get GIN context
+			w := httptest.NewRecorder()
+			c := mock.GetGinTestContext(w, "DELETE", gin.Params{
+				{Key: "permissionID", Value: testStep.mockValue.(dao.Permission).ID.String()},
+			}, nil)
 
-		// Run function
-		permissionService.DeletePermission(c)
+			// Run function
+			permissionService.DeletePermission(c)
 
-		// Check result
-		response := w.Result()
-		if response.StatusCode != testStep.expectedStatusCode {
-			t.Errorf("Expected status code %d but got %d", testStep.expectedStatusCode, response.StatusCode)
-		}
+			// Check result
+			response := w.Result()
+			if response.StatusCode != testStep.expectedStatusCode {
+				t.Errorf("Expected status code %d but got %d", testStep.expectedStatusCode, response.StatusCode)
+			}
+		})
 	}
 }
 
@@ -289,41 +294,43 @@ func TestAddPermission(t *testing.T) {
 
 	// Run test
 	for i, testStep := range testSteps {
-		// Set mock data
-		permissionRepositoryMock.On("FindPermissionByName").Return(testStep.findValue, testStep.findError)
-		permissionRepositoryMock.On("Save").Return(testStep.saveValue, testStep.saveError)
+		t.Run(fmt.Sprintf("Test step %d", i), func(t *testing.T) {
+			// Set mock data
+			permissionRepositoryMock.On("FindPermissionByName").Return(testStep.findValue, testStep.findError)
+			permissionRepositoryMock.On("Save").Return(testStep.saveValue, testStep.saveError)
 
-		// get GIN context
-		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "POST", gin.Params{}, testStep.mockRequestData)
+			// get GIN context
+			w := httptest.NewRecorder()
+			c := mock.GetGinTestContext(w, "POST", gin.Params{}, testStep.mockRequestData)
 
-		// Run function
-		permissionService.AddPermission(c)
+			// Run function
+			permissionService.AddPermission(c)
 
-		// Check result
-		response := w.Result()
-		if response.StatusCode != testStep.expectedStatusCode {
-			t.Errorf("Step: %d. Expected status code %d but got %d", i, testStep.expectedStatusCode, response.StatusCode)
-		}
+			// Check result
+			response := w.Result()
+			if response.StatusCode != testStep.expectedStatusCode {
+				t.Errorf("Step: %d. Expected status code %d but got %d", i, testStep.expectedStatusCode, response.StatusCode)
+			}
 
-		if testStep.saveValue == nil {
-			continue
-		}
+			if testStep.saveValue == nil {
+				return
+			}
 
-		// Check mock data
-		var responseBody dto.APIResponse[dco.PermissionResponse]
-		if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
-			t.Errorf("Step: %d. Error when unmarshalling response body: %s", i, err.Error())
-		}
+			// Check mock data
+			var responseBody dto.APIResponse[dco.PermissionResponse]
+			if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
+				t.Errorf("Step: %d. Error when unmarshalling response body: %s", i, err.Error())
+			}
 
-		// compare name
-		if responseBody.Data.Name != testStep.saveValue.(dao.Permission).Name {
-			t.Errorf("Step: %d. Expected name %s but got %s", i, testStep.saveValue.(dao.Permission).Name, responseBody.Data.Name)
-		}
-		// compare description
-		if *responseBody.Data.Description != testStep.saveValue.(dao.Permission).Description.String {
-			t.Errorf("Step: %d. Expected description %s but got %s", i, testStep.saveValue.(dao.Permission).Description.String, *responseBody.Data.Description)
-		}
+			// compare name
+			if responseBody.Data.Name != testStep.saveValue.(dao.Permission).Name {
+				t.Errorf("Step: %d. Expected name %s but got %s", i, testStep.saveValue.(dao.Permission).Name, responseBody.Data.Name)
+			}
+			// compare description
+			if *responseBody.Data.Description != testStep.saveValue.(dao.Permission).Description.String {
+				t.Errorf("Step: %d. Expected description %s but got %s", i, testStep.saveValue.(dao.Permission).Description.String, *responseBody.Data.Description)
+			}
+		})
 	}
 }
 
@@ -383,42 +390,44 @@ func TestGetAllPermissions(t *testing.T) {
 
 	// Run test
 	for i, testStep := range testSteps {
-		// Set mock data
-		permissionRepositoryMock.On("FindAllPermissions").Return(testStep.mockValue, testStep.mockError)
+		t.Run(fmt.Sprintf("Test step %d", i), func(t *testing.T) {
+			// Set mock data
+			permissionRepositoryMock.On("FindAllPermissions").Return(testStep.mockValue, testStep.mockError)
 
-		// get GIN context
-		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "GET", gin.Params{}, nil)
+			// get GIN context
+			w := httptest.NewRecorder()
+			c := mock.GetGinTestContext(w, "GET", gin.Params{}, nil)
 
-		// Run function
-		permissionService.GetAllPermissions(c)
+			// Run function
+			permissionService.GetAllPermissions(c)
 
-		// Check result
-		response := w.Result()
-		if response.StatusCode != testStep.expectedStatusCode {
-			t.Errorf("Step: %d.Expected status code %d but got %d", i, testStep.expectedStatusCode, response.StatusCode)
-		}
-
-		if testStep.expectedResponse == nil {
-			continue
-		}
-
-		// Check mock data
-		var responseBody dto.APIResponse[[]dco.PermissionResponse]
-		if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
-			t.Errorf("Step: %d Error when unmarshalling response body: %s", i, err.Error())
-		}
-
-		for j, permission := range responseBody.Data {
-			// compare name
-			if permission.Name != testStep.expectedResponse.([]dao.Permission)[j].Name {
-				t.Errorf("Step: %d. Expected name %s but got %s", i, testStep.expectedResponse.([]dao.Permission)[j].Name, permission.Name)
+			// Check result
+			response := w.Result()
+			if response.StatusCode != testStep.expectedStatusCode {
+				t.Errorf("Step: %d.Expected status code %d but got %d", i, testStep.expectedStatusCode, response.StatusCode)
 			}
-			// compare description
-			if *permission.Description != testStep.expectedResponse.([]dao.Permission)[j].Description.String {
-				t.Errorf("Step: %d. Expected description %s but got %s", i, testStep.expectedResponse.([]dao.Permission)[j].Description.String, *permission.Description)
+
+			if testStep.expectedResponse == nil {
+				return
 			}
-		}
+
+			// Check mock data
+			var responseBody dto.APIResponse[[]dco.PermissionResponse]
+			if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
+				t.Errorf("Step: %d Error when unmarshalling response body: %s", i, err.Error())
+			}
+
+			for j, permission := range responseBody.Data {
+				// compare name
+				if permission.Name != testStep.expectedResponse.([]dao.Permission)[j].Name {
+					t.Errorf("Step: %d. Expected name %s but got %s", i, testStep.expectedResponse.([]dao.Permission)[j].Name, permission.Name)
+				}
+				// compare description
+				if *permission.Description != testStep.expectedResponse.([]dao.Permission)[j].Description.String {
+					t.Errorf("Step: %d. Expected description %s but got %s", i, testStep.expectedResponse.([]dao.Permission)[j].Description.String, *permission.Description)
+				}
+			}
+		})
 	}
 }
 
@@ -466,44 +475,46 @@ func TestGetPermissionById(t *testing.T) {
 	}
 
 	// Run test
-	for _, testStep := range testSteps {
-		// Set mock data
-		permissionRepositoryMock.On("FindPermissionById").Return(testStep.mockValue, testStep.mockError)
+	for i, testStep := range testSteps {
+		t.Run(fmt.Sprintf("Test step %d", i), func(t *testing.T) {
+			// Set mock data
+			permissionRepositoryMock.On("FindPermissionById").Return(testStep.mockValue, testStep.mockError)
 
-		// get GIN context
-		w := httptest.NewRecorder()
-		c := mock.GetGinTestContext(w, "GET", gin.Params{
-			{Key: "permissionID", Value: testStep.mockValue.(dao.Permission).ID.String()},
-		}, nil)
+			// get GIN context
+			w := httptest.NewRecorder()
+			c := mock.GetGinTestContext(w, "GET", gin.Params{
+				{Key: "permissionID", Value: testStep.mockValue.(dao.Permission).ID.String()},
+			}, nil)
 
-		// Run function
-		permissionService.GetPermissionById(c)
+			// Run function
+			permissionService.GetPermissionById(c)
 
-		// Check result
-		response := w.Result()
-		if response.StatusCode != testStep.expectedStatusCode {
-			t.Errorf("Expected status code %d but got %d", testStep.expectedStatusCode, response.StatusCode)
-		}
+			// Check result
+			response := w.Result()
+			if response.StatusCode != testStep.expectedStatusCode {
+				t.Errorf("Expected status code %d but got %d", testStep.expectedStatusCode, response.StatusCode)
+			}
 
-		if testStep.expectedResponse == nil {
-			continue
-		}
+			if testStep.expectedResponse == nil {
+				return
+			}
 
-		// Check mock data
-		var responseBody dto.APIResponse[dco.PermissionResponse]
-		if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
-			t.Errorf("Error when unmarshalling response body: %s", err.Error())
+			// Check mock data
+			var responseBody dto.APIResponse[dco.PermissionResponse]
+			if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
+				t.Errorf("Error when unmarshalling response body: %s", err.Error())
 
-		}
+			}
 
-		// compare name
-		if responseBody.Data.Name != testStep.expectedResponse.(dao.Permission).Name {
-			t.Errorf("Expected name %s but got %s", testStep.expectedResponse.(dao.Permission).Name, responseBody.Data.Name)
-		}
+			// compare name
+			if responseBody.Data.Name != testStep.expectedResponse.(dao.Permission).Name {
+				t.Errorf("Expected name %s but got %s", testStep.expectedResponse.(dao.Permission).Name, responseBody.Data.Name)
+			}
 
-		// compare description
-		if *responseBody.Data.Description != testStep.expectedResponse.(dao.Permission).Description.String {
-			t.Errorf("Expected description %s but got %s", testStep.expectedResponse.(dao.Permission).Description.String, *responseBody.Data.Description)
-		}
+			// compare description
+			if *responseBody.Data.Description != testStep.expectedResponse.(dao.Permission).Description.String {
+				t.Errorf("Expected description %s but got %s", testStep.expectedResponse.(dao.Permission).Description.String, *responseBody.Data.Description)
+			}
+		})
 	}
 }
