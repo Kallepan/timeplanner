@@ -1,0 +1,7 @@
+<div class="container">
+  <app-person-autocomplete (personSelected)="activePersonHandlerService.activePerson = $event"></app-person-autocomplete>
+
+  @if (activePersonHandlerService.activePerson$; as person) {
+    {{ person.id }}
+  }
+</div>
