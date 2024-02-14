@@ -12,6 +12,7 @@ import { PersonWithMetadata } from '@app/shared/interfaces/person';
 })
 export class PersonPreviewComponent {
   displayedPersonString: string = '';
+  @Input() largeText: boolean = false;
   @Input() set persons(value: PersonWithMetadata[]) {
     this.displayedPersonString = value.map((person) => `${person.last_name} (${person.id})`).join(', ');
   }

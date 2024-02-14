@@ -1,6 +1,10 @@
 <div class="container">
   @if (displayedPersonString !== '') {
-    {{ displayedPersonString }}
+    @if (largeText) {
+      <h3>{{ displayedPersonString }}</h3>
+    } @else {
+      {{ displayedPersonString }}
+    }
   } @else {
     -
   }

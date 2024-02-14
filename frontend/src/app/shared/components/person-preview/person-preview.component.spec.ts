@@ -56,9 +56,19 @@ describe('PersonPreviewComponent', () => {
 
     expect(fixture.nativeElement.textContent).toContain('Doe (1), Doe (2)');
   });
+
+  it('if largeText is true then check for h3 tag', () => {
+    component.persons = [{ id: '1', last_name: 'Doe', first_name: 'John' } as PersonWithMetadata];
+    component.largeText = true;
+
+    fixture.detectChanges();
+
+    const h3 = fixture.nativeElement.querySelector('h3');
+    expect(h3.textContent).toBe('Doe (1)');
+  });
 });
 
-describe('PersonPreviewComponent (TestComponent)', () => {
+describe('PersonPreviewComponent with TestComponent', () => {
   let component: TestComponent;
   let fixture: ComponentFixture<TestComponent>;
 
