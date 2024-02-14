@@ -1,8 +1,9 @@
-import { AfterViewInit, Component, ElementRef, ViewChild, ViewEncapsulation, inject } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild, ViewEncapsulation, effect, inject } from '@angular/core';
 import Calendar from 'js-year-calendar';
 import CalendarDataSourceElement from 'js-year-calendar/dist/interfaces/CalendarDataSourceElement';
 import CalendarDayEventObject from 'js-year-calendar/dist/interfaces/CalendarDayEventObject';
 import { ActivePersonHandlerServiceService } from '../../services/active-person-handler-service.service';
+import CalendarYearChangedEventObject from 'js-year-calendar/dist/interfaces/CalendarYearChangedEventObject';
 
 @Component({
   selector: 'app-year-calendar',
@@ -26,9 +27,30 @@ export class YearCalendarComponent implements AfterViewInit {
       language: 'de',
       loadingTemplate: `<div></div>`,
       style: 'background',
+
       clickDay: (e: CalendarDayEventObject<CalendarDataSourceElement>) => {
-        console.log(e);
+        this.handleDayClick(e);
+      },
+      yearChanged: (year: CalendarYearChangedEventObject) => {
+        this.handleYearChange(year.currentYear);
       },
     });
+  }
+
+  constructor() {
+    effect(() => {
+      // Use the absences$ signal to update the calendar
+      const fetchedAbsences = this.activePersonHandlerService.absences$;
+
+      this.calendar.setDataSource(fetchedAbsences);
+    });
+  }
+
+  handleYearChange(year: number) {
+    this.activePersonHandlerService.activeYear = year;
+  }
+  handleDayClick(e: CalendarDayEventObject<CalendarDataSourceElement>) {
+    /** Open dialog and display the interface to create an absency */
+    console.log(e);
   }
 }

@@ -3,12 +3,12 @@ import { ActiveDepartmentHandlerService } from '@app/shared/services/active-depa
 import { ActivePersonHandlerServiceService } from '../../services/active-person-handler-service.service';
 import { PersonAutocompleteComponent } from '../person-autocomplete/person-autocomplete.component';
 import { YearCalendarComponent } from '../year-calendar/year-calendar.component';
-import { MatCardModule } from '@angular/material/card';
+import { PersonPreviewComponent } from '@app/shared/components/person-preview/person-preview.component';
 
 @Component({
   selector: 'app-landing',
   standalone: true,
-  imports: [PersonAutocompleteComponent, YearCalendarComponent, MatCardModule],
+  imports: [PersonAutocompleteComponent, YearCalendarComponent, PersonPreviewComponent],
   templateUrl: './landing.component.html',
   styleUrl: './landing.component.scss',
 })
