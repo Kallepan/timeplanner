@@ -1,0 +1,16 @@
+<app-dialog-layout [control]="control" [title]="title">
+  <form body [formGroup]="control" class="form">
+    Ab: {{ startDate | date: 'dd.MM.yyyy' }}
+    <mat-form-field>
+      <mat-label>Enddatum auswaehlen</mat-label>
+      <input matInput [matDatepicker]="endDatePicker" formControlName="endDate" [min]="startDate" />
+      <mat-datepicker-toggle matSuffix [for]="endDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #endDatePicker></mat-datepicker>
+    </mat-form-field>
+    <mat-radio-group formControlName="reason">
+      @for (reason of absencyReasons; track reason) {
+        <mat-radio-button [value]="reason">{{ reason }}</mat-radio-button>
+      }
+    </mat-radio-group>
+  </form>
+</app-dialog-layout>

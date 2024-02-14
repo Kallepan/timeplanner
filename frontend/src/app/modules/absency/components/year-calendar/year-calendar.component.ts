@@ -25,7 +25,7 @@ export class YearCalendarComponent implements AfterViewInit {
     }
     this.calendar = new Calendar(this.calendarElement.nativeElement, {
       language: 'de',
-      loadingTemplate: `<div></div>`,
+      loadingTemplate: `<div>Lädt</div>`,
       style: 'background',
 
       clickDay: (e: CalendarDayEventObject<CalendarDataSourceElement>) => {
@@ -42,7 +42,8 @@ export class YearCalendarComponent implements AfterViewInit {
       // Use the absences$ signal to update the calendar
       const fetchedAbsences = this.activePersonHandlerService.absences$;
 
-      this.calendar.setDataSource(fetchedAbsences);
+      this.calendar.setDataSource(fetchedAbsences, true);
+      this.calendar.render();
     });
   }
 
@@ -50,7 +51,6 @@ export class YearCalendarComponent implements AfterViewInit {
     this.activePersonHandlerService.activeYear = year;
   }
   handleDayClick(e: CalendarDayEventObject<CalendarDataSourceElement>) {
-    /** Open dialog and display the interface to create an absency */
-    console.log(e);
+    this.activePersonHandlerService.handleDayClick(e);
   }
 }

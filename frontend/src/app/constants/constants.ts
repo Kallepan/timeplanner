@@ -19,4 +19,6 @@ export class constants {
   public static VERSION = '1.0.0';
 
   public static IS_PRODUCTION = environment.production;
+
+  public static ABSENCY_REASONS = ['Urlaub', 'Krank (AU)', 'Krank (keine AU)', 'Fortbildung'];
 }

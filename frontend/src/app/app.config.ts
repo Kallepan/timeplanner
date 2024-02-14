@@ -6,6 +6,7 @@ import { provideRouter } from '@angular/router';
 import { httpErrorInterceptor } from '@core/interceptors/http-error-interceptor';
 import { NotificationService } from '@core/services/notification.service';
 import { routes } from './app.routes';
+import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -14,5 +15,10 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(withInterceptors([httpErrorInterceptor])),
     importProvidersFrom(MatSnackBarModule),
     NotificationService,
+    provideNativeDateAdapter(),
+    {
+      provide: MAT_DATE_LOCALE,
+      useValue: 'de-DE',
+    },
   ],
 };
