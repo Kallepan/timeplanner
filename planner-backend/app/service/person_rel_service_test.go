@@ -12,6 +12,7 @@ import (
 
 type serviceTestPersonRel struct {
 	params      map[string]string
+	queries     map[string]string
 	mockRequest map[string]interface{}
 	mockValue   interface{}
 	mockError   error
@@ -248,7 +249,9 @@ func TestFindAbsencyForPerson(t *testing.T) {
 			// capital letters personID
 			params: map[string]string{
 				"personID": "test",
-				"date":     "2020-01-01",
+			},
+			queries: map[string]string{
+				"date": "2020-01-01",
 			},
 			findValue: dao.Absence{
 				Reason: "reason1",
@@ -259,7 +262,7 @@ func TestFindAbsencyForPerson(t *testing.T) {
 		},
 		{
 			// small letters personID
-			params: map[string]string{
+			queries: map[string]string{
 				"date": "2020-01-01",
 			},
 			findValue:          nil,
@@ -279,7 +282,9 @@ func TestFindAbsencyForPerson(t *testing.T) {
 			// error in dao
 			params: map[string]string{
 				"personID": "test",
-				"date":     "2020-01-01",
+			},
+			queries: map[string]string{
+				"date": "2020-01-01",
 			},
 			findValue:          nil,
 			findError:          errors.New("test"),
@@ -292,12 +297,118 @@ func TestFindAbsencyForPerson(t *testing.T) {
 			PersonRelRepository.On("FindAbsencyForPerson").Return(testStep.findValue, testStep.findError)
 			// get GIN context
 			w := httptest.NewRecorder()
-			c, err := mock.NewTestContextBuilder(w).WithMethod("GET").WithMapParams(testStep.params).Build()
+			c, err := mock.NewTestContextBuilder(w).WithMethod("GET").WithMapParams(testStep.params).WithQueries(testStep.queries).Build()
 			if err != nil {
 				t.Errorf("Test Step %d: Error while building context: %s", i, err)
 			}
 
 			personRelService.FindAbsencyForPerson(c)
+			response := w.Result()
+
+			if response.StatusCode != testStep.expectedStatusCode {
+				t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
+			}
+		})
+	}
+}
+
+func TestFindAbsencyForPersonInRange(t *testing.T) {
+	personRepository := mock.NewPersonRepositoryMock()
+	personRelRepository := mock.NewPersonRelRepositoryMock()
+	personRelService := PersonRelServiceImpl{
+		PersonRepository:    personRepository,
+		PersonRelRepository: personRelRepository,
+	}
+
+	testSteps := []serviceTestPersonRel{
+		{
+			params: map[string]string{
+				"personID": "test",
+			},
+			queries: map[string]string{
+				"start_date": "2020-01-01",
+				"end_date":   "2020-01-02",
+			},
+			findValue: []dao.Absence{
+				{
+					Reason: "reason1",
+					Date:   "2020-01-01",
+				},
+				{
+					Reason: "reason2",
+
+					Date: "2020-01-02",
+				},
+			},
+			findError:          nil,
+			expectedStatusCode: http.StatusOK,
+		},
+		{
+			params: map[string]string{
+				"personID": "test",
+			},
+			findValue:          nil,
+			findError:          pkg.ErrNoRows,
+			expectedStatusCode: http.StatusBadRequest,
+		},
+		{
+			queries: map[string]string{
+				"start_date": "2020-01-01",
+				"end_date":   "2020-01-02",
+			},
+			findValue:          nil,
+			findError:          pkg.ErrNoRows,
+			expectedStatusCode: http.StatusBadRequest,
+		},
+		{
+			params: map[string]string{
+				"personID": "test",
+			},
+
+			queries: map[string]string{
+				"start_date": "2020-01-01",
+			},
+			findValue:          nil,
+			findError:          pkg.ErrNoRows,
+			expectedStatusCode: http.StatusBadRequest,
+		},
+		{
+
+			params: map[string]string{
+				"personID": "test",
+			},
+			queries: map[string]string{
+				"start_date": "2020-01-02",
+			},
+			findValue:          nil,
+			findError:          pkg.ErrNoRows,
+			expectedStatusCode: http.StatusBadRequest,
+		},
+		{
+			params: map[string]string{
+				"personID": "test",
+			},
+			queries: map[string]string{
+				"start_date": "2020-01-01",
+				"end_date":   "2020-01-02",
+			},
+			findValue:          nil,
+			findError:          errors.New("test"),
+			expectedStatusCode: 500,
+		},
+	}
+
+	for i, testStep := range testSteps {
+		t.Run("Test Find Absency For Person In Range", func(t *testing.T) {
+			personRelRepository.On("FindAbsencyForPersonInRange").Return(testStep.findValue, testStep.findError)
+			// get GIN context
+			w := httptest.NewRecorder()
+			c, err := mock.NewTestContextBuilder(w).WithMethod("GET").WithMapParams(testStep.params).WithQueries(testStep.queries).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error while building context: %s", i, err)
+			}
+
+			personRelService.FindAbsencyForPersonInRange(c)
 			response := w.Result()
 
 			if response.StatusCode != testStep.expectedStatusCode {

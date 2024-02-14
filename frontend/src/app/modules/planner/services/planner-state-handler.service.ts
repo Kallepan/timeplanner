@@ -32,7 +32,16 @@ export class PlannerStateHandlerService {
           if (!isQualified) throw new Error(messages.PLANNER.TIMESLOT_ASSIGNMENT.PERSON_NOT_QUALIFIED);
         }),
         // check if the person is absent on the day
-        switchMap(() => this.personAPIService.isAbsentOnDate(person.id, workdayTimeslot.date).pipe(catchError(() => throwError(() => new Error(messages.GENERAL.HTTP_ERROR.SERVER_ERROR))))),
+        switchMap(() =>
+          this.personAPIService.getAbsencyForPerson(person.id, workdayTimeslot.date).pipe(
+            map((resp) => resp.data),
+            map((data) => {
+              if (data) return true;
+              return false;
+            }),
+            catchError(() => throwError(() => new Error(messages.GENERAL.HTTP_ERROR.SERVER_ERROR))),
+          ),
+        ),
         tap((isAbsent) => {
           if (isAbsent) throw new Error(messages.PLANNER.TIMESLOT_ASSIGNMENT.PERSON_ABSENT);
         }),

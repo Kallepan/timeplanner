@@ -15,14 +15,14 @@
  *    - get absency for a person by date
  *    - remove absency from a person
  */
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { constants } from '@app/constants/constants';
 import { APIResponse } from '@app/core/interfaces/response';
-import { Observable, map } from 'rxjs';
+import { Observable } from 'rxjs';
 import { CreatePerson, PersonWithMetadata } from '../interfaces/person';
 
-type AbsenceReponse = {
+export type AbsenceReponse = {
   person_id: string;
   reason: string;
   date: string;
@@ -206,38 +206,41 @@ export class PersonAPIService {
     return this.http.post<APIResponse<null>>(url, body, httpOptions);
   }
 
-  getAbsencyForPerson(personID: string, date: string): Observable<APIResponse<null>> {
-    const url = `${constants.APIS.PLANNER}/person/${personID}/absency/${date}`;
+  getAbsencyForPerson(personID: string, date: string): Observable<APIResponse<AbsenceReponse | null>> {
+    const url = `${constants.APIS.PLANNER}/person/${personID}/absency`;
 
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       }),
       withCredentials: true,
+      params: new HttpParams({
+        fromObject: {
+          date: date,
+        },
+      }),
     };
 
-    return this.http.get<APIResponse<null>>(url, httpOptions);
+    return this.http.get<APIResponse<AbsenceReponse | null>>(url, httpOptions);
   }
 
-  isAbsentOnDate(personID: string, date: string): Observable<boolean> {
-    const url = `${constants.APIS.PLANNER}/person/${personID}/absency/${date}`;
+  getAbsencyForPersonInRange(personID: string, startDate: string, endDate: string): Observable<APIResponse<AbsenceReponse[]>> {
+    const url = `${constants.APIS.PLANNER}/person/${personID}/absency`;
 
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
       }),
       withCredentials: true,
+      params: new HttpParams({
+        fromObject: {
+          start_date: startDate,
+          end_date: endDate,
+        },
+      }),
     };
 
-    return this.http.get<APIResponse<AbsenceReponse | null>>(url, httpOptions).pipe(
-      map((response) => {
-        if (response.data) {
-          return true;
-        } else {
-          return false;
-        }
-      }),
-    );
+    return this.http.get<APIResponse<AbsenceReponse[]>>(url, httpOptions);
   }
 
   removeAbsencyFromPerson(personID: string, date: string): Observable<APIResponse<null>> {

@@ -1,11 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 
-import { PersonAPIService } from './person-api.service';
+import { AbsenceReponse, PersonAPIService } from './person-api.service';
 import { provideHttpClient } from '@angular/common/http';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { APIResponse } from '@app/core/interfaces/response';
 import { PersonWithMetadata, CreatePerson } from '../interfaces/person';
 import { constants } from '@app/constants/constants';
@@ -16,11 +13,7 @@ describe('PersonAPIService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        provideHttpClient(),
-        provideHttpClientTesting(),
-        PersonAPIService,
-      ],
+      providers: [provideHttpClient(), provideHttpClientTesting(), PersonAPIService],
     });
     service = TestBed.inject(PersonAPIService);
 
@@ -62,9 +55,7 @@ describe('PersonAPIService', () => {
       expect(person).toEqual(mockPerson);
     });
 
-    const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/person/${personId}`,
-    );
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/person/${personId}`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockPerson);
   });
@@ -97,9 +88,7 @@ describe('PersonAPIService', () => {
       expect(person).toEqual(mockPerson);
     });
 
-    const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/person?department=${departmentName}`,
-    );
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/person?department=${departmentName}`);
     expect(req.request.method).toEqual('GET');
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
@@ -181,9 +170,7 @@ describe('PersonAPIService', () => {
       expect(person).toEqual(mockPerson);
     });
 
-    const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/person/${id}`,
-    );
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/person/${id}`);
     expect(req.request.method).toEqual('PUT');
     req.flush(mockPerson);
   });
@@ -198,15 +185,11 @@ describe('PersonAPIService', () => {
     const departmentName = 'Engineering';
     const personID = '1';
 
-    service
-      .removeDepartmentFromPerson(departmentName, personID)
-      .subscribe((response) => {
-        expect(response).toEqual(mockResponse);
-      });
+    service.removeDepartmentFromPerson(departmentName, personID).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
 
-    const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/person/${personID}/department/${departmentName}`,
-    );
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/person/${personID}/department/${departmentName}`);
     expect(req.request.method).toEqual('DELETE');
     req.flush(mockResponse);
   });
@@ -221,15 +204,11 @@ describe('PersonAPIService', () => {
     const departmentName = 'Engineering';
     const personID = '1';
 
-    service
-      .addDepartmentToPerson(departmentName, personID)
-      .subscribe((response) => {
-        expect(response).toEqual(mockResponse);
-      });
+    service.addDepartmentToPerson(departmentName, personID).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
 
-    const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/person/${personID}/department`,
-    );
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/person/${personID}/department`);
     expect(req.request.method).toEqual('POST');
     req.flush(mockResponse);
   });
@@ -245,15 +224,11 @@ describe('PersonAPIService', () => {
     const departmentName = 'Test';
     const personID = '1';
 
-    service
-      .addWorkplaceToPerson(departmentName, workplaceName, personID)
-      .subscribe((response) => {
-        expect(response).toEqual(mockResponse);
-      });
+    service.addWorkplaceToPerson(departmentName, workplaceName, personID).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
 
-    const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/person/${personID}/workplace`,
-    );
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/person/${personID}/workplace`);
     expect(req.request.method).toEqual('POST');
     req.flush(mockResponse);
   });
@@ -269,15 +244,11 @@ describe('PersonAPIService', () => {
     const departmentName = 'Test';
     const personID = '1';
 
-    service
-      .removeWorkplaceFromPerson(departmentName, workplaceName, personID)
-      .subscribe((response) => {
-        expect(response).toEqual(mockResponse);
-      });
+    service.removeWorkplaceFromPerson(departmentName, workplaceName, personID).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
 
-    const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/person/${personID}/workplace`,
-    );
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/person/${personID}/workplace`);
     expect(req.request.method).toEqual('DELETE');
     req.flush(mockResponse);
   });
@@ -296,9 +267,7 @@ describe('PersonAPIService', () => {
       expect(response).toEqual(mockResponse);
     });
 
-    const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/person/${personID}/weekday`,
-    );
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/person/${personID}/weekday`);
     expect(req.request.method).toEqual('POST');
     req.flush(mockResponse);
   });
@@ -313,15 +282,11 @@ describe('PersonAPIService', () => {
     const weekdayID = '1';
     const personID = '1';
 
-    service
-      .removeWeekdayFromPerson(weekdayID, personID)
-      .subscribe((response) => {
-        expect(response).toEqual(mockResponse);
-      });
+    service.removeWeekdayFromPerson(weekdayID, personID).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
 
-    const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/person/${personID}/weekday/${weekdayID}`,
-    );
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/person/${personID}/weekday/${weekdayID}`);
 
     expect(req.request.method).toEqual('DELETE');
     req.flush(mockResponse);
@@ -342,9 +307,7 @@ describe('PersonAPIService', () => {
       expect(response).toEqual(mockResponse);
     });
 
-    const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/person/${personID}/absency`,
-    );
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/person/${personID}/absency`);
     expect(req.request.method).toEqual('POST');
     req.flush(mockResponse);
   });
@@ -363,11 +326,66 @@ describe('PersonAPIService', () => {
       expect(response).toEqual(mockResponse);
     });
 
-    const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/person/${personID}/absency/${date}`,
-    );
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/person/${personID}/absency?date=${date}`);
     expect(req.request.method).toEqual('GET');
     req.flush(mockResponse);
+  });
+
+  it('should handle a valid absence response', () => {
+    const mockResponse: APIResponse<AbsenceReponse> = {
+      data: {
+        date: '2022-01-01',
+        reason: 'Sick leave',
+        person_id: '1',
+        created_at: new Date(),
+      },
+      status: 200,
+      message: 'Absence retrieved',
+    };
+
+    const personID = '1';
+    const date = '2022-01-01';
+
+    service.getAbsencyForPerson(personID, date).subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+    });
+
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/person/${personID}/absency?date=${date}`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockResponse);
+  });
+
+  it('should fetch a range of absences for a person', () => {
+    const mockResponses: APIResponse<AbsenceReponse[]> = {
+      data: [
+        {
+          date: '2022-01-01',
+          reason: 'Sick leave',
+          person_id: '1',
+          created_at: new Date(),
+        },
+        {
+          date: '2022-01-02',
+          reason: 'Sick leave',
+          person_id: '1',
+          created_at: new Date(),
+        },
+      ],
+      status: 200,
+      message: 'Absences retrieved',
+    };
+
+    const personID = '1';
+    const startDate = '2022-01-01';
+    const endDate = '2022-01-02';
+
+    service.getAbsencyForPersonInRange(personID, startDate, endDate).subscribe((response) => {
+      expect(response).toEqual(mockResponses);
+    });
+
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/person/${personID}/absency?start_date=${startDate}&end_date=${endDate}`);
+    expect(req.request.method).toEqual('GET');
+    req.flush(mockResponses);
   });
 
   it('should remove an absence from a person', () => {
@@ -384,9 +402,7 @@ describe('PersonAPIService', () => {
       expect(response).toEqual(mockResponse);
     });
 
-    const req = httpController.expectOne(
-      `${constants.APIS.PLANNER}/person/${personID}/absency/${date}`,
-    );
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/person/${personID}/absency/${date}`);
     expect(req.request.method).toEqual('DELETE');
     req.flush(mockResponse);
   });

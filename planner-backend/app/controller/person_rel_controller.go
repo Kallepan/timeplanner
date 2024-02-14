@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"planner-backend/app/constant"
+	"planner-backend/app/pkg"
 	"planner-backend/app/service"
 
 	"github.com/gin-gonic/gin"
@@ -35,7 +37,21 @@ func (u PersonRelControllerImpl) RemoveAbsency(ctx *gin.Context) {
 }
 
 func (u PersonRelControllerImpl) FindAbsencyForPerson(ctx *gin.Context) {
-	u.PersonRelService.FindAbsencyForPerson(ctx)
+	/** Find absency for a person
+	* if startDate and endDate are present, call FindAbsencyForPersonInRange
+	* else call FindAbsencyForPerson
+	 */
+	if ctx.Query("start_date") != "" && ctx.Query("end_date") != "" {
+		u.PersonRelService.FindAbsencyForPersonInRange(ctx)
+		return
+	}
+
+	if ctx.Query("date") != "" {
+		u.PersonRelService.FindAbsencyForPerson(ctx)
+		return
+	}
+
+	pkg.SendResponse(ctx, constant.InvalidRequest, pkg.Null())
 }
 
 func (u PersonRelControllerImpl) AddDepartment(ctx *gin.Context) {

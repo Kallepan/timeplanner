@@ -60,7 +60,7 @@ func Init(init *config.Injector) *gin.Engine {
 			{
 				personRel.POST("/absency", init.PersonRelCtrl.AddAbsency)
 				personRel.DELETE("/absency/:date", init.PersonRelCtrl.RemoveAbsency)
-				personRel.GET("/absency/:date", init.PersonRelCtrl.FindAbsencyForPerson)
+				personRel.GET("/absency", init.PersonRelCtrl.FindAbsencyForPerson) // ?date=... or ?start_date=...&end_date=...
 
 				personRel.POST("/department", init.PersonRelCtrl.AddDepartment)
 				personRel.DELETE("/department/:departmentID", init.PersonRelCtrl.RemoveDepartment)
