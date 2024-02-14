@@ -2,6 +2,14 @@
   <app-person-autocomplete (personSelected)="activePersonHandlerService.activePerson = $event"></app-person-autocomplete>
 
   @if (activePersonHandlerService.activePerson$; as person) {
-    {{ person.id }}
+    <mat-card>
+      <mat-card-header>
+        <mat-card-subtitle>{{ person.id }}</mat-card-subtitle>
+        <mat-card-title>{{ person.last_name }}, {{ person.first_name }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <app-year-calendar></app-year-calendar>
+      </mat-card-content>
+    </mat-card>
   }
 </div>

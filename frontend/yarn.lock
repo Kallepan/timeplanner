@@ -5793,6 +5793,11 @@ js-yaml@^3.10.0, js-yaml@^3.13.1:
     argparse "^1.0.7"
     esprima "^4.0.0"
 
+js-year-calendar@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/js-year-calendar/-/js-year-calendar-2.0.0.tgz#60c834284f863070ff0abb1aba0f46a7c56e0717"
+  integrity sha512-Q1cB25/9fQkl/FefzrfwMBGbDSoF5nCHEj3LGHJh2BdXdFUJf1asFn6A7jnMrdo+c4QpDoc0HEcvhu+SjmGOaw==
+
 jsesc@^2.5.1:
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-2.5.2.tgz#80564d2e483dacf6e8ef209650a67df3f0c283a4"
