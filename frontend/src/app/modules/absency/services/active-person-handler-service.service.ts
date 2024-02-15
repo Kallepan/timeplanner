@@ -48,19 +48,15 @@ export class ActivePersonHandlerServiceService {
         of(this.activeYear$)
           .pipe(
             takeUntilDestroyed(this.destroyRef$),
-            map((year) => ({
-              startDate: new Date(year, 0, 1),
-              endDate: new Date(year, 11, 31),
-            })),
             filter(() => !!this.activePerson$),
-            map(({ startDate, endDate }) => ({
-              startDate: formatDateToDateString(startDate),
-              endDate: formatDateToDateString(endDate),
+            map((year) => ({
+              startDate: year + '-01-01',
+              endDate: year + '-12-31',
               personId: this.activePerson$!.id,
             })),
             switchMap(({ startDate, endDate, personId }) => this._personAPIService.getAbsencyForPersonInRange(personId, startDate, endDate).pipe(catchError((err) => throwError(() => err)))),
             map((resp) => resp.data),
-            filter((absences) => !!absences),
+            map((absences) => (absences ? absences : [])),
             // group by reason into a map
             map((absences) =>
               absences.reduce((acc, absence) => {
@@ -147,10 +143,47 @@ export class ActivePersonHandlerServiceService {
           const obs = dates.map((date) => this._personAPIService.addAbsencyToPerson(this.activePerson$!.id, date, reason).pipe(catchError((err) => throwError(() => err))));
           return forkJoin(obs);
         }),
+        switchMap(() =>
+          this._personAPIService.getAbsencyForPersonInRange(this.activePerson$!.id, this.activeYear$ + '-01-01', this.activeYear$ + '-12-31').pipe(catchError((err) => throwError(() => err))),
+        ),
+        map((resp) => resp.data),
+        // group by reason into a map
+        map((absences) =>
+          absences.reduce((acc, absence) => {
+            const groupedByArray = acc.get(absence.reason);
+            if (!groupedByArray) {
+              acc.set(absence.reason, [
+                {
+                  date: new Date(absence.date),
+                  created_at: absence.created_at,
+                },
+              ]);
+              return acc;
+            }
+
+            groupedByArray.push({
+              date: new Date(absence.date),
+              created_at: absence.created_at,
+            });
+            return acc;
+          }, new Map<string, { date: Date; created_at: Date }[]>()),
+        ),
+        // group each reason into ranges of absences instead of individual per date absences
+        map((absencesMap) => {
+          const absences: Absence[] = [];
+
+          absencesMap.forEach((absencesArray, reason) => {
+            absencesArray.sort((a, b) => a.date.getTime() - b.date.getTime());
+            absences.push(...groupDatesToRanges(absencesArray, reason));
+          });
+
+          return absences;
+        }),
       )
       .subscribe({
-        next: () => {
+        next: (absences) => {
           this.notificationService.infoMessage(messages.ABSENCY.CREATED);
+          this._absences.set(absences);
         },
         error: () => {
           this.notificationService.warnMessage(messages.GENERAL.HTTP_ERROR.SERVER_ERROR);
