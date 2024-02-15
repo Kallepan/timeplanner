@@ -11,7 +11,7 @@ import CalendarDayEventObject from 'js-year-calendar/dist/interfaces/CalendarDay
 import CalendarDataSourceElement from 'js-year-calendar/dist/interfaces/CalendarDataSourceElement';
 import { messages } from '@app/constants/messages';
 import { CreateAbsencyDialogComponent } from '../components/create-absency-dialog/create-absency-dialog.component';
-import { formatDateToDateString } from '../functions/format-date-to-string.function';
+import { formatDateToDateString } from '../../../shared/functions/format-date-to-string.function';
 @Injectable({
   providedIn: null,
 })
@@ -54,8 +54,8 @@ export class ActivePersonHandlerServiceService {
             })),
             filter(() => !!this.activePerson$),
             map(({ startDate, endDate }) => ({
-              startDate: startDate.toISOString().split('T')[0],
-              endDate: endDate.toISOString().split('T')[0],
+              startDate: formatDateToDateString(startDate),
+              endDate: formatDateToDateString(endDate),
               personId: this.activePerson$!.id,
             })),
             switchMap(({ startDate, endDate, personId }) => this._personAPIService.getAbsencyForPersonInRange(personId, startDate, endDate).pipe(catchError((err) => throwError(() => err)))),

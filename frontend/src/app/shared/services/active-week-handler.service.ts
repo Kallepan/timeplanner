@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { formatDateToDateString } from '@app/shared/functions/format-date-to-string.function';
 
 export type Weekday = {
   name: string;
@@ -48,7 +49,7 @@ export class ActiveWeekHandlerService {
       name: date.toLocaleString('de-DE', { weekday: 'long' }),
       shortName: date.toLocaleString('de-DE', { weekday: 'short' }),
       date,
-      dateString: date.toISOString().split('T')[0],
+      dateString: formatDateToDateString(date),
     }));
 
     return formattedWeek;
