@@ -1,7 +1,7 @@
 import { DestroyRef, Injectable, effect, inject, signal } from '@angular/core';
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { PersonAPIService } from '@app/shared/services/person-api.service';
-import { catchError, filter, map, merge, of, switchMap, tap, throwError } from 'rxjs';
+import { catchError, filter, forkJoin, map, of, switchMap, throwError } from 'rxjs';
 import { Absence } from '../interfaces/absence';
 import { groupDatesToRanges } from '../functions/group-dates-to-ranges.function';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -11,6 +11,7 @@ import CalendarDayEventObject from 'js-year-calendar/dist/interfaces/CalendarDay
 import CalendarDataSourceElement from 'js-year-calendar/dist/interfaces/CalendarDataSourceElement';
 import { messages } from '@app/constants/messages';
 import { CreateAbsencyDialogComponent } from '../components/create-absency-dialog/create-absency-dialog.component';
+import { formatDateToDateString } from '../functions/format-date-to-string.function';
 @Injectable({
   providedIn: null,
 })
@@ -127,7 +128,8 @@ export class ActivePersonHandlerServiceService {
         // calculate dates between start and end date
         map((result) => {
           const dates: Date[] = [];
-          const currentDate = new Date(dialogData.startDate);
+          // We need to clone the date object to avoid modifying the original date
+          const currentDate = new Date(result.endDate);
           const endDate = new Date(result.endDate);
           while (currentDate <= endDate) {
             dates.push(new Date(currentDate));
@@ -135,17 +137,23 @@ export class ActivePersonHandlerServiceService {
           }
           return { dates, reason: result.reason };
         }),
+        map(({ dates, reason }) => {
+          const formattedDates = dates.map((date) => formatDateToDateString(date));
+
+          return { dates: formattedDates, reason };
+        }),
         // call the api for each date
         switchMap(({ dates, reason }) => {
-          return merge(
-            dates.map((date) => this._personAPIService.addAbsencyToPerson(this.activePerson$!.id, date.toISOString().split('T')[0], reason).pipe(catchError((err) => throwError(() => err)))),
-          );
+          const obs = dates.map((date) => this._personAPIService.addAbsencyToPerson(this.activePerson$!.id, date, reason).pipe(catchError((err) => throwError(() => err))));
+          return forkJoin(obs);
         }),
-        tap((d) => console.log(d)),
       )
       .subscribe({
         next: () => {
           this.notificationService.infoMessage(messages.ABSENCY.CREATED);
+        },
+        error: () => {
+          this.notificationService.warnMessage(messages.GENERAL.HTTP_ERROR.SERVER_ERROR);
         },
       });
   }
