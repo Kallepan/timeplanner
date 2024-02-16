@@ -47,6 +47,8 @@ export class YearCalendarComponent implements AfterViewInit {
 
   tooltipText = '';
   tooltipVisible = false;
+  mouseTrackerX = 0;
+  mouseTrackerY = 0;
   private handleMouseOnDay(e: CalendarDayEventObject<CalendarDataSourceElement>) {
     if (!e.events.length) return;
 
@@ -56,6 +58,8 @@ export class YearCalendarComponent implements AfterViewInit {
       })
       .join('<br>');
     this.tooltipVisible = true;
+
+    // fetch mouse position from document
   }
 
   private handleMouseOutDay() {

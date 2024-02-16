@@ -25,4 +25,13 @@ describe('YearCalendarComponent', () => {
     const compiled = fixture.debugElement.query(By.css('#calendar'));
     expect(compiled).toBeTruthy();
   });
+
+  it('should update the tooltip text', () => {
+    const compiled = fixture.debugElement.query(By.css('.tooltip'));
+    expect(compiled.nativeElement.textContent).toBe('');
+    component.tooltipText = 'Test';
+    component.tooltipVisible = true;
+    fixture.detectChanges();
+    expect(compiled.nativeElement.textContent).toBe('Test');
+  });
 });
