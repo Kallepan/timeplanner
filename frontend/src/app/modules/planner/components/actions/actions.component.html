@@ -2,7 +2,7 @@
   <mat-slide-toggle id="toggleColors" color="accent" [checked]="displayColors" (change)="toggleColors.emit($event.checked)">Zeitslots farbig markieren</mat-slide-toggle>
   <mat-slide-toggle id="toggleTimes" color="accent" [checked]="displayTimes" (change)="toggleTimes.emit($event.checked)">Zeiten anzeigen</mat-slide-toggle>
   <span class="spacer"></span>
-
+  <button mat-raised-button id="open-absency-panel-button" color="accent" (click)="toggleAbsencyPanel.emit()">Abwesenheiten</button>
   <button mat-raised-button id="edit-route-button" color="accent" routerLink="/viewer" [queryParams]="{ department: departmentId }">Standardansicht</button>
   <button color="accent" id="shift-backward-button" mat-raised-button (click)="shiftWeek.emit(-1)"><<</button>
   <button color="accent" id="shift-forward-button" mat-raised-button (click)="shiftWeek.emit(1)">>></button>

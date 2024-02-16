@@ -100,4 +100,13 @@ describe('ActionsComponent', () => {
       expect(location.pathname).toContain('departmentId');
     });
   });
+
+  it('should emit toggleAbsencyPanel', async () => {
+    spyOn(component.toggleAbsencyPanel, 'emit');
+    const button = fixture.nativeElement.querySelector('#toggle-absency-panel-button');
+
+    button.click();
+
+    expect(component.toggleAbsencyPanel.emit).toHaveBeenCalled();
+  });
 });

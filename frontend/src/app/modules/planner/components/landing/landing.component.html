@@ -5,7 +5,8 @@
     [displayColors]="timetableDataContainerService.colorize$"
     [displayTimes]="timetableDataContainerService.displayTimes$"
     (shiftWeek)="activeWeekHandlerService.shiftWeek($event)"
-    [departmentId]="activeDepartmentHandlerService.activeDepartment$"></app-actions-editable>
+    [departmentId]="activeDepartmentHandlerService.activeDepartment$"
+    (toggleAbsencyPanel)="toggleAbsencyPanel()"></app-actions-editable>
 </div>
 
 <app-editable-timetable></app-editable-timetable>

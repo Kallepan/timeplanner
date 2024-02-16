@@ -20,4 +20,6 @@ export class ActionsComponent {
   @Output() shiftWeek = new EventEmitter<number>();
 
   @Input() departmentId: string;
+
+  @Output() toggleAbsencyPanel = new EventEmitter<void>();
 }
