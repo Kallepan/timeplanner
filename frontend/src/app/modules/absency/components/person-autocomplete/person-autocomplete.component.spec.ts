@@ -5,6 +5,7 @@ import { HarnessLoader } from '@angular/cdk/testing';
 import { PersonDataContainerService } from '@app/shared/services/person-data-container.service';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { MatAutocompleteHarness } from '@angular/material/autocomplete/testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 
 describe('PersonAutocompleteComponent', () => {
   let component: PersonAutocompleteComponent;
@@ -30,6 +31,8 @@ describe('PersonAutocompleteComponent', () => {
     fixture = TestBed.createComponent(PersonAutocompleteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+
+    loader = TestbedHarnessEnvironment.loader(fixture);
   });
 
   it('should create', () => {

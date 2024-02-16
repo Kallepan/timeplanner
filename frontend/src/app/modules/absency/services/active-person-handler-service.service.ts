@@ -1,6 +1,6 @@
 import { DestroyRef, Injectable, effect, inject, signal } from '@angular/core';
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
-import { PersonAPIService } from '@app/shared/services/person-api.service';
+import { AbsenceReponse, PersonAPIService } from '@app/shared/services/person-api.service';
 import { catchError, filter, forkJoin, map, of, switchMap, throwError } from 'rxjs';
 import { Absence } from '../interfaces/absence';
 import { groupDatesToRanges } from '../functions/group-dates-to-ranges.function';
@@ -12,6 +12,7 @@ import CalendarDataSourceElement from 'js-year-calendar/dist/interfaces/Calendar
 import { messages } from '@app/constants/messages';
 import { CreateAbsencyDialogComponent } from '../components/create-absency-dialog/create-absency-dialog.component';
 import { formatDateToDateString } from '../../../shared/functions/format-date-to-string.function';
+import { DeleteAbsencyDialogComponent, DeleteAbsencyDialogComponentData } from '../components/delete-absency-dialog/delete-absency-dialog.component';
 @Injectable({
   providedIn: null,
 })
@@ -19,7 +20,7 @@ export class ActivePersonHandlerServiceService {
   private destroyRef$ = inject(DestroyRef);
   private notificationService = inject(NotificationService);
   private _personAPIService = inject(PersonAPIService);
-  private dialog = inject(MatDialog);
+  dialog = inject(MatDialog);
 
   private _activePerson = signal<PersonWithMetadata | null>(null);
   set activePerson(person: PersonWithMetadata) {
@@ -38,6 +39,36 @@ export class ActivePersonHandlerServiceService {
   }
 
   private _absences = signal<Absence[]>([]);
+  set absences(absences: AbsenceReponse[]) {
+    // group by reason into a map
+    const absencesByReason = absences.reduce((acc, absence) => {
+      const groupedByArray = acc.get(absence.reason);
+      if (!groupedByArray) {
+        acc.set(absence.reason, [
+          {
+            date: new Date(absence.date),
+            created_at: absence.created_at,
+          },
+        ]);
+        return acc;
+      }
+
+      groupedByArray.push({
+        date: new Date(absence.date),
+        created_at: absence.created_at,
+      });
+      return acc;
+    }, new Map<string, { date: Date; created_at: Date }[]>());
+
+    // group each reason into ranges of absences instead of individual per date absences
+    const absencesResult: Absence[] = [];
+    absencesByReason.forEach((absencesArray, reason) => {
+      absencesArray.sort((a, b) => a.date.getTime() - b.date.getTime());
+      absencesResult.push(...groupDatesToRanges(absencesArray, reason));
+    });
+
+    this._absences.set(absencesResult);
+  }
   get absences$() {
     return this._absences();
   }
@@ -57,54 +88,16 @@ export class ActivePersonHandlerServiceService {
             switchMap(({ startDate, endDate, personId }) => this._personAPIService.getAbsencyForPersonInRange(personId, startDate, endDate).pipe(catchError((err) => throwError(() => err)))),
             map((resp) => resp.data),
             map((absences) => (absences ? absences : [])),
-            // group by reason into a map
-            map((absences) =>
-              absences.reduce((acc, absence) => {
-                const groupedByArray = acc.get(absence.reason);
-                if (!groupedByArray) {
-                  acc.set(absence.reason, [
-                    {
-                      date: new Date(absence.date),
-                      created_at: absence.created_at,
-                    },
-                  ]);
-                  return acc;
-                }
-
-                groupedByArray.push({
-                  date: new Date(absence.date),
-                  created_at: absence.created_at,
-                });
-                return acc;
-              }, new Map<string, { date: Date; created_at: Date }[]>()),
-            ),
-            // group each reason into ranges of absences instead of individual per date absences
-            map((absencesMap) => {
-              const absences: Absence[] = [];
-
-              absencesMap.forEach((absencesArray, reason) => {
-                absencesArray.sort((a, b) => a.date.getTime() - b.date.getTime());
-                absences.push(...groupDatesToRanges(absencesArray, reason));
-              });
-
-              return absences;
-            }),
           )
           .subscribe((absences) => {
-            this._absences.set(absences);
+            this.absences = absences;
           });
       },
       { allowSignalWrites: true },
     );
   }
 
-  handleDayClick(e: CalendarDayEventObject<CalendarDataSourceElement>) {
-    /** Open dialog and display the interface to create an absency */
-    if (e.events.length > 0) {
-      this.notificationService.infoMessage(messages.ABSENCY.ALREADY_EXISTS);
-      return;
-    }
-
+  private _addAbsency(e: CalendarDayEventObject<CalendarDataSourceElement>) {
     const dialogData = {
       personID: this.activePerson$?.id ?? '',
       startDate: e.date,
@@ -124,13 +117,14 @@ export class ActivePersonHandlerServiceService {
         // calculate dates between start and end date
         map((result) => {
           const dates: Date[] = [];
-          // We need to clone the date object to avoid modifying the original date
-          const currentDate = new Date(result.endDate);
-          const endDate = new Date(result.endDate);
-          while (currentDate <= endDate) {
-            dates.push(new Date(currentDate));
-            currentDate.setDate(currentDate.getDate() + 1);
+          // prevent race condition if the start and end date are the same
+          if (result.endDate === e.date) return { dates: [e.date], reason: result.reason };
+
+          // Calculate all dates between the start and end date
+          for (let date = result.endDate; date >= e.date; date.setDate(date.getDate() - 1)) {
+            dates.push(new Date(date));
           }
+
           return { dates, reason: result.reason };
         }),
         map(({ dates, reason }) => {
@@ -147,47 +141,68 @@ export class ActivePersonHandlerServiceService {
           this._personAPIService.getAbsencyForPersonInRange(this.activePerson$!.id, this.activeYear$ + '-01-01', this.activeYear$ + '-12-31').pipe(catchError((err) => throwError(() => err))),
         ),
         map((resp) => resp.data),
-        // group by reason into a map
-        map((absences) =>
-          absences.reduce((acc, absence) => {
-            const groupedByArray = acc.get(absence.reason);
-            if (!groupedByArray) {
-              acc.set(absence.reason, [
-                {
-                  date: new Date(absence.date),
-                  created_at: absence.created_at,
-                },
-              ]);
-              return acc;
-            }
-
-            groupedByArray.push({
-              date: new Date(absence.date),
-              created_at: absence.created_at,
-            });
-            return acc;
-          }, new Map<string, { date: Date; created_at: Date }[]>()),
-        ),
-        // group each reason into ranges of absences instead of individual per date absences
-        map((absencesMap) => {
-          const absences: Absence[] = [];
-
-          absencesMap.forEach((absencesArray, reason) => {
-            absencesArray.sort((a, b) => a.date.getTime() - b.date.getTime());
-            absences.push(...groupDatesToRanges(absencesArray, reason));
-          });
-
-          return absences;
-        }),
       )
       .subscribe({
         next: (absences) => {
           this.notificationService.infoMessage(messages.ABSENCY.CREATED);
-          this._absences.set(absences);
+          this.absences = absences;
         },
         error: () => {
           this.notificationService.warnMessage(messages.GENERAL.HTTP_ERROR.SERVER_ERROR);
         },
       });
+  }
+
+  private _removeAbsency(e: CalendarDayEventObject<CalendarDataSourceElement>) {
+    const dialogData: DeleteAbsencyDialogComponentData = {
+      personID: this.activePerson$?.id ?? '',
+      date: e.date,
+    };
+
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = dialogData;
+    dialogConfig.enterAnimationDuration = 300;
+    dialogConfig.exitAnimationDuration = 300;
+
+    const dialogRef = this.dialog.open(DeleteAbsencyDialogComponent, dialogConfig);
+    dialogRef
+      .afterClosed()
+      .pipe(
+        // We dont need to do anything if the dialog was closed without a result
+        filter((result) => result !== null && result !== undefined && result === true),
+        map(() => ({ personID: this.activePerson$?.id ?? '', date: e.date })),
+        map(({ personID, date }) => ({ personID, date: formatDateToDateString(date) })),
+        switchMap(({ personID, date }) => this._personAPIService.removeAbsencyFromPerson(personID, date).pipe(catchError((err) => throwError(() => err)))),
+        switchMap(() =>
+          this._personAPIService.getAbsencyForPersonInRange(this.activePerson$!.id, this.activeYear$ + '-01-01', this.activeYear$ + '-12-31').pipe(catchError((err) => throwError(() => err))),
+        ),
+        map((resp) => resp.data),
+      )
+      .subscribe({
+        next: (absences) => {
+          this.notificationService.infoMessage(messages.ABSENCY.DELETED);
+          this.absences = absences;
+        },
+        error: () => {
+          this.notificationService.warnMessage(messages.GENERAL.HTTP_ERROR.SERVER_ERROR);
+        },
+      });
+  }
+
+  handleDayClick(e: CalendarDayEventObject<CalendarDataSourceElement>) {
+    /** Open dialog and display the interface to create an absency */
+    if (e.events.length > 0) {
+      this._removeAbsency(e);
+      return;
+    }
+    this._addAbsency(e);
+  }
+
+  // functions for unit testing
+  removeAbsency(e: CalendarDayEventObject<CalendarDataSourceElement>) {
+    this._removeAbsency(e);
+  }
+  addAbsency(e: CalendarDayEventObject<CalendarDataSourceElement>) {
+    this._addAbsency(e);
   }
 }

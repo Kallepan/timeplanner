@@ -6,7 +6,7 @@ import { DialogLayoutComponent } from '@app/shared/components/dialog-layout/dial
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
 import { constants } from '@app/constants/constants';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 
 export type CreateAbsencyDialogData = {
@@ -38,6 +38,4 @@ export class CreateAbsencyDialogComponent {
       reason: ['', [Validators.required]],
     });
   }
-
-  dialogRef = inject(MatDialogRef<CreateAbsencyDialogComponent>);
 }

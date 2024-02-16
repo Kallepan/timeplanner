@@ -4,11 +4,12 @@ import CalendarDataSourceElement from 'js-year-calendar/dist/interfaces/Calendar
 import CalendarDayEventObject from 'js-year-calendar/dist/interfaces/CalendarDayEventObject';
 import { ActivePersonHandlerServiceService } from '../../services/active-person-handler-service.service';
 import CalendarYearChangedEventObject from 'js-year-calendar/dist/interfaces/CalendarYearChangedEventObject';
+import { CustomTooltipComponent } from '@app/shared/components/custom-tooltip/custom-tooltip.component';
 
 @Component({
   selector: 'app-year-calendar',
   standalone: true,
-  imports: [],
+  imports: [CustomTooltipComponent],
   templateUrl: './year-calendar.component.html',
   styleUrl: './year-calendar.component.scss',
   encapsulation: ViewEncapsulation.ShadowDom,
@@ -27,14 +28,39 @@ export class YearCalendarComponent implements AfterViewInit {
       language: 'de',
       loadingTemplate: `<div>Lädt</div>`,
       style: 'background',
-
+      weekStart: 1,
+      disabledWeekDays: [0, 6],
       clickDay: (e: CalendarDayEventObject<CalendarDataSourceElement>) => {
-        this.handleDayClick(e);
+        this.activePersonHandlerService.handleDayClick(e);
       },
       yearChanged: (year: CalendarYearChangedEventObject) => {
-        this.handleYearChange(year.currentYear);
+        this.activePersonHandlerService.activeYear = year.currentYear;
+      },
+      mouseOnDay: (e: CalendarDayEventObject<CalendarDataSourceElement>) => {
+        this.handleMouseOnDay(e);
+      },
+      mouseOutDay: () => {
+        this.handleMouseOutDay();
       },
     });
+  }
+
+  tooltipText = '';
+  tooltipVisible = false;
+  private handleMouseOnDay(e: CalendarDayEventObject<CalendarDataSourceElement>) {
+    if (!e.events.length) return;
+
+    this.tooltipText = e.events
+      .map((event) => {
+        return `${event.name} - ${e.date.toLocaleDateString()}`;
+      })
+      .join('<br>');
+    this.tooltipVisible = true;
+  }
+
+  private handleMouseOutDay() {
+    this.tooltipVisible = false;
+    this.tooltipText = '';
   }
 
   constructor() {
@@ -45,12 +71,5 @@ export class YearCalendarComponent implements AfterViewInit {
       this.calendar.setDataSource(fetchedAbsences, true);
       this.calendar.render();
     });
-  }
-
-  handleYearChange(year: number) {
-    this.activePersonHandlerService.activeYear = year;
-  }
-  handleDayClick(e: CalendarDayEventObject<CalendarDataSourceElement>) {
-    this.activePersonHandlerService.handleDayClick(e);
   }
 }

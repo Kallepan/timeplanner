@@ -96,6 +96,10 @@ func (p PersonRelServiceImpl) RemoveAbsencyFromPerson(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
+	if _, err := time.Parse("2006-01-02", date); err != nil {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+
 	person, err := p.PersonRepository.FindPersonByID(personID)
 	switch err {
 	case nil:
@@ -141,6 +145,10 @@ func (p PersonRelServiceImpl) FindAbsencyForPerson(c *gin.Context) {
 
 	date := c.Query("date")
 	if date == "" {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+
+	if _, err := time.Parse("2006-01-02", date); err != nil {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
