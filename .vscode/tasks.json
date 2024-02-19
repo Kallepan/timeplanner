@@ -21,11 +21,6 @@
       }
     },
     {
-      "label": "setup initial state",
-      "dependsOn": ["upload meta", "upload persons"],
-      "problemMatcher": []
-    },
-    {
       "label": "wire gen api-gateway",
       "type": "shell",
       "command": "sh",
