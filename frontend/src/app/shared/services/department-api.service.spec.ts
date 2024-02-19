@@ -6,6 +6,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { APIResponse } from '@app/core/interfaces/response';
 import { Department, DepartmentWithMetadata } from '../interfaces/department';
 import { constants } from '@app/constants/constants';
+import { AbsenceReponse } from './person-api.service';
 
 describe('DepartmentAPIService', () => {
   let service: DepartmentAPIService;
@@ -25,6 +26,33 @@ describe('DepartmentAPIService', () => {
 
   afterEach(() => {
     httpController.verify();
+  });
+
+  it('should get absences for a department', () => {
+    const mockAbsences: APIResponse<AbsenceReponse[]> = {
+      data: [
+        {
+          person_id: 'person1',
+          created_at: new Date(),
+          reason: 'sick',
+          date: '2021-01-01',
+        },
+      ],
+      status: 200,
+      message: 'success',
+    };
+
+    const departmentName = 'Engineering';
+
+    service.getAbsencesForDepartment(departmentName, '2021-01-01').subscribe((result) => {
+      expect(result).toEqual(mockAbsences);
+    });
+
+    const req = httpController.expectOne(`${constants.APIS.PLANNER}/department/${departmentName}/absency?date=2021-01-01`);
+
+    expect(req.request.method).toEqual('GET');
+    expect(req.request.withCredentials).toEqual(true);
+    expect(req.request.headers.get('Content-Type')).toEqual('application/json');
   });
 
   it('should get all departments', () => {

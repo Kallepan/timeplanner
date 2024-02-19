@@ -1,8 +1,8 @@
 import { DestroyRef, Injectable, effect, inject, signal } from '@angular/core';
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
-import { AbsenceReponse, PersonAPIService } from '@app/shared/services/person-api.service';
+import { PersonAPIService } from '@app/shared/services/person-api.service';
 import { catchError, filter, forkJoin, map, of, switchMap, throwError } from 'rxjs';
-import { Absence } from '../interfaces/absence';
+import { AbsenceForPerson, AbsenceReponse } from '../interfaces/absence';
 import { groupDatesToRanges } from '../functions/group-dates-to-ranges.function';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NotificationService } from '@app/core/services/notification.service';
@@ -38,7 +38,10 @@ export class ActivePersonHandlerServiceService {
     return this._activeYear();
   }
 
-  private _absences = signal<Absence[]>([]);
+  /* 
+  The following code is responsible for keeping track of the absences for a given person and year 
+  */
+  private _absences = signal<AbsenceForPerson[]>([]);
   set absences(absences: AbsenceReponse[]) {
     // group by reason into a map
     const absencesByReason = absences.reduce((acc, absence) => {
@@ -61,7 +64,7 @@ export class ActivePersonHandlerServiceService {
     }, new Map<string, { date: Date; created_at: Date }[]>());
 
     // group each reason into ranges of absences instead of individual per date absences
-    const absencesResult: Absence[] = [];
+    const absencesResult: AbsenceForPerson[] = [];
     absencesByReason.forEach((absencesArray, reason) => {
       absencesArray.sort((a, b) => a.date.getTime() - b.date.getTime());
       absencesResult.push(...groupDatesToRanges(absencesArray, reason));

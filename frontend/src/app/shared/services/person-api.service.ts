@@ -21,13 +21,7 @@ import { constants } from '@app/constants/constants';
 import { APIResponse } from '@app/core/interfaces/response';
 import { Observable } from 'rxjs';
 import { CreatePerson, PersonWithMetadata } from '../interfaces/person';
-
-export type AbsenceReponse = {
-  person_id: string;
-  reason: string;
-  date: string;
-  created_at: Date;
-};
+import { AbsenceReponse } from '@app/modules/absency/interfaces/absence';
 
 @Injectable({
   providedIn: 'root',

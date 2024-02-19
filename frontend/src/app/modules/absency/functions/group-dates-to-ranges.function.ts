@@ -1,9 +1,9 @@
-import { Absence } from '../interfaces/absence';
+import { AbsenceForPerson } from '../interfaces/absence';
 
 export type ObjectsWithDatesToBeSorted = { date: Date; created_at: Date };
 
-export const groupDatesToRanges = (objectsSortedByDate: ObjectsWithDatesToBeSorted[], name: string): Absence[] => {
-  const ranges: Absence[] = [];
+export const groupDatesToRanges = (objectsSortedByDate: ObjectsWithDatesToBeSorted[], name: string): AbsenceForPerson[] => {
+  const ranges: AbsenceForPerson[] = [];
 
   let objectWithStartDate = objectsSortedByDate[0];
   let objectWithLastDate = objectsSortedByDate[0];

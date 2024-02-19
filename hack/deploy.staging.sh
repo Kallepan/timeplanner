@@ -36,5 +36,5 @@ kubectl rollout restart deployment api-gateway -n $NAMESPACE --kubeconfig=$KUBEC
 kubectl rollout restart deployment planner-backend -n $NAMESPACE --kubeconfig=$KUBECONFIG
 kubectl rollout restart deployment planner-frontend -n $NAMESPACE --kubeconfig=$KUBECONFIG
 
-cd infrastructure/staging
+cd ../infrastructure/staging
 kubectl kustomize . --kubeconfig=$KUBECONFIG | kubectl apply -f - --kubeconfig=$KUBECONFIG
