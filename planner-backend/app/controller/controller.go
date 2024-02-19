@@ -11,4 +11,5 @@ var ControllerSet = wire.NewSet(
 	personControllerSet,
 	personRelControllerSet,
 	workdayControllerSet,
+	absenceControllerSet,
 )

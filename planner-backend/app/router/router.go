@@ -47,7 +47,10 @@ func Init(init *config.Injector) *gin.Engine {
 			weekday.DELETE("/", init.WeekdayCtrl.RemoveWeekdayFromTimeslot)
 			weekday.POST("/bulk", init.WeekdayCtrl.BulkUpdateWeekdaysForTimeslot)
 
+			absency := department.Group("/:departmentID/absency")
+			absency.GET("/", init.AbsenceCtrl.GetAll) // ?date=...
 		}
+
 		person := plannerAPI.Group("/person")
 		{
 			person.GET("/", init.PersonCtrl.GetAll)
