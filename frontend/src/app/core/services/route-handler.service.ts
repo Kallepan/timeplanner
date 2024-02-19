@@ -15,12 +15,12 @@ export class RouteHandlerService {
     {
       path: '/viewer',
       title: 'MIBI - Planung',
-      id: 'BAK',
+      id: 'bak',
     },
     {
       path: '/absency',
       title: 'MIBI - Abwesenheit',
-      id: 'BAK',
+      id: 'bak',
     },
   ]);
 }

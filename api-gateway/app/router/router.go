@@ -25,15 +25,16 @@ func Init(init *config.Injector) *gin.Engine {
 		auth.POST("/login", init.UserCtrl.Login)
 		auth.POST("/logout", init.UserCtrl.Logout)
 		auth.Use(middleware.RequiredAuth())
-		auth.GET("/me", init.UserCtrl.Me)
+		auth.GET("/me", init.UserCtrl.Me) // ?department=XXX
 	}
 
 	/** These API requests stay here and are handled by api-gateway */
 	gatewayAPI := router.Group("/api/v1")
-	// TODO: apiV1.Use(middleware.RequiredAuth())
 	{
 		gatewayAPI.GET("/ping", init.SystemCtrl.Ping)
 
+		// Secured routes
+		gatewayAPI.Use(middleware.RequiredAuth())
 		user := gatewayAPI.Group("/user")
 		{
 			user.GET("", init.UserCtrl.GetAll)
@@ -63,6 +64,9 @@ func Init(init *config.Injector) *gin.Engine {
 	}
 
 	/** These API requests are forwarded to planner-backend service */
+	// TODO: Add middleware to check if the user has permission to access the planner-backend
+	// The problem is that GET requests should be allowed for everyone, but POST, PUT, DELETE should be allowed only for users with the right permissions
+	// The middleware should check the user's permissions and the request method
 	plannerAPI := router.Group("/api/v1/planner")
 	{
 		targetStr := os.Getenv("PLANNER_BACKEND_TARGET")
