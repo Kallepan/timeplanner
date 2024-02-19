@@ -35,7 +35,6 @@ export class SelectPersonsComponent {
     map((persons) => persons.filter((person) => person.weekdays?.map((wd) => wd.id).includes(this.weekday))),
   );
 
-  // TODO set the formContorl
   @Input() initiallySelectedPersonFromParent: PersonWithMetadata[] = [];
   @Input() weekday: string;
 

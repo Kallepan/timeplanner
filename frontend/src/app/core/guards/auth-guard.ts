@@ -5,7 +5,7 @@ import { map, tap } from 'rxjs';
 import { messages } from '@app/constants/messages';
 import { NotificationService } from '../services/notification.service';
 
-// Guard to check if user has access to a department, TODO: fix me
+// Guard to check if user has access to a department
 export const hasAccessToDepartmentGuard: CanActivateFn = (route: ActivatedRouteSnapshot) => {
   const authService = inject(AuthService);
   const router = inject(Router);
