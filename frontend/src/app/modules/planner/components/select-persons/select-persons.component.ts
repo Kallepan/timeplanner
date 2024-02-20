@@ -32,7 +32,9 @@ export class SelectPersonsComponent {
     debounceTime(150),
     filter((value) => typeof value === 'string'),
     map((value) => this._filter(value!)),
-    map((persons) => persons.filter((person) => person.weekdays?.map((wd) => wd.id).includes(this.weekday))),
+    // Filter out the persons that are normally not available on the selected weekday
+    // I disabled this for now, because this feature is not wished by the users
+    // map((persons) => persons.filter((person) => person.weekdays?.map((wd) => wd.id).includes(this.weekday))),
   );
 
   @Input() initiallySelectedPersonFromParent: PersonWithMetadata[] = [];

@@ -1,6 +1,6 @@
 import { CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, inject } from '@angular/core';
+import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { ThemeHandlerService } from '@app/core/services/theme-handler.service';
 import { DisplayedWorkdayTimeslot } from '@app/modules/viewer/interfaces/workplace';
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
@@ -24,7 +24,7 @@ import { ActiveDepartmentHandlerService } from '@app/shared/services/active-depa
 })
 export class EditableTimetableComponent {
   // output
-  toggleAbsencyPanel = new EventEmitter<void>();
+  @Output() toggleAbsencyPanel = new EventEmitter<void>();
 
   // services
   plannerStateHandlerService = inject(PlannerStateHandlerService);

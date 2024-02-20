@@ -4,6 +4,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { messages } from '@app/constants/messages';
 import { NotificationService } from '@app/core/services/notification.service';
 import { DisplayedWorkdayTimeslot } from '@app/modules/viewer/interfaces/workplace';
+import { ConfirmationDialogComponent, ConfirmationDialogComponentData } from '@app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { EditTextareaDialogComponent, EditTextareaDialogData } from '@app/shared/components/edit-textarea-dialog/edit-textarea-dialog.component';
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { WorkdayTimeslot } from '@app/shared/interfaces/workday_timeslot';
@@ -65,6 +66,13 @@ export class PlannerStateHandlerService {
         map(() => {
           return (person.weekdays ?? []).map((wd) => wd.id).includes(workdayTimeslot.weekday);
         }),
+        switchMap((isPresent) => {
+          if (isPresent) return of(true);
+          return this.dialog
+            .open(ConfirmationDialogComponent, { data: { title: 'Person abwesend', confirmationMessage: 'Person ist an diesem Tag normalerweise abwesend. Trotzdem zuweisen?' } })
+            .afterClosed()
+            .pipe(map((result) => result === true));
+        }),
         tap((isPresent) => {
           if (!isPresent) throw new Error(messages.PLANNER.TIMESLOT_ASSIGNMENT.PERSON_NOT_WORKING);
         }),
@@ -118,22 +126,37 @@ export class PlannerStateHandlerService {
   }
 
   handleCommentDeleteRequest(ts: DisplayedWorkdayTimeslot) {
-    if (!confirm('Sind Sie sicher, dass Sie den Kommentar löschen möchten?')) return;
+    const data: ConfirmationDialogComponentData = {
+      title: 'Kommentar löschen',
+      confirmationMessage: 'Sind Sie sicher, dass Sie den Kommentar löschen möchten?',
+    };
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = data;
+    dialogConfig.enterAnimationDuration = 300;
+    dialogConfig.exitAnimationDuration = 300;
 
-    this.workdayAPIService
-      .updateWorkday({
-        department_id: ts.department.id,
-        workplace_id: ts.workplace.id,
-        timeslot_id: ts.timeslot.id,
-        date: ts.date,
-        comment: '',
-        start_time: ts.start_time,
-        end_time: ts.end_time,
-        active: true,
-      })
+    this.dialog
+      .open(ConfirmationDialogComponent, dialogConfig)
+      .afterClosed()
       .pipe(
-        catchError((err) => throwError(() => err)),
-        map((resp) => resp.data),
+        filter((result) => result !== null && result !== undefined && result === true),
+        switchMap(() =>
+          this.workdayAPIService
+            .updateWorkday({
+              department_id: ts.department.id,
+              workplace_id: ts.workplace.id,
+              timeslot_id: ts.timeslot.id,
+              date: ts.date,
+              comment: '',
+              start_time: ts.start_time,
+              end_time: ts.end_time,
+              active: true,
+            })
+            .pipe(
+              catchError((err) => throwError(() => err)),
+              map((resp) => resp.data),
+            ),
+        ),
       )
       .subscribe({
         next: (workday) => {
