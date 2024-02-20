@@ -36,6 +36,8 @@ export class messages {
     ALREADY_EXISTS: 'Es existiert bereits ein Abwesenheitsgrund an diesem Tag',
     CREATED: 'Abwesenheit erfolgreich erstellt',
     DELETED: 'Abwesenheit erfolgreich gelöscht',
+
+    DELETE_CONFIRMATION: 'Sind Sie sicher, dass Sie die Abwesenheit löschen möchten?',
   };
 
   public static PLANNER = {

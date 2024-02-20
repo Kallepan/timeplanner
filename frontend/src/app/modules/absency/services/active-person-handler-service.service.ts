@@ -12,7 +12,7 @@ import CalendarDataSourceElement from 'js-year-calendar/dist/interfaces/Calendar
 import { messages } from '@app/constants/messages';
 import { CreateAbsencyDialogComponent } from '../components/create-absency-dialog/create-absency-dialog.component';
 import { formatDateToDateString } from '../../../shared/functions/format-date-to-string.function';
-import { DeleteAbsencyDialogComponent, DeleteAbsencyDialogComponentData } from '../components/delete-absency-dialog/delete-absency-dialog.component';
+import { ConfirmationDialogComponent, ConfirmationDialogComponentData } from '@app/shared/components/confirmation-dialog/confirmation-dialog.component';
 @Injectable({
   providedIn: null,
 })
@@ -157,9 +157,9 @@ export class ActivePersonHandlerServiceService {
   }
 
   private _removeAbsency(e: CalendarDayEventObject<CalendarDataSourceElement>) {
-    const dialogData: DeleteAbsencyDialogComponentData = {
-      personID: this.activePerson$?.id ?? '',
-      date: e.date,
+    const dialogData: ConfirmationDialogComponentData = {
+      title: this.activePerson$?.id ?? '',
+      confirmationMessage: messages.ABSENCY.DELETE_CONFIRMATION,
     };
 
     const dialogConfig = new MatDialogConfig();
@@ -167,7 +167,7 @@ export class ActivePersonHandlerServiceService {
     dialogConfig.enterAnimationDuration = 300;
     dialogConfig.exitAnimationDuration = 300;
 
-    const dialogRef = this.dialog.open(DeleteAbsencyDialogComponent, dialogConfig);
+    const dialogRef = this.dialog.open(ConfirmationDialogComponent, dialogConfig);
     dialogRef
       .afterClosed()
       .pipe(
