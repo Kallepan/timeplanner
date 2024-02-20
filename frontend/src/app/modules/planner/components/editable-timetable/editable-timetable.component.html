@@ -1,7 +1,17 @@
 <div cdkDropListGroup>
-  @defer (on timer(500ms)) {
-    <app-person-list></app-person-list>
-  }
+  <div class="top-overlay">
+    <app-actions-editable
+      (toggleColors)="timetableDataContainerService.colorize = $event"
+      (toggleTimes)="timetableDataContainerService.displayTimes = $event"
+      [displayColors]="timetableDataContainerService.colorize$"
+      [displayTimes]="timetableDataContainerService.displayTimes$"
+      (shiftWeek)="activeWeekHandlerService.shiftWeek($event)"
+      [departmentId]="activeDepartmentHandlerService.activeDepartment$"
+      (toggleAbsencyPanel)="toggleAbsencyPanel.emit()"></app-actions-editable>
+    @defer (on timer(500ms)) {
+      <app-person-list></app-person-list>
+    }
+  </div>
   <div class="timetable-container">
     <!-- This is the parent container for all cdkDropLists !-->
     <div class="timetable mat-elevation-z8">

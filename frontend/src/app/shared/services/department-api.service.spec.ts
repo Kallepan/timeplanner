@@ -6,7 +6,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { APIResponse } from '@app/core/interfaces/response';
 import { Department, DepartmentWithMetadata } from '../interfaces/department';
 import { constants } from '@app/constants/constants';
-import { AbsenceReponse } from './person-api.service';
+import { AbsenceReponse } from '@app/modules/absency/interfaces/absence';
 
 describe('DepartmentAPIService', () => {
   let service: DepartmentAPIService;

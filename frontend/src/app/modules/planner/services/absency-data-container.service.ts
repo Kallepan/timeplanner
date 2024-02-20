@@ -23,6 +23,11 @@ export class AbsencyDataContainerService {
     return this._loading();
   }
 
+  // only for testing
+  setLoading(loading: boolean) {
+    this._loading.set(loading);
+  }
+
   constructor() {
     effect(
       () => {
@@ -36,7 +41,6 @@ export class AbsencyDataContainerService {
                   map((resp) => resp.data),
                   map((absences) => {
                     if (absences === null || absences === undefined) return [];
-
                     return absences.map((absence) => ({
                       personID: absence.person_id,
                       reason: absence.reason,
@@ -52,10 +56,8 @@ export class AbsencyDataContainerService {
             }),
           )
           .subscribe((absences) => {
-            setTimeout(() => {
-              this._loading.set(false);
-            }, 0);
             this._absencesGroupedByWeekday.set(absences);
+            this._loading.set(false);
           });
       },
       { allowSignalWrites: true },

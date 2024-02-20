@@ -1,16 +1,14 @@
-<div class="actions-container">
-  <app-actions-viewer
-    (toggleColors)="timetableDataContainerService.colorize = $event"
-    (toggleColorsMissing)="timetableDataContainerService.colorizeMissing = $event"
-    (toggleTimeLabel)="timetableDataContainerService.displayTimes = $event"
-    (toggleComments)="timetableDataContainerService.displayComments = $event"
-    [displayComments]="timetableDataContainerService.displayComments$"
-    [displayColorsMissing]="timetableDataContainerService.colorizeMissing$"
-    [displayTimes]="timetableDataContainerService.displayTimes$"
-    [displayColors]="timetableDataContainerService.colorize$"
-    (shiftWeek)="activeWeekHandlerService.shiftWeek($event)"
-    [departmentId]="activeDepartmentHandlerService.activeDepartment$"></app-actions-viewer>
-</div>
+<app-actions-viewer
+  (toggleColors)="timetableDataContainerService.colorize = $event"
+  (toggleColorsMissing)="timetableDataContainerService.colorizeMissing = $event"
+  (toggleTimeLabel)="timetableDataContainerService.displayTimes = $event"
+  (toggleComments)="timetableDataContainerService.displayComments = $event"
+  [displayComments]="timetableDataContainerService.displayComments$"
+  [displayColorsMissing]="timetableDataContainerService.colorizeMissing$"
+  [displayTimes]="timetableDataContainerService.displayTimes$"
+  [displayColors]="timetableDataContainerService.colorize$"
+  (shiftWeek)="activeWeekHandlerService.shiftWeek($event)"
+  [departmentId]="activeDepartmentHandlerService.activeDepartment$"></app-actions-viewer>
 
 <app-view-only-timetable></app-view-only-timetable>
 

@@ -3,10 +3,19 @@
   flex-direction: row;
   align-items: baseline;
   gap: 1rem;
-  margin: 1rem 0;
+  padding: 0.5rem 0;
+  margin: 0 1rem;
   justify-content: space-between;
 }
 
 .spacer {
   flex-grow: 1;
+}
+
+.actions-container {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: var(--bg-color);
+  border-radius: 0.5rem;
 }

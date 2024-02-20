@@ -1,11 +1,12 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AbsenceReponse, PersonAPIService } from './person-api.service';
+import { PersonAPIService } from './person-api.service';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { APIResponse } from '@app/core/interfaces/response';
 import { PersonWithMetadata, CreatePerson } from '../interfaces/person';
 import { constants } from '@app/constants/constants';
+import { AbsenceReponse } from '@app/modules/absency/interfaces/absence';
 
 describe('PersonAPIService', () => {
   let service: PersonAPIService;
