@@ -28,6 +28,7 @@ func TestRouter(t *testing.T) {
 		PersonCtrl:     &mock.PersonControllerMock{},
 		PersonRelCtrl:  &mock.PersonRelControllerMock{},
 		WorkdayCtrl:    &mock.WorkdayControllerMock{},
+		AbsenceCtrl:    &mock.AbsenceControllerMock{},
 	}
 
 	t.Run("Test System Routes", func(t *testing.T) {

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"planner-backend/app/domain/dao"
 	"planner-backend/app/pkg"
 
@@ -14,6 +15,7 @@ type PersonRelRepository interface {
 	AddAbsencyToPerson(person dao.Person, absence dao.Absence) error
 	RemoveAbsencyFromPerson(person dao.Person, absence dao.Absence) error
 	FindAbsencyForPerson(personID string, date string) (dao.Absence, error)
+	FindAbsencyForPersonInRange(personID string, startDate string, endDate string) ([]dao.Absence, error)
 
 	AddDepartmentToPerson(person dao.Person, departmentID string) error
 	RemoveDepartmentFromPerson(person dao.Person, departmentID string) error
@@ -138,6 +140,58 @@ func (p PersonRelRepositoryImpl) FindAbsencyForPerson(personID string, date stri
 	}
 
 	return absence, nil
+}
+
+func (p PersonRelRepositoryImpl) FindAbsencyForPersonInRange(personID string, startDate string, endDate string) ([]dao.Absence, error) {
+	/* Finds an absency for a person in a range of dates
+	   @param person: The person to find the absency for
+	   @param startDate: The start date of the range
+	   @param endDate: The end date of the range
+	*/
+
+	query := `
+	MATCH (p: Person {id: $personID}) -[r:ABSENT_ON]-> (d: Date)
+	WHERE d.date >= date($startDate) AND d.date <= date($endDate)
+	RETURN r, d.date`
+	params := map[string]interface{}{
+		"personID":  personID,
+		"startDate": startDate,
+		"endDate":   endDate,
+	}
+
+	result, err := neo4j.ExecuteQuery(
+		p.ctx,
+		*p.db,
+		query,
+		params,
+		neo4j.EagerResultTransformer,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(result.Records) == 0 {
+		return nil, pkg.ErrNoRows
+	}
+
+	absences := make([]dao.Absence, 0)
+	for _, record := range result.Records {
+		// parse date
+		dbDate, ok := record.Values[1].(neo4j.Date)
+		if !ok {
+			return nil, errors.New("could not parse date")
+		}
+		date := dbDate.Time().Format("2006-01-02")
+
+		absence := dao.Absence{}
+		if err := absence.ParseFromDBRecord(record, date, personID); err != nil {
+			return nil, err
+		}
+
+		absences = append(absences, absence)
+	}
+
+	return absences, nil
 }
 
 func (p PersonRelRepositoryImpl) AddDepartmentToPerson(person dao.Person, departmentID string) error {

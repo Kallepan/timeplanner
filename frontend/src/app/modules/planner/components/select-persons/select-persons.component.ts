@@ -32,19 +32,20 @@ export class SelectPersonsComponent {
     debounceTime(150),
     filter((value) => typeof value === 'string'),
     map((value) => this._filter(value!)),
-    map((persons) => persons.filter((person) => person.weekdays?.map((wd) => wd.id).includes(this.weekday))),
+    // Filter out the persons that are normally not available on the selected weekday
+    // I disabled this for now, because this feature is not wished by the users
+    // map((persons) => persons.filter((person) => person.weekdays?.map((wd) => wd.id).includes(this.weekday))),
   );
 
-  // TODO set the formContorl
   @Input() initiallySelectedPersonFromParent: PersonWithMetadata[] = [];
   @Input() weekday: string;
 
-  displayFn(person: PersonWithMetadata): string {
+  displayFn(person: PersonWithMetadata | null): string {
     return person ? `${person.last_name} (${person.id})` : '';
   }
 
-  private _filter(name: string): PersonWithMetadata[] {
-    const filterValue = name.toLowerCase();
+  private _filter(value: string): PersonWithMetadata[] {
+    const filterValue = value.toLowerCase();
 
     return this.personDataContainerService.persons$.filter((person) => {
       const toBeFiltered = `${person.first_name}${person.last_name}${person.id}`;

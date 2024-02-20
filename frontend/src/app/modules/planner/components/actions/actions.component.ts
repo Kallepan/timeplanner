@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-actions-editable',
   standalone: true,
-  imports: [MatSlideToggleModule, MatButtonModule],
+  imports: [MatSlideToggleModule, MatButtonModule, RouterLink],
   templateUrl: './actions.component.html',
   styleUrl: './actions.component.scss',
 })
@@ -17,4 +18,8 @@ export class ActionsComponent {
   @Input() displayColors = true;
 
   @Output() shiftWeek = new EventEmitter<number>();
+
+  @Input() departmentId: string;
+
+  @Output() toggleAbsencyPanel = new EventEmitter<void>();
 }

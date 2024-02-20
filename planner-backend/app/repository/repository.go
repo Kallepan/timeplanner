@@ -19,6 +19,7 @@ var RepositorySet = wire.NewSet(
 	personRelRepositorySet,
 	synchronizeRepositorySet,
 	workdayRepositorySet,
+	absenceRepositorySet,
 )
 
 func TimeDateToWeekdayID(t time.Time) string {

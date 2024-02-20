@@ -5,7 +5,7 @@ import { ActiveDepartmentHandlerService } from './active-department-handler.serv
 import { PersonAPIService } from './person-api.service';
 import { PersonDataContainerService } from './person-data-container.service';
 import { ActivatedRoute } from '@angular/router';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 describe('PersonDataContainerService', () => {
   let mockPersonAPIService: jasmine.SpyObj<PersonAPIService>;
@@ -44,10 +44,14 @@ describe('PersonDataContainerService', () => {
   });
 });
 
+// Crate a mock component and subscribe to the persons$ signal
 @Component({
-  template: '',
+  template: `{{ persons$ }}`,
 })
-class PersonDataContainerServiceTestComponent {}
+class PersonDataContainerServiceTestComponent {
+  private personDataContainerService = inject(PersonDataContainerService);
+  persons$ = this.personDataContainerService.persons$;
+}
 
 describe('PersonDataContainerServiceTestComponent', () => {
   let fixture: ComponentFixture<PersonDataContainerServiceTestComponent>;
@@ -62,10 +66,11 @@ describe('PersonDataContainerServiceTestComponent', () => {
     mockActivatedRoute = jasmine.createSpyObj('ActivatedRoute', [], {
       snapshot: {
         queryParams: {
-          department: 'test',
+          department: 'test2',
         },
       },
     });
+    mockPersonAPIService.getPersons.and.returnValue(of({ data: [], message: 'test2', status: 200 }));
 
     await TestBed.configureTestingModule({
       declarations: [PersonDataContainerServiceTestComponent],
@@ -79,6 +84,7 @@ describe('PersonDataContainerServiceTestComponent', () => {
   });
 
   it('should update persons when active department changes', () => {
+    expect(personDataContainerService.persons$).toEqual([]);
     const department = 'test';
     const persons = [
       {
@@ -102,6 +108,7 @@ describe('PersonDataContainerServiceTestComponent', () => {
 
     fixture.detectChanges();
 
+    expect(mockPersonAPIService.getPersons).toHaveBeenCalledWith(department);
     expect(personDataContainerService.persons$).toEqual(persons);
   });
 });

@@ -116,13 +116,23 @@ func (a AuthServiceImpl) Me(c *gin.Context) {
 		pkg.PanicException(constant.UnknownError)
 	}
 
+	if data.IsAdmin {
+		c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, mapUserToAuthResponse(data)))
+		return
+	}
 	// if departmentQuery parameter is not "", check if user belongs to the department
 	departmentQuery := c.Query("department")
-	if departmentQuery != "" && departmentQuery != data.Department.Name && !data.IsAdmin {
-		pkg.PanicException(constant.Unauthorized)
+	if departmentQuery == "" {
+		c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, mapUserToAuthResponse(data)))
+		return
 	}
 
-	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, mapUserToAuthResponse(data)))
+	if departmentQuery == data.Department.Name {
+		c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, mapUserToAuthResponse(data)))
+		return
+	}
+
+	pkg.PanicException(constant.Unauthorized)
 }
 
 func (a AuthServiceImpl) Logout(c *gin.Context) {

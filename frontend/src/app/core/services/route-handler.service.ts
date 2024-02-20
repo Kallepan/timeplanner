@@ -14,8 +14,13 @@ export class RouteHandlerService {
   routeConfigurations = signal<RouteConfiguration[]>([
     {
       path: '/viewer',
-      title: 'MIBI',
-      id: 'BAK',
+      title: 'MIBI - Planung',
+      id: 'bak',
+    },
+    {
+      path: '/absency',
+      title: 'MIBI - Abwesenheit',
+      id: 'bak',
     },
   ]);
 }

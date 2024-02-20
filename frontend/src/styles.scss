@@ -221,14 +221,14 @@ body {
 
 // Snackbar
 .warn-snackbar {
-  --mdc-snackbar-container-color: #812121;
+  --mdc-snackbar-container-color: var(--warn-color);
   --mdc-snackbar-supporting-text-color: white;
   --mat-mdc-snack-bar-button-color: white;
 }
 .info-snackbar {
-  --mdc-snackbar-container-color: #313131;
-  --mdc-snackbar-supporting-text-color: white;
-  --mat-mdc-snack-bar-button-color: white;
+  --mdc-snackbar-container-color: var(--text-color);
+  --mdc-snackbar-supporting-text-color: var(--bg-color);
+  --mat-mdc-snack-bar-button-color: var(--bg-color);
 }
 
 #overlay {

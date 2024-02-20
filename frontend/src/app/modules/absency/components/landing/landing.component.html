@@ -1,0 +1,8 @@
+<div class="container">
+  <app-person-autocomplete (personSelected)="activePersonHandlerService.activePerson = $event"></app-person-autocomplete>
+
+  @if (activePersonHandlerService.activePerson$; as person) {
+    <app-person-preview [persons]="[person]" [largeText]="true"></app-person-preview>
+    <app-year-calendar></app-year-calendar>
+  }
+</div>

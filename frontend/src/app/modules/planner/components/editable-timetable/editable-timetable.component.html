@@ -1,74 +1,86 @@
-@defer (on timer(500ms)) {
-  <app-person-list></app-person-list>
-}
-<div class="timetable-container" cdkDropListGroup>
-  <!-- This is the parent container for all cdkDropLists !-->
-  <div class="timetable mat-elevation-z8">
-    <!-- Add static headers -->
-    <div class="header cell">Arbeitsplatz</div>
-    <div class="header cell">Slot</div>
-
-    <!-- Add headers from weekdays array-->
-    @for (data of activeWeekHandlerService.activeWeek$; track $index) {
-      <div class="header cell">{{ data.date | date: 'dd.MM.yyyy' }} ({{ data.shortName | titlecase }})</div>
+<div cdkDropListGroup>
+  <div class="top-overlay">
+    <app-actions-editable
+      (toggleColors)="timetableDataContainerService.colorize = $event"
+      (toggleTimes)="timetableDataContainerService.displayTimes = $event"
+      [displayColors]="timetableDataContainerService.colorize$"
+      [displayTimes]="timetableDataContainerService.displayTimes$"
+      (shiftWeek)="activeWeekHandlerService.shiftWeek($event)"
+      [departmentId]="activeDepartmentHandlerService.activeDepartment$"
+      (toggleAbsencyPanel)="toggleAbsencyPanel.emit()"></app-actions-editable>
+    @defer (on timer(500ms)) {
+      <app-person-list></app-person-list>
     }
+  </div>
+  <div class="timetable-container">
+    <!-- This is the parent container for all cdkDropLists !-->
+    <div class="timetable mat-elevation-z8">
+      <!-- Add static headers -->
+      <div class="header cell">Arbeitsplatz</div>
+      <div class="header cell">Slot</div>
 
-    @for (workplace of timetableDataContainerService.workplaces$; track $index) {
-      <div
-        class="cell header"
-        [ngStyle]="{
-          'grid-row-start': workplace.gridRowStart,
-          'grid-row-end': workplace.gridRowEnd,
-          'grid-column': 1
-        }">
-        {{ workplace.workplace.name }}
-      </div>
+      <!-- Add headers from weekdays array-->
+      @for (data of activeWeekHandlerService.activeWeek$; track $index) {
+        <div class="header cell">{{ data.date | date: 'dd.MM.yyyy' }} ({{ data.shortName | titlecase }})</div>
+      }
 
-      <!-- Now display the slots by using the respective gridRow !-->
-      @for (slot of workplace.timeslotGroups; track slot) {
+      @for (workplace of timetableDataContainerService.workplaces$; track $index) {
         <div
-          class="cell header slot-header"
+          class="cell header"
           [ngStyle]="{
-            'grid-row': slot.gridRow,
-            'grid-column': 2
-          }"
-          cdkDropList
-          (cdkDropListDropped)="personDroppedIntoTimeslotHandler($event.item.data, getSlotsFromMonToFri(slot.workdayTimeslots))">
-          {{ slot.name }}
-          <button mat-mini-fab color="primary" (click)="plannerStateHandlerService.handleCommentEditRequestForManySlots(slot.workdayTimeslots)"><mat-icon>edit</mat-icon></button>
+            'grid-row-start': workplace.gridRowStart,
+            'grid-row-end': workplace.gridRowEnd,
+            'grid-column': 1
+          }">
+          {{ workplace.workplace.name }}
         </div>
 
-        <!-- Now display the timeslots by using their respective gridRow and gridColumn !-->
-        @for (ts of slot.workdayTimeslots; track ts) {
+        <!-- Now display the slots by using the respective gridRow !-->
+        @for (slot of workplace.timeslotGroups; track slot) {
           <div
-            class="cell content"
-            [ngClass]="{
-              'not-occupied': !ts.persons.length
-            }"
+            class="cell header slot-header"
             [ngStyle]="{
               'grid-row': slot.gridRow,
-              'grid-column': ts.gridColumn,
-              'background-color': timetableDataContainerService.colorize$ ? (themeHandlerService.isDark$ ? ts.colorForDarkMode : ts.colorForLightMode) : null
-            }">
-            @defer (on viewport) {
-              <app-select-persons
-                [persons]="ts.persons"
-                [weekday]="ts.weekday"
-                [comment]="ts.comment"
-                (personAssignedToTimeslot)="personAssignedToTimeslotEventHandler($event.p, ts)"
-                (personUnassignedFromTimeslot)="personUnassignedFromTimeslotEventHandler($event.p, ts)"
-                (commentEditRequest)="plannerStateHandlerService.handleCommentEditRequest(ts)"
-                (commentDeleteRequest)="plannerStateHandlerService.handleCommentDeleteRequest(ts)"></app-select-persons>
-            } @placeholder {
-              <!-- This is just a cheap placeholder to make push the content down !-->
-              <app-person-preview [persons]="ts.persons"></app-person-preview>
-            }
-            @if (timetableDataContainerService.displayTimes$ && ts.validTime) {
-              {{ ts.start_time }} - {{ ts.end_time }} ({{ ts.duration_in_minutes / 60 }})
-            }
+              'grid-column': 2
+            }"
+            cdkDropList
+            (cdkDropListDropped)="personDroppedIntoTimeslotHandler($event.item.data, getSlotsFromMonToFri(slot.workdayTimeslots))">
+            {{ slot.name }}
+            <button mat-mini-fab color="primary" (click)="plannerStateHandlerService.handleCommentEditRequestForManySlots(slot.workdayTimeslots)"><mat-icon>edit</mat-icon></button>
           </div>
+
+          <!-- Now display the timeslots by using their respective gridRow and gridColumn !-->
+          @for (ts of slot.workdayTimeslots; track ts) {
+            <div
+              class="cell content"
+              [ngClass]="{
+                'not-occupied': !ts.persons.length
+              }"
+              [ngStyle]="{
+                'grid-row': slot.gridRow,
+                'grid-column': ts.gridColumn,
+                'background-color': timetableDataContainerService.colorize$ ? (themeHandlerService.isDark$ ? ts.colorForDarkMode : ts.colorForLightMode) : null
+              }">
+              @defer (on viewport) {
+                <app-select-persons
+                  [persons]="ts.persons"
+                  [weekday]="ts.weekday"
+                  [comment]="ts.comment"
+                  (personAssignedToTimeslot)="personAssignedToTimeslotEventHandler($event.p, ts)"
+                  (personUnassignedFromTimeslot)="personUnassignedFromTimeslotEventHandler($event.p, ts)"
+                  (commentEditRequest)="plannerStateHandlerService.handleCommentEditRequest(ts)"
+                  (commentDeleteRequest)="plannerStateHandlerService.handleCommentDeleteRequest(ts)"></app-select-persons>
+              } @placeholder {
+                <!-- This is just a cheap placeholder to make push the content down !-->
+                <app-person-preview [persons]="ts.persons"></app-person-preview>
+              }
+              @if (timetableDataContainerService.displayTimes$ && ts.validTime) {
+                {{ ts.start_time }} - {{ ts.end_time }} ({{ ts.duration_in_minutes / 60 }})
+              }
+            </div>
+          }
         }
       }
-    }
+    </div>
   </div>
 </div>

@@ -1,0 +1,7 @@
+@if (tooltipVisible) {
+  <app-custom-tooltip [text]="tooltipText" [mouseX]="mouseTrackerX" [mouseY]="mouseTrackerY"></app-custom-tooltip>
+}
+
+<div class="container" (mousemove)="mouseTrackerX = $event.clientX; mouseTrackerY = $event.clientY">
+  <div #calendar id="calendar"></div>
+</div>

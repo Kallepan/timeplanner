@@ -12,12 +12,29 @@ import { APIResponse } from '@app/core/interfaces/response';
 import { Observable } from 'rxjs';
 import { DepartmentWithMetadata, Department } from '../interfaces/department';
 import { constants } from '@app/constants/constants';
+import { AbsenceReponse } from '@app/modules/absency/interfaces/absence';
 
 @Injectable({
-  providedIn: null,
+  providedIn: 'root',
 })
 export class DepartmentAPIService {
   private http = inject(HttpClient);
+
+  getAbsencesForDepartment(departmentName: string, date: string): Observable<APIResponse<AbsenceReponse[]>> {
+    const url = `${constants.APIS.PLANNER}/department/${departmentName}/absency`;
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      withCredentials: true,
+      params: {
+        date,
+      },
+    };
+
+    return this.http.get<APIResponse<AbsenceReponse[]>>(url, httpOptions);
+  }
 
   getDepartments(): Observable<APIResponse<DepartmentWithMetadata[]>> {
     const url = `${constants.APIS.PLANNER}/department`;
@@ -29,15 +46,10 @@ export class DepartmentAPIService {
       withCredentials: true,
     };
 
-    return this.http.get<APIResponse<DepartmentWithMetadata[]>>(
-      url,
-      httpOptions,
-    );
+    return this.http.get<APIResponse<DepartmentWithMetadata[]>>(url, httpOptions);
   }
 
-  getDepartment(
-    departmentName: string,
-  ): Observable<APIResponse<DepartmentWithMetadata>> {
+  getDepartment(departmentName: string): Observable<APIResponse<DepartmentWithMetadata>> {
     const url = `${constants.APIS.PLANNER}/department/${departmentName}`;
 
     const httpOptions = {
@@ -50,9 +62,7 @@ export class DepartmentAPIService {
     return this.http.get<APIResponse<DepartmentWithMetadata>>(url, httpOptions);
   }
 
-  createDepartment(
-    department: Department,
-  ): Observable<APIResponse<DepartmentWithMetadata>> {
+  createDepartment(department: Department): Observable<APIResponse<DepartmentWithMetadata>> {
     const url = `${constants.APIS.PLANNER}/department`;
 
     const httpOptions = {
@@ -62,11 +72,7 @@ export class DepartmentAPIService {
       withCredentials: true,
     };
 
-    return this.http.post<APIResponse<DepartmentWithMetadata>>(
-      url,
-      department,
-      httpOptions,
-    );
+    return this.http.post<APIResponse<DepartmentWithMetadata>>(url, department, httpOptions);
   }
 
   deleteDepartment(departmentName: string): Observable<APIResponse<null>> {

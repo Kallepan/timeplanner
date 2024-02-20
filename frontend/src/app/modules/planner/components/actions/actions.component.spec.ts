@@ -5,15 +5,27 @@ import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatSlideToggleHarness } from '@angular/material/slide-toggle/testing';
 import { ActionsComponent } from './actions.component';
+import { ActivatedRoute } from '@angular/router';
 
 describe('ActionsComponent', () => {
   let component: ActionsComponent;
   let fixture: ComponentFixture<ActionsComponent>;
   let loader: HarnessLoader;
+  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
 
   beforeEach(async () => {
+    mockActivatedRoute = jasmine.createSpyObj('ActivatedRoute', [''], {
+      snapshot: {
+        data: {
+          title: 'Test',
+          departmentId: 'departmentId',
+        },
+      },
+    });
+
     await TestBed.configureTestingModule({
       imports: [ActionsComponent, MatSlideToggleModule],
+      providers: [{ provide: ActivatedRoute, useValue: mockActivatedRoute }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(ActionsComponent);
@@ -74,5 +86,27 @@ describe('ActionsComponent', () => {
     button.click();
 
     expect(component.shiftWeek.emit).toHaveBeenCalledWith(-1);
+  });
+
+  it('should route to department', async () => {
+    const editRouteButton = fixture.nativeElement.querySelector('#edit-route-button');
+    expect(editRouteButton).toBeTruthy();
+    expect(editRouteButton.textContent).toContain('Standardansicht');
+
+    editRouteButton.click();
+    fixture.detectChanges();
+    fixture.whenStable().then(() => {
+      expect(location.pathname).toContain('planner');
+      expect(location.pathname).toContain('departmentId');
+    });
+  });
+
+  it('should emit toggleAbsencyPanel', async () => {
+    spyOn(component.toggleAbsencyPanel, 'emit');
+    const button = fixture.nativeElement.querySelector('#toggle-absency-panel-button');
+
+    button.click();
+
+    expect(component.toggleAbsencyPanel.emit).toHaveBeenCalled();
   });
 });

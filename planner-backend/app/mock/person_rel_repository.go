@@ -41,6 +41,13 @@ func (r *PersonRelRepositoryMock) FindAbsencyForPerson(personID string, date str
 	return r.dataContainer["FindAbsencyForPerson"].(dao.Absence), r.errorContainer["FindAbsencyForPerson"]
 }
 
+func (r *PersonRelRepositoryMock) FindAbsencyForPersonInRange(personID string, startDate string, endDate string) ([]dao.Absence, error) {
+	if r.dataContainer["FindAbsencyForPersonInRange"] == nil {
+		return nil, r.errorContainer["FindAbsencyForPersonInRange"]
+	}
+	return r.dataContainer["FindAbsencyForPersonInRange"].([]dao.Absence), r.errorContainer["FindAbsencyForPersonInRange"]
+}
+
 func (r *PersonRelRepositoryMock) AddDepartmentToPerson(person dao.Person, departmentID string) error {
 	return r.errorContainer["AddDepartmentToPerson"]
 }

@@ -8,6 +8,7 @@ import (
 	"planner-backend/app/domain/dco"
 	"planner-backend/app/pkg"
 	"planner-backend/app/repository"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
@@ -18,6 +19,7 @@ type PersonRelService interface {
 	AddAbsencyToPerson(c *gin.Context)
 	RemoveAbsencyFromPerson(c *gin.Context)
 	FindAbsencyForPerson(c *gin.Context)
+	FindAbsencyForPersonInRange(c *gin.Context)
 
 	AddDepartmentToPerson(c *gin.Context)
 	RemoveDepartmentFromPerson(c *gin.Context)
@@ -94,6 +96,10 @@ func (p PersonRelServiceImpl) RemoveAbsencyFromPerson(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
+	if _, err := time.Parse("2006-01-02", date); err != nil {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+
 	person, err := p.PersonRepository.FindPersonByID(personID)
 	switch err {
 	case nil:
@@ -137,8 +143,12 @@ func (p PersonRelServiceImpl) FindAbsencyForPerson(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	date := c.Param("date")
+	date := c.Query("date")
 	if date == "" {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+
+	if _, err := time.Parse("2006-01-02", date); err != nil {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
@@ -158,6 +168,67 @@ func (p PersonRelServiceImpl) FindAbsencyForPerson(c *gin.Context) {
 	data := mapAbsenceToAbsenceResponse(rawData)
 
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
+}
+
+func (p PersonRelServiceImpl) FindAbsencyForPersonInRange(c *gin.Context) {
+	/* FindAbsencyForPersonInRange is a function to find a given absencies by person in a range
+	 * @param c is gin context
+	 * @return void
+	 */
+
+	defer pkg.PanicHandler(c)
+	slog.Info("start to execute program find all absencies by person in range")
+
+	personID := c.Param("personID")
+	if personID == "" {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+
+	startDate := c.Query("start_date")
+	if startDate == "" {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+	_, err := time.Parse("2006-01-02", startDate)
+	if err != nil {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+
+	endDate := c.Query("end_date")
+	if endDate == "" {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+	_, err = time.Parse("2006-01-02", endDate)
+	if err != nil {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+
+	rawData, err := p.PersonRelRepository.FindAbsencyForPersonInRange(personID, startDate, endDate)
+	switch err {
+	case nil:
+		break
+	case pkg.ErrNoRows:
+		// This is not an error, just return empty data
+		c.JSON(http.StatusOK, pkg.BuildResponse(constant.DataNotFound, pkg.Null()))
+		return
+	default:
+		slog.Error("Error when fetching data from database", "error", err)
+		pkg.PanicException(constant.UnknownError)
+	}
+
+	data := mapAbsenciesToAbsenciesResponse(rawData)
+
+	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
+}
+
+func mapAbsenciesToAbsenciesResponse(absences []dao.Absence) []dco.AbsenceResponse {
+	/** Maps absences to absence: Simple wrapper to mapAbsenceToAbsenceResponse */
+
+	var result []dco.AbsenceResponse
+	for _, absence := range absences {
+		result = append(result, mapAbsenceToAbsenceResponse(absence))
+	}
+
+	return result
 }
 
 func mapAbsenceToAbsenceResponse(absence dao.Absence) dco.AbsenceResponse {

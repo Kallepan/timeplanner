@@ -23,12 +23,6 @@ func PanicException(responseKey constant.ResponseStatus) {
 	PanicException_(responseKey.GetResponseStatus(), responseKey.GetResponseMessage())
 }
 
-func NewException(responseKey constant.ResponseStatus) error {
-	err := errors.New(responseKey.GetResponseMessage())
-	err = fmt.Errorf("%s: %w", responseKey.GetResponseStatus(), err)
-	return err
-}
-
 func PanicHandler(ctx *gin.Context) {
 	if err := recover(); err != nil {
 		// get error message

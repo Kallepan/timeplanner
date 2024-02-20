@@ -1,4 +1,5 @@
-import { Injectable, inject } from '@angular/core';
+import { DestroyRef, Injectable, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatSnackBar, MatSnackBarHorizontalPosition, MatSnackBarVerticalPosition } from '@angular/material/snack-bar';
 import { Subject, concatMap, map, of } from 'rxjs';
 
@@ -21,6 +22,8 @@ export class NotificationService {
   private _snackBar = inject(MatSnackBar);
   private _message = new Subject<Message>();
 
+  private destroyRef$ = inject(DestroyRef);
+
   infoMessage(message: string) {
     this._message.next({ message, type: 'info' });
   }
@@ -38,13 +41,18 @@ export class NotificationService {
     return of(message);
   }
   constructor() {
-    this._message.pipe(concatMap((message) => this._getSnackBarDelay(message))).subscribe((res) => {
-      this._snackBar.open(res.message, 'Dismiss', {
-        duration: 2500,
-        horizontalPosition: this._horizontalPosition,
-        verticalPosition: this._verticalPosition,
-        panelClass: `${res.type}-snackbar`,
+    this._message
+      .pipe(
+        concatMap((message) => this._getSnackBarDelay(message)),
+        takeUntilDestroyed(this.destroyRef$),
+      )
+      .subscribe((res) => {
+        this._snackBar.open(res.message, 'Dismiss', {
+          duration: 2500,
+          horizontalPosition: this._horizontalPosition,
+          verticalPosition: this._verticalPosition,
+          panelClass: `${res.type}-snackbar`,
+        });
       });
-    }); // This is technically a memory leak, but it's a singleton service so it's fine
   }
 }

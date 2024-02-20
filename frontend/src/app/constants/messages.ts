@@ -32,6 +32,14 @@ export class messages {
     },
   };
 
+  public static ABSENCY = {
+    ALREADY_EXISTS: 'Es existiert bereits ein Abwesenheitsgrund an diesem Tag',
+    CREATED: 'Abwesenheit erfolgreich erstellt',
+    DELETED: 'Abwesenheit erfolgreich gelöscht',
+
+    DELETE_CONFIRMATION: 'Sind Sie sicher, dass Sie die Abwesenheit löschen möchten?',
+  };
+
   public static PLANNER = {
     TIMESLOT_ASSIGNMENT: {
       PERSON_ALREADY_ASSIGNED: 'Person ist bereits an einem anderen Zeitpunkt zugewiesen',

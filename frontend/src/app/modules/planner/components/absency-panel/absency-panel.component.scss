@@ -1,0 +1,25 @@
+.container {
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+
+  // vars
+  --gap: 1rem;
+  --line-offset: calc(var(--gap) / 2);
+  --line-thickness: 1px;
+
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-auto-flow: column;
+  justify-items: center;
+  align-items: start;
+
+  .label {
+    grid-row: 1;
+    font-weight: bold;
+  }
+
+  .cell {
+    text-align: center;
+    padding: 0.5rem;
+  }
+}

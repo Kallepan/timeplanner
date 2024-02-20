@@ -1,0 +1,14 @@
+@defer (when !absencyDataContainer.loading$) {
+  <div class="container">
+    @for (data of absencyDataContainer.absencesGroupedByWeekday$; track data) {
+      <span class="cell label">{{ data.weekday.date | date: 'dd.MM.yyyy' }} ({{ data.weekday.shortName }})</span>
+      @for (absence of data.absences; track $index) {
+        <span class="cell content" [ngStyle]="{ 'grid-row': 2 + $index }">{{ $index + 1 }}. {{ absence.personID }} - {{ absence.reason }}</span>
+      } @empty {
+        <span class="cell content" [ngStyle]="{ 'grid-row': 2 }">-</span>
+      }
+    }
+  </div>
+} @placeholder {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}
