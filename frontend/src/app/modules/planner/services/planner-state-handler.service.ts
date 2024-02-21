@@ -62,7 +62,7 @@ export class PlannerStateHandlerService {
         tap((isAssigned) => {
           if (isAssigned) throw new Error(messages.PLANNER.TIMESLOT_ASSIGNMENT.PERSON_ALREADY_ASSIGNED);
         }),
-        // check if person is present on the day
+        // check if person is usually present on the day
         map(() => {
           return (person.weekdays ?? []).map((wd) => wd.id).includes(workdayTimeslot.weekday);
         }),

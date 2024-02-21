@@ -10,6 +10,8 @@ import { WorkdayTimeslot } from '@app/shared/interfaces/workday_timeslot';
 import { formatDateToDateString } from '@app/shared/functions/format-date-to-string.function';
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { map, of } from 'rxjs';
+import { AbsenceReponse } from '@app/modules/absency/interfaces/absence';
+import { APIResponse } from '@app/core/interfaces/response';
 
 const mockWorkdayTimeslot: WorkdayTimeslot = {
   department: {
@@ -68,7 +70,7 @@ describe('PlannerStateHandlerService', () => {
     mockDialog = jasmine.createSpyObj('MatDialog', ['open']);
     mockNotificationService = jasmine.createSpyObj('NotificationService', ['infoMessage', 'warnMessage']);
     mockPersonAPIService = jasmine.createSpyObj('PersonAPIService', ['getAbsencyForPerson']);
-    mockWorkdayAPIService = jasmine.createSpyObj('WorkdayAPIService', ['getWorkdays', 'updateWorkday', 'unassignPerson']);
+    mockWorkdayAPIService = jasmine.createSpyObj('WorkdayAPIService', ['getWorkdays', 'updateWorkday', 'unassignPerson', 'assignPerson']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -86,8 +88,233 @@ describe('PlannerStateHandlerService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should assign the person to the timeslot using assignPersonToTimeslot', () => {
-    expect(false).toBeTrue();
+  const tests: {
+    name: string;
+    person: PersonWithMetadata;
+    workdayTimeslot: DisplayedWorkdayTimeslot;
+    mockPersonAPIServiceResponse: APIResponse<AbsenceReponse | null>;
+    mockWorkdayAPIServiceResponse: APIResponse<WorkdayTimeslot[]>;
+    mockAssignPersonResponse: APIResponse<null>;
+    mockDialogReturnValue: {
+      afterClosed: () => void;
+    };
+
+    shouldCallDialogTimes?: number; // TODO
+    shouldOpenConfirmDialog?: boolean;
+    shouldAssignPerson?: boolean;
+    shouldFetchAbsency?: boolean;
+  }[] = [
+    {
+      name: 'should not assign person if it (gender neutral :D) is already assigned on another timeslot',
+      person: {
+        id: 'test',
+        workplaces: [{ id: 'test' }],
+        weekdays: [{ id: new Date().toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase() }],
+      } as PersonWithMetadata,
+      workdayTimeslot: { ...mockWorkdayTimeslot, gridColumn: 1, colorForLightMode: 'red', colorForDarkMode: 'blue', validTime: true },
+      mockPersonAPIServiceResponse: {
+        data: null,
+        message: 'test',
+        status: 200,
+      },
+      mockWorkdayAPIServiceResponse: {
+        data: [mockWorkdayTimeslot, { ...mockWorkdayTimeslot, persons: [{ id: 'test' } as PersonWithMetadata] }],
+        message: 'test',
+        status: 200,
+      },
+      mockAssignPersonResponse: {
+        message: 'ok',
+        data: null,
+        status: 200,
+      },
+      mockDialogReturnValue: {
+        afterClosed: () => {
+          return of(true);
+        },
+      },
+      shouldOpenConfirmDialog: false,
+      shouldAssignPerson: false,
+      shouldFetchAbsency: true,
+    },
+    {
+      name: 'should assign the person to the timeslot if the person is not absent, the timeslot is empty, and the person is usually present on the day',
+      person: {
+        id: 'test',
+        workplaces: [{ id: 'test' }],
+        weekdays: [{ id: new Date().toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase() }],
+      } as PersonWithMetadata,
+      workdayTimeslot: { ...mockWorkdayTimeslot, gridColumn: 1, colorForLightMode: 'red', colorForDarkMode: 'blue', validTime: true },
+      mockPersonAPIServiceResponse: {
+        data: null,
+        message: 'test',
+        status: 200,
+      },
+      mockWorkdayAPIServiceResponse: {
+        data: [mockWorkdayTimeslot],
+        message: 'test',
+        status: 200,
+      },
+      mockAssignPersonResponse: {
+        message: 'ok',
+        data: null,
+        status: 200,
+      },
+      mockDialogReturnValue: {
+        afterClosed: () => {
+          return of(true);
+        },
+      },
+      shouldOpenConfirmDialog: false,
+      shouldAssignPerson: true,
+      shouldFetchAbsency: true,
+    },
+    {
+      name: 'should not assign the person to the timeslot if the person is absent',
+      person: {
+        id: 'test',
+        workplaces: [{ id: 'test' }],
+        weekdays: [{ id: new Date().toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase() }],
+      } as PersonWithMetadata,
+      workdayTimeslot: { ...mockWorkdayTimeslot, gridColumn: 1, colorForLightMode: 'red', colorForDarkMode: 'blue', validTime: true },
+      mockPersonAPIServiceResponse: {
+        data: {
+          person_id: 'test',
+          reason: 'test',
+          date: formatDateToDateString(new Date()),
+          created_at: new Date(),
+        },
+        message: 'test',
+        status: 200,
+      },
+      mockWorkdayAPIServiceResponse: {
+        data: [mockWorkdayTimeslot],
+        message: 'test',
+        status: 200,
+      },
+      mockAssignPersonResponse: {
+        message: 'ok',
+        data: null,
+        status: 400,
+      },
+      mockDialogReturnValue: {
+        afterClosed: () => {
+          return of(true);
+        },
+      },
+      shouldOpenConfirmDialog: false,
+      shouldAssignPerson: false,
+      shouldFetchAbsency: true,
+    },
+    {
+      name: 'should open confirmation dialog if person is not usually present on the day and assign person on confirmation',
+      person: {
+        id: 'test',
+        workplaces: [{ id: 'test' }],
+        weekdays: [],
+      } as unknown as PersonWithMetadata,
+      workdayTimeslot: { ...mockWorkdayTimeslot, gridColumn: 1, colorForLightMode: 'red', colorForDarkMode: 'blue', validTime: true },
+      mockPersonAPIServiceResponse: {
+        data: null,
+        message: 'test',
+        status: 200,
+      },
+      mockWorkdayAPIServiceResponse: {
+        data: [mockWorkdayTimeslot],
+        message: 'test',
+        status: 200,
+      },
+      mockAssignPersonResponse: {
+        message: 'ok',
+        data: null,
+        status: 200,
+      },
+      mockDialogReturnValue: {
+        afterClosed: () => {
+          return of(true);
+        },
+      },
+      shouldOpenConfirmDialog: true,
+      shouldAssignPerson: true,
+      shouldFetchAbsency: true,
+    },
+    {
+      name: 'should open confirmation dialog if person is not usually present on the day and not assign person on confirmation',
+      person: {
+        id: 'test',
+        workplaces: [{ id: 'test' }],
+        weekdays: [],
+      } as unknown as PersonWithMetadata,
+      workdayTimeslot: { ...mockWorkdayTimeslot, gridColumn: 1, colorForLightMode: 'red', colorForDarkMode: 'blue', validTime: true },
+      mockPersonAPIServiceResponse: {
+        data: null,
+        message: 'test',
+        status: 200,
+      },
+      mockWorkdayAPIServiceResponse: {
+        data: [mockWorkdayTimeslot],
+        message: 'test',
+        status: 200,
+      },
+      mockAssignPersonResponse: {
+        message: 'ok',
+        data: null,
+        status: 200,
+      },
+      mockDialogReturnValue: {
+        afterClosed: () => {
+          return of(false);
+        },
+      },
+      shouldOpenConfirmDialog: true,
+      shouldAssignPerson: false,
+      shouldFetchAbsency: true,
+    },
+  ];
+  tests.forEach((t) => {
+    it(t.name, () => {
+      // reset the mocks
+      mockPersonAPIService.getAbsencyForPerson.calls.reset();
+      mockWorkdayAPIService.assignPerson.calls.reset();
+      mockDialog.open.calls.reset();
+
+      // setup the mocks
+      mockPersonAPIService.getAbsencyForPerson.and.returnValue(of(t.mockPersonAPIServiceResponse));
+      mockWorkdayAPIService.getWorkdays.and.returnValue(of(t.mockWorkdayAPIServiceResponse));
+      mockWorkdayAPIService.assignPerson.and.returnValue(of(t.mockAssignPersonResponse));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      mockDialog.open.and.returnValue(t.mockDialogReturnValue as any);
+
+      // call the method to test
+      service.assignPersonToTimeslot(t.person, t.workdayTimeslot);
+
+      // check if the methods were called
+      if (t.shouldOpenConfirmDialog) {
+        expect(mockDialog.open).toHaveBeenCalled();
+      } else {
+        expect(mockDialog.open).not.toHaveBeenCalled();
+      }
+
+      if (t.shouldAssignPerson) {
+        expect(mockWorkdayAPIService.assignPerson).toHaveBeenCalledWith(
+          t.workdayTimeslot.department.id,
+          t.workdayTimeslot.date,
+          t.workdayTimeslot.workplace.id,
+          t.workdayTimeslot.timeslot.id,
+          t.person.id,
+        );
+        expect(t.workdayTimeslot.persons.length).toBe(1);
+        expect(mockNotificationService.infoMessage).toHaveBeenCalled();
+      } else {
+        expect(mockWorkdayAPIService.assignPerson).not.toHaveBeenCalled();
+        expect(t.workdayTimeslot.persons.length).toBe(0);
+      }
+
+      if (t.shouldFetchAbsency) {
+        expect(mockPersonAPIService.getAbsencyForPerson).toHaveBeenCalled();
+      } else {
+        expect(mockPersonAPIService.getAbsencyForPerson).not.toHaveBeenCalled();
+      }
+    });
   });
 
   it('should handle erroneous unassignment from unAssignPersonFromTimeslot', () => {
