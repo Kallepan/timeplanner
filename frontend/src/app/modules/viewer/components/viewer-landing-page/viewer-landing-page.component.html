@@ -12,4 +12,4 @@
 
 <app-view-only-timetable></app-view-only-timetable>
 
-<div id="overlay" [ngStyle]="{ display: timetableDataContainerService.isLoading$ ? 'block' : 'none' }"></div>
+<div id="overlay" [ngStyle]="{ display: getLoadingStatus() ? 'block' : 'none' }"></div>

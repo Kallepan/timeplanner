@@ -4,6 +4,6 @@ export const routes: Routes = [
   {
     path: '',
     title: 'Viewer',
-    loadComponent: () => import('./components/landing-page/landing-page.component').then((m) => m.LandingPageComponent),
+    loadComponent: () => import('./components/viewer-landing-page/viewer-landing-page.component').then((m) => m.ViewerLandingPageComponent),
   },
 ];
