@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NavigationEnd, Router } from '@angular/router';
-import { NotificationService } from '@app/core/services/notification.service';
 import { filter, map, switchMap } from 'rxjs';
 
 @Component({
@@ -13,7 +12,6 @@ import { filter, map, switchMap } from 'rxjs';
   styleUrl: './custom-header.component.scss',
 })
 export class CustomHeaderComponent {
-  private _notificationService = inject(NotificationService);
   private _router = inject(Router);
 
   control = new FormControl('');

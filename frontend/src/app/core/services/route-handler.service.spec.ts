@@ -13,4 +13,8 @@ describe('RouteHandlerService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should have routeConfigurations', () => {
+    expect(service.routeConfigurations).toBeTruthy();
+  });
 });

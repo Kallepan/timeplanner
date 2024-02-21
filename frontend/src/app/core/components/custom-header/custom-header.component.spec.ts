@@ -16,6 +16,9 @@ describe('CustomHeaderComponent', () => {
     notificationService = jasmine.createSpyObj('NotificationService', ['infoMessage', 'warnMessage']);
     router = jasmine.createSpyObj('Router', ['navigate'], {
       events: of(new NavigationEnd(1, '', '')),
+      routerState: {
+        root: { firstChild: { firstChild: { data: of({ featureFlag: 'bak' }) } } },
+      },
     });
     activatedRoute = jasmine.createSpyObj('ActivatedRoute', ['data'], {
       data: of({ featureFlag: 'bak' }),
@@ -40,5 +43,20 @@ describe('CustomHeaderComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should have control', () => {
+    expect(component.control).toBeTruthy();
+  });
+
+  it('should diplay a featureFlag', () => {
+    expect(component.activatedRoute$).toBeTruthy();
+
+    component.activatedRoute$.subscribe((featureFlag) => {
+      expect(featureFlag).toEqual('bak');
+      fixture.detectChanges();
+      expect(fixture.nativeElement.querySelector('span').textContent).toEqual('Bak');
+    });
+    fixture.detectChanges();
   });
 });
