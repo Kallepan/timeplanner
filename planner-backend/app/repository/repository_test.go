@@ -1,8 +1,9 @@
-package mock
+package repository
 
 import (
 	"context"
 	"fmt"
+	"os"
 	"testing"
 
 	"github.com/docker/go-connections/nat"
@@ -11,7 +12,12 @@ import (
 	"github.com/testcontainers/testcontainers-go/wait"
 )
 
-func SetupTestDB(ctx context.Context, t *testing.T) (*neo4j.DriverWithContext, error) {
+func setupTestDB(ctx context.Context) (*neo4j.DriverWithContext, error) {
+	/**
+	* Function to start a neo4j container for testing
+	* This function creates an isolated neo4j database which can be accessed by the test cases
+	* The function returns a neo4j driver which can be used to interact with the database
+	**/
 	req := testcontainers.ContainerRequest{
 		Image: "neo4j:latest",
 		Env: map[string]string{
@@ -27,7 +33,7 @@ func SetupTestDB(ctx context.Context, t *testing.T) (*neo4j.DriverWithContext, e
 		Started:          true,
 	})
 	if err != nil {
-		t.Fatal(err)
+		return nil, err
 	}
 
 	// Terminate the container when the context is done
@@ -51,4 +57,20 @@ func SetupTestDB(ctx context.Context, t *testing.T) (*neo4j.DriverWithContext, e
 	}
 
 	return &db, nil
+}
+
+// Setup a database to be used by all sub tests
+func TestMain(m *testing.M) {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	db, err := setupTestDB(ctx)
+	if err != nil {
+
+		panic("Test database setup failed")
+	}
+
+	Migrate(ctx, db)
+
+	os.Exit(m.Run())
 }
