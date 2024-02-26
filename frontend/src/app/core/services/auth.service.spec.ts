@@ -48,6 +48,14 @@ describe('AuthService', () => {
     expect(service.authData()).toEqual({ username: 'test', email: 'test@example.com' });
   });
 
+  it('isLoggedIn should return true', () => {
+    service.login('test', 'test');
+    const req = httpMock.expectOne(`${constants.APIS.AUTH}/login`);
+    expect(req.request.method).toBe('POST');
+    req.flush({ data: { username: 'test', email: 'test@example.com' } });
+    expect(service.isLoggedIn()).toBeTrue();
+  });
+
   it('hasAccessToDepartment should return true', () => {
     service.hasAccessToDepartment('test').subscribe((result) => expect(result).toBeTrue());
     const req = httpMock.expectOne(`${constants.APIS.AUTH}/me?department=test`);
@@ -68,5 +76,24 @@ describe('AuthService', () => {
     expect(req.request.method).toBe('POST');
     req.flush({}, { status: 401, statusText: 'Unauthorized' });
     expect(notificationService.warnMessage).toHaveBeenCalled();
+  });
+
+  it('isAdmin should return true', () => {
+    service.isAdmin().subscribe((result) => expect(result).toBeTrue());
+    const req = httpMock.expectOne(`${constants.APIS.AUTH}/check-admin`);
+    expect(req.request.method).toBe('GET');
+    req.flush({ data: true, status: 200, statusText: 'OK' });
+  });
+
+  it('isAdmin should return false', () => {
+    service.isAdmin().subscribe((result) => expect(result).toBeFalse());
+    const req = httpMock.expectOne(`${constants.APIS.AUTH}/check-admin`);
+    expect(req.request.method).toBe('GET');
+    req.flush(
+      {
+        data: false,
+      },
+      { status: 401, statusText: 'Unauthorized' },
+    );
   });
 });

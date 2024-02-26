@@ -162,7 +162,7 @@ func (a AuthServiceImpl) CheckAdmin(c *gin.Context) {
 	}
 
 	if claim.(*dco.JWTClaim).IsAdmin {
-		c.Status(http.StatusOK)
+		c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, true))
 		return
 	}
 

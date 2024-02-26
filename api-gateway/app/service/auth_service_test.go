@@ -401,6 +401,27 @@ func TestCheckAdmin(t *testing.T) {
 			if w.Code != testStep.expectedStatusCode {
 				t.Errorf("Expected status code %d but got %d", testStep.expectedStatusCode, w.Code)
 			}
+
+			// check response body
+			if testStep.expectedStatusCode == http.StatusUnauthorized {
+				var responseBody dto.APIResponse[bool]
+				if err := json.Unmarshal(w.Body.Bytes(), &responseBody); err != nil {
+					t.Error("Error happened: when unmarshal response body", "error", err)
+				}
+				if responseBody.Data != false {
+					t.Errorf("Expected false but got %t", responseBody.Data)
+				}
+			}
+
+			if testStep.expectedStatusCode == http.StatusOK {
+				var responseBody dto.APIResponse[bool]
+				if err := json.Unmarshal(w.Body.Bytes(), &responseBody); err != nil {
+					t.Error("Error happened: when unmarshal response body", "error", err)
+				}
+				if responseBody.Data != true {
+					t.Errorf("Expected true but got %t", responseBody.Data)
+				}
+			}
 		})
 	}
 }

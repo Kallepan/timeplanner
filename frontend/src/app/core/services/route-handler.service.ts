@@ -3,7 +3,7 @@ import { Injectable, signal } from '@angular/core';
 type RouteConfiguration = {
   path: string;
   title: string;
-  id: string;
+  id?: string;
 };
 
 @Injectable({
@@ -21,6 +21,11 @@ export class RouteHandlerService {
       path: '/absency',
       title: 'MIBI - Abwesenheit',
       id: 'bak',
+    },
+    {
+      path: '/admin',
+      title: 'Admin',
+      id: '',
     },
   ]);
 }

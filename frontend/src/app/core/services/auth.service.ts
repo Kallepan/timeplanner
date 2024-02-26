@@ -41,6 +41,23 @@ export class AuthService {
     return this._authData() !== null;
   });
 
+  isAdmin(): Observable<boolean> {
+    // Check if the user is an admin
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      withCredentials: true,
+    };
+
+    return this.http.get<APIResponse<boolean | null>>(`${constants.APIS.AUTH}/check-admin`, httpOptions).pipe(
+      tap((resp) => console.log(resp)),
+      map((resp) => resp.data),
+      map((isAdmin) => isAdmin === true),
+      catchError(() => of(false)),
+    );
+  }
+
   hasAccessToDepartment(departmentName: string): Observable<boolean> {
     // Check if the user has access to a department
     const httpOptions = {

@@ -1,7 +1,7 @@
 import { NotificationService } from '../services/notification.service';
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { isAuthenticated } from './auth-guard';
+import { isAuthenticated } from './auth-guards';
 import { AuthService } from '../services/auth.service';
 
 describe('isAuthenticatedGuard', () => {
@@ -31,20 +31,20 @@ describe('isAuthenticatedGuard', () => {
     expect(isAuthenticated).toBeTruthy();
   });
 
-  it('should return false if the user is not logged in', async () => {
+  it('should return false if the user is not logged in', () => {
     mockAuthService.isLoggedIn.and.returnValue(false);
 
-    const result = await TestBed.runInInjectionContext(isAuthenticated);
+    const result = TestBed.runInInjectionContext(isAuthenticated);
 
     expect(mockNotificationService.warnMessage).toHaveBeenCalled();
 
     expect(result).toBeFalse();
   });
 
-  it('should return true if the user is logged in', async () => {
+  it('should return true if the user is logged in', () => {
     mockAuthService.isLoggedIn.and.returnValue(true);
 
-    const result = await TestBed.runInInjectionContext(isAuthenticated);
+    const result = TestBed.runInInjectionContext(isAuthenticated);
 
     expect(result).toBeTrue();
   });
