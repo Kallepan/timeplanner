@@ -211,7 +211,6 @@ type PersonCreatorImpl struct {
 	weekdayIDs []string
 	person     struct {
 		id           string
-		name         string
 		email        string
 		active       bool
 		lastName     string

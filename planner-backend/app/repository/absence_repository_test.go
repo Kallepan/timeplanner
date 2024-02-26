@@ -38,7 +38,6 @@ func TestGetAllAbsenciesFromDepartment(t *testing.T) {
 		weekdayIDs: []string{"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"},
 		person: struct {
 			id           string
-			name         string
 			email        string
 			active       bool
 			lastName     string
@@ -46,7 +45,6 @@ func TestGetAllAbsenciesFromDepartment(t *testing.T) {
 			workingHours float64
 		}{
 			id:           "person1",
-			name:         "Person 1",
 			email:        "person1@example.com",
 			active:       true,
 			lastName:     "Doe",
@@ -72,7 +70,6 @@ func TestGetAllAbsenciesFromDepartment(t *testing.T) {
 		weekdayIDs: []string{"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"},
 		person: struct {
 			id           string
-			name         string
 			email        string
 			active       bool
 			lastName     string
@@ -80,7 +77,6 @@ func TestGetAllAbsenciesFromDepartment(t *testing.T) {
 			workingHours float64
 		}{
 			id:           "person2",
-			name:         "Person 2",
 			email:        "person2@example.com",
 			active:       true,
 			lastName:     "Doe",

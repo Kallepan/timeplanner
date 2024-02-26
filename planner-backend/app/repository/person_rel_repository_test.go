@@ -36,7 +36,6 @@ func TestAddAndRemoveAbsencyToPerson(t *testing.T) {
 		weekdayIDs: []string{"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"},
 		person: struct {
 			id           string
-			name         string
 			email        string
 			active       bool
 			lastName     string
@@ -44,7 +43,6 @@ func TestAddAndRemoveAbsencyToPerson(t *testing.T) {
 			workingHours float64
 		}{
 			id:           "person1",
-			name:         "Person 1",
 			email:        "person1@example.com",
 			active:       true,
 			lastName:     "Doe",

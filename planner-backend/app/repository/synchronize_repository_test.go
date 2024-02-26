@@ -36,7 +36,6 @@ func TestSynchronize(t *testing.T) {
 			}
 			defer cancel()
 			// setup initial state
-			Clear(ctx, db)
 			Migrate(ctx, db)
 
 			timeslotCreatorOne := TimeslotCreatorImpl{
@@ -173,7 +172,6 @@ func TestCreateWorkDay(t *testing.T) {
 			}
 			defer cancel()
 			// setup initial state
-			Clear(ctx, db)
 			Migrate(ctx, db)
 
 			timeslotCreatorOne := TimeslotCreatorImpl{
