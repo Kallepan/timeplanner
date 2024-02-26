@@ -22,10 +22,5 @@ export class RouteHandlerService {
       title: 'MIBI - Abwesenheit',
       id: 'bak',
     },
-    {
-      path: '/admin',
-      title: 'Admin',
-      id: '',
-    },
   ]);
 }

@@ -20,7 +20,7 @@ describe('LoginComponent', () => {
   let loader: HarnessLoader;
 
   beforeEach(() => {
-    authService = jasmine.createSpyObj('AuthService', ['login', 'verifyLogin', 'logout', 'isLoggedIn', 'authData', 'loading'], {
+    authService = jasmine.createSpyObj('AuthService', ['login', 'verifyToken', 'logout', 'isLoggedIn', 'authData', 'loading'], {
       initialized: signal(false),
     });
 

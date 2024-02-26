@@ -4,4 +4,7 @@
       {{ route.title }}
     </button>
   }
+  @if (isAdmin()) {
+    <button class="button" id="admin-route-button" mat-raised-button routerLink="/admin">Admin</button>
+  }
 </div>
