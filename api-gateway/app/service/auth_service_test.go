@@ -353,3 +353,54 @@ func TestLogoutSimple(t *testing.T) {
 		})
 	}
 }
+
+func TestCheckAdmin(t *testing.T) {
+	// define test struct
+	type authCheckAdminTest struct {
+		expectedStatusCode int
+		isAdmin            bool
+		setCookie          bool
+	}
+
+	authService := AuthServiceImpl{}
+
+	testSteps := []authCheckAdminTest{
+		{
+			expectedStatusCode: http.StatusOK,
+			setCookie:          true,
+			isAdmin:            true,
+		},
+		{
+			expectedStatusCode: http.StatusUnauthorized,
+			setCookie:          false,
+		},
+		{
+			expectedStatusCode: http.StatusUnauthorized,
+			setCookie:          true,
+			isAdmin:            false,
+		},
+	}
+
+	for i, testStep := range testSteps {
+		t.Run(fmt.Sprintf("Test step %d", i), func(t *testing.T) {
+			w := httptest.NewRecorder()
+			ctx := mock.GetGinTestContext(w, "GET", gin.Params{}, nil)
+
+			// generate mock token
+			if testStep.setCookie {
+				token, err := mock.GenerateMockToken(dao.User{IsAdmin: testStep.isAdmin})
+				if err != nil {
+					t.Error("Error happened: when generate mock token", "error", err)
+				}
+				claim, _ := middleware.DecodeToken(token)
+				ctx.Set("retrievedToken", claim)
+			}
+
+			authService.CheckAdmin(ctx)
+
+			if w.Code != testStep.expectedStatusCode {
+				t.Errorf("Expected status code %d but got %d", testStep.expectedStatusCode, w.Code)
+			}
+		})
+	}
+}

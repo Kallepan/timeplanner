@@ -26,6 +26,7 @@ func Init(init *config.Injector) *gin.Engine {
 		auth.POST("/logout", init.UserCtrl.Logout)
 		auth.Use(middleware.RequiredAuth())
 		auth.GET("/me", init.UserCtrl.Me) // ?department=XXX
+		auth.GET("/check-admin", init.UserCtrl.CheckAdmin)
 	}
 
 	/** These API requests stay here and are handled by api-gateway */

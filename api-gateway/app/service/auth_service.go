@@ -28,6 +28,7 @@ type AuthService interface {
 	Login(c *gin.Context)
 	Me(c *gin.Context)
 	Logout(c *gin.Context)
+	CheckAdmin(c *gin.Context)
 }
 
 type AuthServiceImpl struct {
@@ -148,6 +149,25 @@ var authServiceSet = wire.NewSet(
 	wire.Struct(new(AuthServiceImpl), "*"),
 	wire.Bind(new(AuthService), new(*AuthServiceImpl)),
 )
+
+func (a AuthServiceImpl) CheckAdmin(c *gin.Context) {
+	defer pkg.PanicHandler(c)
+	slog.Info("start to execute program check admin")
+
+	// get the token from the cookie
+	claim, exists := c.Get("retrievedToken")
+	if !exists {
+		slog.Error("Error happened: when get token from cookie", "error", "token not found")
+		pkg.PanicException(constant.Unauthorized)
+	}
+
+	if claim.(*dco.JWTClaim).IsAdmin {
+		c.Status(http.StatusOK)
+		return
+	}
+
+	pkg.PanicException(constant.Unauthorized)
+}
 
 func mapUserToAuthResponse(user dao.User) dco.AuthResponse {
 	/**
