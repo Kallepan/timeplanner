@@ -8,7 +8,8 @@
   [displayTimes]="timetableDataContainerService.displayTimes$"
   [displayColors]="timetableDataContainerService.colorize$"
   (shiftWeek)="activeWeekHandlerService.shiftWeek($event)"
-  [departmentId]="activeDepartmentHandlerService.activeDepartment$"></app-actions-viewer>
+  [departmentId]="activeDepartmentHandlerService.activeDepartment$"
+  (toggleAbsencyPanel)="toggleAbsencyPanel()"></app-actions-viewer>
 
 <app-view-only-timetable></app-view-only-timetable>
 
