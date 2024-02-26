@@ -99,14 +99,14 @@ describe('AuthService', () => {
     expect(notificationService.warnMessage).toHaveBeenCalledWith(messages.AUTH.LOGIN_FAILED);
   });
 
-  it('isAdmin should return true', () => {
+  it('isAdmin should return true if server returns true', () => {
     service.isAdmin().subscribe((result) => expect(result).toBeTrue());
     const req = httpMock.expectOne(`${constants.APIS.AUTH}/check-admin`);
     expect(req.request.method).toBe('GET');
     req.flush({ data: true, status: 200, statusText: 'OK' });
   });
 
-  it('isAdmin should return false', () => {
+  it('isAdmin should return false if server returns false', () => {
     service.isAdmin().subscribe((result) => expect(result).toBeFalse());
     const req = httpMock.expectOne(`${constants.APIS.AUTH}/check-admin`);
     expect(req.request.method).toBe('GET');
@@ -118,7 +118,7 @@ describe('AuthService', () => {
     );
   });
 
-  it('verifyToken should call notificationService.infoMessage', () => {
+  it('verifyToken should call correct methods', () => {
     service.verifyToken();
     const req = httpMock.expectOne(`${constants.APIS.AUTH}/me`);
     expect(req.request.method).toBe('GET');
@@ -130,5 +130,22 @@ describe('AuthService', () => {
     expect(service.authData()).toEqual({ username: 'test', email: 'test@example.com' });
     expect(service.isAdmin$).toBeTrue();
     expect(notificationService.infoMessage).toHaveBeenCalledWith(messages.AUTH.LOGGED_IN);
+    expect(service.loading$).toBeFalse();
+  });
+
+  it('verifyToken should call correct methods and display error message', () => {
+    const logoutSpy = spyOn(service, 'logout');
+
+    service.verifyToken();
+    const req = httpMock.expectOne(`${constants.APIS.AUTH}/me`);
+    expect(req.request.method).toBe('GET');
+    req.flush({}, { status: 401, statusText: 'Unauthorized' });
+
+    expect(service.authData()).toBeUndefined();
+    expect(notificationService.infoMessage).not.toHaveBeenCalled();
+    expect(service.isAdmin$).toBeFalse();
+    expect(service.loading$).toBeFalse();
+
+    expect(logoutSpy).toHaveBeenCalled();
   });
 });

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, computed, inject, signal, type WritableSignal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, catchError, from, map, of, switchMap, tap } from 'rxjs';
+import { Observable, catchError, from, map, of, switchMap, tap, throwError } from 'rxjs';
 import { constants } from '../../constants/constants';
 import { messages } from '../../constants/messages';
 import { NotificationService } from './notification.service';
@@ -47,7 +47,9 @@ export class AuthService {
   });
 
   isAdmin(): Observable<boolean> {
-    // Check if the user is an admin
+    // Check if the user is an admin used to live check if the user is admin to acess routes
+    // alternatively used during login or verifyToken() to check if the user is an admin
+    // and store the result in a signal (this._isAdmin) to be used in the app.
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
@@ -58,8 +60,8 @@ export class AuthService {
     return this.http.get<APIResponse<boolean | null>>(`${constants.APIS.AUTH}/check-admin`, httpOptions).pipe(
       map((resp) => resp.data),
       map((isAdmin) => isAdmin === true),
-      tap((isAdmin) => this._isAdmin.set(isAdmin)),
       catchError(() => of(false)),
+      tap((isAdmin) => this._isAdmin.set(isAdmin)),
     );
   }
 
@@ -99,11 +101,15 @@ export class AuthService {
         tap((data) => this._authData.set(data)),
         switchMap(() => this.isAdmin()),
         tap((data) => this._isAdmin.set(data)),
-        catchError(() => of(null)),
       )
       .subscribe({
         next: () => {
+          this._loading.set(false);
           this._notificationService.infoMessage(messages.AUTH.LOGGED_IN);
+        },
+        error: () => {
+          this._loading.set(false);
+          this._authData.set(null);
         },
       });
   }
@@ -128,16 +134,19 @@ export class AuthService {
         tap((data) => this._authData.set(data)),
         switchMap(() => this.isAdmin()),
         tap((data) => this._isAdmin.set(data)),
+        catchError((err) => {
+          this._authData.set(null);
+          return throwError(() => err);
+        }),
       )
       .subscribe({
         next: () => {
+          this._loading.set(false);
           this._notificationService.infoMessage(messages.AUTH.LOGGED_IN);
         },
         error: () => {
-          this._notificationService.warnMessage(messages.AUTH.LOGIN_FAILED);
-        },
-        complete: () => {
           this._loading.set(false);
+          this._notificationService.warnMessage(messages.AUTH.LOGIN_FAILED);
         },
       });
   }
