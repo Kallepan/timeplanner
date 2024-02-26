@@ -54,6 +54,7 @@ func (d SynchronizeRepositoryImpl) Synchronize(weeksInAdvance int) error {
 		}
 	}
 	return nil
+
 }
 
 func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date string, weekdayID string) error {
