@@ -48,7 +48,13 @@ func (w WorkdayServiceImpl) GetWorkdaysForDepartmentAndDate(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	rawData, err := w.WorkdayRepository.GetWorkdaysForDepartmentAndDate(departmentID, date)
+	var fetchIsActive bool
+	isActive := c.Query("is_active")
+	if isActive == "true" {
+		fetchIsActive = true
+	}
+
+	rawData, err := w.WorkdayRepository.GetWorkdaysForDepartmentAndDate(departmentID, date, fetchIsActive)
 	switch err {
 	case nil:
 		break

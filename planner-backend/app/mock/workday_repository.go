@@ -28,7 +28,7 @@ func (r *WorkdayRepositoryMock) Return(mockData interface{}, errorData error) Mo
 }
 
 /* Repostory interface implementations */
-func (r *WorkdayRepositoryMock) GetWorkdaysForDepartmentAndDate(departmentID string, date string) ([]dao.Workday, error) {
+func (r *WorkdayRepositoryMock) GetWorkdaysForDepartmentAndDate(departmentID string, date string, isActive bool) ([]dao.Workday, error) {
 	if r.dataContainer["GetWorkdaysForDepartmentAndDate"] == nil {
 		return nil, r.errorContainer["GetWorkdaysForDepartmentAndDate"]
 	}

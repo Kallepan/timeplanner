@@ -23,6 +23,7 @@ type SynchronizeRepositoryImpl struct {
 
 func (d SynchronizeRepositoryImpl) Synchronize(weeksInAdvance int) error {
 	/*
+	//TODO: should be a transaction, so that we can rollback in case of failure!!!
 		Synchronize:
 			- Get monday of the current week
 			- calculate all dates from monday to sunday * weeksInAdvance
@@ -92,11 +93,13 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date strin
 	MATCH (d:Date {date: date($date), week: date($date).week})
 	MATCH (d) -[:IS_ON_WEEKDAY]-> (wd:Weekday {id: $weekdayID})
 
+	// important: workday nodes should be unique for each date, department, workplace, and timeslot
 	MERGE (wkd:Workday {date: date($date), department: c.departmentID, workplace: c.workplaceID, timeslot: c.timeslot.id, weekday: wd.id})
 	ON CREATE SET
 		wkd.start_time = c.start_time,
 		wkd.end_time = c.end_time,
 		wkd.duration_in_minutes = duration.between(c.start_time, c.end_time).minutes,
+		// set active in here to avoid the merge query not matching the node
 		wkd.active = true,
 		wkd.comment = "",
 		wkd.created_at = datetime()
