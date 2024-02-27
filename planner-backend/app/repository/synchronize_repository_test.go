@@ -242,16 +242,27 @@ func TestCreateWorkDay(t *testing.T) {
 				db:  db,
 				ctx: ctx,
 			}
+
 			if test.create {
 				for date := test.startDate; date.Before(test.endDate.AddDate(0, 0, 1)); date = date.AddDate(0, 0, 1) {
 					EnsureDateExists(db, ctx, date.Format("2006-01-02"))
+				}
 
-					if err := s.createWorkday(ctx, date.Format("2006-01-02"), TimeDateToWeekdayID(date)); err != nil {
-						t.Errorf("Error creating workdays: %v", err)
+				session := (*db).NewSession(ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+				defer session.Close(ctx)
+
+				_, err := session.ExecuteWrite(ctx, func(tx neo4j.ManagedTransaction) (interface{}, error) {
+					for date := test.startDate; date.Before(test.endDate.AddDate(0, 0, 1)); date = date.AddDate(0, 0, 1) {
+						if err := s.createWorkday(ctx, tx, date.Format("2006-01-02"), TimeDateToWeekdayID(date)); err != nil {
+							return nil, err
+						}
 					}
+					return nil, nil
+				})
+				if err != nil {
+					t.Errorf("Error creating workdays: %v", err)
 				}
 			}
-
 			// check if the workdays were created
 			results, err := neo4j.ExecuteQuery(
 				ctx,

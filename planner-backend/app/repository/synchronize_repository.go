@@ -13,7 +13,7 @@ import (
 type SynchronizeRepository interface {
 	Synchronize(weeksInAdvance int) error
 
-	createWorkday(ctx context.Context, date string, weekday string) error
+	createWorkday(ctx context.Context, tx neo4j.ManagedTransaction, date string, weekday string) error
 }
 
 type SynchronizeRepositoryImpl struct {
@@ -23,11 +23,10 @@ type SynchronizeRepositoryImpl struct {
 
 func (d SynchronizeRepositoryImpl) Synchronize(weeksInAdvance int) error {
 	/*
-	//TODO: should be a transaction, so that we can rollback in case of failure!!!
-		Synchronize:
-			- Get monday of the current week
-			- calculate all dates from monday to sunday * weeksInAdvance
-	*/
+	*	Synchronize:
+	*	- Get monday of the current week
+	*	- calculate all dates from monday to sunday * weeksInAdvance
+	 */
 
 	// Get the current date
 	now := time.Now()
@@ -39,26 +38,44 @@ func (d SynchronizeRepositoryImpl) Synchronize(weeksInAdvance int) error {
 		for j := 0; j < 7; j++ {
 			date := monday.AddDate(0, 0, 7*i+j)
 			dateStr := date.Format("2006-01-02")
-			weekday := TimeDateToWeekdayID(date)
 
 			// Create the date node
 			if err := EnsureDateExists(d.db, d.ctx, dateStr); err != nil {
 				return err
 			}
 
-			// Create the workday nodes
-			if err := d.createWorkday(d.ctx, dateStr, weekday); err != nil {
-				return fmt.Errorf("error creating workday nodes: %w", err)
-			}
-
 			slog.Info(fmt.Sprintf("Synchronized date %s", dateStr))
+
 		}
 	}
+
+	// Create Workday nodes for each date and weekday
+	session := (*d.db).NewSession(d.ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
+	defer session.Close(d.ctx)
+
+	// Start a new transaction
+	if _, err := session.ExecuteWrite(d.ctx, func(tx neo4j.ManagedTransaction) (interface{}, error) {
+		for i := 0; i < weeksInAdvance; i++ {
+			for j := 0; j < 7; j++ {
+				date := monday.AddDate(0, 0, 7*i+j)
+				dateStr := date.Format("2006-01-02")
+				weekday := TimeDateToWeekdayID(date)
+				if err := d.createWorkday(d.ctx, tx, dateStr, weekday); err != nil {
+					return nil, err
+
+				}
+			}
+		}
+		return nil, nil
+	}); err != nil {
+		return err
+	}
+
 	return nil
 
 }
 
-func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date string, weekdayID string) error {
+func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, tx neo4j.ManagedTransaction, date string, weekdayID string) error {
 	/**
 	 * Create Workday Nodes for Given Weekday and Date
 	 *
@@ -103,11 +120,11 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date strin
 		wkd.active = true,
 		wkd.comment = "",
 		wkd.created_at = datetime()
-		
 	// Create the relationships
 	WITH wkd, c.timeslot AS t, d
 	MERGE (wkd) -[:IS_TIMESLOT]-> (t)
 	MERGE (wkd) -[:IS_DATE]-> (d)
+	RETURN wkd
 	`
 
 	params := map[string]interface{}{
@@ -115,13 +132,20 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, date strin
 		"weekdayID": weekdayID,
 	}
 
-	_, err := neo4j.ExecuteQuery(
+	result, err := tx.Run(
 		ctx,
-		*d.db,
 		query,
 		params,
-		neo4j.EagerResultTransformer,
 	)
+	if err != nil {
+		return err
+	}
+
+	// Check if the result is empty
+	if !result.Next(ctx) || result.Err() != nil {
+		return fmt.Errorf("no workday nodes were created for date %s and weekday %s", date, weekdayID)
+	}
+
 	return err
 }
 
