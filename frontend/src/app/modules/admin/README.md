@@ -21,3 +21,19 @@ At last, a kind of confirmation is necessary as well as a date after which the c
 The workdays themselves should also be abled to be queried and turned on or off. Here we need to query all workdays on a given date and the user needs to be able to turn the ones he does not need to be off.
 
 This should set the workdays to be inactive in the database (field active = false). Still during the query itself all workdays should be returned (active and inactive ones).
+
+### Modify the persons of a Department
+
+The admin should be able to add or remove persons from a department. Removal marks the person as inactive in the database (field deleted_at = current_timestamp). The person should not be able to login anymore and should not be able to be assigned to a workplace anymore.
+
+Here we also need a confirmation field where the user has to type in the word "confirm" to confirm the changes. Furthermore persons which are inactive should be returned in this module as well. So that the admin can reactivate them if necessary.
+
+Test Cases:
+
+- The admin is able to modify the schema
+- Test the schema modification process i.e. do dates after X get deleted and the regular synchronization job is triggered
+- The admin is able to modify the workdays themselves
+- The admin is able to modify the persons of a department
+  - Test the reactivation of a person
+  - Test the deactivation of a person
+- Test the confirmation field
