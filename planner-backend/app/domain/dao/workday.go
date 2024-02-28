@@ -45,7 +45,7 @@ func (w *Workday) ParseFromDBRecord(record *neo4j.Record, date string) error {
 	if err != nil {
 		return err
 	}
-	if err := workplace.ParseFromNode(&workplaceNode); err != nil {
+	if err := workplace.ParseFromNode(&workplaceNode, department.ID); err != nil {
 		return err
 	}
 

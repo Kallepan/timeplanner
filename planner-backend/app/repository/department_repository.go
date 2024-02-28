@@ -25,6 +25,30 @@ type DepartmentRepositoryImpl struct {
 func (d DepartmentRepositoryImpl) FindAllDepartments() ([]dao.Department, error) {
 	/* Returns all departments */
 
+	/*
+	* Query to fetch additional data from the database:
+	*MATCH (d:Department) -[:HAS_WORKPLACE]-> (w:Workplace) -[:HAS_TIMESLOT]-> (t:Timeslot) -[r:OFFERED_ON]-> (wd:Weekday)
+	*WHERE d.deleted_at IS NULL AND w.deleted_at IS NULL AND t.deleted_at IS NULL
+	*RETURN COLLECT({
+	*	id: d.id,
+	*	name: d.name,
+	*	workplaces: {
+	*		id: w.id,
+	*		name: w.name,
+	*		timeslots: {
+	*			id: t.id,
+	*			name: t.name,
+	*			weekdays: {
+	*				id: wd.id,
+	*				name: wd.name,
+	*				start_time: r.start_time,
+	*				end_time: r.end_time
+	*			}
+	*		}
+	*	}}) AS departments
+	*	This is just here as a reference, the actual query is different
+	 */
+
 	departments := []dao.Department{}
 	query := `
 	MATCH (d:Department)

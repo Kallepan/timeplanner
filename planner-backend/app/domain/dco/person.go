@@ -1,6 +1,15 @@
 package dco
 
 /** Responses **/
+type DepartmentInPersonResponse struct {
+	ID   string `json:"id"`
+	Name string `json:"name"`
+}
+type WorkplaceInPersonResponse struct {
+	ID           string `json:"id"`
+	Name         string `json:"name"`
+	DepartmentID string `json:"department_id"`
+}
 type WeekdayResponse struct {
 	ID   string `json:"id"`
 	Name string `json:"name"`
@@ -15,9 +24,9 @@ type PersonResponse struct {
 	Active       *bool   `json:"active"`
 	WorkingHours float64 `json:"working_hours"`
 
-	Workplaces  []WorkplaceResponse  `json:"workplaces,omitempty"`
-	Departments []DepartmentResponse `json:"departments,omitempty"`
-	Weekdays    []WeekdayResponse    `json:"weekdays,omitempty"`
+	Workplaces  []WorkplaceInPersonResponse  `json:"workplaces,omitempty"`
+	Departments []DepartmentInPersonResponse `json:"departments,omitempty"`
+	Weekdays    []WeekdayResponse            `json:"weekdays,omitempty"`
 }
 
 /** Requests **/

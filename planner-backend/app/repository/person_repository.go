@@ -93,10 +93,23 @@ func (p PersonRepositoryImpl) FindAllPersons(departmentID string) ([]dao.Person,
 	query := `
     MATCH (p: Person)
     MATCH (p)-[:WORKS_AT]->(d: Department {id: $departmentID})
-	OPTIONAL MATCH (p)-[:QUALIFIED_FOR]->(w: Workplace)
+	OPTIONAL MATCH (p)-[:QUALIFIED_FOR]->(w: Workplace) <-[:HAS_WORKPLACE]-(d2: Department)
 	OPTIONAL MATCH (p)-[:AVAILABLE_ON]->(wd: Weekday)
     WHERE p.deleted_at IS NULL AND p.active = true
-    RETURN p, COLLECT(DISTINCT d) AS departments, COLLECT(DISTINCT w) AS workplaces, COLLECT(DISTINCT wd) AS weekdays`
+    RETURN 
+		p, 
+		COLLECT(DISTINCT { 
+			id: d.id, 
+			name: d.name
+		}) AS departments, 
+		COLLECT(DISTINCT {
+			id: w.id,
+			name: w.name,
+			department_id: d2.id
+		}) AS workplaces, COLLECT(DISTINCT {
+			id: wd.id,
+			name: wd.name
+		}) AS weekdays`
 
 	result, err := neo4j.ExecuteQuery(
 		p.ctx,
@@ -132,10 +145,23 @@ func (p PersonRepositoryImpl) FindPersonByID(personID string) (dao.Person, error
 	query := `
 	MATCH (p:Person {id: $personID})
 	OPTIONAL MATCH (p)-[:WORKS_AT]->(d: Department)
-	OPTIONAL MATCH (p)-[:QUALIFIED_FOR]->(w: Workplace)
+	OPTIONAL MATCH (p)-[:QUALIFIED_FOR]->(w: Workplace) <-[:HAS_WORKPLACE]-(d2: Department)
 	OPTIONAL MATCH (p)-[:AVAILABLE_ON]->(wd: Weekday)
 	WHERE p.deleted_at IS NULL AND p.active = true
-	RETURN p, COLLECT(DISTINCT d) AS departments, COLLECT(DISTINCT w) AS workplaces, COLLECT(DISTINCT wd) AS weekdays`
+	RETURN 
+	p, 
+	COLLECT(DISTINCT { 
+		id: d.id, 
+		name: d.name
+	}) AS departments, 
+	COLLECT(DISTINCT {
+		id: w.id,
+		name: w.name,
+		department_id: d2.id
+	}) AS workplaces, COLLECT(DISTINCT {
+		id: wd.id,
+		name: wd.name
+	}) AS weekdays`
 	params := map[string]interface{}{
 		"personID": personID,
 	}

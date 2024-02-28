@@ -225,22 +225,45 @@ func mapPersonToPersonResponse(person dao.Person) dco.PersonResponse {
 			DeletedAt: person.DeletedAt,
 		},
 
-		Workplaces:  mapWorkplaceListToWorkplaceResponseList(person.Workplaces),
-		Departments: mapDepartmentListToDepartmentResponseList(person.Departments),
+		Workplaces:  mapWorkplaceInPersonToWorkplaceInPersonResponseList(person.Workplaces),
+		Departments: mapDepartmentInPersonToDepartmentInPersonResponseList(person.Departments),
 		Weekdays:    mapWeekdayListToWeekdayResponseList(person.Weekdays),
 	}
 }
 
-func mapWeekdayToWeekdayResponse(weekday dao.Weekday) dco.WeekdayResponse {
-	/* mapWeekdayToWeekdayResponse is a function to map weekday to weekday response
-	 * @param weekday is dao.Weekday
-	 * @return dco.WeekdayResponse
+func mapDepartmentInPersonToDepartmentInPersonResponseList(departments []dao.DepartmentInPerson) []dco.DepartmentInPersonResponse {
+	/* mapDepartmentInPersonToDepartmentInPersonResponseList is a function to map department in person to department in person response list
+	 * @param departments is []dao.DepartmentInPerson
+	 * @return []dco.DepartmentInPersonResponse
 	 */
 
-	return dco.WeekdayResponse{
-		ID:   weekday.ID,
-		Name: weekday.Name,
+	var departmentInPersonResponseList []dco.DepartmentInPersonResponse
+	for _, department := range departments {
+		departmentInPersonResponseList = append(departmentInPersonResponseList, dco.DepartmentInPersonResponse{
+			ID:   department.ID,
+			Name: department.Name,
+		})
 	}
+
+	return departmentInPersonResponseList
+}
+
+func mapWorkplaceInPersonToWorkplaceInPersonResponseList(workplaces []dao.WorkplaceInPerson) []dco.WorkplaceInPersonResponse {
+	/* mapWorkplaceInPersonToWorkplaceInPersonResponseList is a function to map workplace in person to workplace in person response list
+	 * @param workplaces is []dao.WorkplaceInPerson
+	 * @return []dco.WorkplaceInPersonResponse
+	 */
+
+	var workplaceInPersonResponseList []dco.WorkplaceInPersonResponse
+	for _, workplace := range workplaces {
+		workplaceInPersonResponseList = append(workplaceInPersonResponseList, dco.WorkplaceInPersonResponse{
+			ID:           workplace.ID,
+			Name:         workplace.Name,
+			DepartmentID: workplace.DepartmentID,
+		})
+	}
+
+	return workplaceInPersonResponseList
 }
 
 func mapWeekdayListToWeekdayResponseList(weekdays []dao.Weekday) []dco.WeekdayResponse {
@@ -251,7 +274,10 @@ func mapWeekdayListToWeekdayResponseList(weekdays []dao.Weekday) []dco.WeekdayRe
 
 	var weekdayResponseList []dco.WeekdayResponse
 	for _, weekday := range weekdays {
-		weekdayResponseList = append(weekdayResponseList, mapWeekdayToWeekdayResponse(weekday))
+		weekdayResponseList = append(weekdayResponseList, dco.WeekdayResponse{
+			ID:   weekday.ID,
+			Name: weekday.Name,
+		})
 	}
 
 	return weekdayResponseList

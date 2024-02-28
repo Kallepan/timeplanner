@@ -32,6 +32,17 @@ func (w *Weekday) ParseFromNode(node *neo4j.Node) error {
 	return nil
 }
 
+type DepartmentInPerson struct {
+	ID   string
+	Name string
+}
+type WorkplaceInPerson struct {
+	ID string
+
+	Name         string
+	DepartmentID string
+}
+
 type Person struct {
 	Base
 
@@ -41,8 +52,8 @@ type Person struct {
 	Email     string
 	Active    bool
 
-	Workplaces  []Workplace
-	Departments []Department
+	Workplaces  []WorkplaceInPerson
+	Departments []DepartmentInPerson
 	Weekdays    []Weekday
 
 	WorkingHours float64
@@ -53,35 +64,60 @@ func (p *Person) ParseAdditionalFieldsFromDBRecord(record *neo4j.Record) error {
 	* Parses additional fields such as departments, workplaces, and weekdays from a neo4j record and sets the values on this person
 	**/
 
-	if workplaceNodeInteraces, isNil, err := neo4j.GetRecordValue[[]interface{}](record, "workplaces"); err != nil {
+	if departmentInterfaces, isNil, err := neo4j.GetRecordValue[[]interface{}](record, "departments"); err != nil {
 		return err
 	} else if !isNil {
-		for _, workplaceNodeInterface := range workplaceNodeInteraces {
-			workplaceNode, ok := workplaceNodeInterface.(neo4j.Node)
-			if !ok {
-				continue
-			}
-			workplace := Workplace{}
-			if err := workplace.ParseFromNode(&workplaceNode); err != nil {
-				return err
-			}
-			p.Workplaces = append(p.Workplaces, workplace)
-		}
-	}
-
-	if departments, isNil, err := neo4j.GetRecordValue[[]interface{}](record, "departments"); err != nil {
-		return err
-	} else if !isNil {
-		for _, departmentInterface := range departments {
+		for _, departmentInterface := range departmentInterfaces {
 			departmentNode, ok := departmentInterface.(neo4j.Node)
 			if !ok {
 				continue
 			}
-			department := Department{}
-			if err := department.ParseFromNode(&departmentNode); err != nil {
+
+			id, err := neo4j.GetProperty[string](&departmentNode, "id")
+			if err != nil {
 				return err
 			}
+			name, err := neo4j.GetProperty[string](&departmentNode, "name")
+			if err != nil {
+				return err
+			}
+
+			department := DepartmentInPerson{
+				ID:   id,
+				Name: name,
+			}
 			p.Departments = append(p.Departments, department)
+		}
+	}
+
+	if workplaceInterfaces, isNil, err := neo4j.GetRecordValue[[]interface{}](record, "workplaces"); err != nil {
+		return err
+	} else if !isNil {
+		for _, workplaceInterface := range workplaceInterfaces {
+			workplaceNode, ok := workplaceInterface.(neo4j.Node)
+			if !ok {
+				continue
+			}
+
+			id, err := neo4j.GetProperty[string](&workplaceNode, "id")
+			if err != nil {
+				return err
+			}
+			name, err := neo4j.GetProperty[string](&workplaceNode, "name")
+			if err != nil {
+				return err
+			}
+			deparmentID, err := neo4j.GetProperty[string](&workplaceNode, "department_id")
+			if err != nil {
+				return err
+			}
+
+			workplace := WorkplaceInPerson{
+				ID:           id,
+				Name:         name,
+				DepartmentID: deparmentID,
+			}
+			p.Workplaces = append(p.Workplaces, workplace)
 		}
 	}
 
@@ -93,10 +129,12 @@ func (p *Person) ParseAdditionalFieldsFromDBRecord(record *neo4j.Record) error {
 			if !ok {
 				continue
 			}
+
 			weekday := Weekday{}
 			if err := weekday.ParseFromNode(&weekdayNode); err != nil {
 				return err
 			}
+
 			p.Weekdays = append(p.Weekdays, weekday)
 		}
 	}

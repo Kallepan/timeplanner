@@ -15,34 +15,43 @@ func TestParseAdditionalFieldsFromDBRecord(t *testing.T) {
 	tests := []test{
 		{
 			record: &neo4j.Record{
-				Values: []interface{}{
-					[]interface{}{[]neo4j.Node{
-						{
-							Labels: []string{"Workplace"},
+				Values: []any{
+					[]any{
+						neo4j.Node{
+							Id:        0,
+							ElementId: "test",
+							Labels:    []string{"Workplace"},
+							Props: map[string]interface{}{
+								"id":            "test",
+								"name":          "test",
+								"department_id": "test",
+							},
+						},
+					},
+					[]any{
+						neo4j.Node{
+
+							Id:        0,
+							ElementId: "test",
+							Labels:    []string{"Department"},
 							Props: map[string]interface{}{
 								"id":   "test",
 								"name": "test",
 							},
 						},
-					}},
-					[]interface{}{[]neo4j.Node{
-						{
-							Labels: []string{"Department"},
-							Props: map[string]interface{}{
-								"id":   "test",
-								"name": "test",
-							},
-						},
-					}},
-					[]interface{}{[]neo4j.Node{
-						{
-							Labels: []string{"Weekday"},
+					},
+					[]any{
+						neo4j.Node{
+
+							Id:        0,
+							ElementId: "test",
+							Labels:    []string{"Weekday"},
 							Props: map[string]interface{}{
 								"id":   "MON",
 								"name": "Monday",
 							},
 						},
-					}},
+					},
 				},
 				Keys: []string{"workplaces", "departments", "weekdays"},
 			},
@@ -62,9 +71,9 @@ func TestParseAdditionalFieldsFromDBRecord(t *testing.T) {
 		{
 			record: &neo4j.Record{
 				Values: []interface{}{
-					[]interface{}{[]neo4j.Node{}},
-					[]interface{}{[]neo4j.Node{}},
-					[]interface{}{[]neo4j.Node{}},
+					[]interface{}{neo4j.Node{}},
+					[]interface{}{neo4j.Node{}},
+					[]interface{}{neo4j.Node{}},
 				},
 				Keys: []string{},
 			},

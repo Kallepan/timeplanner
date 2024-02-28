@@ -222,8 +222,9 @@ func mapWorkplaceToWorkplaceResponse(workplace dao.Workplace) dco.WorkplaceRespo
 	 */
 
 	return dco.WorkplaceResponse{
-		Name: workplace.Name,
-		ID:   workplace.ID,
+		Name:         workplace.Name,
+		ID:           workplace.ID,
+		DepartmentID: workplace.DepartmentID,
 		Base: dco.Base{
 			CreatedAt: workplace.Base.CreatedAt,
 			UpdatedAt: workplace.Base.UpdatedAt,
