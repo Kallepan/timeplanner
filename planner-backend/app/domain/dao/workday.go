@@ -58,6 +58,8 @@ func (w *Workday) ParseFromDBRecord(record *neo4j.Record, date string) error {
 	if err != nil {
 		return err
 	}
+	timeslot.DepartmentID = department.ID
+	timeslot.WorkplaceID = workplace.ID
 
 	// get wkd Node
 	workdayNode, _, err := neo4j.GetRecordValue[neo4j.Node](record, "wkd")
