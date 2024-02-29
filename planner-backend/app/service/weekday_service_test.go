@@ -25,7 +25,7 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 			mockRequestData: map[string]interface{}{
 				"weekdays": []map[string]interface{}{
 					{
-						"id":         "MON",
+						"id":         1,
 						"start_time": "08:00",
 						"end_time":   "09:00",
 					},
@@ -36,7 +36,7 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 			},
 			saveValue: []dao.OnWeekday{
 				{
-					ID: "MON",
+					ID: 1,
 				},
 			},
 			expectedStatusCode: http.StatusCreated,
@@ -58,7 +58,7 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 			mockRequestData: map[string]interface{}{
 				"weekdays": []map[string]interface{}{
 					{
-						"id":         "MON",
+						"id":         1,
 						"start_time": "08:00",
 						"end_time":   "09:00",
 					},
@@ -127,7 +127,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 	testSteps := []ServiceTestPOST{
 		{
 			mockRequestData: map[string]interface{}{
-				"id":         "MON",
+				"id":         1,
 				"start_time": "08:00",
 				"end_time":   "09:00",
 			},
@@ -136,7 +136,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			},
 			saveValue: []dao.OnWeekday{
 				{
-					ID: "MON",
+					ID: 1,
 				},
 			},
 			expectedStatusCode: http.StatusCreated,
@@ -150,7 +150,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"id":         "MON",
+				"id":         1,
 				"start_time": "08:00",
 				"end_time":   "09:00",
 			},
@@ -167,14 +167,14 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"id":         "MON",
+				"id":         1,
 				"start_time": "08:00",
 				"end_time":   "09:00",
 			},
 			findValue: nil,
 			saveValue: []dao.OnWeekday{
 				{
-					ID: "MON",
+					ID: 1,
 				},
 			},
 			expectedStatusCode: http.StatusBadRequest,
@@ -252,11 +252,11 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 	testSteps := []ServiceTestPOST{
 		{ // Test 1
 			mockRequestData: map[string]interface{}{
-				"id": "MON",
+				"id": 1,
 			},
 			expectedStatusCode: http.StatusOK,
 			findValue: dao.OnWeekday{
-				ID: "test",
+				ID: 1,
 			},
 			findError: nil,
 			params: map[string]string{

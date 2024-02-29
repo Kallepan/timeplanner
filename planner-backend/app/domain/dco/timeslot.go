@@ -4,7 +4,7 @@ import "planner-backend/app/pkg"
 
 /** Responses **/
 type OnWeekdayResponse struct {
-	ID   string `json:"id"`
+	ID   int64  `json:"id"`
 	Name string `json:"name"`
 
 	// We use string here because we only need the time like "08:00"
@@ -23,17 +23,17 @@ type TimeslotResponse struct {
 
 /** Requests **/
 type WeekdayRequest struct {
-	ID        string  `json:"id" binding:"required"`
+	ID        int64   `json:"id" binding:"required"`
 	StartTime *string `json:"start_time" binding:"omitempty"`
 	EndTime   *string `json:"end_time" binding:"omitempty"`
 }
 
 // validate Weekday ID should be one of the following:
-// "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"
+// 1, 2, 3, 4, 5, 6, 7
 func (w *WeekdayRequest) Validate() error {
 	/* Validate the weekday request */
 	weekdayID := w.ID
-	if weekdayID != "MON" && weekdayID != "TUE" && weekdayID != "WED" && weekdayID != "THU" && weekdayID != "FRI" && weekdayID != "SAT" && weekdayID != "SUN" {
+	if weekdayID != 1 && weekdayID != 2 && weekdayID != 3 && weekdayID != 4 && weekdayID != 5 && weekdayID != 6 && weekdayID != 7 {
 		return pkg.ErrValidation
 	}
 

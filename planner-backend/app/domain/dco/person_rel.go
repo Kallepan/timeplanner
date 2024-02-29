@@ -34,13 +34,13 @@ type RelRemoveWorkplaceRequest struct {
 }
 
 type RelAddWeekdayRequest struct {
-	WeekdayID string `json:"weekday_id" binding:"required"`
+	WeekdayID int64 `json:"weekday_id" binding:"required"`
 }
 
 func (r *RelAddWeekdayRequest) Validate() error {
 	/* Validate the weekday request */
 	weekdayID := r.WeekdayID
-	if weekdayID != "MON" && weekdayID != "TUE" && weekdayID != "WED" && weekdayID != "THU" && weekdayID != "FRI" && weekdayID != "SAT" && weekdayID != "SUN" {
+	if weekdayID != 1 && weekdayID != 2 && weekdayID != 3 && weekdayID != 4 && weekdayID != 5 && weekdayID != 6 && weekdayID != 7 {
 		return pkg.ErrValidation
 	}
 

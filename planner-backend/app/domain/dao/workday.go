@@ -23,7 +23,7 @@ type Workday struct {
 	Comment string
 	Active  bool
 
-	Weekday string
+	Weekday int64
 }
 
 func (w *Workday) ParseFromDBRecord(record *neo4j.Record, date string) error {
@@ -78,7 +78,7 @@ func (w *Workday) ParseFromDBRecord(record *neo4j.Record, date string) error {
 		return err
 	}
 
-	weekday, err := neo4j.GetProperty[string](workdayNode, "weekday")
+	weekday, err := neo4j.GetProperty[int64](workdayNode, "weekday")
 	if err != nil {
 		return err
 	}

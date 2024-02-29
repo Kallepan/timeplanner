@@ -84,7 +84,7 @@ def create_persons(department_id: str, workplace_ids: list[str]) -> None:
 
             weekday_request_url = f"{URL}/person/{id.lower()}/weekday"
             for weekday_id in weekdays.split(","):
-                weekday_data = {"weekday_id": weekday_id}
+                weekday_data = {"weekday_id": int(weekday_id)}
                 weekday_response = requests.post(weekday_request_url, json=weekday_data)
                 if (
                     weekday_response.status_code != 201

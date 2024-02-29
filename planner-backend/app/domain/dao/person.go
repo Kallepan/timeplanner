@@ -7,7 +7,7 @@ import (
 )
 
 type Weekday struct {
-	ID   string
+	ID   int64
 	Name string
 }
 
@@ -16,7 +16,7 @@ func (w *Weekday) ParseFromNode(node *neo4j.Node) error {
 	* Parses a weekday struct from a neo4j node and sets the value on this weekday
 	 */
 
-	id, err := neo4j.GetProperty[string](node, "id")
+	id, err := neo4j.GetProperty[int64](node, "id")
 	if err != nil {
 		return err
 	}

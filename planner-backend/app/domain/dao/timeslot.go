@@ -8,7 +8,7 @@ import (
 )
 
 type OnWeekday struct {
-	ID        string
+	ID        int64
 	Name      string
 	StartTime time.Time
 	EndTime   time.Time
@@ -33,7 +33,7 @@ type Timeslot struct {
 }
 
 func (w *OnWeekday) ParseFromMap(data map[string]interface{}) error {
-	id, ok := data["id"].(string)
+	id, ok := data["id"].(int64)
 	if !ok {
 		return errors.New("could not parse id")
 	}

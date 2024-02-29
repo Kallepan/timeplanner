@@ -18,15 +18,15 @@ func TestWorkdayRepositorySave(t *testing.T) {
 		id:             "ts1",
 		name:           "Timeslot 1",
 		weekdays: []struct {
-			id        string
+			id        int64
 			startTime time.Time
 			endTime   time.Time
 		}{
-			{id: "MON", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "TUE", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "WED", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "THU", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "FRI", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 1, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 2, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 3, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 4, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 5, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
 		},
 	}
 	timeslotCreatorTwo := TimeslotCreatorImpl{
@@ -37,17 +37,17 @@ func TestWorkdayRepositorySave(t *testing.T) {
 		id:             "ts2",
 		name:           "Timeslot 2",
 		weekdays: []struct {
-			id        string
+			id        int64
 			startTime time.Time
 			endTime   time.Time
 		}{
-			{id: "MON", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "TUE", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "WED", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "THU", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "FRI", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "SAT", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "SUN", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 1, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 2, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 3, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 4, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 5, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 6, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 7, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
 		},
 	}
 	timeslotCreatorThree := TimeslotCreatorImpl{
@@ -58,17 +58,17 @@ func TestWorkdayRepositorySave(t *testing.T) {
 		id:             "ts1",
 		name:           "Timeslot 1",
 		weekdays: []struct {
-			id        string
+			id        int64
 			startTime time.Time
 			endTime   time.Time
 		}{
-			{id: "MON", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "TUE", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "WED", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "THU", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "FRI", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "SAT", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "SUN", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 1, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 2, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 3, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 4, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 5, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 6, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 7, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
 		},
 	}
 	tests := []struct {
@@ -292,15 +292,15 @@ func TestAssignOnePersonToWorkday(t *testing.T) {
 		id:             "ts1",
 		name:           "Timeslot 1",
 		weekdays: []struct {
-			id        string
+			id        int64
 			startTime time.Time
 			endTime   time.Time
 		}{
-			{id: "MON", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "TUE", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "WED", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "THU", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "FRI", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 1, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 2, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 3, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 4, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 5, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
 		},
 	}
 	timeslotCreatorTwo := TimeslotCreatorImpl{
@@ -311,17 +311,17 @@ func TestAssignOnePersonToWorkday(t *testing.T) {
 		id:             "ts2",
 		name:           "Timeslot 2",
 		weekdays: []struct {
-			id        string
+			id        int64
 			startTime time.Time
 			endTime   time.Time
 		}{
-			{id: "MON", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "TUE", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "WED", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "THU", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "FRI", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "SAT", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "SUN", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 1, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 2, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 3, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 4, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 5, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 6, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 7, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
 		},
 	}
 	timeslotCreatorThree := TimeslotCreatorImpl{
@@ -332,18 +332,17 @@ func TestAssignOnePersonToWorkday(t *testing.T) {
 		id:             "ts1",
 		name:           "Timeslot 1",
 		weekdays: []struct {
-			id        string
+			id        int64
 			startTime time.Time
 			endTime   time.Time
 		}{
-			{id: "MON", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "TUE", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "WED", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "THU", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "FRI", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "SAT", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-			{id: "SUN", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-		},
+			{id: 1, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 2, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 3, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 4, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 5, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 6, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+			{id: 7, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)}},
 	}
 
 	personToCreateOne := PersonCreatorImpl{
@@ -372,7 +371,7 @@ func TestAssignOnePersonToWorkday(t *testing.T) {
 				departmentID: "dept1",
 			},
 		},
-		weekdayIDs: []string{"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"},
+		weekdayIDs: []int64{1, 2, 3, 4, 5, 6, 7},
 		person: struct {
 			id           string
 			email        string
@@ -415,7 +414,7 @@ func TestAssignOnePersonToWorkday(t *testing.T) {
 				departmentID: "dept1",
 			},
 		},
-		weekdayIDs: []string{"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"},
+		weekdayIDs: []int64{1, 2, 3, 4, 5, 6, 7},
 		person: struct {
 			id           string
 			email        string
@@ -459,7 +458,7 @@ func TestAssignOnePersonToWorkday(t *testing.T) {
 				departmentID: "dept2",
 			},
 		},
-		weekdayIDs: []string{"MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"},
+		weekdayIDs: []int64{1, 2, 3, 4, 5, 6, 7},
 		person: struct {
 			id           string
 			email        string

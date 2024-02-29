@@ -23,8 +23,8 @@ type PersonRelRepository interface {
 	AddWorkplaceToPerson(person dao.Person, departmentID string, workplaceID string) error
 	RemoveWorkplaceFromPerson(person dao.Person, departmentID string, workplaceID string) error
 
-	AddWeekdayToPerson(person dao.Person, weekdayID string) error
-	RemoveWeekdayFromPerson(person dao.Person, weekdayID string) error
+	AddWeekdayToPerson(person dao.Person, weekdayID int64) error
+	RemoveWeekdayFromPerson(person dao.Person, weekdayID int64) error
 }
 
 type PersonRelRepositoryImpl struct {
@@ -318,7 +318,7 @@ func (p PersonRelRepositoryImpl) RemoveWorkplaceFromPerson(person dao.Person, de
 	return nil
 }
 
-func (p PersonRelRepositoryImpl) AddWeekdayToPerson(person dao.Person, weekdayID string) error {
+func (p PersonRelRepositoryImpl) AddWeekdayToPerson(person dao.Person, weekdayID int64) error {
 	/* Adds a weekday to a person
 	   @param person: The person to add the weekday to
 	   @param weekdayID: The ID of the weekday to add
@@ -350,7 +350,7 @@ func (p PersonRelRepositoryImpl) AddWeekdayToPerson(person dao.Person, weekdayID
 	return nil
 }
 
-func (p PersonRelRepositoryImpl) RemoveWeekdayFromPerson(person dao.Person, weekdayID string) error {
+func (p PersonRelRepositoryImpl) RemoveWeekdayFromPerson(person dao.Person, weekdayID int64) error {
 	/* Removes a weekday from a person
 	   @param person: The person to remove the weekday from
 	   @param weekdayID: The ID of the weekday to remove

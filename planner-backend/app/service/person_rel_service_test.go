@@ -910,7 +910,7 @@ func TestAddWeekdayToPerson(t *testing.T) {
 		},
 		{
 			mockRequest: map[string]interface{}{
-				"weekday_id": "MON",
+				"weekday_id": 1,
 			},
 			findValue: dao.Person{
 				ID: "TEST",
@@ -923,7 +923,7 @@ func TestAddWeekdayToPerson(t *testing.T) {
 		},
 		{
 			mockRequest: map[string]interface{}{
-				"weekday_id": "MON",
+				"weekday_id": 1,
 			},
 			findValue: dao.Person{
 				ID: "test",
@@ -946,7 +946,7 @@ func TestAddWeekdayToPerson(t *testing.T) {
 		},
 		{
 			mockRequest: map[string]interface{}{
-				"weekday_id": "MON",
+				"weekday_id": 1,
 			},
 			findValue: nil,
 			findError: pkg.ErrNoRows,
@@ -957,7 +957,7 @@ func TestAddWeekdayToPerson(t *testing.T) {
 		},
 		{
 			mockRequest: map[string]interface{}{
-				"weekday_id": "MON",
+				"weekday_id": 1,
 			},
 			findValue:          nil,
 			findError:          nil,
@@ -966,7 +966,7 @@ func TestAddWeekdayToPerson(t *testing.T) {
 		},
 		{
 			mockRequest: map[string]interface{}{
-				"weekday_id": "MON",
+				"weekday_id": 1,
 			},
 			findValue: dao.Person{
 				ID: "test",
@@ -1029,7 +1029,7 @@ func TestRemoveWeekdayFromPerson(t *testing.T) {
 			findError: nil,
 			params: map[string]string{
 				"personID":  "test",
-				"weekdayID": "MON",
+				"weekdayID": "1",
 			},
 			expectedStatusCode: http.StatusOK,
 		},
@@ -1040,7 +1040,7 @@ func TestRemoveWeekdayFromPerson(t *testing.T) {
 			findError: nil,
 			params: map[string]string{
 				"personID":  "test",
-				"weekdayID": "MON",
+				"weekdayID": "1",
 			},
 			expectedStatusCode: http.StatusOK,
 		},
@@ -1059,7 +1059,7 @@ func TestRemoveWeekdayFromPerson(t *testing.T) {
 			findError: pkg.ErrNoRows,
 			params: map[string]string{
 				"personID":  "test",
-				"weekdayID": "MON",
+				"weekdayID": "1",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 		},
@@ -1067,7 +1067,7 @@ func TestRemoveWeekdayFromPerson(t *testing.T) {
 			findValue: nil,
 			findError: nil,
 			params: map[string]string{
-				"weekdayID": "MON",
+				"weekdayID": "1",
 			},
 			expectedStatusCode: http.StatusBadRequest,
 		},
@@ -1078,7 +1078,7 @@ func TestRemoveWeekdayFromPerson(t *testing.T) {
 			findError: nil,
 			params: map[string]string{
 				"personID":  "test",
-				"weekdayID": "MON",
+				"weekdayID": "1",
 			},
 			mockError:          errors.New("test"),
 			expectedStatusCode: 500,

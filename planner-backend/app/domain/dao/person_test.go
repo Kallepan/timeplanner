@@ -18,7 +18,7 @@ func TestParseAdditionalFieldsFromDBRecord(t *testing.T) {
 				Values: []any{
 					[]any{
 						neo4j.Node{
-							Id:        0,
+							Id:        1,
 							ElementId: "test",
 							Labels:    []string{"Workplace"},
 							Props: map[string]interface{}{
@@ -30,8 +30,7 @@ func TestParseAdditionalFieldsFromDBRecord(t *testing.T) {
 					},
 					[]any{
 						neo4j.Node{
-
-							Id:        0,
+							Id:        1,
 							ElementId: "test",
 							Labels:    []string{"Department"},
 							Props: map[string]interface{}{
@@ -42,12 +41,11 @@ func TestParseAdditionalFieldsFromDBRecord(t *testing.T) {
 					},
 					[]any{
 						neo4j.Node{
-
-							Id:        0,
+							Id:        1,
 							ElementId: "test",
 							Labels:    []string{"Weekday"},
 							Props: map[string]interface{}{
-								"id":   "MON",
+								"id":   *new(int64),
 								"name": "Monday",
 							},
 						},

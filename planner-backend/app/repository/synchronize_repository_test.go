@@ -47,13 +47,13 @@ func TestSynchronize(t *testing.T) {
 				name:           "Timeslot 1",
 
 				weekdays: []struct {
-					id        string
+					id        int64
 					startTime time.Time
 					endTime   time.Time
 				}{
-					{id: "MON", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-					{id: "TUE", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-					{id: "WED", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+					{id: 1, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+					{id: 2, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+					{id: 3, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
 				},
 			}
 			if err := timeslotCreatorOne.Create(db, ctx); err != nil {
@@ -69,13 +69,13 @@ func TestSynchronize(t *testing.T) {
 				name:           "Timeslot 2",
 
 				weekdays: []struct {
-					id        string
+					id        int64
 					startTime time.Time
 					endTime   time.Time
 				}{
-					{id: "THU", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-					{id: "FRI", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-					{id: "SAT", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+					{id: 4, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+					{id: 5, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+					{id: 6, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
 				},
 			}
 			if err := timeslotCreatorTwo.Create(db, ctx); err != nil {
@@ -90,11 +90,11 @@ func TestSynchronize(t *testing.T) {
 				name:           "Timeslot 3",
 
 				weekdays: []struct {
-					id        string
+					id        int64
 					startTime time.Time
 					endTime   time.Time
 				}{
-					{id: "SUN", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+					{id: 7, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
 				},
 			}
 			if err := timeslotCreatorThree.Create(db, ctx); err != nil {
@@ -183,13 +183,13 @@ func TestCreateWorkDay(t *testing.T) {
 				name:           "Timeslot 1",
 
 				weekdays: []struct {
-					id        string
+					id        int64
 					startTime time.Time
 					endTime   time.Time
 				}{
-					{id: "MON", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-					{id: "TUE", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-					{id: "WED", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+					{id: 1, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+					{id: 2, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+					{id: 3, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
 				},
 			}
 			if err := timeslotCreatorOne.Create(db, ctx); err != nil {
@@ -205,13 +205,13 @@ func TestCreateWorkDay(t *testing.T) {
 				name:           "Timeslot 2",
 
 				weekdays: []struct {
-					id        string
+					id        int64
 					startTime time.Time
 					endTime   time.Time
 				}{
-					{id: "THU", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-					{id: "FRI", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
-					{id: "SAT", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+					{id: 4, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+					{id: 5, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+					{id: 6, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
 				},
 			}
 			if err := timeslotCreatorTwo.Create(db, ctx); err != nil {
@@ -226,11 +226,11 @@ func TestCreateWorkDay(t *testing.T) {
 				name:           "Timeslot 3",
 
 				weekdays: []struct {
-					id        string
+					id        int64
 					startTime time.Time
 					endTime   time.Time
 				}{
-					{id: "SUN", startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
+					{id: 7, startTime: time.Date(2021, 1, 1, 8, 0, 0, 0, time.UTC), endTime: time.Date(2021, 1, 1, 16, 0, 0, 0, time.UTC)},
 				},
 			}
 			if err := timeslotCreatorThree.Create(db, ctx); err != nil {

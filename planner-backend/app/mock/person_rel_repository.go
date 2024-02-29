@@ -60,10 +60,10 @@ func (r *PersonRelRepositoryMock) AddWorkplaceToPerson(person dao.Person, depart
 func (r *PersonRelRepositoryMock) RemoveWorkplaceFromPerson(person dao.Person, departmentID string, workplaceID string) error {
 	return r.errorContainer["RemoveWorkplaceFromPerson"]
 }
-func (r *PersonRelRepositoryMock) AddWeekdayToPerson(person dao.Person, weekdayID string) error {
+func (r *PersonRelRepositoryMock) AddWeekdayToPerson(person dao.Person, weekdayID int64) error {
 	return r.errorContainer["AddWeekdayToPerson"]
 }
-func (r *PersonRelRepositoryMock) RemoveWeekdayFromPerson(person dao.Person, weekdayID string) error {
+func (r *PersonRelRepositoryMock) RemoveWeekdayFromPerson(person dao.Person, weekdayID int64) error {
 	return r.errorContainer["RemoveWeekdayFromPerson"]
 }
 

@@ -85,7 +85,7 @@ type WorkdayResponse struct {
 	StartTime         string             `json:"start_time"`
 	DurationInMinutes int64              `json:"duration_in_minutes"`
 	EndTime           string             `json:"end_time"`
-	Weekday           string             `json:"weekday"`
+	Weekday           int64              `json:"weekday"`
 	Comment           string             `json:"comment"`
 
 	// Assigned Person can be nil

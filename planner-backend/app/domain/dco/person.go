@@ -11,7 +11,7 @@ type WorkplaceInPersonResponse struct {
 	DepartmentID string `json:"department_id"`
 }
 type WeekdayResponse struct {
-	ID   string `json:"id"`
+	ID   int64  `json:"id"`
 	Name string `json:"name"`
 }
 

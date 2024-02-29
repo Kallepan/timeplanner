@@ -13,7 +13,7 @@ import (
 type SynchronizeRepository interface {
 	Synchronize(weeksInAdvance int) error
 
-	createWorkday(ctx context.Context, tx neo4j.ManagedTransaction, date string, weekday string) error
+	createWorkday(ctx context.Context, tx neo4j.ManagedTransaction, date string, weekday int64) error
 }
 
 type SynchronizeRepositoryImpl struct {
@@ -75,7 +75,7 @@ func (d SynchronizeRepositoryImpl) Synchronize(weeksInAdvance int) error {
 
 }
 
-func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, tx neo4j.ManagedTransaction, date string, weekdayID string) error {
+func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, tx neo4j.ManagedTransaction, date string, weekdayID int64) error {
 	/**
 	 * Create Workday Nodes for Given Weekday and Date
 	 *
@@ -143,7 +143,7 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, tx neo4j.M
 
 	// Check if the result is empty
 	if !result.Next(ctx) || result.Err() != nil {
-		return fmt.Errorf("no workday nodes were created for date %s and weekday %s", date, weekdayID)
+		return fmt.Errorf("no workday nodes were created for date %s and weekday %d", date, weekdayID)
 	}
 
 	return err
