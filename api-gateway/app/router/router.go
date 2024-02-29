@@ -11,6 +11,11 @@ import (
 )
 
 func Init(init *config.Injector) *gin.Engine {
+	// set gin to release mode
+	if os.Getenv("MODE") == "production" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	router := gin.New()
 
 	// gin Middlewares

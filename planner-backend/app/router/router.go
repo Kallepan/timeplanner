@@ -1,13 +1,18 @@
 package router
 
 import (
-	"api-gateway/app/middleware"
+	"os"
 	"planner-backend/config"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Init(init *config.Injector) *gin.Engine {
+	// set gin to release mode
+	if os.Getenv("MODE") == "production" {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	router := gin.New()
 
 	// gin Middlewares
@@ -39,7 +44,7 @@ func Init(init *config.Injector) *gin.Engine {
 		}
 		// secured routes
 		departmentSecured := plannerAPI.Group("/department")
-		departmentSecured.Use(middleware.RequiredAuth())
+		//departmentSecured.Use(middleware.RequiredAuth())
 		{
 
 			departmentSecured.POST("/", init.DepartmentCtrl.Create)
@@ -75,7 +80,7 @@ func Init(init *config.Injector) *gin.Engine {
 		}
 		// secured routes
 		personSecured := plannerAPI.Group("/person")
-		personSecured.Use(middleware.RequiredAuth())
+		//personSecured.Use(middleware.RequiredAuth())
 		{
 			personSecured.POST("/", init.PersonCtrl.Create)
 			personSecured.PUT("/:personID", init.PersonCtrl.Update)
@@ -106,7 +111,7 @@ func Init(init *config.Injector) *gin.Engine {
 
 		// secured routes
 		workdaySecured := plannerAPI.Group("/workday")
-		workdaySecured.Use(middleware.RequiredAuth())
+		//workdaySecured.Use(middleware.RequiredAuth())
 		{
 			workdaySecured.PUT("/", init.WorkdayCtrl.UpdateWorkday)
 			workdaySecured.POST("/assign", init.WorkdayCtrl.AssignPersonToWorkday)
