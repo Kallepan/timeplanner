@@ -29,12 +29,12 @@ func (t TimeslotRepositoryImpl) FindAllTimeslots(departmentID string, workplaceI
     MATCH (d:Department {id: $departmentID})-[:HAS_WORKPLACE]->(wp:Workplace {id: $workplaceID})-[:HAS_TIMESLOT]->(t:Timeslot)
     OPTIONAL MATCH (t)-[r:OFFERED_ON]->(wd:Weekday)
 	WHERE t.deleted_at IS NULL
-    RETURN t,
-        COLLECT({
-            id: wd.id,
-            name: wd.name,
-            start_time: r.start_time,
-            end_time: r.end_time
+    WITH t, wd, r ORDER BY wd.id
+	RETURN t, COLLECT({
+		id: wd.id,
+		name: wd.name,
+		start_time: r.start_time,
+		end_time: r.end_time
 	}) AS weekdays
     `
 	params := map[string]interface{}{
