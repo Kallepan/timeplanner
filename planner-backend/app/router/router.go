@@ -70,7 +70,7 @@ func Init(init *config.Injector) *gin.Engine {
 
 		person := plannerAPI.Group("/person")
 		{
-			person.GET("/", init.PersonCtrl.GetAll)
+			person.GET("/", init.PersonCtrl.GetAll) // ?departmentID=...
 			person.GET("/:personID", init.PersonCtrl.Get)
 
 			personRel := person.Group("/:personID")
