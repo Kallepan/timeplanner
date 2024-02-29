@@ -28,8 +28,8 @@ export const WeekdayIDToGridColumn = (weekdayID: number): number => {
    * weekdayToGridColumn(2) // Tuesday -> 4
    **/
 
-  if (weekdayID === 0) {
-    throw new Error('Weekday ID cannot be 0');
+  if (weekdayID > 7 || weekdayID < 1) {
+    throw new Error('Weekday ID cannot be greater than 7 or less than 1');
   }
 
   return weekdayID + 2;

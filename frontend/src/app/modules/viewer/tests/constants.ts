@@ -59,6 +59,7 @@ export const mockDepartment: DepartmentWithMetadata = {
 export const mockWorkplace: WorkplaceWithMetadata = {
   id: 'workplace1',
   name: 'workplace1',
+  department_id: 'department1',
   created_at: new Date(),
   updated_at: new Date(),
   deleted_at: null,
@@ -72,7 +73,7 @@ export const mockTimeslot: TimeslotWithMetadata = {
   workplace_name: 'workplace1',
   weekdays: [
     {
-      id: 'weekday1',
+      id: 1,
       name: 'Monday',
       start_time: '08:00:00',
       end_time: '16:00:00',
@@ -93,7 +94,7 @@ export const mockWorkdays: WorkdayTimeslot[] = [
     start_time: '08:00:00',
     end_time: '16:00:00',
     persons: [],
-    weekday: 'MON',
+    weekday: 1,
     duration_in_minutes: 60,
     comment: '',
   },
@@ -105,7 +106,7 @@ export const mockWorkdays: WorkdayTimeslot[] = [
     start_time: '08:00:00',
     end_time: '16:00:00',
     persons: [],
-    weekday: 'MON',
+    weekday: 1,
     duration_in_minutes: 60,
     comment: 'comment',
   },

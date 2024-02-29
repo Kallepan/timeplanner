@@ -90,18 +90,80 @@ describe('EditableTimetableComponent', () => {
   });
 
   it('should return slots from monday to friday', () => {
-    const slots = [
-      { id: 'id', weekday: 'MON' },
-      { id: 'id', weekday: 'TUE' },
-      { id: 'id', weekday: 'WED' },
-      { id: 'id', weekday: 'THU' },
-      { id: 'id', weekday: 'FRI' },
-      { id: 'id', weekday: 'SAT' },
-      { id: 'id', weekday: 'SUN' },
+    const tests = [
+      {
+        slots: [
+          { weekday: 1, name: 'Monday' },
+          { weekday: 2, name: 'Tuesday' },
+          { weekday: 3, name: 'Wednesday' },
+          { weekday: 4, name: 'Thursday' },
+          { weekday: 5, name: 'Friday' },
+          { weekday: 6, name: 'Saturday' },
+          { weekday: 7, name: 'Sunday' },
+        ],
+        expected: 5,
+      },
+      {
+        slots: [
+          { weekday: 1, name: 'Monday' },
+          { weekday: 2, name: 'Tuesday' },
+          { weekday: 3, name: 'Wednesday' },
+          { weekday: 4, name: 'Thursday' },
+          { weekday: 5, name: 'Friday' },
+        ],
+        expected: 5,
+      },
+      {
+        slots: [
+          { weekday: 6, name: 'Saturday' },
+          { weekday: 7, name: 'Sunday' },
+        ],
+        expected: 0,
+      },
+      {
+        slots: [],
+        expected: 0,
+      },
+      {
+        slots: [
+          { weekday: 1, name: 'Monday' },
+          { weekday: 2, name: 'Tuesday' },
+          { weekday: 3, name: 'Wednesday' },
+          { weekday: 4, name: 'Thursday' },
+          { weekday: 5, name: 'Friday' },
+          { weekday: 6, name: 'Saturday' },
+          { weekday: 1, name: 'Monday' },
+          { weekday: 2, name: 'Tuesday' },
+          { weekday: 3, name: 'Wednesday' },
+          { weekday: 4, name: 'Thursday' },
+          { weekday: 5, name: 'Friday' },
+          { weekday: 6, name: 'Saturday' },
+        ],
+        expected: 10,
+      },
+      {
+        slots: [
+          { weekday: 1, name: 'Monday' },
+          { weekday: 2, name: 'Tuesday' },
+          { weekday: 3, name: 'Wednesday' },
+          { weekday: 4, name: 'Thursday' },
+          { weekday: 5, name: 'Friday' },
+          { weekday: 6, name: 'Saturday' },
+          { weekday: 7, name: 'Sunday' },
+          { weekday: 8, name: 'Invalid' },
+          { weekday: 9, name: 'Invalid' },
+          { weekday: 10, name: 'Invalid' },
+          { weekday: 11, name: 'Invalid' },
+          { weekday: 12, name: 'Invalid' },
+        ],
+        expected: 5,
+      },
     ];
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const result = component.getSlotsFromMonToFri(slots as any[]);
-    expect(result.length).toBe(5);
+    tests.forEach((test) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const result = component.getSlotsFromMonToFri(test.slots as any[]);
+      expect(result.length).toBe(test.expected);
+    });
   });
 });

@@ -30,6 +30,7 @@ describe('WorkplaceAPIService', () => {
         {
           id: 'workplace1',
           name: 'workplace1',
+          department_id: 'department1',
           created_at: new Date(),
           updated_at: new Date(),
           deleted_at: null,
@@ -57,7 +58,7 @@ describe('WorkplaceAPIService', () => {
         name: 'workplace1',
 
         id: 'workplace1',
-        department: 'department1',
+        department_id: 'department1',
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: null,
@@ -83,7 +84,7 @@ describe('WorkplaceAPIService', () => {
       data: {
         name: 'workplace1',
         id: 'workplace1',
-        department: 'department1',
+        department_id: 'department1',
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: null,
@@ -114,7 +115,7 @@ describe('WorkplaceAPIService', () => {
       data: {
         name: 'workplace1',
         id: 'workplace1',
-        department: 'department1',
+        department_id: 'department1',
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: null,

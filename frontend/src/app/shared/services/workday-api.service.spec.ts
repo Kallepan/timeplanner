@@ -27,7 +27,7 @@ const MOCK_WORKDAY: WorkdayTimeslot = {
   } as TimeslotWithMetadata,
   start_time: '09:00',
   end_time: '10:00',
-  weekday: 'MON',
+  weekday: 1,
   duration_in_minutes: 60,
   comment: '',
 

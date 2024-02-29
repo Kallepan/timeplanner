@@ -166,7 +166,7 @@ describe('TimeslotAPIService', () => {
         deleted_at: null,
         weekdays: [
           {
-            id: 'MON',
+            id: 1,
             name: 'Monday',
             start_time: '08:00',
             end_time: '16:00',
