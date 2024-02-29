@@ -17,33 +17,20 @@ export const DateToGridColumn = (d: Date): number => {
   return WeekdayIDToGridColumn(weekdayID);
 };
 
-export const WeekdayIDToGridColumn = (weekdayID: string): number => {
+export const WeekdayIDToGridColumn = (weekdayID: number): number => {
   /**
    * Converts a weekday ID to a grid column number
    *
    * @param weekdayID The weekday ID to convert
    * @returns The grid column number
    * @example
-   * weekdayToGridColumn('MON') // Monday -> 3
-   * weekdayToGridColumn('TUE') // Tuesday -> 4
+   * weekdayToGridColumn(1) // Monday -> 3
+   * weekdayToGridColumn(2) // Tuesday -> 4
    **/
 
-  switch (weekdayID) {
-    case 'MON':
-      return 3;
-    case 'TUE':
-      return 4;
-    case 'WED':
-      return 5;
-    case 'THU':
-      return 6;
-    case 'FRI':
-      return 7;
-    case 'SAT':
-      return 8;
-    case 'SUN':
-      return 9;
-    default:
-      throw new Error(`Invalid weekday ID: ${weekdayID}`);
+  if (weekdayID === 0) {
+    throw new Error('Weekday ID cannot be 0');
   }
+
+  return weekdayID + 2;
 };

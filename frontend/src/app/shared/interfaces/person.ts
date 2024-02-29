@@ -3,7 +3,7 @@ import { Department } from './department';
 import { Workplace } from './workplace';
 
 type OnWeekday = {
-  id: string;
+  id: number;
   name: string;
 };
 

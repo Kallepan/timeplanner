@@ -38,7 +38,7 @@ export class SelectPersonsComponent {
   );
 
   @Input() initiallySelectedPersonFromParent: PersonWithMetadata[] = [];
-  @Input() weekday: string;
+  @Input() weekday: number;
 
   displayFn(person: PersonWithMetadata | null): string {
     return person ? `${person.last_name} (${person.id})` : '';
