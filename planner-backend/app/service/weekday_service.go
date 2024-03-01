@@ -25,6 +25,7 @@ type WeekdayService interface {
 
 	AddWeekdayToTimeslot(c *gin.Context)
 	DeleteWeekdayFromTimeslot(c *gin.Context)
+	UpdateWeekdayForTimeslot(c *gin.Context)
 }
 
 type WeekdayServiceImpl struct {
@@ -176,54 +177,48 @@ func (w WeekdayServiceImpl) DeleteWeekdayFromTimeslot(c *gin.Context) {
 	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, pkg.Null()))
 }
 
-/*
-*
+func (w WeekdayServiceImpl) UpdateWeekdayForTimeslot(c *gin.Context) {
+	defer pkg.PanicHandler(c)
+	slog.Info("start to execute program update weekday for timeslot")
 
-	func (w WeekdayServiceImpl) UpdateWeekdayForTimeslot(c *gin.Context) {
-		defer pkg.PanicHandler(c)
-		slog.Info("start to execute program update weekday for timeslot")
-
-		departmentID := c.Param("departmentID")
-		workplaceID := c.Param("workplaceID")
-		timeslotID := c.Param("timeslotID")
-		if departmentID == "" || workplaceID == "" || timeslotID == "" {
-			pkg.PanicException(constant.InvalidRequest)
-		}
-
-		var weekdayRequest dco.WeekdayRequest
-		if err := c.ShouldBindJSON(&weekdayRequest); err != nil {
-			slog.Error("Error when binding json", "error", err)
-			pkg.PanicException(constant.InvalidRequest)
-		}
-
-		timeslot, err := w.TimeslotRepository.FindTimeslotByID(departmentID, workplaceID, timeslotID)
-		switch err {
-		case nil:
-			break
-		case pkg.ErrNoRows:
-			pkg.PanicException(constant.InvalidRequest)
-		default:
-			slog.Error("Error when fetching data from database", "error", err)
-			pkg.PanicException(constant.UnknownError)
-		}
-
-		weekday, err := mapWeekdayRequestToWeekday(weekdayRequest)
-		if err != nil {
-			pkg.PanicException(constant.InvalidRequest)
-		}
-		weekdays, err := w.WeekdayRepository.UpdateWeekdayForTimeslot(&timeslot, weekday)
-		if err != nil {
-			slog.Error("Error when fetching data from database", "error", err)
-			pkg.PanicException(constant.UnknownError)
-		}
-
-		data := mapWeekdayListToWeekdayResponseList(weekdays)
-
-		c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
+	departmentID := c.Param("departmentID")
+	workplaceID := c.Param("workplaceID")
+	timeslotID := c.Param("timeslotID")
+	if departmentID == "" || workplaceID == "" || timeslotID == "" {
+		pkg.PanicException(constant.InvalidRequest)
 	}
 
-*
-*/
+	var weekdayRequest dco.WeekdayRequest
+	if err := c.ShouldBindJSON(&weekdayRequest); err != nil {
+		slog.Error("Error when binding json", "error", err)
+		pkg.PanicException(constant.InvalidRequest)
+	}
+
+	timeslot, err := w.TimeslotRepository.FindTimeslotByID(departmentID, workplaceID, timeslotID)
+	switch err {
+	case nil:
+		break
+	case pkg.ErrNoRows:
+		pkg.PanicException(constant.InvalidRequest)
+	default:
+		slog.Error("Error when fetching data from database", "error", err)
+		pkg.PanicException(constant.UnknownError)
+	}
+
+	weekday, err := mapWeekdayRequestToWeekday(weekdayRequest)
+	if err != nil {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+	weekdays, err := w.WeekdayRepository.UpdateWeekdayForTimeslot(&timeslot, weekday)
+	if err != nil {
+		slog.Error("Error when fetching data from database", "error", err)
+		pkg.PanicException(constant.UnknownError)
+	}
+
+	data := mapOnWeekdayListToWeekdayResponseList(weekdays)
+
+	c.JSON(http.StatusOK, pkg.BuildResponse(constant.Success, data))
+}
 
 func mapWeekdaysRequestToWeekdayList(weekdaysRequest dco.WeekdaysRequest) ([]dao.OnWeekday, error) {
 	/* Maps a WeekdaysRequest to a list of Weekday */

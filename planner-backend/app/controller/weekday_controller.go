@@ -10,6 +10,7 @@ import (
 type WeekdayController interface {
 	AddWeekdayToTimeslot(ctx *gin.Context)
 	RemoveWeekdayFromTimeslot(ctx *gin.Context)
+	UpdateWeekdayForTimeslot(ctx *gin.Context)
 	BulkUpdateWeekdaysForTimeslot(ctx *gin.Context)
 }
 
@@ -23,6 +24,10 @@ func (u WeekdayControllerImpl) AddWeekdayToTimeslot(ctx *gin.Context) {
 
 func (u WeekdayControllerImpl) RemoveWeekdayFromTimeslot(ctx *gin.Context) {
 	u.WeekdayService.DeleteWeekdayFromTimeslot(ctx)
+}
+
+func (u WeekdayControllerImpl) UpdateWeekdayForTimeslot(ctx *gin.Context) {
+	u.WeekdayService.UpdateWeekdayForTimeslot(ctx)
 }
 
 func (u WeekdayControllerImpl) BulkUpdateWeekdaysForTimeslot(ctx *gin.Context) {

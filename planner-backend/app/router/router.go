@@ -63,9 +63,9 @@ func Init(init *config.Injector) *gin.Engine {
 
 			weekdaySecured := timeslotSecured.Group("/:timeslotID/weekday")
 			weekdaySecured.POST("/", init.WeekdayCtrl.AddWeekdayToTimeslot)
+			weekdaySecured.PUT("/", init.WeekdayCtrl.UpdateWeekdayForTimeslot)
 			weekdaySecured.DELETE("/", init.WeekdayCtrl.RemoveWeekdayFromTimeslot)
 			weekdaySecured.POST("/bulk", init.WeekdayCtrl.BulkUpdateWeekdaysForTimeslot)
-
 		}
 
 		person := plannerAPI.Group("/person")

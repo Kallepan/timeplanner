@@ -52,6 +52,13 @@ func (r *WeekdayRepositoryMock) DeleteWeekdayFromTimeslot(timeslot *dao.Timeslot
 	return r.errorContainer["DeleteWeekdayFromTimeslot"]
 }
 
+func (r *WeekdayRepositoryMock) UpdateWeekdayForTimeslot(timeslot *dao.Timeslot, weekday *dao.OnWeekday) ([]dao.OnWeekday, error) {
+	if r.dataContainer["UpdateWeekdayForTimeslot"] == nil {
+		return nil, r.errorContainer["UpdateWeekdayForTimeslot"]
+	}
+	return r.dataContainer["UpdateWeekdayForTimeslot"].([]dao.OnWeekday), r.errorContainer["UpdateWeekdayForTimeslot"]
+}
+
 /**
 * Function to create new WeekdayRepositoryMock
  */
