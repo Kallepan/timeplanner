@@ -186,7 +186,9 @@ describe('TimeslotAPIService', () => {
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
     expect(req.request.body).toEqual({
-      id: 'MON',
+      id: 1,
+      start_time: '08:00',
+      end_time: '16:00',
     });
 
     req.flush(mockTimeslot);
@@ -218,7 +220,7 @@ describe('TimeslotAPIService', () => {
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
     expect(req.request.body).toEqual({
-      id: 'MON',
+      id: 1,
     });
     req.flush(mockTimeslot);
   });
