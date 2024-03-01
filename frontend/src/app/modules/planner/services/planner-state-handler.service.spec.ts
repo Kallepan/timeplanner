@@ -31,8 +31,8 @@ const mockWorkdayTimeslot: WorkdayTimeslot = {
     deleted_at: null,
   },
   timeslot: {
-    department_name: 'test',
-    workplace_name: 'test',
+    department_id: 'test',
+    workplace_id: 'test',
     active: true,
     weekdays: [
       {

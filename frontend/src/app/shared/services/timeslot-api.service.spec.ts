@@ -31,8 +31,8 @@ describe('TimeslotAPIService', () => {
         {
           id: 'timeslot1',
           name: 'timeslot1',
-          department_name: 'department1',
-          workplace_name: 'workplace1',
+          department_id: 'department1',
+          workplace_id: 'workplace1',
           active: true,
           created_at: new Date(),
           updated_at: new Date(),
@@ -61,8 +61,8 @@ describe('TimeslotAPIService', () => {
       data: {
         id: 'timeslot1',
         name: 'timeslot1',
-        department_name: 'department1',
-        workplace_name: 'workplace1',
+        department_id: 'department1',
+        workplace_id: 'workplace1',
         active: true,
         created_at: new Date(),
         updated_at: new Date(),
@@ -90,8 +90,8 @@ describe('TimeslotAPIService', () => {
       data: {
         id: 'timeslot1',
         name: 'timeslot1',
-        department_name: 'department1',
-        workplace_name: 'workplace1',
+        department_id: 'department1',
+        workplace_id: 'workplace1',
         active: true,
         created_at: new Date(),
         updated_at: new Date(),
@@ -129,8 +129,8 @@ describe('TimeslotAPIService', () => {
       data: {
         name: 'timeslot1',
         id: 'timeslot1',
-        department_name: 'department1',
-        workplace_name: 'workplace1',
+        department_id: 'department1',
+        workplace_id: 'workplace1',
         active: true,
         created_at: new Date(),
         updated_at: new Date(),
@@ -158,8 +158,8 @@ describe('TimeslotAPIService', () => {
       data: {
         name: 'timeslot1',
         id: 'timeslot1',
-        department_name: 'department1',
-        workplace_name: 'workplace1',
+        department_id: 'department1',
+        workplace_id: 'workplace1',
         active: true,
         created_at: new Date(),
         updated_at: new Date(),
@@ -177,7 +177,7 @@ describe('TimeslotAPIService', () => {
       message: 'success',
     };
 
-    service.assignTimeslotToWeekday('department1', 'workplace1', 'timeslot1', 'MON').subscribe((result) => {
+    service.assignTimeslotToWeekday('department1', 'workplace1', 'timeslot1', 1, '08:00', '16:00').subscribe((result) => {
       expect(result).toEqual(mockTimeslot);
     });
 
@@ -197,8 +197,8 @@ describe('TimeslotAPIService', () => {
       data: {
         name: 'timeslot1',
         id: 'timeslot1',
-        department_name: 'department1',
-        workplace_name: 'workplace1',
+        department_id: 'department1',
+        workplace_id: 'workplace1',
         active: true,
         created_at: new Date(),
         updated_at: new Date(),
@@ -209,7 +209,7 @@ describe('TimeslotAPIService', () => {
       message: 'success',
     };
 
-    service.unassignTimeslotFromWeekday('department1', 'workplace1', 'timeslot1', 'MON').subscribe((result) => {
+    service.unassignTimeslotFromWeekday('department1', 'workplace1', 'timeslot1', 1).subscribe((result) => {
       expect(result).toEqual(mockTimeslot);
     });
 

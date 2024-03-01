@@ -74,7 +74,7 @@ export class TimeslotAPIService {
   }
 
   // Relations
-  assignTimeslotToWeekday(department: string, workplace: string, timeslot: string, weekdayID: string): Observable<APIResponse<TimeslotWithMetadata>> {
+  updateTimeslotOnWeekday(department: string, workplace: string, timeslot: string, id: number, start_time: string, end_time: string): Observable<APIResponse<TimeslotWithMetadata>> {
     const url = `${constants.APIS.PLANNER}/department/${department}/workplace/${workplace}/timeslot/${timeslot}/weekday`;
 
     const httpOptions = {
@@ -85,13 +85,34 @@ export class TimeslotAPIService {
     };
 
     const body = {
-      id: weekdayID,
+      id,
+      start_time,
+      end_time,
+    };
+
+    return this.http.put<APIResponse<TimeslotWithMetadata>>(url, body, httpOptions);
+  }
+
+  assignTimeslotToWeekday(department: string, workplace: string, timeslot: string, id: number, start_time: string, end_time: string): Observable<APIResponse<TimeslotWithMetadata>> {
+    const url = `${constants.APIS.PLANNER}/department/${department}/workplace/${workplace}/timeslot/${timeslot}/weekday`;
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      withCredentials: true,
+    };
+
+    const body = {
+      id,
+      start_time,
+      end_time,
     };
 
     return this.http.post<APIResponse<TimeslotWithMetadata>>(url, body, httpOptions);
   }
 
-  unassignTimeslotFromWeekday(department: string, workplace: string, timeslot: string, weekdayID: string): Observable<APIResponse<TimeslotWithMetadata>> {
+  unassignTimeslotFromWeekday(department: string, workplace: string, timeslot: string, weekdayID: number): Observable<APIResponse<TimeslotWithMetadata>> {
     const url = `${constants.APIS.PLANNER}/department/${department}/workplace/${workplace}/timeslot/${timeslot}/weekday`;
 
     const httpOptions = {

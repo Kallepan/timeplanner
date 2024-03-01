@@ -69,8 +69,8 @@ export const mockTimeslot: TimeslotWithMetadata = {
   id: 'timeslot1',
   name: 'timeslot1',
   active: true,
-  department_name: 'department1',
-  workplace_name: 'workplace1',
+  department_id: 'department1',
+  workplace_id: 'workplace1',
   weekdays: [
     {
       id: 1,

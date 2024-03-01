@@ -11,8 +11,8 @@ export interface Timeslot {
   id: string;
   name: string;
   active: boolean;
-  department_name: string;
-  workplace_name: string;
+  department_id: string;
+  workplace_id: string;
 
   weekdays: OfferedOnWeekdays[] | undefined;
 }

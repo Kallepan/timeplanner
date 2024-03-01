@@ -96,7 +96,7 @@ export class PersonAPIService {
     };
 
     const body = {
-      department_name: departmentName,
+      department_id: departmentName,
     };
 
     return this.http.post<APIResponse<null>>(url, body, httpOptions);
@@ -126,8 +126,8 @@ export class PersonAPIService {
     };
 
     const body = {
-      department_name: departmentName,
-      workplace_name: workplaceName,
+      department_id: departmentName,
+      workplace_id: workplaceName,
     };
 
     return this.http.post<APIResponse<null>>(url, body, httpOptions);
@@ -137,8 +137,8 @@ export class PersonAPIService {
     const url = `${constants.APIS.PLANNER}/person/${personID}/workplace`;
 
     const body = {
-      department_name: departmentName,
-      workplace_name: workplaceName,
+      department_id: departmentName,
+      workplace_id: workplaceName,
     };
 
     const httpOptions = {
