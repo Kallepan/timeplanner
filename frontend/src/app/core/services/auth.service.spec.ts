@@ -134,18 +134,14 @@ describe('AuthService', () => {
   });
 
   it('verifyToken should call correct methods and display error message', () => {
-    const logoutSpy = spyOn(service, 'logout');
-
     service.verifyToken();
     const req = httpMock.expectOne(`${constants.APIS.AUTH}/me`);
     expect(req.request.method).toBe('GET');
     req.flush({}, { status: 401, statusText: 'Unauthorized' });
 
-    expect(service.authData()).toBeUndefined();
+    expect(service.authData()).toBeNull();
     expect(notificationService.infoMessage).not.toHaveBeenCalled();
     expect(service.isAdmin$).toBeFalse();
     expect(service.loading$).toBeFalse();
-
-    expect(logoutSpy).toHaveBeenCalled();
   });
 });

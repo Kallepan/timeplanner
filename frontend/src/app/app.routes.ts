@@ -5,6 +5,7 @@ import { ViewerModule } from './modules/viewer/viewer.module';
 import { hasAccessToDepartmentGuard, isAdmin, isAuthenticated } from './core/guards/auth-guards';
 import { PlannerModule } from './modules/planner/planner.module';
 import { AbsencyModule } from './modules/absency/absency.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 export const routes: Routes = [
   {
@@ -30,6 +31,7 @@ export const routes: Routes = [
     path: 'admin',
     loadChildren: () => import('./modules/admin/admin.routes').then((m) => m.routes),
     canActivate: [isAuthenticated, isAdmin],
+    providers: [importProvidersFrom(AdminModule)],
   },
   { path: '', component: HomeComponent, title: 'Home' },
 ];
