@@ -1,0 +1,30 @@
+.container {
+  margin: 1rem;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 0.5rem;
+  margin-right: 1rem;
+}
+
+.tree-node {
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .spacer {
+    flex: 1 1 auto;
+  }
+}
+
+.split {
+  display: grid;
+  grid-template-columns: 0.5fr 1fr;
+  gap: 1rem;
+  align-items: flex-start;
+  justify-content: space-between;
+}

@@ -1,0 +1,69 @@
+@if (timeslot) {
+  <h3>{{ timeslot.name }}</h3>
+  <form class="create-form" [formGroup]="formGroup.controls['createForm']">
+    <div class="create-form-fields">
+      <mat-form-field>
+        <mat-label>Wochentag</mat-label>
+        <mat-select formControlName="weekday">
+          @for (option of validWeekdayOptions; track $index) {
+            <mat-option [value]="option.id">{{ option.name }}</mat-option>
+          }
+        </mat-select>
+        <mat-hint>{{ validWeekdayOptions.length ? 'Tag auswählen' : 'Kein Tag verfügbar' }}</mat-hint>
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Startzeit</mat-label>
+        <input type="text" matInput formControlName="startTime" placeholder="08:00" />
+        @if (formGroup.controls['createForm'].controls['startTime'].invalid) {
+          <mat-error>Ungültige Startzeit</mat-error>
+        }
+      </mat-form-field>
+      <mat-form-field>
+        <mat-label>Endzeit</mat-label>
+        <input type="text" matInput formControlName="endTime" placeholder="16:00" />
+        @if (formGroup.controls['createForm'].controls['endTime'].invalid) {
+          <mat-error>Ungültige Endzeit</mat-error>
+        }
+      </mat-form-field>
+    </div>
+
+    <button id="add-button" mat-mini-fab color="accent" (click)="submitAdd()" [disabled]="formGroup.controls['createForm'].invalid">
+      <mat-icon>add</mat-icon>
+    </button>
+  </form>
+  <mat-accordion [formGroup]="formGroup" multi="true">
+    @for (weekday of timeslot.weekdays; track $index) {
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> {{ weekday.id }} - {{ weekday.name }} </mat-panel-title>
+        </mat-expansion-panel-header>
+        <div class="content">
+          <mat-form-field>
+            <mat-label>Startzeit</mat-label>
+            <input type="text" matInput [formControl]="formGroup.controls['weekdays'].controls[$index].controls['startTime']" placeholder="08:00" />
+            @if (formGroup.controls['weekdays'].controls[$index].controls['startTime'].invalid) {
+              <mat-error>Ungültige Startzeit: Bsp: 08:00</mat-error>
+            }
+          </mat-form-field>
+          <mat-form-field>
+            <mat-label>Endzeit</mat-label>
+            <input type="text" matInput [formControl]="formGroup.controls['weekdays'].controls[$index].controls['endTime']" placeholder="16:00" />
+            @if (formGroup.controls['weekdays'].controls[$index].controls['endTime'].invalid) {
+              <mat-error>Ungültige Endzeit: Bsp: 16:00</mat-error>
+            }
+          </mat-form-field>
+          <span class="spacer"></span>
+          <button
+            mat-mini-fab
+            color="accent"
+            (click)="submitEdit(formGroup.controls['weekdays'].controls[$index].controls['startTime'], formGroup.controls['weekdays'].controls[$index].controls['endTime'], weekday.id)">
+            <mat-icon>save</mat-icon>
+          </button>
+          <button mat-mini-fab color="warn" (click)="submitRemove(weekday.id)"><mat-icon>delete</mat-icon></button>
+        </div>
+      </mat-expansion-panel>
+    }
+  </mat-accordion>
+} @else {
+  <h3>Bitte einen Timeslot auswählen</h3>
+}
