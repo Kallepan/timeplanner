@@ -63,7 +63,7 @@
               }">
               @defer (on viewport) {
                 <app-select-persons
-                  [persons]="ts.persons"
+                  [initiallySetPersons]="ts.persons"
                   [weekday]="ts.weekday"
                   [comment]="ts.comment"
                   (personAssignedToTimeslot)="personAssignedToTimeslotEventHandler($event.p, ts)"
