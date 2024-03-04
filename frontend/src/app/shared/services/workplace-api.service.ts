@@ -9,14 +9,35 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { APIResponse } from '@app/core/interfaces/response';
-import { Observable } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 import { CreateWorkplace, WorkplaceWithMetadata } from '../interfaces/workplace';
 import { constants } from '@app/constants/constants';
+import { CheckIDExistsInterface } from '@app/modules/admin/validators/id-validator';
 
 @Injectable({
   providedIn: 'root',
 })
-export class WorkplaceAPIService {
+export class WorkplaceAPIService implements CheckIDExistsInterface {
+  checkIDExists(id: string, departmentID?: string): Observable<boolean> {
+    if (departmentID === undefined) {
+      return of(true);
+    }
+
+    const url = `${constants.APIS.PLANNER}/department/${departmentID}/workplace/${id}`;
+
+    const headerOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      withCredentials: true,
+    };
+
+    return this.http.get<APIResponse<WorkplaceWithMetadata>>(url, headerOptions).pipe(
+      map((res) => res.data !== null),
+      catchError(() => of(false)),
+    );
+  }
+
   private http = inject(HttpClient);
 
   getWorkplaces(department: string): Observable<APIResponse<WorkplaceWithMetadata[]>> {

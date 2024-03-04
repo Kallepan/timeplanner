@@ -13,12 +13,33 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { APIResponse } from '@app/core/interfaces/response';
 import { constants } from '@app/constants/constants';
-import { Observable } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 import { CreateTimeslot, TimeslotWithMetadata } from '../interfaces/timeslot';
+import { CheckIDExistsInterface } from '@app/modules/admin/validators/id-validator';
 @Injectable({
   providedIn: 'root',
 })
-export class TimeslotAPIService {
+export class TimeslotAPIService implements CheckIDExistsInterface {
+  checkIDExists(id: string, departmentID?: string, workplaceID?: string): Observable<boolean> {
+    if (departmentID === undefined || workplaceID === undefined) {
+      return of(true);
+    }
+
+    const url = `${constants.APIS.PLANNER}/department/${departmentID}/workplace/${workplaceID}/timeslot/${id}`;
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      withCredentials: true,
+    };
+
+    return this.http.get<APIResponse<TimeslotWithMetadata>>(url, httpOptions).pipe(
+      map((res) => res.data !== null),
+      catchError(() => of(false)),
+    );
+  }
+
   private http = inject(HttpClient);
 
   getTimeslots(department: string, workplace: string): Observable<APIResponse<TimeslotWithMetadata[]>> {

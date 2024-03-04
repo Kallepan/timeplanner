@@ -1,5 +1,7 @@
 export class messages {
   public static ADMIN = {
+    CREATE_SUCCESSFUL: 'Erfolgreich erstellt',
+    CREATE_FAILED: 'Hinzuügen fehlgeschlagen',
     DELETE_SUCCESSFUL: 'Erfolgreich gelöscht',
     DELETE_FAILED: 'Löschen fehlgeschlagen',
 

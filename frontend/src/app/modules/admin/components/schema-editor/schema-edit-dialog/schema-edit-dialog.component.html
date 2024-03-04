@@ -1,0 +1,31 @@
+<form class="form" [formGroup]="formGroup">
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input matInput type="text" formControlName="name" placeholder="X 1" />
+
+    <mat-hint>Max 20 Zeichen</mat-hint>
+    @if (formGroup.controls.name.hasError('required')) {
+      <mat-error>Name ist erforderlich</mat-error>
+    }
+    @if (formGroup.controls.name.hasError('maxlength')) {
+      <mat-error>Name darf maximal 20 Zeichen enthalten</mat-error>
+    }
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>ID</mat-label>
+    <input matInput type="text" formControlName="id" placeholder="x1" />
+    <mat-hint>Kleinbuchstaben und Zahlen. Max 4 Zeichen.</mat-hint>
+    @if (formGroup.controls.id.hasError('required')) {
+      <mat-error>ID ist erforderlich</mat-error>
+    }
+    @if (formGroup.controls.id.hasError('pattern')) {
+      <mat-error>ID darf nur Kleinbuchstaben und Zahlen enthalten</mat-error>
+    }
+    @if (formGroup.controls.id.hasError('idExists')) {
+      <mat-error>ID existiert bereits</mat-error>
+    }
+  </mat-form-field>
+
+  <button mat-raised-button color="accent" [mat-dialog-close]="formGroup.value" [disabled]="formGroup.invalid">Speichern</button>
+  <button mat-raised-button color="warn" [mat-dialog-close]="null">Abbrechen</button>
+</form>
