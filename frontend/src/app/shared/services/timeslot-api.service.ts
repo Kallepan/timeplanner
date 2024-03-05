@@ -81,7 +81,7 @@ export class TimeslotAPIService implements CheckIDExistsInterface {
     return this.http.post<APIResponse<TimeslotWithMetadata>>(url, timeslot, httpOptions);
   }
 
-  deleteTimeslot(department: string, workplace: string, timeslot: string): Observable<APIResponse<TimeslotWithMetadata>> {
+  deleteTimeslot(department: string, workplace: string, timeslot: string): Observable<APIResponse<null>> {
     const url = `${constants.APIS.PLANNER}/department/${department}/workplace/${workplace}/timeslot/${timeslot}`;
 
     const httpOptions = {
@@ -91,7 +91,7 @@ export class TimeslotAPIService implements CheckIDExistsInterface {
       withCredentials: true,
     };
 
-    return this.http.delete<APIResponse<TimeslotWithMetadata>>(url, httpOptions);
+    return this.http.delete<APIResponse<null>>(url, httpOptions);
   }
 
   // Relations

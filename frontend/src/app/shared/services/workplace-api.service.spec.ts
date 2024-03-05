@@ -111,21 +111,12 @@ describe('WorkplaceAPIService', () => {
   });
 
   it('should delete a workplace', () => {
-    const mockWorkplace = {
-      data: {
-        name: 'workplace1',
-        id: 'workplace1',
-        department_id: 'department1',
-        created_at: new Date(),
-        updated_at: new Date(),
-        deleted_at: null,
-      },
-      status: 200,
-      message: 'success',
-    };
-
     service.deleteWorkplace('department1', 'workplace1').subscribe((result) => {
-      expect(result).toEqual(mockWorkplace);
+      expect(result).toEqual({
+        data: null,
+        status: 200,
+        message: 'success',
+      });
     });
 
     const req = httpController.expectOne('http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1');
@@ -133,6 +124,10 @@ describe('WorkplaceAPIService', () => {
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
 
-    req.flush(mockWorkplace);
+    req.flush({
+      data: null,
+      status: 200,
+      message: 'success',
+    });
   });
 });

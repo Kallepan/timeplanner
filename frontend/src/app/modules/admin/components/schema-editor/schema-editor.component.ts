@@ -52,16 +52,17 @@ export class SchemaEditorComponent {
   isExpandable = (node: DynamicFlatNode): boolean => node.expandable;
   hasChild = (_: number, node: DynamicFlatNode): boolean => node.expandable;
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  editElement(_node: DynamicFlatNode) {
+    // TODO: implement
+    this.notificationService.infoMessage('Noch nicht implementiert');
+  }
   openElement(node: DynamicFlatNode) {
     if (node.type !== 'timeslot') return;
-
     this._selectedTimeslotForEditing.set(node.item as TimeslotWithMetadata);
   }
-  editElement(node: DynamicFlatNode) {
-    // TODO: implement
-    console.log(node);
-  }
   addElement(node: DynamicFlatNode) {
+    // TODO: Test ME!
     of(node.type)
       .pipe(
         map((type) => {
@@ -136,10 +137,9 @@ export class SchemaEditorComponent {
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   deleteElement(node: DynamicFlatNode) {
-    of(node)
+    of(node.type)
       .pipe(
         // open confirmation dialog
-        map((node) => node.type),
         switchMap((type) => {
           return this.matDialog
             .open(ConfirmationDialogComponent, {
@@ -151,9 +151,7 @@ export class SchemaEditorComponent {
             .afterClosed();
         }),
         filter((result) => result === true),
-        // This is clearly a shitty way to do this
-        map(() => node),
-        switchMap((node) => {
+        switchMap(() => {
           if (node.type === 'timeslot') {
             const ts = node.item as TimeslotWithMetadata;
             return this.timeslotAPIService.deleteTimeslot(ts.department_id, ts.workplace_id, ts.id).pipe(
@@ -172,9 +170,9 @@ export class SchemaEditorComponent {
               catchError((err) => throwError(() => err)),
             );
           }
-          return of(null);
+          return of(undefined);
         }),
-        filter((result) => result !== null),
+        filter((result) => result !== undefined),
       )
       .subscribe({
         next: () => {
@@ -191,8 +189,8 @@ export class SchemaEditorComponent {
     return this._selectedTimeslotForEditing();
   }
 
-  // handle child events
-  addRequest(event: { control: FormGroup; type: string; timeslot: TimeslotWithMetadata }) {
+  // handle weekday requests
+  addWeekdayRequest(event: { control: FormGroup; type: string; timeslot: TimeslotWithMetadata }) {
     const timeslot = event.timeslot;
     const weekdayID = event.control.controls['weekday'].value;
     const startTime = event.control.controls['startTime'].value;
@@ -209,7 +207,7 @@ export class SchemaEditorComponent {
     });
   }
 
-  editRequest(event: { weekdayID: number; startTimeControl: FormControl; endTimeControl: FormControl; timeslot: TimeslotWithMetadata }) {
+  editWeekdayRequest(event: { weekdayID: number; startTimeControl: FormControl; endTimeControl: FormControl; timeslot: TimeslotWithMetadata }) {
     const { startTimeControl, endTimeControl, timeslot, weekdayID } = event;
     if (startTimeControl.invalid || endTimeControl.invalid) return;
 
@@ -228,7 +226,7 @@ export class SchemaEditorComponent {
     });
   }
 
-  removeRequest(event: { id: number; timeslot: TimeslotWithMetadata }) {
+  removeWeekdayRequest(event: { id: number; timeslot: TimeslotWithMetadata }) {
     const { id, timeslot } = event;
     this.timeslotAPIService.unassignTimeslotFromWeekday(timeslot.department_id, timeslot.workplace_id, timeslot.id, id).subscribe({
       next: () => {

@@ -32,9 +32,9 @@
   </div>
   <div class="right">
     <app-edit-weekdays-of-timeslot
-      (addRequest)="addRequest($event)"
-      (editRequest)="editRequest($event)"
-      (removeRequest)="removeRequest($event)"
+      (addRequest)="addWeekdayRequest($event)"
+      (editRequest)="editWeekdayRequest($event)"
+      (removeRequest)="removeWeekdayRequest($event)"
       [timeslot]="selectedTimeslotForEditing$"></app-edit-weekdays-of-timeslot>
   </div>
 </div>

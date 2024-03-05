@@ -79,7 +79,7 @@ export class WorkplaceAPIService implements CheckIDExistsInterface {
     return this.http.post<APIResponse<WorkplaceWithMetadata>>(url, workplace, httpOptions);
   }
 
-  deleteWorkplace(department: string, workplace: string): Observable<APIResponse<WorkplaceWithMetadata>> {
+  deleteWorkplace(department: string, workplace: string): Observable<APIResponse<null>> {
     const url = `${constants.APIS.PLANNER}/department/${department}/workplace/${workplace}`;
 
     const httpOptions = {
@@ -89,6 +89,6 @@ export class WorkplaceAPIService implements CheckIDExistsInterface {
       withCredentials: true,
     };
 
-    return this.http.delete<APIResponse<WorkplaceWithMetadata>>(url, httpOptions);
+    return this.http.delete<APIResponse<null>>(url, httpOptions);
   }
 }
