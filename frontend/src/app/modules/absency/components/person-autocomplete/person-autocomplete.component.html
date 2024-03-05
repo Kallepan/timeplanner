@@ -1,7 +1,7 @@
 <form>
   <mat-form-field>
     <mat-label>Person auswählen</mat-label>
-    <input matInput type="text" placeholder="kank..." autocomplete="off" [formControl]="personControl" [matAutocomplete]="auto" />
+    <input matInput type="text" autocomplete="off" [formControl]="personControl" [matAutocomplete]="auto" />
     <mat-autocomplete #auto [displayWith]="displayFn" (optionSelected)="personSelected.emit($event.option.value)">
       @for (person of filteredPersons$ | async; track person) {
         <mat-option [value]="person">{{ person.last_name }} ({{ person.id }})</mat-option>
