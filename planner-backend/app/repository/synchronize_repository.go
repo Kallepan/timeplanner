@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"planner-backend/app/pkg"
 	"time"
 
 	"github.com/google/wire"
@@ -13,12 +14,53 @@ import (
 type SynchronizeRepository interface {
 	Synchronize(weeksInAdvance int) error
 
-	createWorkday(ctx context.Context, tx neo4j.ManagedTransaction, date string, weekday int64) error
+	createWorkday(tx neo4j.ManagedTransaction, date string, weekday int64) error
+	ensureDateExists(tx neo4j.ManagedTransaction, date string, weekdayID int64) error
 }
 
 type SynchronizeRepositoryImpl struct {
 	db  *neo4j.DriverWithContext
 	ctx context.Context
+}
+
+func (d SynchronizeRepositoryImpl) ensureDateExists(tx neo4j.ManagedTransaction, date string, weekdayID int64) error {
+	/*
+		* Ensures that a date exists in the database
+		This function is used during the synchronization process to ensure that a date exists
+		* @param tx: The transaction to use
+		* @param date: The date to ensure, Format: YYYY-MM-DD
+		* @param weekday: The weekday to ensure, Format: 1-7
+		* @return: An error if the date could not be created
+	*/
+	slog.Info(fmt.Sprintf("Ensuring date %s exists", date))
+	query := `
+	// The weekday nodes are already created, so we can just match on them
+	MATCH (w:Weekday {id: $weekdayID})
+	// Create the date node if it doesn't exist yet
+	MERGE (d:Date {date: date($date), week: date($date).week})
+	// Create the relationship, if it doesn't exist yet
+	MERGE (d) -[:IS_ON_WEEKDAY]-> (w)
+	RETURN d`
+	params := map[string]interface{}{
+		"weekdayID": weekdayID,
+		"date":      date,
+	}
+
+	res, err := tx.Run(
+		d.ctx,
+		query,
+		params,
+	)
+	if err != nil {
+		return err
+	}
+
+	// Check if the date was created
+	if !res.Next(d.ctx) {
+		return pkg.ErrNoRows
+	}
+
+	return nil
 }
 
 func (d SynchronizeRepositoryImpl) Synchronize(weeksInAdvance int) error {
@@ -28,54 +70,44 @@ func (d SynchronizeRepositoryImpl) Synchronize(weeksInAdvance int) error {
 	*	- calculate all dates from monday to sunday * weeksInAdvance
 	 */
 
-	// Get the current date
-	now := time.Now()
-
-	// Get the monday of the current week
-	monday := now.AddDate(0, 0, -int(now.Weekday())+1)
-
-	for i := 0; i < weeksInAdvance; i++ {
-		for j := 0; j < 7; j++ {
-			date := monday.AddDate(0, 0, 7*i+j)
-			dateStr := date.Format("2006-01-02")
-
-			// Create the date node
-			if err := EnsureDateExists(d.db, d.ctx, dateStr); err != nil {
-				return err
-			}
-
-			slog.Info(fmt.Sprintf("Synchronized date %s", dateStr))
-
-		}
-	}
-
 	// Create Workday nodes for each date and weekday
 	session := (*d.db).NewSession(d.ctx, neo4j.SessionConfig{AccessMode: neo4j.AccessModeWrite})
 	defer session.Close(d.ctx)
 
 	// Start a new transaction
 	if _, err := session.ExecuteWrite(d.ctx, func(tx neo4j.ManagedTransaction) (interface{}, error) {
+		// Get the current date
+		now := time.Now()
+
+		// Get the monday of the current week
+		monday := now.AddDate(0, 0, -int(now.Weekday())+1)
+
 		for i := 0; i < weeksInAdvance; i++ {
 			for j := 0; j < 7; j++ {
 				date := monday.AddDate(0, 0, 7*i+j)
 				dateStr := date.Format("2006-01-02")
-				weekday := TimeDateToWeekdayID(date)
-				if err := d.createWorkday(d.ctx, tx, dateStr, weekday); err != nil {
-					return nil, err
+				weekdayID := TimeDateToWeekdayID(date)
 
+				// Create the date node
+				if err := d.ensureDateExists(tx, dateStr, weekdayID); err != nil {
+					return nil, err
+				}
+
+				if err := d.createWorkday(tx, dateStr, weekdayID); err != nil {
+					return nil, err
 				}
 			}
 		}
+
 		return nil, nil
 	}); err != nil {
 		return err
 	}
 
 	return nil
-
 }
 
-func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, tx neo4j.ManagedTransaction, date string, weekdayID int64) error {
+func (d SynchronizeRepositoryImpl) createWorkday(tx neo4j.ManagedTransaction, date string, weekdayID int64) error {
 	/**
 	 * Create Workday Nodes for Given Weekday and Date
 	 *
@@ -97,21 +129,27 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, tx neo4j.M
 	 * Example Usage:
 	 * CALL yourProcedureName($weekdayID, $date)
 	 */
+	slog.Info(fmt.Sprintf("Creating workday nodes for date %s and weekday %d", date, weekdayID))
 	query := `
 	// Get all timeslots offered on the given weekday, loop through them and create a Workday node for each of them.
 	MATCH  (d:Department) -[:HAS_WORKPLACE]-> (w:Workplace) -[:HAS_TIMESLOT]-> (t:Timeslot) -[r:OFFERED_ON]-> (wd:Weekday {id: $weekdayID})
-	WHERE t.deleted_at IS NULL AND d.deleted_at IS NULL AND w.deleted_at IS NULL
+	MATCH (d2:Date {date: date($date), week: date($date).week}) -[:IS_ON_WEEKDAY]-> (wd {id: $weekdayID})
+	WHERE t.deleted_at IS NULL AND w.deleted_at IS NULL AND d.deleted_at IS NULL
+	AND NOT (d) -[:SYNCHRONIZED_AT]-> (:Date {date: date($date)})
+
+	// Mark as synchronized
+	MERGE (d) -[s:SYNCHRONIZED_AT]-> (d2)
+	ON CREATE SET s.created_at = datetime()
+	ON MATCH SET s.updated_at = datetime() // This should not happen, but just in case
+	WITH d, w, t, r, d2
 	
-	WITH COLLECT({workplaceID:w.id, departmentID: d.id, timeslot: t, start_time: r.start_time, end_time: r.end_time}) AS collection
+	// Collect relevant information about workplaces, departments, timeslots, and time details
+	WITH COLLECT({workplaceID: w.id, departmentID: d.id, timeslot: t, start_time: r.start_time, end_time: r.end_time, date: d2}) AS collection
 	UNWIND collection AS c
 	WITH c
 
-	// Date should already exist by now (created in the createDate function)
-	MATCH (d:Date {date: date($date), week: date($date).week})
-	MATCH (d) -[:IS_ON_WEEKDAY]-> (wd:Weekday {id: $weekdayID})
-
 	// important: workday nodes should be unique for each date, department, workplace, and timeslot
-	MERGE (wkd:Workday {date: date($date), department: c.departmentID, workplace: c.workplaceID, timeslot: c.timeslot.id, weekday: wd.id})
+	MERGE (wkd:Workday {date: date($date), department: c.departmentID, workplace: c.workplaceID, timeslot: c.timeslot.id, weekday: $weekdayID})
 	ON CREATE SET
 		wkd.start_time = c.start_time,
 		wkd.end_time = c.end_time,
@@ -121,9 +159,9 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, tx neo4j.M
 		wkd.comment = "",
 		wkd.created_at = datetime()
 	// Create the relationships
-	WITH wkd, c.timeslot AS t, d
+	WITH wkd, c.timeslot AS t, c.date AS d2
 	MERGE (wkd) -[:IS_TIMESLOT]-> (t)
-	MERGE (wkd) -[:IS_DATE]-> (d)
+	MERGE (wkd) -[:IS_DATE]-> (d2)
 	RETURN wkd
 	`
 
@@ -133,7 +171,7 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, tx neo4j.M
 	}
 
 	result, err := tx.Run(
-		ctx,
+		d.ctx,
 		query,
 		params,
 	)
@@ -142,7 +180,7 @@ func (d SynchronizeRepositoryImpl) createWorkday(ctx context.Context, tx neo4j.M
 	}
 
 	// Check if the result is empty
-	if !result.Next(ctx) || result.Err() != nil {
+	if !result.Next(d.ctx) || result.Err() != nil {
 		return fmt.Errorf("no workday nodes were created for date %s and weekday %d", date, weekdayID)
 	}
 

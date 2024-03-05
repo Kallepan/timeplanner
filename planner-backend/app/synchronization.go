@@ -8,11 +8,12 @@ import (
 )
 
 func InitalizeSynchronization(injector *config.Injector) {
-	// ever week
+	// every week
 	interval := 7 * 24 * time.Hour
 	slog.Info("Initializing synchronization")
 
-	if err := injector.SynchronizeRepo.Synchronize(5); err != nil {
+	weeksInAdvance := 1
+	if err := injector.SynchronizeRepo.Synchronize(weeksInAdvance); err != nil {
 		slog.Error("Error synchronizing", "error", err)
 	}
 

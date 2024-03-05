@@ -138,5 +138,5 @@ func EnsureDateExists(db *neo4j.DriverWithContext, ctx context.Context, date str
 		return pkg.ErrNoRows
 	}
 
-	return err
+	return nil
 }
