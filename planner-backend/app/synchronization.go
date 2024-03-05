@@ -12,7 +12,7 @@ func InitalizeSynchronization(injector *config.Injector) {
 	interval := 7 * 24 * time.Hour
 	slog.Info("Initializing synchronization")
 
-	weeksInAdvance := 1
+	weeksInAdvance := 4
 	if err := injector.SynchronizeRepo.Synchronize(weeksInAdvance); err != nil {
 		slog.Error("Error synchronizing", "error", err)
 	}
