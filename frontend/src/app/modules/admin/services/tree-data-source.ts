@@ -36,8 +36,8 @@ export class DynamicDatabase {
   private dataMap = new Map<RootNode | Exclude<ChildNode, LeafNode>, ChildNode[]>();
 
   departments: DynamicFlatNode[] = [];
-  constructor(departments: RootNode[]) {
-    this.departments = departments.map((department) => new DynamicFlatNode(department, 0, 'department'));
+  constructor(departments: RootNode[] | null) {
+    this.departments = (departments ?? []).map((department) => new DynamicFlatNode(department, 0, 'department'));
   }
 
   // Get All children of the node

@@ -68,6 +68,11 @@ describe('DynamicDatabase', () => {
     expect(dynamicDatabase).toBeTruthy();
   });
 
+  it('should handle null departments', () => {
+    dynamicDatabase = new DynamicDatabase(null);
+    expect(dynamicDatabase).toBeTruthy();
+  });
+
   it('should have getChildren method', () => {
     const mockNode: WorkplaceWithMetadata = {
       id: 'workplace1',
