@@ -1,5 +1,5 @@
 <form>
-  <mat-form-field>
+  <mat-form-field (click)="personControl.setValue('', { emitEvent: true })">
     <mat-label>Person auswählen</mat-label>
     <input matInput type="text" autocomplete="off" [formControl]="personControl" [matAutocomplete]="auto" />
     <mat-autocomplete #auto [displayWith]="displayFn" (optionSelected)="personSelected.emit($event.option.value)">
