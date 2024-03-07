@@ -181,7 +181,8 @@ func (d SynchronizeRepositoryImpl) createWorkday(tx neo4j.ManagedTransaction, da
 
 	// Check if the result is empty
 	if !result.Next(d.ctx) || result.Err() != nil {
-		return fmt.Errorf("no workday nodes were created for date %s and weekday %d", date, weekdayID)
+		slog.Warn(fmt.Sprintf("no workday nodes were created for date %s and weekday %d", date, weekdayID))
+		return nil
 	}
 
 	return err
