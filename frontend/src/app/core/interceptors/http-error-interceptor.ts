@@ -21,8 +21,7 @@ export const httpErrorInterceptor: HttpInterceptorFn = (req: HttpRequest<unknown
           errorMessage = messages.AUTH.FORBIDDEN;
           break;
         case 404:
-          errorMessage = messages.GENERAL.HTTP_ERROR.NOT_FOUND;
-          break;
+          return throwError(() => error);
         case 500:
           errorMessage = messages.GENERAL.HTTP_ERROR.SERVER_ERROR;
           break;

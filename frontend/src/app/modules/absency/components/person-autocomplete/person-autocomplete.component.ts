@@ -11,7 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { PersonDataContainerService } from '@app/shared/services/person-data-container.service';
-import { debounceTime, filter, map, startWith } from 'rxjs';
+import { debounceTime, filter, map } from 'rxjs';
 
 @Component({
   selector: 'app-person-autocomplete',
@@ -26,7 +26,6 @@ export class PersonAutocompleteComponent {
   @Output() personSelected = new EventEmitter<PersonWithMetadata>();
   personControl = new FormControl<string>('');
   filteredPersons$ = this.personControl.valueChanges.pipe(
-    startWith(''),
     debounceTime(150),
     filter((value) => typeof value === 'string'),
     map((value) => this._filter(value!)),

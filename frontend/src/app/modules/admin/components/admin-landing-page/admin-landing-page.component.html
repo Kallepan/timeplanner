@@ -1,0 +1,5 @@
+<div class="container">
+  @for (route of routes; track $index) {
+    <button mat-raised-button color="accent" [routerLink]="route.path">{{ route.name }}</button>
+  }
+</div>

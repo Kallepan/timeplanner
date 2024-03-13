@@ -132,7 +132,7 @@ type TimeslotCreatorImpl struct {
 	name           string
 
 	weekdays []struct {
-		id        string
+		id        int64
 		startTime time.Time
 		endTime   time.Time
 	}
@@ -208,7 +208,7 @@ type PersonCreatorImpl struct {
 		name         string
 		departmentID string
 	}
-	weekdayIDs []string
+	weekdayIDs []int64
 	person     struct {
 		id           string
 		email        string

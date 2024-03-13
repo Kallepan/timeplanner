@@ -8,11 +8,12 @@ import (
 )
 
 func InitalizeSynchronization(injector *config.Injector) {
-	// ever week
+	// every week
 	interval := 7 * 24 * time.Hour
 	slog.Info("Initializing synchronization")
 
-	if err := injector.SynchronizeRepo.Synchronize(5); err != nil {
+	weeksInAdvance := 4
+	if err := injector.SynchronizeRepo.Synchronize(weeksInAdvance); err != nil {
 		slog.Error("Error synchronizing", "error", err)
 	}
 
@@ -21,7 +22,7 @@ func InitalizeSynchronization(injector *config.Injector) {
 		ticker := time.NewTicker(interval)
 		for range ticker.C {
 			slog.Info("Synchronizing")
-			if err := injector.SynchronizeRepo.Synchronize(60); err != nil {
+			if err := injector.SynchronizeRepo.Synchronize(weeksInAdvance); err != nil {
 				slog.Error("Error synchronizing", "error", err)
 			}
 		}

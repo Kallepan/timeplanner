@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, computed, inject, signal, type WritableSignal } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable, catchError, from, map, of, switchMap, tap } from 'rxjs';
+import { Observable, catchError, from, map, of, switchMap, tap, throwError } from 'rxjs';
 import { constants } from '../../constants/constants';
 import { messages } from '../../constants/messages';
 import { NotificationService } from './notification.service';
@@ -32,14 +32,38 @@ export class AuthService {
     return this._loading();
   }
 
+  private _isAdmin = signal(false);
+  get isAdmin$() {
+    return this._isAdmin();
+  }
+
   initialized = computed(() => {
     return this._authData() !== undefined;
   });
 
   isLoggedIn = computed(() => {
-    // Note this property gets populated by verifyLogin() at ngOnInit() in app.component.ts
+    // Note this property gets populated by verifyToken() at ngOnInit() in app.component.ts
     return this._authData() !== null;
   });
+
+  isAdmin(): Observable<boolean> {
+    // Check if the user is an admin used to live check if the user is admin to acess routes
+    // alternatively used during login or verifyToken() to check if the user is an admin
+    // and store the result in a signal (this._isAdmin) to be used in the app.
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      withCredentials: true,
+    };
+
+    return this.http.get<APIResponse<boolean | null>>(`${constants.APIS.AUTH}/check-admin`, httpOptions).pipe(
+      map((resp) => resp.data),
+      map((isAdmin) => isAdmin === true),
+      catchError(() => of(false)),
+      tap((isAdmin) => this._isAdmin.set(isAdmin)),
+    );
+  }
 
   hasAccessToDepartment(departmentName: string): Observable<boolean> {
     // Check if the user has access to a department
@@ -61,7 +85,7 @@ export class AuthService {
     );
   }
 
-  verifyLogin(): void {
+  verifyToken(): void {
     /* Called at ngOnInit() in app.component.ts to check if the user is logged in using cookies */
     const httpOptions = {
       headers: new HttpHeaders({
@@ -74,11 +98,18 @@ export class AuthService {
       .get<APIResponse<AuthResponse>>(`${constants.APIS.AUTH}/me`, httpOptions)
       .pipe(
         map((resp) => resp.data),
-        catchError(() => of(null)),
+        tap((data) => this._authData.set(data)),
+        switchMap(() => this.isAdmin()),
+        tap((data) => this._isAdmin.set(data)),
       )
       .subscribe({
-        next: (data) => {
-          this._authData.set(data);
+        next: () => {
+          this._loading.set(false);
+          this._notificationService.infoMessage(messages.AUTH.LOGGED_IN);
+        },
+        error: () => {
+          this._loading.set(false);
+          this._authData.set(null);
         },
       });
   }
@@ -98,11 +129,19 @@ export class AuthService {
     this._loading.set(true);
     this.http
       .post<APIResponse<AuthResponse>>(`${constants.APIS.AUTH}/login`, data, httpOptions)
-      .pipe(map((resp) => resp.data))
+      .pipe(
+        map((resp) => resp.data),
+        tap((data) => this._authData.set(data)),
+        switchMap(() => this.isAdmin()),
+        tap((data) => this._isAdmin.set(data)),
+        catchError((err) => {
+          this._authData.set(null);
+          return throwError(() => err);
+        }),
+      )
       .subscribe({
-        next: (data) => {
+        next: () => {
           this._loading.set(false);
-          this._authData.set(data);
           this._notificationService.infoMessage(messages.AUTH.LOGGED_IN);
         },
         error: () => {

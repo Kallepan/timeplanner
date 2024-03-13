@@ -9,15 +9,31 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { APIResponse } from '@app/core/interfaces/response';
-import { Observable } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 import { DepartmentWithMetadata, Department } from '../interfaces/department';
 import { constants } from '@app/constants/constants';
 import { AbsenceReponse } from '@app/modules/absency/interfaces/absence';
+import { CheckIDExistsInterface } from '@app/modules/admin/validators/id-validator';
 
 @Injectable({
   providedIn: 'root',
 })
-export class DepartmentAPIService {
+export class DepartmentAPIService implements CheckIDExistsInterface {
+  checkIDExists(id: string): Observable<boolean> {
+    const url = `${constants.APIS.PLANNER}/department/${id}`;
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+      withCredentials: true,
+    };
+
+    return this.http.get<APIResponse<DepartmentWithMetadata>>(url, httpOptions).pipe(
+      map((res) => res.data !== null),
+      catchError(() => of(false)),
+    );
+  }
   private http = inject(HttpClient);
 
   getAbsencesForDepartment(departmentName: string, date: string): Observable<APIResponse<AbsenceReponse[]>> {

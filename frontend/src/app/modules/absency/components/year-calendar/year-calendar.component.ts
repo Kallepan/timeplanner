@@ -29,7 +29,7 @@ export class YearCalendarComponent implements AfterViewInit {
       loadingTemplate: `<div>Lädt</div>`,
       style: 'background',
       weekStart: 1,
-      disabledWeekDays: [0, 6],
+      disabledWeekDays: [],
       clickDay: (e: CalendarDayEventObject<CalendarDataSourceElement>) => {
         this.activePersonHandlerService.handleDayClick(e);
       },

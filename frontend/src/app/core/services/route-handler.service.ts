@@ -3,7 +3,7 @@ import { Injectable, signal } from '@angular/core';
 type RouteConfiguration = {
   path: string;
   title: string;
-  id: string;
+  id?: string;
 };
 
 @Injectable({

@@ -15,22 +15,32 @@ func TestTimeDateToWeekdayID(t *testing.T) {
 	tests := []struct {
 		name string
 		date string
-		want string
+		want int64
 	}{
 		{
 			name: "TestTimeDateToWeekdayID",
 			date: "2021-01-01",
-			want: "FRI",
+			want: 5,
 		},
 		{
 			name: "TestTimeDateToWeekdayID",
 			date: "2021-01-02",
-			want: "SAT",
+			want: 6,
 		},
 		{
 			name: "TestTimeDateToWeekdayID",
 			date: "2020-12-31",
-			want: "THU",
+			want: 4,
+		},
+		{
+			name: "TestTimeDateToWeekdayID",
+			date: "2024-02-29",
+			want: 4,
+		},
+		{
+			name: "TestTimeDateToWeekdayID",
+			date: "2020-12-30",
+			want: 3,
 		},
 	}
 
@@ -43,7 +53,7 @@ func TestTimeDateToWeekdayID(t *testing.T) {
 
 			got := TimeDateToWeekdayID(parsedDate)
 			if got != test.want {
-				t.Errorf("Got: %s, Want: %s", got, test.want)
+				t.Errorf("Got: %d, Want: %d", got, test.want)
 			}
 		})
 	}
@@ -108,35 +118,35 @@ func TestEnsureWeekdaysExist(t *testing.T) {
 
 	tests := []struct {
 		name string
-		id   string
+		id   int64
 	}{
 		{
 			name: "TestEnsureWeekdaysExist (MONDAY)",
-			id:   "MON",
+			id:   1,
 		},
 		{
 			name: "TestEnsureWeekdaysExist (TUESDAY)",
-			id:   "TUE",
+			id:   2,
 		},
 		{
 			name: "TestEnsureWeekdaysExist (WEDNESDAY)",
-			id:   "WED",
+			id:   3,
 		},
 		{
 			name: "TestEnsureWeekdaysExist (THURSDAY)",
-			id:   "THU",
+			id:   4,
 		},
 		{
 			name: "TestEnsureWeekdaysExist (FRIDAY)",
-			id:   "FRI",
+			id:   5,
 		},
 		{
 			name: "TestEnsureWeekdaysExist (SATURDAY)",
-			id:   "SAT",
+			id:   6,
 		},
 		{
 			name: "TestEnsureWeekdaysExist (SUNDAY)",
-			id:   "SUN",
+			id:   7,
 		},
 	}
 
@@ -156,11 +166,11 @@ func TestEnsureWeekdaysExist(t *testing.T) {
 			}
 
 			if len(res.Records) == 0 {
-				t.Errorf("Weekday %s was not created", test.id)
+				t.Errorf("Weekday %d was not created", test.id)
 			}
 
 			if len(res.Records) > 1 {
-				t.Errorf("More than one weekday %s was created", test.id)
+				t.Errorf("More than one weekday %d was created", test.id)
 			}
 		})
 	}

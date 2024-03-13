@@ -21,6 +21,7 @@ type UserController interface {
 	Login(ctx *gin.Context)
 	Me(ctx *gin.Context)
 	Logout(ctx *gin.Context)
+	CheckAdmin(ctx *gin.Context)
 }
 
 type UserControllerImpl struct {
@@ -70,6 +71,10 @@ func (u UserControllerImpl) Me(ctx *gin.Context) {
 
 func (u UserControllerImpl) Logout(ctx *gin.Context) {
 	u.AuthService.Logout(ctx)
+}
+
+func (u UserControllerImpl) CheckAdmin(ctx *gin.Context) {
+	u.AuthService.CheckAdmin(ctx)
 }
 
 var userControllerSet = wire.NewSet(

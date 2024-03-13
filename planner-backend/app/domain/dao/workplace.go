@@ -7,13 +7,14 @@ import (
 )
 
 type Workplace struct {
-	Name string
-	ID   string
+	Name         string
+	ID           string
+	DepartmentID string
 
 	Base
 }
 
-func (w *Workplace) ParseFromNode(node *neo4j.Node) error {
+func (w *Workplace) ParseFromNode(node *neo4j.Node, departmentID string) error {
 	/**
 	 * Parses a workplace from a neo4j node and sets the values on this workplace
 	 */
@@ -45,11 +46,12 @@ func (w *Workplace) ParseFromNode(node *neo4j.Node) error {
 	w.Base.CreatedAt = createdAt
 	w.Base.UpdatedAt = updatedAt
 	w.Base.DeletedAt = deletedAt
+	w.DepartmentID = departmentID
 
 	return nil
 }
 
-func (w *Workplace) ParseFromDBRecord(record *neo4j.Record) error {
+func (w *Workplace) ParseFromDBRecord(record *neo4j.Record, departmentID string) error {
 	/**
 	 * Parses a workplace from a neo4j record and sets the values on this workplace
 	 */
@@ -59,7 +61,7 @@ func (w *Workplace) ParseFromDBRecord(record *neo4j.Record) error {
 		return err
 	}
 
-	err = w.ParseFromNode(&workplaceNode)
+	err = w.ParseFromNode(&workplaceNode, departmentID)
 	if err != nil {
 		return err
 	}

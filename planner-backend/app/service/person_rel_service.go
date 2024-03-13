@@ -8,6 +8,7 @@ import (
 	"planner-backend/app/domain/dco"
 	"planner-backend/app/pkg"
 	"planner-backend/app/repository"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -483,11 +484,15 @@ func (p PersonRelServiceImpl) RemoveWeekdayFromPerson(c *gin.Context) {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 
-	weekdayID := c.Param("weekdayID")
-	if weekdayID == "" {
+	weekdayIDRaw := c.Param("weekdayID")
+	if weekdayIDRaw == "" {
 		pkg.PanicException(constant.InvalidRequest)
 	}
-	if weekdayID != "MON" && weekdayID != "TUE" && weekdayID != "WED" && weekdayID != "THU" && weekdayID != "FRI" && weekdayID != "SAT" && weekdayID != "SUN" {
+	weekdayID, err := strconv.ParseInt(weekdayIDRaw, 10, 64)
+	if err != nil {
+		pkg.PanicException(constant.InvalidRequest)
+	}
+	if weekdayID != 1 && weekdayID != 2 && weekdayID != 3 && weekdayID != 4 && weekdayID != 5 && weekdayID != 6 && weekdayID != 7 {
 		pkg.PanicException(constant.InvalidRequest)
 	}
 

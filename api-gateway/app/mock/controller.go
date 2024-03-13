@@ -57,6 +57,10 @@ func (m *UserControllerMock) Logout(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{"message": "Logout"})
 }
 
+func (m *UserControllerMock) CheckAdmin(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{"message": "CheckAdmin"})
+}
+
 type DepartmentControllerMock struct {
 }
 

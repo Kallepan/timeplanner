@@ -169,7 +169,7 @@ describe('ActivePersonHandlerServiceService in TestComponent', () => {
     expect(mockPersonAPIService.getAbsencyForPersonInRange).not.toHaveBeenCalled();
   });
 
-  it('should handle Remove Absency', () => {
+  it('should handle Remove Absency with null return value', () => {
     const currentDate = new Date();
     const mockCalendarDayEventObject: CalendarDayEventObject<CalendarDataSourceElement> = {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -181,7 +181,20 @@ describe('ActivePersonHandlerServiceService in TestComponent', () => {
     service.activeYear = currentDate.getFullYear();
     // mock API response
     mockPersonAPIService.removeAbsencyFromPerson.and.returnValue(of({ data: null, message: 'success', status: 200 }));
-    mockPersonAPIService.getAbsencyForPersonInRange.and.returnValue(of({ data: [], message: 'success', status: 200 }));
+    mockPersonAPIService.getAbsencyForPersonInRange.and.returnValue(
+      of({
+        data: [
+          {
+            person_id: mockPerson.id,
+            reason: 'sick',
+            date: formatDateToDateString(currentDate),
+            created_at: new Date(),
+          },
+        ],
+        message: 'success',
+        status: 200,
+      }),
+    );
     const dialogSpy = spyOn(service.dialog, 'open');
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     dialogSpy.and.returnValue({

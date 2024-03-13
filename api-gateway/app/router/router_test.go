@@ -1,6 +1,7 @@
 package router
 
 import (
+	"api-gateway/app/domain/dao"
 	"api-gateway/app/mock"
 	"api-gateway/config"
 	"fmt"
@@ -12,10 +13,30 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var token string
+var authErrorString = "{\"response_key\":\"Unauthorized\",\"response_message\":\"Unauthorized\",\"data\":null}"
+
+func TestMain(m *testing.M) {
+	// Generate a mock token
+	user := dao.User{Username: "test"}
+	t, err := mock.GenerateMockToken(user)
+	if err != nil {
+		fmt.Printf("Error generating token: %v", err)
+		os.Exit(1)
+	}
+
+	token = t
+
+	// Run the tests and exit
+	os.Exit(m.Run())
+	token = ""
+}
+
 type RouterTest struct {
-	httpMethod string // GET, POST, PUT, DELETE
-	url        string // /api/v1/user
-	result     string // {"message": "GetAll"}
+	httpMethod       string // GET, POST, PUT, DELETE
+	url              string // /api/v1/user
+	expectedResponse string // {"message": "GetAll"}
+	shouldLogin      bool
 }
 
 func TestRouter(t *testing.T) {
@@ -30,25 +51,35 @@ func TestRouter(t *testing.T) {
 
 	t.Run("Test Department Routes", func(t *testing.T) {
 		var testSteps = []RouterTest{
-			{httpMethod: "GET", url: "/api/v1/department", result: "{\"message\":\"GetAll\"}"},
-			{httpMethod: "GET", url: "/api/v1/department/1", result: "{\"message\":\"Get\"}"},
-			{httpMethod: "POST", url: "/api/v1/department", result: "{\"message\":\"Create\"}"},
-			{httpMethod: "PUT", url: "/api/v1/department/1", result: "{\"message\":\"Update\"}"},
-			{httpMethod: "DELETE", url: "/api/v1/department/1", result: "{\"message\":\"Delete\"}"},
+			{httpMethod: "GET", url: "/api/v1/department", expectedResponse: "{\"message\":\"GetAll\"}", shouldLogin: true},
+			{httpMethod: "GET", url: "/api/v1/department/1", expectedResponse: "{\"message\":\"Get\"}", shouldLogin: true},
+			{httpMethod: "POST", url: "/api/v1/department", expectedResponse: "{\"message\":\"Create\"}", shouldLogin: true},
+			{httpMethod: "PUT", url: "/api/v1/department/1", expectedResponse: "{\"message\":\"Update\"}", shouldLogin: true},
+			{httpMethod: "DELETE", url: "/api/v1/department/1", expectedResponse: "{\"message\":\"Delete\"}", shouldLogin: true},
+			{httpMethod: "DELETE", url: "/api/v1/department/1", expectedResponse: authErrorString, shouldLogin: false},
+			{httpMethod: "GET", url: "/api/v1/department", expectedResponse: authErrorString, shouldLogin: false},
+			{httpMethod: "GET", url: "/api/v1/department/1", expectedResponse: authErrorString, shouldLogin: false},
+			{httpMethod: "POST", url: "/api/v1/department", expectedResponse: authErrorString, shouldLogin: false},
+			{httpMethod: "PUT", url: "/api/v1/department/1", expectedResponse: authErrorString, shouldLogin: false},
+			{httpMethod: "DELETE", url: "/api/v1/department/1", expectedResponse: authErrorString, shouldLogin: false},
 		}
 
 		for i, testStep := range testSteps {
 			router := Init(init)
 			w := httptest.NewRecorder()
-			req, _ := http.NewRequest(testStep.httpMethod, testStep.url, nil)
-			router.ServeHTTP(w, req)
 
-			if w.Code != http.StatusOK {
-				t.Errorf("Expected status code 200 got %v", w.Code)
+			req, _ := http.NewRequest(testStep.httpMethod, testStep.url, nil)
+			if testStep.shouldLogin {
+				req.AddCookie(&http.Cookie{
+					Name:  "Authorization",
+					Value: token,
+				})
 			}
 
-			if w.Body.String() != testStep.result {
-				t.Errorf("Expected body to be %v, got %v", testStep.result, w.Body.String())
+			router.ServeHTTP(w, req)
+
+			if w.Body.String() != testStep.expectedResponse {
+				t.Errorf("Expected body to be %v, got %v", testStep.expectedResponse, w.Body.String())
 			}
 			t.Logf("Test %v passed", i)
 		}
@@ -56,27 +87,37 @@ func TestRouter(t *testing.T) {
 
 	t.Run("Test User Routes", func(t *testing.T) {
 		var testSteps = []RouterTest{
-			{httpMethod: "GET", url: "/api/v1/user", result: "{\"message\":\"GetAll\"}"},
-			{httpMethod: "GET", url: "/api/v1/user/detail", result: "{\"message\":\"Get\"}"},
-			{httpMethod: "POST", url: "/api/v1/user", result: "{\"message\":\"Create\"}"},
-			{httpMethod: "PUT", url: "/api/v1/user/1", result: "{\"message\":\"Update\"}"},
-			{httpMethod: "DELETE", url: "/api/v1/user/1", result: "{\"message\":\"Delete\"}"},
-			{httpMethod: "POST", url: "/api/v1/user/1/permission/1", result: "{\"message\":\"AddPermission\"}"},
-			{httpMethod: "DELETE", url: "/api/v1/user/1/permission/1", result: "{\"message\":\"DeletePermission\"}"},
+			{httpMethod: "GET", url: "/api/v1/user", expectedResponse: "{\"message\":\"GetAll\"}", shouldLogin: true},
+			{httpMethod: "GET", url: "/api/v1/user/detail", expectedResponse: "{\"message\":\"Get\"}", shouldLogin: true},
+			{httpMethod: "POST", url: "/api/v1/user", expectedResponse: "{\"message\":\"Create\"}", shouldLogin: true},
+			{httpMethod: "PUT", url: "/api/v1/user/1", expectedResponse: "{\"message\":\"Update\"}", shouldLogin: true},
+			{httpMethod: "DELETE", url: "/api/v1/user/1", expectedResponse: "{\"message\":\"Delete\"}", shouldLogin: true},
+			{httpMethod: "POST", url: "/api/v1/user/1/permission/1", expectedResponse: "{\"message\":\"AddPermission\"}", shouldLogin: true},
+			{httpMethod: "DELETE", url: "/api/v1/user/1/permission/1", expectedResponse: "{\"message\":\"DeletePermission\"}", shouldLogin: true},
+			{httpMethod: "GET", url: "/api/v1/user", expectedResponse: authErrorString, shouldLogin: false},
+			{httpMethod: "GET", url: "/api/v1/user/detail", expectedResponse: authErrorString, shouldLogin: false},
+			{httpMethod: "POST", url: "/api/v1/user", expectedResponse: authErrorString, shouldLogin: false},
+			{httpMethod: "PUT", url: "/api/v1/user/1", expectedResponse: authErrorString, shouldLogin: false},
+			{httpMethod: "DELETE", url: "/api/v1/user/1", expectedResponse: authErrorString, shouldLogin: false},
+			{httpMethod: "POST", url: "/api/v1/user/1/permission/1", expectedResponse: authErrorString, shouldLogin: false},
+			{httpMethod: "DELETE", url: "/api/v1/user/1/permission/1", expectedResponse: authErrorString, shouldLogin: false},
 		}
 
 		for i, testStep := range testSteps {
 			router := Init(init)
 			w := httptest.NewRecorder()
 			req, _ := http.NewRequest(testStep.httpMethod, testStep.url, nil)
-			router.ServeHTTP(w, req)
-
-			if w.Code != http.StatusOK {
-				t.Errorf("Expected status code 200 got %v", w.Code)
+			if testStep.shouldLogin {
+				req.AddCookie(&http.Cookie{
+					Name:  "Authorization",
+					Value: token,
+				})
 			}
 
-			if w.Body.String() != testStep.result {
-				t.Errorf("Expected body to be %v, got %v", testStep.result, w.Body.String())
+			router.ServeHTTP(w, req)
+
+			if w.Body.String() != testStep.expectedResponse {
+				t.Errorf("Expected body to be %v, got %v", testStep.expectedResponse, w.Body.String())
 			}
 			t.Logf("Test %v passed", i)
 		}
@@ -84,25 +125,33 @@ func TestRouter(t *testing.T) {
 
 	t.Run("Test Permission Routes", func(t *testing.T) {
 		var testSteps = []RouterTest{
-			{httpMethod: "GET", url: "/api/v1/permission", result: "{\"message\":\"GetAll\"}"},
-			{httpMethod: "GET", url: "/api/v1/permission/1", result: "{\"message\":\"Get\"}"},
-			{httpMethod: "POST", url: "/api/v1/permission", result: "{\"message\":\"Create\"}"},
-			{httpMethod: "PUT", url: "/api/v1/permission/1", result: "{\"message\":\"Update\"}"},
-			{httpMethod: "DELETE", url: "/api/v1/permission/1", result: "{\"message\":\"Delete\"}"},
+			{httpMethod: "GET", url: "/api/v1/permission", expectedResponse: "{\"message\":\"GetAll\"}", shouldLogin: true},
+			{httpMethod: "GET", url: "/api/v1/permission/1", expectedResponse: "{\"message\":\"Get\"}", shouldLogin: true},
+			{httpMethod: "POST", url: "/api/v1/permission", expectedResponse: "{\"message\":\"Create\"}", shouldLogin: true},
+			{httpMethod: "PUT", url: "/api/v1/permission/1", expectedResponse: "{\"message\":\"Update\"}", shouldLogin: true},
+			{httpMethod: "DELETE", url: "/api/v1/permission/1", expectedResponse: "{\"message\":\"Delete\"}", shouldLogin: true},
+			{httpMethod: "GET", url: "/api/v1/permission", expectedResponse: authErrorString, shouldLogin: false},
+			{httpMethod: "GET", url: "/api/v1/permission/1", expectedResponse: authErrorString, shouldLogin: false},
+			{httpMethod: "POST", url: "/api/v1/permission", expectedResponse: authErrorString, shouldLogin: false},
+			{httpMethod: "PUT", url: "/api/v1/permission/1", expectedResponse: authErrorString, shouldLogin: false},
+			{httpMethod: "DELETE", url: "/api/v1/permission/1", expectedResponse: authErrorString, shouldLogin: false},
 		}
 
 		for i, testStep := range testSteps {
 			router := Init(init)
 			w := httptest.NewRecorder()
 			req, _ := http.NewRequest(testStep.httpMethod, testStep.url, nil)
-			router.ServeHTTP(w, req)
-
-			if w.Code != http.StatusOK {
-				t.Errorf("Expected status code 200 got %v", w.Code)
+			if testStep.shouldLogin {
+				req.AddCookie(&http.Cookie{
+					Name:  "Authorization",
+					Value: token,
+				})
 			}
 
-			if w.Body.String() != testStep.result {
-				t.Errorf("Expected body to be %v, got %v", testStep.result, w.Body.String())
+			router.ServeHTTP(w, req)
+
+			if w.Body.String() != testStep.expectedResponse {
+				t.Errorf("Expected body to be %v, got %v", testStep.expectedResponse, w.Body.String())
 			}
 			t.Logf("Test %v passed", i)
 		}

@@ -9,7 +9,7 @@ export type WorkdayTimeslot = {
   timeslot: TimeslotWithMetadata;
   date: string;
 
-  weekday: string; // MON, TUE, WED, THU, FRI, SAT, SUN
+  weekday: number; // 1, 2, 3, 4, 5, 6, 7
 
   start_time: string;
   end_time: string;

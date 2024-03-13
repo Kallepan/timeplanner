@@ -14,7 +14,7 @@ type WorkdayRepository interface {
 	 * Gets all Workdays along with the (if present) assigned user
 	 * for a given date
 	 */
-	GetWorkdaysForDepartmentAndDate(departmentID string, date string) ([]dao.Workday, error)
+	GetWorkdaysForDepartmentAndDate(departmentID string, date string, active bool) ([]dao.Workday, error)
 	GetWorkday(departmentID string, workplaceID string, timeslotID string, date string) (dao.Workday, error)
 	Save(workday *dao.Workday) error
 	// UpdateWorkday()
@@ -30,19 +30,25 @@ type WorkdayRepositoryImpl struct {
 	ctx context.Context
 }
 
-func (w WorkdayRepositoryImpl) GetWorkdaysForDepartmentAndDate(departmentID string, date string) ([]dao.Workday, error) {
+func (w WorkdayRepositoryImpl) GetWorkdaysForDepartmentAndDate(departmentID string, date string, active bool) ([]dao.Workday, error) {
 
 	query := `
 	// fetch the department
 	MATCH (d:Department {id: $departmentID}) -[:HAS_WORKPLACE]-> (w:Workplace) -[:HAS_TIMESLOT]-> (t:Timeslot) <-[:IS_TIMESLOT]- (wkd:Workday {date: date($date)})
 	// fetch the person assigned to the workday
 	OPTIONAL MATCH (wkd)<-[:ASSIGNED_TO]-(p:Person)
-	// if workday is active
 	WHERE wkd.active = true
+	`
+	if active {
+		// if workday is active
+		query += " WHERE wkd.active = true"
+	}
+	query += `
 	// return the workday and the person
 	RETURN wkd, collect(p) as persons, t, w, d
 	ORDER BY w.id, t.name
 	`
+
 	params := map[string]interface{}{
 		"date":         date,
 		"departmentID": departmentID,
@@ -79,7 +85,7 @@ func (w WorkdayRepositoryImpl) GetWorkday(departmentID string, workplaceID strin
 	// fetch the person assigned to the workday
 	OPTIONAL MATCH (wkd)<-[:ASSIGNED_TO]-(p:Person)
 	// if workday is active
-	WHERE wkd.active = true
+	// WHERE wkd.active = true
 	// return the workday and the person
 	RETURN wkd, collect(p) as persons, t, w, d`
 

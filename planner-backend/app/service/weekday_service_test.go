@@ -25,7 +25,7 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 			mockRequestData: map[string]interface{}{
 				"weekdays": []map[string]interface{}{
 					{
-						"id":         "MON",
+						"id":         1,
 						"start_time": "08:00",
 						"end_time":   "09:00",
 					},
@@ -36,7 +36,7 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 			},
 			saveValue: []dao.OnWeekday{
 				{
-					ID: "MON",
+					ID: 1,
 				},
 			},
 			expectedStatusCode: http.StatusCreated,
@@ -58,7 +58,7 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 			mockRequestData: map[string]interface{}{
 				"weekdays": []map[string]interface{}{
 					{
-						"id":         "MON",
+						"id":         1,
 						"start_time": "08:00",
 						"end_time":   "09:00",
 					},
@@ -116,7 +116,7 @@ func TestBulkUpdateWeekdaysForTimeslot(t *testing.T) {
 	}
 }
 
-func TestAddWeekdayToTimeslot(t *testing.T) {
+func TestUpdateWeekdayForTimeslot(t *testing.T) {
 	WeekdayRepository := mock.NewWeekdayRepositoryMock()
 	TimeslotRepository := mock.NewTimeslotRepositoryMock()
 	weekdayService := WeekdayServiceImpl{
@@ -124,10 +124,11 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 		TimeslotRepository: TimeslotRepository,
 	}
 
-	testSteps := []ServiceTestPOST{
+	testSteps := []ServiceTestPUT{
 		{
+			// valid
 			mockRequestData: map[string]interface{}{
-				"id":         "MON",
+				"id":         1,
 				"start_time": "08:00",
 				"end_time":   "09:00",
 			},
@@ -136,10 +137,10 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 			},
 			saveValue: []dao.OnWeekday{
 				{
-					ID: "MON",
+					ID: 1,
 				},
 			},
-			expectedStatusCode: http.StatusCreated,
+			expectedStatusCode: http.StatusOK,
 			findError:          nil,
 			saveError:          nil,
 			params: map[string]string{
@@ -150,7 +151,7 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"id":         "MON",
+				"id":         1,
 				"start_time": "08:00",
 				"end_time":   "09:00",
 			},
@@ -167,14 +168,155 @@ func TestAddWeekdayToTimeslot(t *testing.T) {
 		},
 		{
 			mockRequestData: map[string]interface{}{
-				"id":         "MON",
+				"id":         1,
+				"start_time": "16:00",
+				"end_time":   "09:00",
+			},
+			findValue: nil,
+			saveValue: []dao.OnWeekday{
+				{
+					ID: 1,
+				},
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			findError:          pkg.ErrNoRows,
+			saveError:          nil,
+		},
+		{
+			mockRequestData: map[string]interface{}{
+				"id":         1,
 				"start_time": "08:00",
 				"end_time":   "09:00",
 			},
 			findValue: nil,
 			saveValue: []dao.OnWeekday{
 				{
-					ID: "MON",
+					ID: 1,
+				},
+			},
+			expectedStatusCode: http.StatusBadRequest,
+			findError:          pkg.ErrNoRows,
+			saveError:          nil,
+		},
+		{
+			mockRequestData:    map[string]interface{}{},
+			findValue:          nil,
+			saveValue:          nil,
+			expectedStatusCode: http.StatusBadRequest,
+			findError:          pkg.ErrNoRows,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "test",
+				"workplaceID":  "test",
+				"timeslotID":   "test",
+			},
+		},
+		{
+			mockRequestData:    map[string]interface{}{},
+			findValue:          nil,
+			saveValue:          nil,
+			expectedStatusCode: http.StatusBadRequest,
+			findError:          nil,
+			saveError:          pkg.ErrNoRows,
+		},
+	}
+
+	for i, testStep := range testSteps {
+		t.Run("Test Update Weekday For Timeslot", func(t *testing.T) {
+			TimeslotRepository.On("FindTimeslotByID").Return(testStep.findValue, testStep.findError)
+			WeekdayRepository.On("UpdateWeekdayForTimeslot").Return(testStep.saveValue, testStep.saveError)
+
+			// get GIN context
+			w := httptest.NewRecorder()
+			c, err := mock.NewTestContextBuilder(w).WithMethod("PUT").WithMapParams(testStep.params).WithBody(testStep.mockRequestData).Build()
+			if err != nil {
+				t.Errorf("Test Step %d: Error when getting GIN context", i)
+			}
+
+			weekdayService.UpdateWeekdayForTimeslot(c)
+			response := w.Result()
+
+			if response.StatusCode != testStep.expectedStatusCode {
+				t.Errorf("Test Step %d: Expected status code %d, got %d", i, testStep.expectedStatusCode, response.StatusCode)
+			}
+
+			if response.StatusCode != http.StatusOK {
+				return
+			}
+
+			var responseBody dto.APIResponse[[]dco.OnWeekdayResponse]
+			if err := json.NewDecoder(response.Body).Decode(&responseBody); err != nil {
+				t.Errorf("Test Step %d: Error when decoding response body", i)
+			}
+
+			for _, weekday := range responseBody.Data {
+				if weekday.ID != testStep.saveValue.([]dao.OnWeekday)[0].ID {
+					t.Errorf("Test Step %d: Expected response body %v, got %v", i, testStep.saveValue, responseBody.Data)
+				}
+			}
+		})
+	}
+}
+
+func TestAddWeekdayToTimeslot(t *testing.T) {
+	WeekdayRepository := mock.NewWeekdayRepositoryMock()
+	TimeslotRepository := mock.NewTimeslotRepositoryMock()
+	weekdayService := WeekdayServiceImpl{
+		WeekdayRepository:  WeekdayRepository,
+		TimeslotRepository: TimeslotRepository,
+	}
+
+	testSteps := []ServiceTestPOST{
+		{
+			mockRequestData: map[string]interface{}{
+				"id":         1,
+				"start_time": "08:00",
+				"end_time":   "09:00",
+			},
+			findValue: dao.Timeslot{
+				Name: "test",
+			},
+			saveValue: []dao.OnWeekday{
+				{
+					ID: 1,
+				},
+			},
+			expectedStatusCode: http.StatusCreated,
+			findError:          nil,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "test",
+				"workplaceID":  "test",
+				"timeslotID":   "test",
+			},
+		},
+		{
+			mockRequestData: map[string]interface{}{
+				"id":         1,
+				"start_time": "08:00",
+				"end_time":   "09:00",
+			},
+			findValue:          nil,
+			saveValue:          nil,
+			expectedStatusCode: http.StatusBadRequest,
+			findError:          pkg.ErrNoRows,
+			saveError:          nil,
+			params: map[string]string{
+				"departmentID": "test",
+				"workplaceID":  "test",
+				"timeslotID":   "test",
+			},
+		},
+		{
+			mockRequestData: map[string]interface{}{
+				"id":         1,
+				"start_time": "08:00",
+				"end_time":   "09:00",
+			},
+			findValue: nil,
+			saveValue: []dao.OnWeekday{
+				{
+					ID: 1,
 				},
 			},
 			expectedStatusCode: http.StatusBadRequest,
@@ -252,11 +394,11 @@ func TestDeleteWeekdayFromTimeslot(t *testing.T) {
 	testSteps := []ServiceTestPOST{
 		{ // Test 1
 			mockRequestData: map[string]interface{}{
-				"id": "MON",
+				"id": 1,
 			},
 			expectedStatusCode: http.StatusOK,
 			findValue: dao.OnWeekday{
-				ID: "test",
+				ID: 1,
 			},
 			findError: nil,
 			params: map[string]string{

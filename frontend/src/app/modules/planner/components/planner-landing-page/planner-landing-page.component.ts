@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, OnDestroy, inject } from '@angular/core';
 import { ActiveDepartmentHandlerService } from '@app/shared/services/active-department-handler.service';
 import { ActiveWeekHandlerService } from '@app/shared/services/active-week-handler.service';
 import { TimetableDataContainerService } from '@app/shared/services/timetable-data-container.service';
@@ -15,7 +15,7 @@ import { EditableTimetableComponent } from '../editable-timetable/editable-timet
   templateUrl: './planner-landing-page.component.html',
   styleUrl: './planner-landing-page.component.scss',
 })
-export class PlannerLandingPageComponent {
+export class PlannerLandingPageComponent implements OnDestroy {
   timetableDataContainerService = inject(TimetableDataContainerService);
   activeWeekHandlerService = inject(ActiveWeekHandlerService);
   activeDepartmentHandlerService = inject(ActiveDepartmentHandlerService);
@@ -39,5 +39,10 @@ export class PlannerLandingPageComponent {
 
   getLoadingStatus() {
     return this.timetableDataContainerService.isLoading$;
+  }
+
+  ngOnDestroy(): void {
+    // clean up
+    this._bottomSheetRef?.dismiss();
   }
 }

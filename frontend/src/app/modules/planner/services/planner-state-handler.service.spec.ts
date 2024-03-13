@@ -12,6 +12,7 @@ import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { map, of } from 'rxjs';
 import { AbsenceReponse } from '@app/modules/absency/interfaces/absence';
 import { APIResponse } from '@app/core/interfaces/response';
+import { dateToWeekdayID } from '@app/shared/functions/date-to-weekday-id.function';
 
 const mockWorkdayTimeslot: WorkdayTimeslot = {
   department: {
@@ -24,18 +25,18 @@ const mockWorkdayTimeslot: WorkdayTimeslot = {
   workplace: {
     id: 'test',
     name: 'test',
+    department_id: 'test',
     created_at: new Date(),
     updated_at: new Date(),
     deleted_at: null,
   },
   timeslot: {
-    department_name: 'test',
-    workplace_name: 'test',
+    department_id: 'test',
+    workplace_id: 'test',
     active: true,
     weekdays: [
       {
-        // Three letter format of the day, e.g. MON, TUE, WED, THU, FRI, SAT, SUN
-        id: new Date().toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
+        id: dateToWeekdayID(new Date()),
         name: new Date().toLocaleDateString('en-US', { weekday: 'long' }),
         start_time: '08:00',
         end_time: '16:00',
@@ -51,7 +52,7 @@ const mockWorkdayTimeslot: WorkdayTimeslot = {
   date: formatDateToDateString(new Date()),
   start_time: '08:00',
   end_time: '16:00',
-  weekday: new Date().toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase(),
+  weekday: dateToWeekdayID(new Date()),
   duration_in_minutes: 480,
   comment: 'test',
   persons: [],
@@ -109,7 +110,7 @@ describe('PlannerStateHandlerService', () => {
       person: {
         id: 'test',
         workplaces: [{ id: 'test' }],
-        weekdays: [{ id: new Date().toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase() }],
+        weekdays: [{ id: dateToWeekdayID(new Date()) }],
       } as PersonWithMetadata,
       workdayTimeslot: { ...mockWorkdayTimeslot, gridColumn: 1, colorForLightMode: 'red', colorForDarkMode: 'blue', validTime: true },
       mockPersonAPIServiceResponse: {
@@ -141,7 +142,7 @@ describe('PlannerStateHandlerService', () => {
       person: {
         id: 'test',
         workplaces: [{ id: 'test' }],
-        weekdays: [{ id: new Date().toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase() }],
+        weekdays: [{ id: dateToWeekdayID(new Date()) }],
       } as PersonWithMetadata,
       workdayTimeslot: { ...mockWorkdayTimeslot, gridColumn: 1, colorForLightMode: 'red', colorForDarkMode: 'blue', validTime: true },
       mockPersonAPIServiceResponse: {
@@ -173,7 +174,7 @@ describe('PlannerStateHandlerService', () => {
       person: {
         id: 'test',
         workplaces: [{ id: 'test' }],
-        weekdays: [{ id: new Date().toLocaleDateString('en-US', { weekday: 'short' }).toUpperCase() }],
+        weekdays: [{ id: dateToWeekdayID(new Date()) }],
       } as PersonWithMetadata,
       workdayTimeslot: { ...mockWorkdayTimeslot, gridColumn: 1, colorForLightMode: 'red', colorForDarkMode: 'blue', validTime: true },
       mockPersonAPIServiceResponse: {

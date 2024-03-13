@@ -2,9 +2,10 @@ import { importProvidersFrom } from '@angular/core';
 import { Routes } from '@angular/router';
 import { HomeComponent } from './core/components/home/home.component';
 import { ViewerModule } from './modules/viewer/viewer.module';
-import { hasAccessToDepartmentGuard, isAuthenticated } from './core/guards/auth-guard';
+import { hasAccessToDepartmentGuard, isAdmin, isAuthenticated } from './core/guards/auth-guards';
 import { PlannerModule } from './modules/planner/planner.module';
 import { AbsencyModule } from './modules/absency/absency.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 export const routes: Routes = [
   {
@@ -25,6 +26,12 @@ export const routes: Routes = [
     path: 'viewer',
     loadChildren: () => import('./modules/viewer/viewer.routes').then((m) => m.routes),
     providers: [importProvidersFrom(ViewerModule)],
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./modules/admin/admin.routes').then((m) => m.routes),
+    canActivate: [isAuthenticated, isAdmin],
+    providers: [importProvidersFrom(AdminModule)],
   },
   { path: '', component: HomeComponent, title: 'Home' },
 ];

@@ -27,7 +27,7 @@ export class LoginComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.authService.verifyLogin();
+    this.authService.verifyToken();
   }
 
   onSubmitLogin(): void {

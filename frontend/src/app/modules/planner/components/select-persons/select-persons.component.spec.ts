@@ -26,6 +26,10 @@ describe('SelectPersonsComponent', () => {
     expect(component).toBeTruthy();
   });
 
+  it('should have initiallySetPersons', () => {
+    expect(component.initiallySetPersons).toBeTruthy();
+  });
+
   it('should emit commentEditRequest', () => {
     const button = fixture.nativeElement.querySelector('button#edit-comment-button');
     spyOn(component.commentEditRequest, 'emit');

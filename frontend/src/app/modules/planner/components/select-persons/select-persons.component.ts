@@ -3,7 +3,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatChipInputEvent, MatChipsModule } from '@angular/material/chips';
 import { MatAutocompleteModule, MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
-import { debounceTime, filter, map, startWith } from 'rxjs';
+import { debounceTime, filter, map } from 'rxjs';
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { PersonDataContainerService } from '@app/shared/services/person-data-container.service';
@@ -22,13 +22,13 @@ export class SelectPersonsComponent {
   seperatorKeysCode: number[] = [ENTER, COMMA];
 
   personDataContainerService = inject(PersonDataContainerService);
-  @Input() persons: PersonWithMetadata[] = [];
+  // initially
+  @Input() initiallySetPersons: PersonWithMetadata[] = [];
   @Input() comment: string | null = null;
 
   @ViewChild('personInput') personInput: ElementRef<HTMLInputElement>;
   control = new FormControl<string>('');
   filteredPersons$ = this.control.valueChanges.pipe(
-    startWith(''),
     debounceTime(150),
     filter((value) => typeof value === 'string'),
     map((value) => this._filter(value!)),
@@ -38,7 +38,7 @@ export class SelectPersonsComponent {
   );
 
   @Input() initiallySelectedPersonFromParent: PersonWithMetadata[] = [];
-  @Input() weekday: string;
+  @Input() weekday: number;
 
   displayFn(person: PersonWithMetadata | null): string {
     return person ? `${person.last_name} (${person.id})` : '';

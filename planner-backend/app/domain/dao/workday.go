@@ -23,7 +23,7 @@ type Workday struct {
 	Comment string
 	Active  bool
 
-	Weekday string
+	Weekday int64
 }
 
 func (w *Workday) ParseFromDBRecord(record *neo4j.Record, date string) error {
@@ -45,7 +45,7 @@ func (w *Workday) ParseFromDBRecord(record *neo4j.Record, date string) error {
 	if err != nil {
 		return err
 	}
-	if err := workplace.ParseFromNode(&workplaceNode); err != nil {
+	if err := workplace.ParseFromNode(&workplaceNode, department.ID); err != nil {
 		return err
 	}
 
@@ -58,6 +58,8 @@ func (w *Workday) ParseFromDBRecord(record *neo4j.Record, date string) error {
 	if err != nil {
 		return err
 	}
+	timeslot.DepartmentID = department.ID
+	timeslot.WorkplaceID = workplace.ID
 
 	// get wkd Node
 	workdayNode, _, err := neo4j.GetRecordValue[neo4j.Node](record, "wkd")
@@ -78,7 +80,7 @@ func (w *Workday) ParseFromDBRecord(record *neo4j.Record, date string) error {
 		return err
 	}
 
-	weekday, err := neo4j.GetProperty[string](workdayNode, "weekday")
+	weekday, err := neo4j.GetProperty[int64](workdayNode, "weekday")
 	if err != nil {
 		return err
 	}

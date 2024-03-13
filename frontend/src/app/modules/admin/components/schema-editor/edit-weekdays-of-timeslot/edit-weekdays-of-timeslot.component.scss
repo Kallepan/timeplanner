@@ -1,0 +1,26 @@
+.create-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+
+  .create-form-fields {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 1.5rem;
+    align-items: center;
+  }
+  margin: 0 0 1rem 0;
+}
+
+.content {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}

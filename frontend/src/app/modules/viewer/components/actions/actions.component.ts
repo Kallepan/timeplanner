@@ -20,6 +20,7 @@ export class ActionsComponent {
   @Output() toggleColors = new EventEmitter<boolean>();
   @Output() toggleTimeLabel = new EventEmitter<boolean>();
   @Output() toggleColorsMissing = new EventEmitter<boolean>();
+  @Output() toggleAbsencyPanel = new EventEmitter<boolean>();
 
   @Output() shiftWeek = new EventEmitter<number>();
 

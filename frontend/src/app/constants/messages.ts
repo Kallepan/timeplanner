@@ -1,4 +1,17 @@
 export class messages {
+  public static ADMIN = {
+    CREATE_SUCCESSFUL: 'Erfolgreich erstellt',
+    CREATE_FAILED: 'Hinzuügen fehlgeschlagen',
+    DELETE_SUCCESSFUL: 'Erfolgreich gelöscht',
+    DELETE_FAILED: 'Löschen fehlgeschlagen',
+
+    TIMESLOT_WEEKDAY_UNASSIGNED: 'Wochentag erfolgreich entfernt',
+    TIMESLOT_WEEKDAY_UNASSIGNMENT_FAILED: 'Entfernen des Wochentags fehlgeschlagen',
+    TIMESLOT_WEEKDAY_ASSIGNED: 'Wochentag erfolgreich zugeordnet',
+    TIMESLOT_WEEKDAY_ASSIGNMENT_FAILED: 'Zuordnen des Wochentags fehlgeschlagen',
+    TIMESLOT_WEEKDAY_UPDATE_FAILED: 'Aktualisieren des Wochentags fehlgeschlagen',
+    TIMESLOT_WEEKDAY_UPDATE_SUCCESS: 'Wochentag erfolgreich aktualisiert',
+  };
   public static AUTH = {
     LOGGED_IN: 'Login erfolgreich',
     LOGGED_OUT: 'Logout erfolgreich',

@@ -1,7 +1,7 @@
 <form>
-  <mat-form-field class="person-selector">
+  <mat-form-field class="person-selector" (click)="control.setValue('', { emitEvent: true })">
     <mat-chip-grid #chipGrid>
-      @for (person of persons; track person) {
+      @for (person of initiallySetPersons; track person) {
         <mat-chip-row (removed)="remove(person)" color="primary" highlighted="true">
           {{ person.last_name }} ({{ person.id }})
           <button matChipRemove>
@@ -12,7 +12,6 @@
     </mat-chip-grid>
     <input
       #personInput
-      placeholder="kank..."
       type="text"
       matInput
       [matAutocomplete]="auto"
@@ -29,9 +28,9 @@
     </mat-autocomplete>
   </mat-form-field>
   <div class="actions">
-    <button id="edit-comment-button" mat-mini-fab color="primary" matTooltip="Kommentar editieren" (click)="commentEditRequest.emit(); $event.preventDefault()"><mat-icon>edit</mat-icon></button>
+    <button id="edit-comment-button" mat-mini-fab color="primary" matTooltip="Kommentar editieren" (click)="$event.preventDefault(); commentEditRequest.emit()"><mat-icon>edit</mat-icon></button>
     @if (comment !== '') {
-      <button id="delete-comment-button" mat-mini-fab color="primary" matTooltip="Kommentar Löschen" (click)="commentDeleteRequest.emit(); $event.preventDefault()" color="warn">
+      <button id="delete-comment-button" mat-mini-fab color="primary" matTooltip="Kommentar Löschen" (click)="$event.preventDefault(); commentDeleteRequest.emit()" color="warn">
         <mat-icon>delete_forever</mat-icon>
       </button>
     }

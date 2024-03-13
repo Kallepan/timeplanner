@@ -4,15 +4,20 @@ FROM node:18-alpine as builder
 WORKDIR /app
 
 # Install dependencies
-COPY ./package.json ./yarn.lock ./angular.json ./
-RUN yarn install --frozen-lockfile
-
-# Copy the source code
-COPY ./src ./src
-COPY ./angular.json ./tsconfig.json tsconfig.app.json ./
+RUN --mount=type=bind,source=package.json,target=/app/package.json \
+    --mount=type=bind,source=yarn.lock,target=/app/yarn.lock \
+    --mount=type=cache,target=/root/.npm \
+    yarn install --frozen-lockfile
 
 # Build the application
-RUN yarn run build --configuration=production
+RUN --mount=type=bind,source=package.json,target=/app/package.json \
+    --mount=type=bind,source=yarn.lock,target=/app/yarn.lock \
+    --mount=type=bind,source=src,target=/app/src \
+    --mount=type=bind,source=angular.json,target=/app/angular.json \
+    --mount=type=bind,source=tsconfig.json,target=/app/tsconfig.json \
+    --mount=type=bind,source=tsconfig.app.json,target=/app/tsconfig.app.json \
+    --mount=type=cache,target=/root/.npm \
+    yarn run build --configuration=production
 
 ### Final stage ###
 FROM nginx:alpine

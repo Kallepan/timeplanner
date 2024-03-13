@@ -144,6 +144,7 @@ export class ActivePersonHandlerServiceService {
           this._personAPIService.getAbsencyForPersonInRange(this.activePerson$!.id, this.activeYear$ + '-01-01', this.activeYear$ + '-12-31').pipe(catchError((err) => throwError(() => err))),
         ),
         map((resp) => resp.data),
+        map((data) => (data ? data : [])),
       )
       .subscribe({
         next: (absences) => {
@@ -180,6 +181,7 @@ export class ActivePersonHandlerServiceService {
           this._personAPIService.getAbsencyForPersonInRange(this.activePerson$!.id, this.activeYear$ + '-01-01', this.activeYear$ + '-12-31').pipe(catchError((err) => throwError(() => err))),
         ),
         map((resp) => resp.data),
+        map((data) => (data ? data : [])),
       )
       .subscribe({
         next: (absences) => {

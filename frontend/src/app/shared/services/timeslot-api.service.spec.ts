@@ -31,8 +31,8 @@ describe('TimeslotAPIService', () => {
         {
           id: 'timeslot1',
           name: 'timeslot1',
-          department_name: 'department1',
-          workplace_name: 'workplace1',
+          department_id: 'department1',
+          workplace_id: 'workplace1',
           active: true,
           created_at: new Date(),
           updated_at: new Date(),
@@ -61,8 +61,8 @@ describe('TimeslotAPIService', () => {
       data: {
         id: 'timeslot1',
         name: 'timeslot1',
-        department_name: 'department1',
-        workplace_name: 'workplace1',
+        department_id: 'department1',
+        workplace_id: 'workplace1',
         active: true,
         created_at: new Date(),
         updated_at: new Date(),
@@ -90,8 +90,8 @@ describe('TimeslotAPIService', () => {
       data: {
         id: 'timeslot1',
         name: 'timeslot1',
-        department_name: 'department1',
-        workplace_name: 'workplace1',
+        department_id: 'department1',
+        workplace_id: 'workplace1',
         active: true,
         created_at: new Date(),
         updated_at: new Date(),
@@ -125,24 +125,12 @@ describe('TimeslotAPIService', () => {
   });
 
   it('should delete a timeslot', () => {
-    const mockTimeslot = {
-      data: {
-        name: 'timeslot1',
-        id: 'timeslot1',
-        department_name: 'department1',
-        workplace_name: 'workplace1',
-        active: true,
-        created_at: new Date(),
-        updated_at: new Date(),
-        deleted_at: null,
-        weekdays: [],
-      },
-      status: 200,
-      message: 'success',
-    };
-
     service.deleteTimeslot('department1', 'workplace1', 'timeslot1').subscribe((result) => {
-      expect(result).toEqual(mockTimeslot);
+      expect(result).toEqual({
+        data: null,
+        status: 200,
+        message: 'success',
+      });
     });
 
     const req = httpController.expectOne('http://localhost:8080/api/v1/planner/department/department1/workplace/workplace1/timeslot/timeslot1');
@@ -150,7 +138,11 @@ describe('TimeslotAPIService', () => {
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
 
-    req.flush(mockTimeslot);
+    req.flush({
+      data: null,
+      status: 200,
+      message: 'success',
+    });
   });
 
   it('should assign a weekday to a timeslot', () => {
@@ -158,15 +150,15 @@ describe('TimeslotAPIService', () => {
       data: {
         name: 'timeslot1',
         id: 'timeslot1',
-        department_name: 'department1',
-        workplace_name: 'workplace1',
+        department_id: 'department1',
+        workplace_id: 'workplace1',
         active: true,
         created_at: new Date(),
         updated_at: new Date(),
         deleted_at: null,
         weekdays: [
           {
-            id: 'MON',
+            id: 1,
             name: 'Monday',
             start_time: '08:00',
             end_time: '16:00',
@@ -177,7 +169,7 @@ describe('TimeslotAPIService', () => {
       message: 'success',
     };
 
-    service.assignTimeslotToWeekday('department1', 'workplace1', 'timeslot1', 'MON').subscribe((result) => {
+    service.assignTimeslotToWeekday('department1', 'workplace1', 'timeslot1', 1, '08:00', '16:00').subscribe((result) => {
       expect(result).toEqual(mockTimeslot);
     });
 
@@ -186,7 +178,9 @@ describe('TimeslotAPIService', () => {
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
     expect(req.request.body).toEqual({
-      id: 'MON',
+      id: 1,
+      start_time: '08:00',
+      end_time: '16:00',
     });
 
     req.flush(mockTimeslot);
@@ -197,8 +191,8 @@ describe('TimeslotAPIService', () => {
       data: {
         name: 'timeslot1',
         id: 'timeslot1',
-        department_name: 'department1',
-        workplace_name: 'workplace1',
+        department_id: 'department1',
+        workplace_id: 'workplace1',
         active: true,
         created_at: new Date(),
         updated_at: new Date(),
@@ -209,7 +203,7 @@ describe('TimeslotAPIService', () => {
       message: 'success',
     };
 
-    service.unassignTimeslotFromWeekday('department1', 'workplace1', 'timeslot1', 'MON').subscribe((result) => {
+    service.unassignTimeslotFromWeekday('department1', 'workplace1', 'timeslot1', 1).subscribe((result) => {
       expect(result).toEqual(mockTimeslot);
     });
 
@@ -218,7 +212,7 @@ describe('TimeslotAPIService', () => {
     expect(req.request.withCredentials).toEqual(true);
     expect(req.request.headers.get('Content-Type')).toEqual('application/json');
     expect(req.request.body).toEqual({
-      id: 'MON',
+      id: 1,
     });
     req.flush(mockTimeslot);
   });

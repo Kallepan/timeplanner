@@ -2,8 +2,9 @@ package dco
 
 type WorkplaceResponse struct {
 	Base
-	Name string `json:"name"`
-	ID   string `json:"id"`
+	Name         string `json:"name"`
+	ID           string `json:"id"`
+	DepartmentID string `json:"department_id"`
 }
 
 type WorkplaceRequest struct {

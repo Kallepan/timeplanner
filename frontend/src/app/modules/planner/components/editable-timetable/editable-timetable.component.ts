@@ -47,7 +47,7 @@ export class EditableTimetableComponent {
     this.plannerStateHandlerService.unAssignPersonFromTimeslot(person, timeslot);
   }
 
-  weekdays = ['MON', 'TUE', 'WED', 'THU', 'FRI'];
+  weekdays = [1, 2, 3, 4, 5];
   getSlotsFromMonToFri(slots: DisplayedWorkdayTimeslot[]): DisplayedWorkdayTimeslot[] {
     return slots.filter((s) => this.weekdays.includes(s.weekday));
   }

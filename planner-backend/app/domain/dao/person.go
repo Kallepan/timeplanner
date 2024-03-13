@@ -7,7 +7,7 @@ import (
 )
 
 type Weekday struct {
-	ID   string
+	ID   int64
 	Name string
 }
 
@@ -16,7 +16,7 @@ func (w *Weekday) ParseFromNode(node *neo4j.Node) error {
 	* Parses a weekday struct from a neo4j node and sets the value on this weekday
 	 */
 
-	id, err := neo4j.GetProperty[string](node, "id")
+	id, err := neo4j.GetProperty[int64](node, "id")
 	if err != nil {
 		return err
 	}
@@ -32,6 +32,17 @@ func (w *Weekday) ParseFromNode(node *neo4j.Node) error {
 	return nil
 }
 
+type DepartmentInPerson struct {
+	ID   string
+	Name string
+}
+type WorkplaceInPerson struct {
+	ID string
+
+	Name         string
+	DepartmentID string
+}
+
 type Person struct {
 	Base
 
@@ -41,8 +52,8 @@ type Person struct {
 	Email     string
 	Active    bool
 
-	Workplaces  []Workplace
-	Departments []Department
+	Workplaces  []WorkplaceInPerson
+	Departments []DepartmentInPerson
 	Weekdays    []Weekday
 
 	WorkingHours float64
@@ -53,35 +64,52 @@ func (p *Person) ParseAdditionalFieldsFromDBRecord(record *neo4j.Record) error {
 	* Parses additional fields such as departments, workplaces, and weekdays from a neo4j record and sets the values on this person
 	**/
 
-	if workplaceNodeInteraces, isNil, err := neo4j.GetRecordValue[[]interface{}](record, "workplaces"); err != nil {
+	if departmentInterfaces, isNil, err := neo4j.GetRecordValue[[]interface{}](record, "departments"); err != nil {
 		return err
 	} else if !isNil {
-		for _, workplaceNodeInterface := range workplaceNodeInteraces {
-			workplaceNode, ok := workplaceNodeInterface.(neo4j.Node)
+		for _, departmentInterface := range departmentInterfaces {
+			departmentMap, ok := departmentInterface.(map[string]interface{})
 			if !ok {
 				continue
 			}
-			workplace := Workplace{}
-			if err := workplace.ParseFromNode(&workplaceNode); err != nil {
-				return err
+
+			var department DepartmentInPerson
+			if id, ok := departmentMap["id"].(string); !ok {
+				continue
+			} else if name, ok := departmentMap["name"].(string); !ok {
+				continue
+			} else {
+				department.ID = id
+				department.Name = name
 			}
-			p.Workplaces = append(p.Workplaces, workplace)
+
+			p.Departments = append(p.Departments, department)
 		}
 	}
 
-	if departments, isNil, err := neo4j.GetRecordValue[[]interface{}](record, "departments"); err != nil {
+	if workplaceInterfaces, isNil, err := neo4j.GetRecordValue[[]interface{}](record, "workplaces"); err != nil {
 		return err
 	} else if !isNil {
-		for _, departmentInterface := range departments {
-			departmentNode, ok := departmentInterface.(neo4j.Node)
+		for _, workplaceInterface := range workplaceInterfaces {
+			workplaceNode, ok := workplaceInterface.(map[string]interface{})
 			if !ok {
 				continue
 			}
-			department := Department{}
-			if err := department.ParseFromNode(&departmentNode); err != nil {
-				return err
+
+			var workplace WorkplaceInPerson
+			if id, ok := workplaceNode["id"].(string); !ok {
+				continue
+			} else if name, ok := workplaceNode["name"].(string); !ok {
+				continue
+			} else if departmentID, ok := workplaceNode["department_id"].(string); !ok {
+				continue
+			} else {
+				workplace.ID = id
+				workplace.Name = name
+				workplace.DepartmentID = departmentID
 			}
-			p.Departments = append(p.Departments, department)
+
+			p.Workplaces = append(p.Workplaces, workplace)
 		}
 	}
 
@@ -89,14 +117,21 @@ func (p *Person) ParseAdditionalFieldsFromDBRecord(record *neo4j.Record) error {
 		return err
 	} else if !isNil {
 		for _, weekdayInterface := range weekdays {
-			weekdayNode, ok := weekdayInterface.(neo4j.Node)
+			weekdayNode, ok := weekdayInterface.(map[string]interface{})
 			if !ok {
 				continue
 			}
-			weekday := Weekday{}
-			if err := weekday.ParseFromNode(&weekdayNode); err != nil {
-				return err
+
+			var weekday Weekday
+			if id, ok := weekdayNode["id"].(int64); !ok {
+				continue
+			} else if name, ok := weekdayNode["name"].(string); !ok {
+				continue
+			} else {
+				weekday.ID = id
+				weekday.Name = name
 			}
+
 			p.Weekdays = append(p.Weekdays, weekday)
 		}
 	}
