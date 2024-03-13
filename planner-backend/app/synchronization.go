@@ -22,7 +22,7 @@ func InitalizeSynchronization(injector *config.Injector) {
 		ticker := time.NewTicker(interval)
 		for range ticker.C {
 			slog.Info("Synchronizing")
-			if err := injector.SynchronizeRepo.Synchronize(60); err != nil {
+			if err := injector.SynchronizeRepo.Synchronize(weeksInAdvance); err != nil {
 				slog.Error("Error synchronizing", "error", err)
 			}
 		}
