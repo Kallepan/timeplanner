@@ -14,6 +14,8 @@ export class constants {
     USERNAME_STORAGE: 'username',
   };
 
+  public static DEFAULT_TIMEOUT = 10000;
+
   public static TITLE_SHORT = 'DPP';
   public static TITLE_LONG = 'DPP - Dienstplan Planer';
   public static VERSION = '1.0.0';
