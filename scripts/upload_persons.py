@@ -115,7 +115,6 @@ def main() -> None:
         "cha",
         "jok",
         "azu",
-        "rve",
         "not",
     ]
     create_persons(
