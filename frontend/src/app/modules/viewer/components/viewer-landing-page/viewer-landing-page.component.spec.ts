@@ -63,7 +63,8 @@ describe('ViewerLandingPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
-    expect(mockActiveWeekHandlerService.activeWeekByDate).toEqual(new Date());
+
+    expect(mockActiveWeekHandlerService.activeWeekByDate.toDateString()).toBe(new Date().toDateString());
   });
 
   it('should have an overlay', () => {
