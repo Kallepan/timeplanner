@@ -27,7 +27,7 @@ export const POSSIBLE_WEEKDAYS: ValidWeekday[] = [
   styleUrl: './edit-weekdays-of-timeslot.component.scss',
 })
 export class EditWeekdaysOfTimeslotComponent implements OnChanges {
-  @Input({ required: true }) timeslot: TimeslotWithMetadata | null = null;
+  @Input({ required: true }) timeslot: TimeslotWithMetadata | undefined;
 
   validWeekdayOptions: ValidWeekday[] = [];
   fb = inject(FormBuilder);

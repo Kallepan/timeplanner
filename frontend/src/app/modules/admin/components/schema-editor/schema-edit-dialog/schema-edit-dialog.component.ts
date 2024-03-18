@@ -1,3 +1,11 @@
+/**
+ *
+ * Generic create schema edit dialog component
+ * This allows the creation of a department, workplace or timeslot
+ * It has the inputs:
+ *  - id: the id of the schema
+ *  - name: the name of the schema
+ */
 import { CommonModule } from '@angular/common';
 import { Component, Inject, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';

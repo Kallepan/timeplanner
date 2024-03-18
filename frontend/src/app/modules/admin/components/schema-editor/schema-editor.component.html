@@ -1,40 +1,45 @@
-<div class="container split">
-  <div class="left">
-    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-      <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding class="tree-node">
-        <button mat-icon-button class="mat-icon-rtl-mirror" (click)="openElement(node)" matTooltip="Editieren"><mat-icon>chevron_right</mat-icon></button>
-        <span>{{ node.item.name }}</span>
-        <span class="spacer"></span>
-        <div class="actions">
-          <button mat-mini-fab color="warn" (click)="deleteElement(node)" matTooltip="Löschen"><mat-icon>delete</mat-icon></button>
-        </div>
-      </mat-tree-node>
-      <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding class="tree-node">
-        <button mat-icon-button [attr.aria-label]="'Toggle ' + node.item.id" matTreeNodeToggle>
-          <mat-icon class="mat-icon-rtl-mirror">
-            {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
-          </mat-icon>
-        </button>
-        <span>{{ node.item.name }}</span>
-        @if (node.isLoading) {
-          <mat-progress-bar mode="indeterminate" class="tree-progress-bar"></mat-progress-bar>
-        }
-        <span class="spacer"></span>
-        <div class="actions">
-          <button mat-mini-fab color="accent" (click)="editElement(node)"><mat-icon>edit</mat-icon></button>
-          <button mat-mini-fab color="accent" (click)="addElement(node)" matTooltip="Hinzufügen"><mat-icon>add</mat-icon></button>
-          @if (node.type !== 'department') {
+<div class="container">
+  <div class="split">
+    <div class="left">
+      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding class="tree-node">
+          <button mat-icon-button class="mat-icon-rtl-mirror" (click)="openElement(node)" matTooltip="Editieren"><mat-icon>chevron_right</mat-icon></button>
+          <span>{{ node.item.name }}</span>
+          <span class="spacer"></span>
+          <div class="actions">
             <button mat-mini-fab color="warn" (click)="deleteElement(node)" matTooltip="Löschen"><mat-icon>delete</mat-icon></button>
+          </div>
+        </mat-tree-node>
+        <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding class="tree-node">
+          <button mat-icon-button [attr.aria-label]="'Toggle ' + node.item.id" matTreeNodeToggle>
+            <mat-icon class="mat-icon-rtl-mirror">
+              {{ treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right' }}
+            </mat-icon>
+          </button>
+          <span>{{ node.item.name }}</span>
+          @if (node.isLoading) {
+            <mat-progress-bar mode="indeterminate" class="tree-progress-bar"></mat-progress-bar>
           }
-        </div>
-      </mat-tree-node>
-    </mat-tree>
+          <span class="spacer"></span>
+          <div class="actions">
+            <button mat-mini-fab color="accent" (click)="editElement(node)"><mat-icon>edit</mat-icon></button>
+            <button mat-mini-fab color="accent" (click)="addElement(node)" matTooltip="Hinzufügen"><mat-icon>add</mat-icon></button>
+            @if (node.type !== 'department') {
+              <button mat-mini-fab color="warn" (click)="deleteElement(node)" matTooltip="Löschen"><mat-icon>delete</mat-icon></button>
+            }
+          </div>
+        </mat-tree-node>
+      </mat-tree>
+    </div>
+    <div class="right">
+      @if (selectedTimeslotForEditing$) {
+        <app-edit-weekdays-of-timeslot
+          (addRequest)="addWeekdayRequest($event)"
+          (editRequest)="editWeekdayRequest($event)"
+          (removeRequest)="removeWeekdayRequest($event)"
+          [timeslot]="selectedTimeslotForEditing$"></app-edit-weekdays-of-timeslot>
+      }
+    </div>
   </div>
-  <div class="right">
-    <app-edit-weekdays-of-timeslot
-      (addRequest)="addWeekdayRequest($event)"
-      (editRequest)="editWeekdayRequest($event)"
-      (removeRequest)="removeWeekdayRequest($event)"
-      [timeslot]="selectedTimeslotForEditing$"></app-edit-weekdays-of-timeslot>
-  </div>
+  <button mat-raised-button color="accent" (click)="createDepartment()">Abteilung erstellen</button>
 </div>

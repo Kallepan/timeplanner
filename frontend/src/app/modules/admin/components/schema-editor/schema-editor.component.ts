@@ -238,4 +238,45 @@ export class SchemaEditorComponent {
       },
     });
   }
+
+  createDepartment() {
+    const data: SchemaEditDialogData<DepartmentAPIService> = {
+      id: '',
+      name: '',
+      idIsEditable: true,
+      serviceForValidation: this.departmentAPIService,
+    };
+
+    const matDialogConfig: MatDialogConfig = new MatDialogConfig();
+    matDialogConfig.data = { id: '', name: '', idIsEditable: true };
+    matDialogConfig.enterAnimationDuration = 300;
+    matDialogConfig.exitAnimationDuration = 300;
+    matDialogConfig.data = data;
+
+    this.matDialog
+      .open(SchemaEditDialogComponent, matDialogConfig)
+      .afterClosed()
+      .pipe(
+        filter((result) => result !== null && result !== undefined),
+        switchMap((result) => {
+          return this.departmentAPIService.createDepartment({ id: result.id, name: result.name }).pipe(
+            map((res) => res.data),
+            catchError((err) => throwError(() => err)),
+            tap((dep) => {
+              const data = this.dataSource.data;
+              data.push(new DynamicFlatNode(dep, 0, 'department'));
+              this.dataSource.data = data;
+            }),
+          );
+        }),
+      )
+      .subscribe({
+        next: () => {
+          this.notificationService.infoMessage(messages.ADMIN.CREATE_SUCCESSFUL);
+        },
+        error: () => {
+          this.notificationService.warnMessage(messages.ADMIN.CREATE_FAILED);
+        },
+      });
+  }
 }

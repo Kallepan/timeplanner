@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EditWeekdaysOfTimeslotComponent } from './edit-weekdays-of-timeslot.component';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormControl } from '@angular/forms';
+import { TimeslotWithMetadata } from '@app/shared/interfaces/timeslot';
 
 describe('EditWeekdaysOfTimeslotComponent', () => {
   let component: EditWeekdaysOfTimeslotComponent;
@@ -24,7 +25,7 @@ describe('EditWeekdaysOfTimeslotComponent', () => {
   });
 
   it('should not have a timeslot at initialization', () => {
-    expect(component.timeslot).toBeNull();
+    expect(component.timeslot).toBeUndefined();
   });
 
   it('should display timeslot name', () => {
@@ -367,7 +368,7 @@ describe('EditWeekdaysOfTimeslotComponent', () => {
         },
       ],
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } as any;
+    } as TimeslotWithMetadata;
     component.ngOnChanges({
       timeslot: {
         currentValue: {
@@ -382,13 +383,6 @@ describe('EditWeekdaysOfTimeslotComponent', () => {
     } as any);
     fixture.detectChanges();
     expect(component.formGroup.controls['weekdays'].value.length).toEqual(7);
-  });
-
-  it('should render Bitte einen Timeslot auswählen if timeslot is null', () => {
-    component.timeslot = null;
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('h3').textContent).toContain('Bitte einen Timeslot auswählen');
   });
 
   it('should make the control required', () => {
