@@ -1,5 +1,9 @@
 @import 'app/shared/styles/timetable.scss';
 
-@media print {
-  // Print styles
+.action {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0 0 1rem 1rem;
 }

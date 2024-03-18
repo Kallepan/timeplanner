@@ -1,4 +1,4 @@
-<div class="timetable__container">
+<div class="timetable__container" #printMe>
   <div class="timetable mat-elevation-z8">
     <!-- Add static headers -->
     <div class="timetable__cell timetable__header">Arbeitsplatz</div>
@@ -57,4 +57,7 @@
       }
     }
   </div>
+</div>
+<div class="action">
+  <button mat-raised-button color="accent" (click)="print(printMe)">Drucken</button>
 </div>
