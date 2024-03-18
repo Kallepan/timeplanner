@@ -1,17 +1,17 @@
-<div class="timetable-container">
+<div class="timetable__container">
   <div class="timetable mat-elevation-z8">
     <!-- Add static headers -->
-    <div class="cell header">Arbeitsplatz</div>
-    <div class="cell header">Slot</div>
+    <div class="timetable__cell timetable__header">Arbeitsplatz</div>
+    <div class="timetable__cell timetable__header">Slot</div>
 
     <!-- Add headers from weekdays array-->
     @for (data of activeWeekdayService.activeWeek$; track $index) {
-      <div class="cell header">{{ data.date | date: 'dd.MM.yyyy' }} ({{ data.shortName | titlecase }})</div>
+      <div class="timetable__cell timetable__header">{{ data.date | date: 'dd.MM.yyyy' }} ({{ data.shortName | titlecase }})</div>
     }
 
     @for (workplace of timetableDataContainerService.workplaces$; track $index) {
       <div
-        class="cell header"
+        class="timetable__cell timetable__header"
         [ngStyle]="{
           'grid-row-start': workplace.gridRowStart,
           'grid-row-end': workplace.gridRowEnd,
@@ -22,7 +22,7 @@
       <!-- Now display the slots by using the respective gridRow !-->
       @for (slot of workplace.timeslotGroups; track slot) {
         <div
-          class="cell header"
+          class="timetable__cell timetable__header"
           [ngStyle]="{
             'grid-row': slot.gridRow,
             'grid-column': 2
@@ -33,7 +33,7 @@
         <!-- Now display the timeslots by using their respective gridRow and gridColumn !-->
         @for (wts of slot.workdayTimeslots; track wts) {
           <div
-            class="cell content"
+            class="timetable__cell content"
             [ngClass]="{
               'not-occupied': !wts.persons.length && timetableDataContainerService.colorizeMissing$
             }"
