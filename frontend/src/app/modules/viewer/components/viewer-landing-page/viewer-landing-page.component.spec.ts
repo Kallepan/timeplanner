@@ -9,6 +9,7 @@ import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-shee
 import { AbsencyPanelComponent } from '@app/modules/planner/components/absency-panel/absency-panel.component';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { DepartmentAPIService } from '@app/shared/services/department-api.service';
+import { provideHttpClient } from '@angular/common/http';
 
 describe('ViewerLandingPageComponent', () => {
   let component: ViewerLandingPageComponent;
@@ -51,6 +52,7 @@ describe('ViewerLandingPageComponent', () => {
         { provide: DepartmentAPIService, useValue: mockDepartmentAPIService },
         { provide: MatBottomSheet, useValue: mockBottomSheet },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        provideHttpClient(),
         provideNoopAnimations(),
       ],
       imports: [ViewerLandingPageComponent],

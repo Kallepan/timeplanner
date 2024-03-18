@@ -34,7 +34,7 @@ export class ViewOnlyTimetableComponent {
       themeChanged = true;
     }
     this.httpClient.get('assets/print-styles.css', { responseType: 'text' }).subscribe((styleString) => {
-      const printWindow = window.open('', 'Druckansicht');
+      const printWindow = window.open('', '_blank');
       printWindow?.document.write(`<html><head><style>${styleString}</style></head><body>${element.innerHTML}</body></html>`);
       printWindow?.document.close();
       printWindow?.focus();
