@@ -88,7 +88,7 @@ func TestRouter(t *testing.T) {
 	t.Run("Test User Routes", func(t *testing.T) {
 		var testSteps = []RouterTest{
 			{httpMethod: "GET", url: "/api/v1/user", expectedResponse: "{\"message\":\"GetAll\"}", shouldLogin: true},
-			{httpMethod: "GET", url: "/api/v1/user/detail", expectedResponse: "{\"message\":\"Get\"}", shouldLogin: true},
+			{httpMethod: "GET", url: "/api/v1/user/1", expectedResponse: "{\"message\":\"Get\"}", shouldLogin: true},
 			{httpMethod: "POST", url: "/api/v1/user", expectedResponse: "{\"message\":\"Create\"}", shouldLogin: true},
 			{httpMethod: "PUT", url: "/api/v1/user/1", expectedResponse: "{\"message\":\"Update\"}", shouldLogin: true},
 			{httpMethod: "DELETE", url: "/api/v1/user/1", expectedResponse: "{\"message\":\"Delete\"}", shouldLogin: true},

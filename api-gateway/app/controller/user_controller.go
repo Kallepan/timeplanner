@@ -29,16 +29,16 @@ type UserControllerImpl struct {
 	UserService service.UserService
 }
 
-func (u UserControllerImpl) GetAll(ctx *gin.Context) {
+func (u UserControllerImpl) GetAll(ctx *gin.Context) {	
+	if ctx.Query("username") != "" {
+		u.UserService.GetUserByUsername(ctx)
+		return
+	}
 	u.UserService.GetAllUsers(ctx)
 }
 
 func (u UserControllerImpl) Get(ctx *gin.Context) {
-	if ctx.Query("id") != "" {
-		u.UserService.GetUserById(ctx)
-		return
-	}
-	u.UserService.GetUserByUsername(ctx)
+	u.UserService.GetUserById(ctx)
 }
 
 func (u UserControllerImpl) Create(ctx *gin.Context) {

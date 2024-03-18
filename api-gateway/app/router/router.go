@@ -44,7 +44,7 @@ func Init(init *config.Injector) *gin.Engine {
 		user := gatewayAPI.Group("/user")
 		{
 			user.GET("", init.UserCtrl.GetAll)
-			user.GET("/detail", init.UserCtrl.Get)
+			user.GET("/:userID", init.UserCtrl.Get)
 			user.POST("", init.UserCtrl.Create)
 			user.PUT("/:userID", init.UserCtrl.Update)
 			user.DELETE("/:userID", init.UserCtrl.Delete)
