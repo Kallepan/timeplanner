@@ -9,6 +9,7 @@ import { EditTextareaDialogComponent, EditTextareaDialogData } from '@app/shared
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { WorkdayTimeslot } from '@app/shared/interfaces/workday_timeslot';
 import { PersonAPIService } from '@app/shared/services/person-api.service';
+import { TimetableDataContainerService } from '@app/shared/services/timetable-data-container.service';
 import { WorkdayAPIService } from '@app/shared/services/workday-api.service';
 import { catchError, filter, map, of, switchMap, tap, throwError } from 'rxjs';
 
@@ -23,6 +24,7 @@ export class PlannerStateHandlerService {
   private notificationService = inject(NotificationService);
   private personAPIService = inject(PersonAPIService);
   private workdayAPIService = inject(WorkdayAPIService);
+  private timetableDataContainerService = inject(TimetableDataContainerService);
 
   assignPersonToTimeslot(person: PersonWithMetadata, workdayTimeslot: WorkdayTimeslot) {
     of(workdayTimeslot)
@@ -89,11 +91,16 @@ export class PlannerStateHandlerService {
             map((resp) => resp.data),
           );
         }),
+        tap(() => {
+          // add person to the list of persons assigned to the whole week
+          this.timetableDataContainerService.addPersonWithWeekday(person.id, workdayTimeslot.weekday);
+        }),
         map(() => {
           workdayTimeslot.persons = [...workdayTimeslot.persons, person];
           return true;
         }),
         catchError((err) => {
+          // log the error just for good measure
           console.error(err);
           return of(false);
         }),
@@ -115,6 +122,10 @@ export class PlannerStateHandlerService {
         // remove person from timeslot
         map(() => {
           workdayTimeslot.persons = workdayTimeslot.persons.filter((p) => p.id !== person.id);
+        }),
+        tap(() => {
+          // remove person from the list of persons assigned to the whole week
+          this.timetableDataContainerService.removePersonWithWeekday(person.id, workdayTimeslot.weekday);
         }),
       )
       .subscribe({

@@ -12,7 +12,7 @@
  * Workplace -> Has many TimeslotGroups -> of which each has many Timeslots.
  * In the html template we simple loop over the workplaces and then over the timeslotGroups and timeslots.
  **/
-import { Injectable, effect, inject, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { WorkdayTimeslot } from '@app/shared/interfaces/workday_timeslot';
 import { catchError, from, map, mergeMap, of, reduce, tap } from 'rxjs';
 import { DisplayedWorkplace } from '../../modules/viewer/interfaces/workplace';
@@ -62,6 +62,27 @@ export class TimetableDataContainerService {
     this._colorize.set(value);
   }
 
+  addPersonWithWeekday(personId: string, weekday: number): void {
+    // Theoretically we only weekdays 1 to 5, but store all here
+    const presentWeekdays = this.mapOfPersonsAssignedToTheWholeWeek().get(personId) ?? new Set<number>();
+    presentWeekdays.add(weekday);
+    this.mapOfPersonsAssignedToTheWholeWeek.set(new Map(this.mapOfPersonsAssignedToTheWholeWeek().set(personId, presentWeekdays)));
+  }
+  removePersonWithWeekday(personId: string, weekday: number): void {
+    // Theoretically we only weekdays 1 to 5, but store all here
+    const presentWeekdays = this.mapOfPersonsAssignedToTheWholeWeek().get(personId);
+    if (presentWeekdays) {
+      presentWeekdays.delete(weekday);
+      this.mapOfPersonsAssignedToTheWholeWeek.set(new Map(this.mapOfPersonsAssignedToTheWholeWeek().set(personId, presentWeekdays)));
+    }
+  }
+  mapOfPersonsAssignedToTheWholeWeek = signal<Map<string, Set<number>>>(new Map<string, Set<number>>());
+  listOfPersonsAssignedToTheWholeWeek = computed(() => {
+    return Array.from(this.mapOfPersonsAssignedToTheWholeWeek().entries())
+      .filter(([, presentWeekdays]) => presentWeekdays.has(1) && presentWeekdays.has(2) && presentWeekdays.has(3) && presentWeekdays.has(4) && presentWeekdays.has(5))
+      .map(([personId]) => personId);
+  });
+
   /**
    * This method is a setter for the `workdays` property. It takes an array of `WorkdayTimeslot` objects as input.
    * Each `WorkdayTimeslot` object represents a timeslot in a workday at a specific workplace.
@@ -93,6 +114,23 @@ export class TimetableDataContainerService {
             reduce((acc, workdays) => [...acc, ...workdays], [] as WorkdayTimeslot[]), // reduce the workdays into a single array
             map((workdays) => workdays.sort((a, b) => a.workplace.id.localeCompare(b.workplace.id))),
             map((workdays) => convertWorkdaysToDisplayedWorkday(workdays)),
+            tap((workplaces) => {
+              const presentWeekdaysPerPersonID = new Map<string, Set<number>>();
+
+              workplaces.forEach((workplace) => {
+                workplace.timeslotGroups.forEach((timeslotGroup) => {
+                  timeslotGroup.workdayTimeslots.forEach((timeslot) => {
+                    timeslot.persons.forEach((person) => {
+                      const presentWeekdays = presentWeekdaysPerPersonID.get(person.id) ?? new Set<number>();
+                      presentWeekdays.add(timeslot.weekday);
+                      presentWeekdaysPerPersonID.set(person.id, presentWeekdays);
+                    });
+                  });
+                });
+              });
+
+              this.mapOfPersonsAssignedToTheWholeWeek.set(presentWeekdaysPerPersonID);
+            }),
           )
           .subscribe((workplaceGroups) => {
             this._isLoading.set(false);

@@ -13,6 +13,7 @@ import { map, of } from 'rxjs';
 import { AbsenceReponse } from '@app/modules/absency/interfaces/absence';
 import { APIResponse } from '@app/core/interfaces/response';
 import { dateToWeekdayID } from '@app/shared/functions/date-to-weekday-id.function';
+import { TimetableDataContainerService } from '@app/shared/services/timetable-data-container.service';
 
 const mockWorkdayTimeslot: WorkdayTimeslot = {
   department: {
@@ -66,12 +67,14 @@ describe('PlannerStateHandlerService', () => {
   let mockNotificationService: jasmine.SpyObj<NotificationService>;
   let mockPersonAPIService: jasmine.SpyObj<PersonAPIService>;
   let mockWorkdayAPIService: jasmine.SpyObj<WorkdayAPIService>;
+  let mockTimetableDataContainerService: jasmine.SpyObj<TimetableDataContainerService>;
 
   beforeEach(() => {
     mockDialog = jasmine.createSpyObj('MatDialog', ['open']);
     mockNotificationService = jasmine.createSpyObj('NotificationService', ['infoMessage', 'warnMessage']);
     mockPersonAPIService = jasmine.createSpyObj('PersonAPIService', ['getAbsencyForPerson']);
     mockWorkdayAPIService = jasmine.createSpyObj('WorkdayAPIService', ['getWorkdays', 'updateWorkday', 'unassignPerson', 'assignPerson']);
+    mockTimetableDataContainerService = jasmine.createSpyObj('TimetableDataContainerService', ['addPersonWithWeekday', 'removePersonWithWeekday']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -80,6 +83,7 @@ describe('PlannerStateHandlerService', () => {
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: PersonAPIService, useValue: mockPersonAPIService },
         { provide: WorkdayAPIService, useValue: mockWorkdayAPIService },
+        { provide: TimetableDataContainerService, useValue: mockTimetableDataContainerService },
       ],
     });
     service = TestBed.inject(PlannerStateHandlerService);
@@ -282,6 +286,7 @@ describe('PlannerStateHandlerService', () => {
       mockPersonAPIService.getAbsencyForPerson.and.returnValue(of(t.mockPersonAPIServiceResponse));
       mockWorkdayAPIService.getWorkdays.and.returnValue(of(t.mockWorkdayAPIServiceResponse));
       mockWorkdayAPIService.assignPerson.and.returnValue(of(t.mockAssignPersonResponse));
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       mockDialog.open.and.returnValue(t.mockDialogReturnValue as any);
 
@@ -305,6 +310,7 @@ describe('PlannerStateHandlerService', () => {
         );
         expect(t.workdayTimeslot.persons.length).toBe(1);
         expect(mockNotificationService.infoMessage).toHaveBeenCalled();
+        expect(mockTimetableDataContainerService.addPersonWithWeekday).toHaveBeenCalled();
       } else {
         expect(mockWorkdayAPIService.assignPerson).not.toHaveBeenCalled();
         expect(t.workdayTimeslot.persons.length).toBe(0);
@@ -379,6 +385,7 @@ describe('PlannerStateHandlerService', () => {
     expect(mockWorkdayAPIService.unassignPerson).toHaveBeenCalled();
     expect(ts.persons.length).toBe(1);
     expect(mockNotificationService.infoMessage).toHaveBeenCalled();
+    expect(mockTimetableDataContainerService.removePersonWithWeekday).toHaveBeenCalled();
   });
 
   it('should unassign the person from the timeslot using unAssignPersonFromTimeslot', () => {
@@ -406,6 +413,7 @@ describe('PlannerStateHandlerService', () => {
     expect(mockWorkdayAPIService.unassignPerson).toHaveBeenCalled();
     expect(ts.persons.length).toBe(0);
     expect(mockNotificationService.infoMessage).toHaveBeenCalled();
+    expect(mockTimetableDataContainerService.removePersonWithWeekday).toHaveBeenCalled();
   });
 
   it('should delete the comment from handleCommentDeleteRequest', () => {
@@ -439,6 +447,7 @@ describe('PlannerStateHandlerService', () => {
     expect(mockWorkdayAPIService.updateWorkday).toHaveBeenCalled();
     expect(ts.comment).toBe('');
   });
+
   it('should handle Error from handleCommentDeleteRequest', () => {
     const ts: DisplayedWorkdayTimeslot = {
       ...mockWorkdayTimeslot,
@@ -512,6 +521,7 @@ describe('PlannerStateHandlerService', () => {
     expect(mockWorkdayAPIService.updateWorkday).toHaveBeenCalled();
     expect(ts.comment).toBe('new_comment');
   });
+
   it('should not update comment from handleCommentEditRequest if dialog is closed without a value', () => {
     const ts: DisplayedWorkdayTimeslot = {
       ...mockWorkdayTimeslot,
@@ -541,6 +551,7 @@ describe('PlannerStateHandlerService', () => {
     expect(mockWorkdayAPIService.updateWorkday).not.toHaveBeenCalled();
     expect(ts.comment).toBe('test');
   });
+
   it('should handle Error from handleCommentEditRequest', () => {
     const ts: DisplayedWorkdayTimeslot = {
       ...mockWorkdayTimeslot,
