@@ -10,6 +10,7 @@ import { MatCardHarness } from '@angular/material/card/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { MatTooltipHarness } from '@angular/material/tooltip/testing';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { TimetableDataContainerService } from '@app/shared/services/timetable-data-container.service';
 
 const mockPersons: PersonWithMetadata[] = [
   {
@@ -24,6 +25,7 @@ describe('PersonListComponent', () => {
   let component: PersonListComponent;
   let fixture: ComponentFixture<PersonListComponent>;
   let mockPersonDataContainerService: jasmine.SpyObj<PersonDataContainerService>;
+  let mockTimetableDataContainerService: jasmine.SpyObj<TimetableDataContainerService>;
   let loader: HarnessLoader;
 
   beforeEach(async () => {
@@ -32,6 +34,8 @@ describe('PersonListComponent', () => {
       persons: mockPersons,
     });
 
+    mockTimetableDataContainerService = jasmine.createSpyObj('TimetableDataContainerService', ['listOfPersonsAssignedToTheWholeWeek']);
+    mockTimetableDataContainerService.listOfPersonsAssignedToTheWholeWeek.and.returnValue([]);
     await TestBed.configureTestingModule({
       deferBlockBehavior: DeferBlockBehavior.Manual,
       imports: [PersonListComponent, DragDropModule],
@@ -40,6 +44,10 @@ describe('PersonListComponent', () => {
         {
           provide: PersonDataContainerService,
           useValue: mockPersonDataContainerService,
+        },
+        {
+          provide: TimetableDataContainerService,
+          useValue: mockTimetableDataContainerService,
         },
       ],
     }).compileComponents();
@@ -60,8 +68,6 @@ describe('PersonListComponent', () => {
     expect(await loader.getHarness(MatProgressBarHarness)).toBeTruthy();
   });
 
-  // KEEP THIS COMMENTED OUT
-
   it('should display persons', async () => {
     const deferBlock = (await fixture.getDeferBlocks())[0];
 
@@ -72,6 +78,7 @@ describe('PersonListComponent', () => {
     expect(matCards.length).toBe(1);
     expect(await matCards[0].getTitleText()).toBe(''); // no title
     expect(await matCards[0].getText()).toContain(`${mockPersons[0].id} (${mockPersons[0].working_hours})`);
+    expect(mockTimetableDataContainerService.listOfPersonsAssignedToTheWholeWeek).toHaveBeenCalled();
 
     // get MatTooltips
     const matTooltips = await loader.getAllHarnesses(MatTooltipHarness);

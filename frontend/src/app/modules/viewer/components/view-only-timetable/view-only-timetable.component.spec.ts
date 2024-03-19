@@ -59,6 +59,7 @@ describe('ViewOnlyTimetableComponent', () => {
   });
 
   it('should fetch css file and open print window', () => {
+    const windowSpy = spyOn(window, 'open').and.returnValue(null);
     expect(component.print).toBeDefined();
 
     const element = document.createElement('div');
@@ -71,5 +72,6 @@ describe('ViewOnlyTimetableComponent', () => {
     req.flush('test');
 
     expect(mockThemeHandlerService.toggleTheme).toHaveBeenCalledTimes(2);
+    expect(windowSpy).toHaveBeenCalled();
   });
 });

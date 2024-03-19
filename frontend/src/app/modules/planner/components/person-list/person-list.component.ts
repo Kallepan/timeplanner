@@ -7,10 +7,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import { SearchBarComponent } from '@app/shared/components/search-bar/search-bar.component';
 import { FormControl } from '@angular/forms';
-import { debounceTime, filter, map, startWith } from 'rxjs';
+import { combineLatestWith, debounceTime, filter, map, startWith } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { PersonDataContainerService } from '@app/shared/services/person-data-container.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { TimetableDataContainerService } from '@app/shared/services/timetable-data-container.service';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-person-list',
@@ -22,6 +24,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 export class PersonListComponent {
   // data which is displayed in the component
   personDataContainerService = inject(PersonDataContainerService);
+  timetableDataContainerService = inject(TimetableDataContainerService);
 
   // Filter control
   control = new FormControl<string>('');
@@ -34,5 +37,10 @@ export class PersonListComponent {
     map((value) =>
       this.personDataContainerService.persons$.filter((person) => person.id.includes(value) || person.first_name.toLowerCase().includes(value) || person.last_name.toLowerCase().includes(value)),
     ),
+    combineLatestWith(toObservable(this.timetableDataContainerService.listOfPersonsAssignedToTheWholeWeek)),
+    map(([persons, listOfPersonsAssignedToTheWholeWeek]) => {
+      // filter out the persons whose id is already in the list of persons assigned to the whole week
+      return persons.filter((person) => !listOfPersonsAssignedToTheWholeWeek.includes(person.id));
+    }),
   );
 }

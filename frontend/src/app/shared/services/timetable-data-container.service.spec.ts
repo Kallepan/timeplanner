@@ -14,15 +14,21 @@ import { of } from 'rxjs';
     @if (!!getWorkplaces()) {
       <div></div>
     }
-    ,
+    @if (!!listOfPersonsAssignedToTheWholeWeek()) {
+      <div></div>
+    }
   `,
   standalone: true,
 })
 class TestComponent {
   timetableDataContainerService = inject(TimetableDataContainerService);
 
+  // we dont need these wrappers, but who cares
   getWorkplaces() {
     this.timetableDataContainerService.workplaces$;
+  }
+  listOfPersonsAssignedToTheWholeWeek() {
+    this.timetableDataContainerService.listOfPersonsAssignedToTheWholeWeek();
   }
 }
 
@@ -67,6 +73,7 @@ describe('TimetableDataContainerService with Component', () => {
 
     expect(mockWorkdayAPIService.getWorkdays).toHaveBeenCalled();
     expect(service.workplaces$).not.toEqual([]);
+    expect(service.listOfPersonsAssignedToTheWholeWeek()).toEqual([]);
   });
 
   it('should have expected workplaces$ output', () => {
@@ -85,6 +92,56 @@ describe('TimetableDataContainerService with Component', () => {
     expect(service.workplaces$.length).toBe(1);
     expect(service.workplaces$[0].timeslotGroups.length).toBe(1);
     expect(service.workplaces$[0].timeslotGroups[0].workdayTimeslots.length).toBe(14);
+  });
+
+  it('should add person to the list of persons assigned to the "whole" (MON to FRI) week', () => {
+    mockWorkdayAPIService.getWorkdays.and.returnValue(of({ data: mockWorkdays, message: 'success', status: 200 }));
+    activeWeekHandlerService.activeWeekByDate = new Date();
+
+    fixture.detectChanges();
+
+    expect(service.listOfPersonsAssignedToTheWholeWeek()).toEqual([]);
+
+    // populate the list of persons assigned to the whole week
+    service.addPersonWithWeekday('1', 1);
+    expect(service.listOfPersonsAssignedToTheWholeWeek()).toEqual([]);
+    service.addPersonWithWeekday('1', 2);
+    expect(service.listOfPersonsAssignedToTheWholeWeek()).toEqual([]);
+    service.addPersonWithWeekday('1', 3);
+    expect(service.listOfPersonsAssignedToTheWholeWeek()).toEqual([]);
+    service.addPersonWithWeekday('1', 4);
+    expect(service.listOfPersonsAssignedToTheWholeWeek()).toEqual([]);
+
+    // should not add person to the list if they are assigned to weekend
+    service.addPersonWithWeekday('1', 6);
+    expect(service.listOfPersonsAssignedToTheWholeWeek()).toEqual([]);
+    service.addPersonWithWeekday('1', 7);
+    expect(service.listOfPersonsAssignedToTheWholeWeek()).toEqual([]);
+
+    // should add person to the list if weekdays 1 to 5 are present
+    service.addPersonWithWeekday('1', 5);
+    expect(service.listOfPersonsAssignedToTheWholeWeek()).toEqual(['1']);
+  });
+
+  it('should remove person from the list of persons assigned to the "whole" (MON to FRI) week', () => {
+    mockWorkdayAPIService.getWorkdays.and.returnValue(of({ data: mockWorkdays, message: 'success', status: 200 }));
+    activeWeekHandlerService.activeWeekByDate = new Date();
+
+    fixture.detectChanges();
+
+    expect(service.listOfPersonsAssignedToTheWholeWeek()).toEqual([]);
+
+    // populate the list of persons assigned to the whole week
+    service.addPersonWithWeekday('1', 1);
+    service.addPersonWithWeekday('1', 2);
+    service.addPersonWithWeekday('1', 3);
+    service.addPersonWithWeekday('1', 4);
+    service.addPersonWithWeekday('1', 5);
+    expect(service.listOfPersonsAssignedToTheWholeWeek()).toEqual(['1']);
+
+    // remove person from the list
+    service.removePersonWithWeekday('1', 5);
+    expect(service.listOfPersonsAssignedToTheWholeWeek()).toEqual([]);
   });
 });
 
