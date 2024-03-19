@@ -10,7 +10,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { APIResponse } from '@app/core/interfaces/response';
 import { Observable, catchError, map, of } from 'rxjs';
-import { DepartmentWithMetadata, Department } from '../interfaces/department';
+import { DepartmentWithMetadata, CreateDepartment } from '../interfaces/department';
 import { constants } from '@app/constants/constants';
 import { AbsenceReponse } from '@app/modules/absency/interfaces/absence';
 import { CheckIDExistsInterface } from '@app/modules/admin/validators/id-validator';
@@ -78,7 +78,7 @@ export class DepartmentAPIService implements CheckIDExistsInterface {
     return this.http.get<APIResponse<DepartmentWithMetadata>>(url, httpOptions);
   }
 
-  createDepartment(department: Department): Observable<APIResponse<DepartmentWithMetadata>> {
+  createDepartment(department: CreateDepartment): Observable<APIResponse<DepartmentWithMetadata>> {
     const url = `${constants.APIS.PLANNER}/department`;
 
     const httpOptions = {
