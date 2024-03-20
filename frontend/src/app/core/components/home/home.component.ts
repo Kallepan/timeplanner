@@ -17,11 +17,14 @@ import { ActiveDepartmentHandlerService } from '@app/shared/services/active-depa
 export class HomeComponent {
   title = constants.TITLE_LONG;
   private routeHandlerService = inject(RouteHandlerService);
-  activeDepartmentHandlerService = inject(ActiveDepartmentHandlerService);
+  private activeDepartmentHandlerService = inject(ActiveDepartmentHandlerService);
   private authService = inject(AuthService);
 
   isAdmin() {
     return this.authService.isAdmin$;
+  }
+  setActiveDepartment(department: string | undefined) {
+    this.activeDepartmentHandlerService.activeDepartment = department;
   }
 
   routeConfigurations = this.routeHandlerService.routeConfigurations();
