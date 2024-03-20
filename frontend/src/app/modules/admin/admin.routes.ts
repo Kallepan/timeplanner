@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { ActiveDepartmentHandlerService } from '@app/shared/services/active-department-handler.service';
 import { DepartmentAPIService } from '@app/shared/services/department-api.service';
 import { PersonDataContainerService } from '@app/shared/services/person-data-container.service';
+import { PersonEditorDataContainerService } from './services/person-editor-data-container.service';
 
 export const routes: Routes = [
   {
@@ -19,11 +20,20 @@ export const routes: Routes = [
   {
     path: 'person',
     loadComponent: () => import('@app/modules/admin/components/person-editor-landing-page/person-editor-landing-page.component').then((m) => m.PersonEditorLandingPageComponent),
-    providers: [DepartmentAPIService],
+    providers: [
+      // needed to fetch departments
+      DepartmentAPIService,
+    ],
   },
   {
     path: 'person/detail',
     loadComponent: () => import('@app/modules/admin/components/person-editor/person-editor.component').then((m) => m.PersonEditorComponent),
-    providers: [PersonDataContainerService, ActiveDepartmentHandlerService],
+    providers: [
+      // needed for person-autocomplete
+      PersonDataContainerService,
+      ActiveDepartmentHandlerService,
+      // needed for person-editor
+      PersonEditorDataContainerService,
+    ],
   },
 ];
