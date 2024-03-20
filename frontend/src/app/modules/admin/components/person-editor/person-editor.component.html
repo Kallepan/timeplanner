@@ -1,1 +1,9 @@
-<p>person-editor works!</p>
+<div class="container">
+  <app-person-autocomplete (personSelected)="setActivePerson($event)"></app-person-autocomplete>
+
+  @if (getActivePerson(); as person) {
+    <div class="center">
+      <h3>{{ person.last_name }}, {{ person.first_name }} ({{ person.id }})</h3>
+    </div>
+  }
+</div>

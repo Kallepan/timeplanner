@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
-import { constants } from '@app/constants/constants';
+import { constants } from '@app/core/constants/constants';
 import { AuthService } from '@app/core/services/auth.service';
 import { RouteHandlerService } from '@app/core/services/route-handler.service';
 import { ActiveDepartmentHandlerService } from '@app/shared/services/active-department-handler.service';

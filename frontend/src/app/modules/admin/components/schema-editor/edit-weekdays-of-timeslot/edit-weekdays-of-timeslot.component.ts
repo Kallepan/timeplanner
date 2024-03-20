@@ -7,17 +7,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
-
-type ValidWeekday = { id: number; name: string };
-export const POSSIBLE_WEEKDAYS: ValidWeekday[] = [
-  { id: 1, name: 'Montag' },
-  { id: 2, name: 'Dienstag' },
-  { id: 3, name: 'Mittwoch' },
-  { id: 4, name: 'Donnerstag' },
-  { id: 5, name: 'Freitag' },
-  { id: 6, name: 'Samstag' },
-  { id: 7, name: 'Sonntag' },
-];
+import { constants } from '@app/core/constants/constants';
+import { ValidWeekday } from '@app/core/types/weekday';
 
 @Component({
   selector: 'app-edit-weekdays-of-timeslot',
@@ -84,7 +75,7 @@ export class EditWeekdaysOfTimeslotComponent implements OnChanges {
     });
 
     // set it to all weekdays which are not already in the timeslot
-    this.validWeekdayOptions = POSSIBLE_WEEKDAYS.filter((weekday) => !(this.timeslot?.weekdays ?? []).some((tsWeekday) => tsWeekday.id === weekday.id));
+    this.validWeekdayOptions = constants.POSSIBLE_WEEKDAYS.filter((weekday) => !(this.timeslot?.weekdays ?? []).some((tsWeekday) => tsWeekday.id === weekday.id));
 
     // disable the form if there are no more weekdays to add
     if (this.validWeekdayOptions.length === 0) {
@@ -107,7 +98,7 @@ export class EditWeekdaysOfTimeslotComponent implements OnChanges {
     if (!this.timeslot) return;
 
     this.removeRequest.emit({ id, timeslot: this.timeslot });
-    this.validWeekdayOptions.push({ id, name: POSSIBLE_WEEKDAYS.find((weekday) => weekday.id === id)?.name ?? '' });
+    this.validWeekdayOptions.push({ id, name: constants.POSSIBLE_WEEKDAYS.find((weekday) => weekday.id === id)?.name ?? '' });
   }
 
   @Output() addRequest = new EventEmitter<{ control: FormGroup; type: string; timeslot: TimeslotWithMetadata }>();

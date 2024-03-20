@@ -1,5 +1,5 @@
 import { DepartmentWithMetadata } from '@app/shared/interfaces/department';
-import { DynamicDataSource, DynamicDatabase, DynamicFlatNode } from './tree-data-source';
+import { DynamicDataSource, DynamicDatabase, DynamicFlatNode } from './schema-editor-data-container';
 import { WorkplaceWithMetadata } from '@app/shared/interfaces/workplace';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { TestBed } from '@angular/core/testing';

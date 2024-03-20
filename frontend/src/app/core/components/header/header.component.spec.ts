@@ -11,7 +11,7 @@ import { MatSlideToggleHarness } from '@angular/material/slide-toggle/testing';
 import { By } from '@angular/platform-browser';
 import { HeaderComponent } from './header.component';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { constants } from '@app/constants/constants';
+import { constants } from '@app/core/constants/constants';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;

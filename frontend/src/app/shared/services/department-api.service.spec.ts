@@ -5,7 +5,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { APIResponse } from '@app/core/interfaces/response';
 import { Department, DepartmentWithMetadata } from '../interfaces/department';
-import { constants } from '@app/constants/constants';
+import { constants } from '@app/core/constants/constants';
 import { AbsenceReponse } from '@app/modules/absency/interfaces/absence';
 
 describe('DepartmentAPIService', () => {

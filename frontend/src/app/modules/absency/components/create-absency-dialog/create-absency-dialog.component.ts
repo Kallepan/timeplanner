@@ -5,7 +5,7 @@ import { MatInputModule } from '@angular/material/input';
 import { DialogLayoutComponent } from '@app/shared/components/dialog-layout/dialog-layout.component';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
-import { constants } from '@app/constants/constants';
+import { constants } from '@app/core/constants/constants';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { CommonModule } from '@angular/common';
 

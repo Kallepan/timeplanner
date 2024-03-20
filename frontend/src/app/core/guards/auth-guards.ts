@@ -2,7 +2,7 @@ import { inject } from '@angular/core';
 import { ActivatedRouteSnapshot, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { catchError, map, of, tap } from 'rxjs';
-import { messages } from '@app/constants/messages';
+import { messages } from '@app/core/constants/messages';
 import { NotificationService } from '../services/notification.service';
 
 // Guard to check if user has access to a department

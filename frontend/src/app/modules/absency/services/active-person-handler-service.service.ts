@@ -9,7 +9,7 @@ import { NotificationService } from '@app/core/services/notification.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import CalendarDayEventObject from 'js-year-calendar/dist/interfaces/CalendarDayEventObject';
 import CalendarDataSourceElement from 'js-year-calendar/dist/interfaces/CalendarDataSourceElement';
-import { messages } from '@app/constants/messages';
+import { messages } from '@app/core/constants/messages';
 import { CreateAbsencyDialogComponent } from '../components/create-absency-dialog/create-absency-dialog.component';
 import { formatDateToDateString } from '../../../shared/functions/format-date-to-string.function';
 import { ConfirmationDialogComponent, ConfirmationDialogComponentData } from '@app/shared/components/confirmation-dialog/confirmation-dialog.component';

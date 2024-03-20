@@ -2,8 +2,8 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, computed, inject, signal, type WritableSignal } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, catchError, from, map, of, switchMap, tap, throwError } from 'rxjs';
-import { constants } from '../../constants/constants';
-import { messages } from '../../constants/messages';
+import { constants } from '../constants/constants';
+import { messages } from '../constants/messages';
 import { NotificationService } from './notification.service';
 import { APIResponse } from '../interfaces/response';
 
