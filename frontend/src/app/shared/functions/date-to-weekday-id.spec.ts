@@ -1,10 +1,6 @@
 import { dateToWeekdayID } from './date-to-weekday-id.function';
 
 describe('dateToWeekdayId', () => {
-  it('should be created', () => {
-    expect(dateToWeekdayID).toBeTruthy;
-  });
-
   it('should return 1 for 2021-01-04', () => {
     const date = new Date('2021-01-04');
     expect(dateToWeekdayID(date)).toBe(1);
