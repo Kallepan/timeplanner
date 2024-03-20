@@ -24,5 +24,5 @@ export class ActionsComponent {
 
   @Output() shiftWeek = new EventEmitter<number>();
 
-  @Input() departmentId: string;
+  @Input() departmentId: string | null;
 }

@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
@@ -10,7 +9,7 @@ import { ActiveDepartmentHandlerService } from '@app/shared/services/active-depa
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, RouterLink],
+  imports: [MatButtonModule, RouterLink],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
@@ -23,7 +22,8 @@ export class HomeComponent {
   isAdmin() {
     return this.authService.isAdmin$;
   }
-  setActiveDepartment(department: string | undefined) {
+  setActiveDepartment(department?: string) {
+    if (!department) return;
     this.activeDepartmentHandlerService.activeDepartment = department;
   }
 

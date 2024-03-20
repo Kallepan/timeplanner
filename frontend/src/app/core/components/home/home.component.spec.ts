@@ -1,25 +1,39 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HomeComponent } from './home.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import { AuthService } from '@app/core/services/auth.service';
+import { ActiveDepartmentHandlerService } from '@app/shared/services/active-department-handler.service';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('HomeComponent', () => {
   let component: HomeComponent;
   let fixture: ComponentFixture<HomeComponent>;
   let mockAuthService: jasmine.SpyObj<AuthService>;
+  let mockActiveDepartmentHandlerService: jasmine.SpyObj<ActiveDepartmentHandlerService>;
+  let mockActivatedRoute: jasmine.SpyObj<ActivatedRoute>;
 
   beforeEach(() => {
     mockAuthService = jasmine.createSpyObj('AuthService', ['isAdmin']);
+    mockActiveDepartmentHandlerService = jasmine.createSpyObj('ActiveDepartmentHandlerService', ['activeDepartment']);
+    mockActivatedRoute = jasmine.createSpyObj('ActivatedRoute', [], {
+      queryParams: of({ department: 'test' }),
+    });
 
     TestBed.configureTestingModule({
-      imports: [HomeComponent, RouterTestingModule, MatButtonModule, MatTooltipModule],
+      imports: [HomeComponent],
       providers: [
         {
           provide: AuthService,
           useValue: mockAuthService,
+        },
+        {
+          provide: ActiveDepartmentHandlerService,
+          useValue: mockActiveDepartmentHandlerService,
+        },
+        {
+          provide: ActivatedRoute,
+          useValue: mockActivatedRoute,
         },
       ],
     });
