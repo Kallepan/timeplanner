@@ -16,11 +16,7 @@ describe('AbsencyDataContainerService', () => {
     mockDepartmentAPIService = jasmine.createSpyObj('DepartmentAPIService', ['getAbsencesForDepartment']);
 
     mockActivatedRoute = jasmine.createSpyObj('ActivatedRoute', [], {
-      snapshot: {
-        queryParams: {
-          department: 'test',
-        },
-      },
+      queryParams: of({ department: 'test' }),
     });
 
     TestBed.configureTestingModule({
@@ -63,11 +59,9 @@ describe('AbsencyDataContainerService with Component', () => {
       }),
     );
     mockActivatedRoute = jasmine.createSpyObj('ActivatedRoute', [], {
-      snapshot: {
-        queryParams: {
-          department: 'test',
-        },
-      },
+      queryParams: of({
+        department: 'test',
+      }),
     });
 
     TestBed.configureTestingModule({

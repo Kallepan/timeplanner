@@ -1,14 +1,13 @@
-import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { RouterLink, RouterModule } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '@app/core/services/auth.service';
 import { RouteHandlerService } from '@app/core/services/route-handler.service';
 import { ActiveDepartmentHandlerService } from '@app/shared/services/active-department-handler.service';
 @Component({
   selector: 'app-sidenav',
   standalone: true,
-  imports: [CommonModule, RouterModule, MatButtonModule, RouterLink],
+  imports: [MatButtonModule, RouterLink],
   templateUrl: './sidenav.component.html',
   styleUrls: ['./sidenav.component.scss'],
 })
@@ -22,7 +21,8 @@ export class SidenavComponent {
   isAdmin() {
     return this.authService.isAdmin$;
   }
-  setActiveDepartment(department: string | undefined) {
+  setActiveDepartment(department?: string) {
+    if (!department) return;
     this.activeDepartmentHandlerService.activeDepartment = department;
   }
 

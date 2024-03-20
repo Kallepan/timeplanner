@@ -22,6 +22,9 @@ export class PersonDataContainerService {
   constructor() {
     effect(
       () => {
+        if (!this.activeDepartmentHandlerService.activeDepartment$) {
+          return;
+        }
         this.personAPISerivce
           .getPersons(this.activeDepartmentHandlerService.activeDepartment$)
           .pipe(

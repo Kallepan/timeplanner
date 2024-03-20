@@ -14,7 +14,7 @@
  **/
 import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { WorkdayTimeslot } from '@app/shared/interfaces/workday_timeslot';
-import { catchError, from, map, mergeMap, of, reduce, tap } from 'rxjs';
+import { catchError, filter, from, map, mergeMap, of, reduce, tap } from 'rxjs';
 import { DisplayedWorkplace } from '../../modules/viewer/interfaces/workplace';
 import { convertWorkdaysToDisplayedWorkday } from '../functions/convert-workdays-to-displayed-workdays';
 import { ActiveDepartmentHandlerService } from './active-department-handler.service';
@@ -104,9 +104,10 @@ export class TimetableDataContainerService {
           .pipe(
             tap(() => this._isLoading.set(true)),
             map((weekday) => weekday.dateString),
+            filter(() => this._activeDepartmentHandlerService.activeDepartment$ !== null && this._activeDepartmentHandlerService.activeDepartment$ !== undefined),
             mergeMap((date) =>
               // fetch workdays for each date in the week
-              this._workdayAPIService.getWorkdays(this._activeDepartmentHandlerService.activeDepartment$, date).pipe(
+              this._workdayAPIService.getWorkdays(this._activeDepartmentHandlerService.activeDepartment$!, date).pipe(
                 map((resp) => resp.data), // map the response to the data property
                 catchError(() => of([])), // if there is an error, return an empty array
               ),

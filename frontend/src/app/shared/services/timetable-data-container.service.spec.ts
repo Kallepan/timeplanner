@@ -8,6 +8,40 @@ import { Component, WritableSignal, inject, signal } from '@angular/core';
 import { mockWorkdays } from '@app/modules/viewer/tests/constants';
 import { of } from 'rxjs';
 
+describe('TimetableDataContainerService with Component', () => {
+  let mockActiveDepartmentHandlerService: jasmine.SpyObj<ActiveDepartmentHandlerService>;
+  let mockWorkdayAPIService: jasmine.SpyObj<WorkdayAPIService>;
+
+  let fixture: ComponentFixture<TestComponent>;
+  let service: TimetableDataContainerService;
+
+  it('should not continue if activeDepartment is not set', () => {
+    mockWorkdayAPIService = jasmine.createSpyObj('WorkdayAPIService', ['getWorkdays']);
+    mockActiveDepartmentHandlerService = jasmine.createSpyObj('ActiveDepartmentHandlerService', [''], {
+      activeDepartment$: null,
+    });
+
+    TestBed.configureTestingModule({
+      imports: [TestComponent],
+      providers: [
+        TimetableDataContainerService,
+        ActiveWeekHandlerService,
+        { provide: ActiveDepartmentHandlerService, useValue: mockActiveDepartmentHandlerService },
+        { provide: WorkdayAPIService, useValue: mockWorkdayAPIService },
+      ],
+    });
+
+    fixture = TestBed.createComponent(TestComponent);
+    TestBed.inject(ActiveWeekHandlerService);
+    service = TestBed.inject(TimetableDataContainerService);
+    fixture.detectChanges();
+
+    expect(service.workplaces$).toEqual([]);
+    expect(service.listOfPersonsAssignedToTheWholeWeek()).toEqual([]);
+
+    expect(mockWorkdayAPIService.getWorkdays).not.toHaveBeenCalled();
+  });
+});
 @Component({
   selector: 'app-timetable-data-container',
   template: `
@@ -41,7 +75,9 @@ describe('TimetableDataContainerService with Component', () => {
   let service: TimetableDataContainerService;
 
   beforeEach(() => {
-    mockActiveDepartmentHandlerService = jasmine.createSpyObj('ActiveDepartmentHandlerService', ['']);
+    mockActiveDepartmentHandlerService = jasmine.createSpyObj('ActiveDepartmentHandlerService', [''], {
+      activeDepartment$: 'test',
+    });
 
     mockWorkdayAPIService = jasmine.createSpyObj('WorkdayAPIService', ['getWorkdays']);
 
@@ -58,6 +94,11 @@ describe('TimetableDataContainerService with Component', () => {
     activeWeekHandlerService = TestBed.inject(ActiveWeekHandlerService);
     service = TestBed.inject(TimetableDataContainerService);
     fixture.detectChanges();
+  });
+
+  it('should handle emptyy workplaces$', () => {
+    expect(service.workplaces$).toEqual([]);
+    expect(service.listOfPersonsAssignedToTheWholeWeek()).toEqual([]);
   });
 
   it('should be created', () => {

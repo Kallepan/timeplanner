@@ -3,7 +3,7 @@ import { AbsenceByDate } from '@app/modules/absency/interfaces/absence';
 import { ActiveDepartmentHandlerService } from '@app/shared/services/active-department-handler.service';
 import { ActiveWeekHandlerService, Weekday } from '@app/shared/services/active-week-handler.service';
 import { DepartmentAPIService } from '@app/shared/services/department-api.service';
-import { catchError, forkJoin, map, of, switchMap, tap, throwError } from 'rxjs';
+import { catchError, filter, forkJoin, map, of, switchMap, tap, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: null,
@@ -34,9 +34,10 @@ export class AbsencyDataContainerService {
         of(this.activeWeekHandlerService.activeWeek$)
           .pipe(
             tap(() => this._loading.set(true)),
+            filter(() => this.activeDepartmentHandlerService.activeDepartment$ !== null && this.activeDepartmentHandlerService.activeDepartment$ !== undefined),
             switchMap((weekDays) => {
               const obs = weekDays.map((weekDay) =>
-                this.departmentAPIService.getAbsencesForDepartment(this.activeDepartmentHandlerService.activeDepartment$, weekDay.dateString).pipe(
+                this.departmentAPIService.getAbsencesForDepartment(this.activeDepartmentHandlerService.activeDepartment$!, weekDay.dateString).pipe(
                   catchError((err) => throwError(() => err)),
                   map((resp) => resp.data),
                   map((absences) => {
