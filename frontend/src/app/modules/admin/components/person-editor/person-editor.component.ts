@@ -18,4 +18,7 @@ export class PersonEditorComponent {
   setActivePerson(person: PersonWithMetadata) {
     this._personEditorDataContainerService.activePerson = person;
   }
+  getActivePerson() {
+    return this._personEditorDataContainerService.activePerson$;
+  }
 }
