@@ -12,7 +12,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { APIResponse } from '@app/core/interfaces/response';
-import { constants } from '@app/constants/constants';
+import { constants } from '@app/core/constants/constants';
 import { Observable, catchError, map, of } from 'rxjs';
 import { CreateTimeslot, TimeslotWithMetadata } from '../interfaces/timeslot';
 import { CheckIDExistsInterface } from '@app/modules/admin/validators/id-validator';

@@ -4,23 +4,24 @@ import { MatTreeModule } from '@angular/material/tree';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { DynamicDataSource, DynamicFlatNode } from '../../services/tree-data-source';
+import { DynamicDataSource, DynamicFlatNode } from '../../services/schema-editor-data-container';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { EditWeekdaysOfTimeslotComponent, POSSIBLE_WEEKDAYS } from './edit-weekdays-of-timeslot/edit-weekdays-of-timeslot.component';
+import { EditWeekdaysOfTimeslotComponent } from './edit-weekdays-of-timeslot/edit-weekdays-of-timeslot.component';
 import { TimeslotWithMetadata } from '@app/shared/interfaces/timeslot';
 import { DepartmentAPIService } from '@app/shared/services/department-api.service';
 import { WorkplaceAPIService } from '@app/shared/services/workplace-api.service';
 import { TimeslotAPIService } from '@app/shared/services/timeslot-api.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NotificationService } from '@app/core/services/notification.service';
-import { messages } from '@app/constants/messages';
+import { messages } from '@app/core/constants/messages';
 import { catchError, filter, map, of, switchMap, tap, throwError } from 'rxjs';
 import { WorkplaceWithMetadata } from '@app/shared/interfaces/workplace';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ConfirmationDialogComponent } from '@app/shared/components/confirmation-dialog/confirmation-dialog.component';
 import { SchemaEditDialogComponent, SchemaEditDialogData } from './schema-edit-dialog/schema-edit-dialog.component';
 import { DepartmentWithMetadata } from '@app/shared/interfaces/department';
+import { constants } from '@app/core/constants/constants';
 
 @Component({
   selector: 'app-schema-editor',
@@ -197,7 +198,7 @@ export class SchemaEditorComponent {
     const endTime = event.control.controls['endTime'].value;
     this.timeslotAPIService.assignTimeslotToWeekday(timeslot.department_id, timeslot.workplace_id, timeslot.id, weekdayID, startTime, endTime).subscribe({
       next: () => {
-        const selectedWeekday = POSSIBLE_WEEKDAYS.find((weekday) => weekday.id === weekdayID);
+        const selectedWeekday = constants.POSSIBLE_WEEKDAYS.find((weekday) => weekday.id === weekdayID);
         timeslot.weekdays = (timeslot.weekdays ?? []).concat([{ id: weekdayID, name: selectedWeekday?.name ?? '', start_time: startTime, end_time: endTime }]).sort((a, b) => a.id - b.id);
         this.notificationService.infoMessage(messages.ADMIN.TIMESLOT_WEEKDAY_ASSIGNED);
       },

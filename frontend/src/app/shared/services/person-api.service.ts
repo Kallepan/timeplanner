@@ -17,7 +17,7 @@
  */
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { constants } from '@app/constants/constants';
+import { constants } from '@app/core/constants/constants';
 import { APIResponse } from '@app/core/interfaces/response';
 import { Observable } from 'rxjs';
 import { CreatePerson, PersonWithMetadata } from '../interfaces/person';

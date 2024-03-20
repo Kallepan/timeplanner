@@ -5,7 +5,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { constants } from '@app/constants/constants';
+import { constants } from '@app/core/constants/constants';
 import { CustomHeaderComponent } from '../custom-header/custom-header.component';
 import { LoginComponent } from '../login/login.component';
 import { RouterLink } from '@angular/router';

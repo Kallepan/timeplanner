@@ -11,7 +11,7 @@ import { Injectable, inject } from '@angular/core';
 import { APIResponse } from '@app/core/interfaces/response';
 import { Observable, catchError, map, of } from 'rxjs';
 import { CreateWorkplace, WorkplaceWithMetadata } from '../interfaces/workplace';
-import { constants } from '@app/constants/constants';
+import { constants } from '@app/core/constants/constants';
 import { CheckIDExistsInterface } from '@app/modules/admin/validators/id-validator';
 
 @Injectable({

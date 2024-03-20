@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { messages } from '@app/constants/messages';
+import { messages } from '@app/core/constants/messages';
 import { NotificationService } from '@app/core/services/notification.service';
 import { DisplayedWorkdayTimeslot } from '@app/modules/viewer/interfaces/workplace';
 import { ConfirmationDialogComponent, ConfirmationDialogComponentData } from '@app/shared/components/confirmation-dialog/confirmation-dialog.component';

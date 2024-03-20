@@ -1,14 +1,7 @@
-import {
-  HttpClient,
-  provideHttpClient,
-  withInterceptors,
-} from '@angular/common/http';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { HttpClient, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed, fakeAsync, tick } from '@angular/core/testing';
-import { messages } from '../../constants/messages';
+import { messages } from '../constants/messages';
 import { NotificationService } from '../services/notification.service';
 import { httpErrorInterceptor } from './http-error-interceptor';
 
@@ -20,9 +13,7 @@ describe('HttpErrorInterceptorModule', () => {
   let notificationService: jasmine.SpyObj<NotificationService>;
 
   beforeEach(() => {
-    notificationService = jasmine.createSpyObj('NotificationService', [
-      'warnMessage',
-    ]);
+    notificationService = jasmine.createSpyObj('NotificationService', ['warnMessage']);
 
     TestBed.configureTestingModule({
       providers: [

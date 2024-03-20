@@ -4,7 +4,7 @@ import { WorkdayAPIService } from './workday-api.service';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { APIResponse } from '@app/core/interfaces/response';
 
-import { constants } from '@app/constants/constants';
+import { constants } from '@app/core/constants/constants';
 import { provideHttpClient } from '@angular/common/http';
 import { AssignPersonToWorkdayTimeslotRequest, UnassignPersonFromWorkdayTimeslotRequest, WorkdayTimeslot } from '../interfaces/workday_timeslot';
 import { DepartmentWithMetadata } from '../interfaces/department';

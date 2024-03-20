@@ -4,10 +4,10 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { constants } from '../../constants/constants';
+import { constants } from '../constants/constants';
 import { AuthService } from './auth.service';
 import { NotificationService } from './notification.service';
-import { messages } from '@app/constants/messages';
+import { messages } from '@app/core/constants/messages';
 
 describe('AuthService', () => {
   let service: AuthService;
