@@ -1,6 +1,6 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
-import { Component, HostBinding, effect, inject, signal } from '@angular/core';
+import { Component, HostBinding, effect, inject } from '@angular/core';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { RouterOutlet } from '@angular/router';
 import { ThemeHandlerService } from '@app/core/services/theme-handler.service';

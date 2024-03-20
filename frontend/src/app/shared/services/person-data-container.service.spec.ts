@@ -17,11 +17,9 @@ describe('PersonDataContainerService', () => {
     mockPersonAPIService = jasmine.createSpyObj('PersonAPIService', ['getPersons']);
     mockPersonAPIService.getPersons.and.returnValue(of({ data: [], message: 'test', status: 200 }));
     mockActivatedRoute = jasmine.createSpyObj('ActivatedRoute', [], {
-      snapshot: {
-        queryParams: {
-          department: 'test',
-        },
-      },
+      queryParams: of({
+        department: 'test2',
+      }),
     });
 
     TestBed.configureTestingModule({
@@ -64,11 +62,9 @@ describe('PersonDataContainerServiceTestComponent', () => {
   beforeEach(async () => {
     mockPersonAPIService = jasmine.createSpyObj('PersonAPIService', ['getPersons']);
     mockActivatedRoute = jasmine.createSpyObj('ActivatedRoute', [], {
-      snapshot: {
-        queryParams: {
-          department: 'test2',
-        },
-      },
+      queryParams: of({
+        department: 'test2',
+      }),
     });
     mockPersonAPIService.getPersons.and.returnValue(of({ data: [], message: 'test2', status: 200 }));
 

@@ -2,6 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { ActivatedRoute } from '@angular/router';
 import { ActiveDepartmentHandlerService } from './active-department-handler.service';
+import { of } from 'rxjs';
 
 describe('ActiveDepartmentHandlerService', () => {
   let service: ActiveDepartmentHandlerService;
@@ -9,11 +10,7 @@ describe('ActiveDepartmentHandlerService', () => {
 
   beforeEach(() => {
     mockActivatedRoute = jasmine.createSpyObj('ActivatedRoute', [], {
-      snapshot: {
-        queryParams: {
-          department: 'test',
-        },
-      },
+      queryParams: of({ department: 'test' }),
     });
 
     TestBed.configureTestingModule({
@@ -35,9 +32,9 @@ describe('ActiveDepartmentHandlerService', () => {
     expect(service.activeDepartment$).toBe('test');
   });
 
-  it('should handle undefined department', () => {
-    service.activeDepartment = undefined;
+  it('should handle null department', () => {
+    service.activeDepartment = null;
 
-    expect(service.activeDepartment$).toBe('');
+    expect(service.activeDepartment$).toBe(null);
   });
 });
