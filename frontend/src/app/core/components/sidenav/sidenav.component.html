@@ -1,1 +1,10 @@
-<div class="container"></div>
+<div class="container">
+  @for (route of routeConfigurations; track route) {
+    <button class="button" mat-flat-button [routerLink]="route.path" (click)="setActiveDepartment(route.id); closeSidenav.emit()" [queryParams]="{ department: route.id }" color="accent">
+      {{ route.title }}
+    </button>
+  }
+  @if (isAdmin()) {
+    <button class="button" id="admin-route-button" mat-flat-button routerLink="/admin" color="accent" (click)="closeSidenav.emit()">Admin</button>
+  }
+</div>

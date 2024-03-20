@@ -1,6 +1,6 @@
 <div class="container">
   @for (route of routeConfigurations; track route) {
-    <button class="button" mat-raised-button [routerLink]="route.path" (click)="activeDepartmentHandlerService.activeDepartment = route.id" [queryParams]="{ department: route.id }">
+    <button class="button" mat-raised-button [routerLink]="route.path" (click)="setActiveDepartment(route.id)" [queryParams]="{ department: route.id }">
       {{ route.title }}
     </button>
   }
