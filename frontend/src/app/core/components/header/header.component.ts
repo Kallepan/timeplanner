@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -15,7 +14,7 @@ import { RouterLink } from '@angular/router';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
   standalone: true,
-  imports: [CommonModule, RouterLink, MatSlideToggleModule, MatTooltipModule, MatToolbarModule, MatIconModule, MatButtonModule, LoginComponent, CustomHeaderComponent],
+  imports: [RouterLink, MatSlideToggleModule, MatTooltipModule, MatToolbarModule, MatIconModule, MatButtonModule, LoginComponent, CustomHeaderComponent],
 })
 export class HeaderComponent {
   title = constants.TITLE_SHORT;

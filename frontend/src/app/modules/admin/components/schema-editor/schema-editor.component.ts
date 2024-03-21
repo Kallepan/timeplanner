@@ -1,5 +1,4 @@
 import { Component, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MatTreeModule } from '@angular/material/tree';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -26,7 +25,7 @@ import { constants } from '@app/core/constants/constants';
 @Component({
   selector: 'app-schema-editor',
   standalone: true,
-  imports: [CommonModule, MatTreeModule, MatButtonModule, MatProgressBarModule, MatIconModule, MatTooltipModule, EditWeekdaysOfTimeslotComponent],
+  imports: [MatTreeModule, MatButtonModule, MatProgressBarModule, MatIconModule, MatTooltipModule, EditWeekdaysOfTimeslotComponent],
   templateUrl: './schema-editor.component.html',
   styleUrl: './schema-editor.component.scss',
 })

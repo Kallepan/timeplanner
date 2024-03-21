@@ -1,17 +1,17 @@
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { ActionsComponent } from '../actions/actions.component';
-import { CommonModule } from '@angular/common';
 import { ActiveWeekHandlerService } from '@app/shared/services/active-week-handler.service';
 import { TimetableDataContainerService } from '@app/shared/services/timetable-data-container.service';
 import { ViewOnlyTimetableComponent } from '../view-only-timetable/view-only-timetable.component';
 import { ActiveDepartmentHandlerService } from '@app/shared/services/active-department-handler.service';
 import { MatBottomSheet, MatBottomSheetConfig, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { AbsencyPanelComponent } from '@app/modules/planner/components/absency-panel/absency-panel.component';
+import { NgStyle } from '@angular/common';
 
 @Component({
   selector: 'app-viewer-landing-page',
   standalone: true,
-  imports: [CommonModule, ViewOnlyTimetableComponent, ActionsComponent],
+  imports: [NgStyle, ViewOnlyTimetableComponent, ActionsComponent],
   templateUrl: './viewer-landing-page.component.html',
   styleUrl: './viewer-landing-page.component.scss',
 })

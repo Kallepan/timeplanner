@@ -8,16 +8,16 @@ import { CdkDrag, CdkDropList } from '@angular/cdk/drag-drop';
 import { SearchBarComponent } from '@app/shared/components/search-bar/search-bar.component';
 import { FormControl } from '@angular/forms';
 import { combineLatestWith, debounceTime, filter, map, startWith } from 'rxjs';
-import { CommonModule } from '@angular/common';
 import { PersonDataContainerService } from '@app/shared/services/person-data-container.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { TimetableDataContainerService } from '@app/shared/services/timetable-data-container.service';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-person-list',
   standalone: true,
-  imports: [CommonModule, SearchBarComponent, MatCardModule, MatTooltipModule, CdkDrag, CdkDropList, MatProgressBarModule],
+  imports: [AsyncPipe, SearchBarComponent, MatCardModule, MatTooltipModule, CdkDrag, CdkDropList, MatProgressBarModule],
   templateUrl: './person-list.component.html',
   styleUrl: './person-list.component.scss',
 })

@@ -7,14 +7,14 @@ import { debounceTime, filter, map } from 'rxjs';
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { PersonDataContainerService } from '@app/shared/services/person-data-container.service';
-import { CommonModule } from '@angular/common';
 import { ENTER, COMMA } from '@angular/cdk/keycodes';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { AsyncPipe } from '@angular/common';
 @Component({
   selector: 'app-select-persons',
   standalone: true,
-  imports: [CommonModule, MatIconModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatChipsModule, MatAutocompleteModule],
+  imports: [AsyncPipe, MatIconModule, ReactiveFormsModule, MatButtonModule, MatFormFieldModule, MatInputModule, MatChipsModule, MatAutocompleteModule],
   templateUrl: './select-persons.component.html',
   styleUrl: './select-persons.component.scss',
 })

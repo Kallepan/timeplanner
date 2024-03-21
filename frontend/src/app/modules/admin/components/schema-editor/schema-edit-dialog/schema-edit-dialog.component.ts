@@ -6,7 +6,6 @@
  *  - id: the id of the schema
  *  - name: the name of the schema
  */
-import { CommonModule } from '@angular/common';
 import { Component, Inject, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -28,7 +27,7 @@ export type SchemaEditDialogData<T extends CheckIDExistsInterface> = {
 @Component({
   selector: 'app-create-dialog',
   standalone: true,
-  imports: [CommonModule, MatDialogModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [MatDialogModule, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule],
   templateUrl: './schema-edit-dialog.component.html',
   styleUrl: './schema-edit-dialog.component.scss',
 })
