@@ -23,7 +23,12 @@ export class constants {
 
   public static IS_PRODUCTION = environment.production;
 
-  public static ABSENCY_REASONS = ['Urlaub', 'Krank (AU)', 'Krank (keine AU)', 'Fortbildung'];
+  public static ABSENCY_REASONS = new Map<string, string>([
+    ['Urlaub', '#2C8FC9'],
+    ['Krank (AU)', '#9CB703'],
+    ['Krank (keine AU)', '#F5BB00'],
+    ['Fortbildung', '#B56CE2'],
+  ]);
 
   public static POSSIBLE_WEEKDAYS: ValidWeekday[] = [
     { id: 1, name: 'Montag' },

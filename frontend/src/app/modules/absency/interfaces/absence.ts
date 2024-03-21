@@ -4,6 +4,7 @@ export type AbsenceForPerson = {
   endDate: Date;
   name: string;
   created_at: Date;
+  color: string;
 };
 
 /** type used to keep track of the absences for a date e.g.: each date in a week **/

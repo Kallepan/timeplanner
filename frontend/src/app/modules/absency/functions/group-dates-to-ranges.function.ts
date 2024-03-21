@@ -1,8 +1,9 @@
+import { constants } from '@app/core/constants/constants';
 import { AbsenceForPerson } from '../interfaces/absence';
 
 export type ObjectsWithDatesToBeSorted = { date: Date; created_at: Date };
 
-export const groupDatesToRanges = (objectsSortedByDate: ObjectsWithDatesToBeSorted[], name: string): AbsenceForPerson[] => {
+export const groupDatesToRanges = (objectsSortedByDate: ObjectsWithDatesToBeSorted[], reason: string): AbsenceForPerson[] => {
   const ranges: AbsenceForPerson[] = [];
 
   let objectWithStartDate = objectsSortedByDate[0];
@@ -15,20 +16,22 @@ export const groupDatesToRanges = (objectsSortedByDate: ObjectsWithDatesToBeSort
     }
 
     ranges.push({
-      name: name,
+      name: reason,
       startDate: objectWithStartDate.date,
       endDate: objectWithLastDate.date,
       created_at: objectWithStartDate.created_at,
+      color: constants.ABSENCY_REASONS.get(reason) ?? '#ffffff',
     });
     objectWithStartDate = objectsSortedByDate[i];
     objectWithLastDate = objectsSortedByDate[i];
   }
 
   ranges.push({
-    name: name,
+    name: reason,
     startDate: objectWithStartDate.date,
     endDate: objectWithLastDate.date,
     created_at: objectWithStartDate.created_at,
+    color: constants.ABSENCY_REASONS.get(reason) ?? '#ffffff',
   });
   return ranges;
 };

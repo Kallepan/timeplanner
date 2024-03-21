@@ -22,7 +22,7 @@ export type CreateAbsencyDialogData = {
   styleUrl: './create-absency-dialog.component.scss',
 })
 export class CreateAbsencyDialogComponent {
-  absencyReasons = constants.ABSENCY_REASONS;
+  absencyReasons = Array.from(constants.ABSENCY_REASONS.keys());
 
   fb = inject(FormBuilder);
   control: FormGroup;

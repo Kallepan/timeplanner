@@ -5,4 +5,13 @@
     <app-person-preview [persons]="[person]" [largeText]="true"></app-person-preview>
     <app-year-calendar></app-year-calendar>
   }
+  <mat-list class="legend" role="list">
+    @for (reason of absencyReasons; track $index) {
+      <mat-list-item role="listitem" [ngStyle]="{ 'background-color': reason[1] }">
+        <p class="text">
+          {{ reason[0] }}
+        </p>
+      </mat-list-item>
+    }
+  </mat-list>
 </div>
