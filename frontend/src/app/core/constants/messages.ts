@@ -14,6 +14,8 @@ export class messages {
 
     PERSON_WEEKDAY_UPDATED: 'Wochentage der Person erfolgreich aktualisiert',
     PERSON_WEEKDAY_UPDATE_FAILED: 'Aktualisieren der Wochentage der Person fehlgeschlagen',
+    PERSON_WORKPLACE_UPDATED: 'Arbeitsplätze der Person erfolgreich aktualisiert',
+    PERSON_WORKPLACE_UPDATE_FAILED: 'Aktualisieren der Arbeitsplätze der Person fehlgeschlagen',
   };
   public static AUTH = {
     LOGGED_IN: 'Login erfolgreich',

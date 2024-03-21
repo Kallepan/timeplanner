@@ -1,1 +1,8 @@
-<p>edit-workplaces works!</p>
+<h3>Qualifikationen</h3>
+<mat-chip-listbox [multiple]="true" [selectable]="true">
+  @for (workplace of workplaces(); track workplace) {
+    <mat-chip-option color="accent" [selected]="workplace.selected" [value]="workplace.id" (selectionChange)="selectWorkplace($event)">
+      {{ workplace.name }}
+    </mat-chip-option>
+  }
+</mat-chip-listbox>

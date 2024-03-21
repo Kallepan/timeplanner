@@ -23,8 +23,13 @@ export class ActivePersonHandlerServiceService {
   dialog = inject(MatDialog);
 
   private _activePerson = signal<PersonWithMetadata | null>(null);
-  set activePerson(person: PersonWithMetadata) {
-    this._activePerson.set(person);
+  set activePerson(personID: string) {
+    this._personAPIService
+      .getPerson(personID)
+      .pipe(map((resp) => resp.data))
+      .subscribe((person) => {
+        this._activePerson.set(person);
+      });
   }
   get activePerson$() {
     return this._activePerson();

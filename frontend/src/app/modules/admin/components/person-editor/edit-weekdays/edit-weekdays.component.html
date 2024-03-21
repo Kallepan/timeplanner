@@ -1,6 +1,6 @@
 <h3>Anwesenheitstage</h3>
 <mat-chip-listbox [multiple]="true" [selectable]="true">
-  @for (weekday of weekdays(); track $index) {
+  @for (weekday of weekdays(); track weekday.id) {
     <mat-chip-option color="accent" [selected]="weekday.selected" [value]="weekday.id" (selectionChange)="selectWeekday($event)">
       {{ weekday.name }}
     </mat-chip-option>
