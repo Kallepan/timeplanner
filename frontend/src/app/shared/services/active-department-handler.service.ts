@@ -14,7 +14,7 @@ export class ActiveDepartmentHandlerService {
   // get department from router query params
   private activatedRoute = inject(ActivatedRoute);
 
-  private _activeDepartment: WritableSignal<string | null>;
+  private _activeDepartment: WritableSignal<string | null> = signal(null);
 
   // or set department from code
   set activeDepartment(department: string | null) {

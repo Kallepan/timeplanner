@@ -62,7 +62,8 @@ describe('CreateAbsencyDialogComponent', () => {
     // compare radio button labels with absency reasons
     radioButtons.forEach(async (radioButton, index) => {
       const label = await radioButton.getLabelText();
-      expect(label).toEqual(component.absencyReasons[index]);
+      expect(label).toBeDefined();
+      expect(component.absencyReasons[index]).toEqual(label);
     });
   });
 
@@ -72,6 +73,7 @@ describe('CreateAbsencyDialogComponent', () => {
     // select first radio button
     await radioButtons[0].check();
 
+    expect(component.control.get('reason')?.value).toBeDefined();
     expect(component.control.get('reason')?.value).toEqual(component.absencyReasons[0]);
   });
 

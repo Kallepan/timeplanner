@@ -37,4 +37,14 @@ describe('ActiveDepartmentHandlerService', () => {
 
     expect(service.activeDepartment$).toBe(null);
   });
+
+  it('should format department', () => {
+    service.activeDepartment = 'TEST';
+
+    expect(service.activeDepartment$).toBe('test');
+  });
+
+  it('_activeDepartment should be defined', () => {
+    expect(service['_activeDepartment']).toBeDefined();
+  });
 });
