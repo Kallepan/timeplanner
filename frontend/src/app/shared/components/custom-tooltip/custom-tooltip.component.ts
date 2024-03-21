@@ -1,10 +1,10 @@
-import { CommonModule } from '@angular/common';
+import { NgStyle } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-custom-tooltip',
   standalone: true,
-  imports: [CommonModule],
+  imports: [NgStyle],
   template: `
     <div class="container" [ngStyle]="{ top: topCoordinate, left: leftCoordinate }">
       <div class="content">

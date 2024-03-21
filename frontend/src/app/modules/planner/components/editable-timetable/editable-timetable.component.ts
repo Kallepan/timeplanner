@@ -1,5 +1,4 @@
 import { CdkDropList, CdkDropListGroup } from '@angular/cdk/drag-drop';
-import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { ThemeHandlerService } from '@app/core/services/theme-handler.service';
 import { DisplayedWorkdayTimeslot } from '@app/modules/viewer/interfaces/workplace';
@@ -14,11 +13,25 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { ActionsComponent } from '../actions/actions.component';
 import { ActiveDepartmentHandlerService } from '@app/shared/services/active-department-handler.service';
+import { DatePipe, NgClass, NgStyle, TitleCasePipe } from '@angular/common';
 
 @Component({
   selector: 'app-editable-timetable',
   standalone: true,
-  imports: [CommonModule, SelectPersonsComponent, CdkDropList, CdkDropListGroup, PersonListComponent, PersonPreviewComponent, MatIconModule, MatButtonModule, ActionsComponent],
+  imports: [
+    DatePipe,
+    TitleCasePipe,
+    NgStyle,
+    NgClass,
+    SelectPersonsComponent,
+    CdkDropList,
+    CdkDropListGroup,
+    PersonListComponent,
+    PersonPreviewComponent,
+    MatIconModule,
+    MatButtonModule,
+    ActionsComponent,
+  ],
   templateUrl: './editable-timetable.component.html',
   styleUrl: './editable-timetable.component.scss',
 })

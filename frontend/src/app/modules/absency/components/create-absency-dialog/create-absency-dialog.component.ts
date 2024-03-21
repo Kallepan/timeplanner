@@ -7,7 +7,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatRadioModule } from '@angular/material/radio';
 import { constants } from '@app/core/constants/constants';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 
 export type CreateAbsencyDialogData = {
   personID: string;
@@ -17,7 +17,7 @@ export type CreateAbsencyDialogData = {
 @Component({
   selector: 'app-create-absency-dialog',
   standalone: true,
-  imports: [CommonModule, DialogLayoutComponent, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, MatRadioModule],
+  imports: [DatePipe, DialogLayoutComponent, ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatDatepickerModule, MatRadioModule],
   templateUrl: './create-absency-dialog.component.html',
   styleUrl: './create-absency-dialog.component.scss',
 })

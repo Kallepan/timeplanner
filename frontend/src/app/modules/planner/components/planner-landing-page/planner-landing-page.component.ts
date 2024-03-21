@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, inject } from '@angular/core';
 import { ActiveDepartmentHandlerService } from '@app/shared/services/active-department-handler.service';
 import { ActiveWeekHandlerService } from '@app/shared/services/active-week-handler.service';
@@ -7,11 +6,12 @@ import { PlannerStateHandlerService } from '../../services/planner-state-handler
 import { MatBottomSheet, MatBottomSheetConfig, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 import { AbsencyPanelComponent } from '../absency-panel/absency-panel.component';
 import { EditableTimetableComponent } from '../editable-timetable/editable-timetable.component';
+import { NgStyle } from '@angular/common';
 
 @Component({
   selector: 'app-planner-landing-page',
   standalone: true,
-  imports: [CommonModule, EditableTimetableComponent],
+  imports: [NgStyle, EditableTimetableComponent],
   templateUrl: './planner-landing-page.component.html',
   styleUrl: './planner-landing-page.component.scss',
 })

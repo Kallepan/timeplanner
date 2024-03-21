@@ -3,7 +3,7 @@
  *
  * Allows the selection of a person using an mat autocomplete field
  */
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -16,7 +16,7 @@ import { debounceTime, filter, map } from 'rxjs';
 @Component({
   selector: 'app-person-autocomplete',
   standalone: true,
-  imports: [MatAutocompleteModule, MatInputModule, MatFormFieldModule, ReactiveFormsModule, CommonModule],
+  imports: [AsyncPipe, MatAutocompleteModule, MatInputModule, MatFormFieldModule, ReactiveFormsModule],
   templateUrl: './person-autocomplete.component.html',
   styleUrl: './person-autocomplete.component.scss',
 })

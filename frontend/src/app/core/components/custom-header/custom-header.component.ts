@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { AsyncPipe, TitleCasePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { NavigationEnd, Router } from '@angular/router';
@@ -7,7 +7,7 @@ import { filter, map, switchMap } from 'rxjs';
 @Component({
   selector: 'app-custom-header',
   standalone: true,
-  imports: [CommonModule],
+  imports: [AsyncPipe, TitleCasePipe],
   templateUrl: './custom-header.component.html',
   styleUrl: './custom-header.component.scss',
 })
