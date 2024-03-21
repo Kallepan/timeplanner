@@ -31,7 +31,7 @@ describe('ActivePersonHandlerServiceService', () => {
   let mockPersonAPIService: jasmine.SpyObj<PersonAPIService>;
 
   beforeEach(() => {
-    mockPersonAPIService = jasmine.createSpyObj('PersonAPIService', ['getAbsencyForPersonInRange']);
+    mockPersonAPIService = jasmine.createSpyObj('PersonAPIService', ['getAbsencyForPersonInRange', 'getPerson']);
 
     TestBed.configureTestingModule({
       providers: [
@@ -54,7 +54,8 @@ describe('ActivePersonHandlerServiceService', () => {
   });
 
   it('should set active person', () => {
-    service.activePerson = mockPerson;
+    mockPersonAPIService.getPerson.and.returnValue(of({ data: mockPerson, message: 'success', status: 200 }));
+    service.activePerson = mockPerson.id;
 
     expect(service.activePerson$).toBe(mockPerson);
   });
@@ -95,7 +96,7 @@ describe('ActivePersonHandlerServiceService in TestComponent', () => {
   let mockNotificationService: jasmine.SpyObj<NotificationService>;
 
   beforeEach(() => {
-    mockPersonAPIService = jasmine.createSpyObj('PersonAPIService', ['getAbsencyForPersonInRange', 'addAbsencyToPerson', 'removeAbsencyFromPerson']);
+    mockPersonAPIService = jasmine.createSpyObj('PersonAPIService', ['getAbsencyForPersonInRange', 'addAbsencyToPerson', 'removeAbsencyFromPerson', 'getPerson']);
     mockNotificationService = jasmine.createSpyObj('NotificationService', ['warnMessage', 'infoMessage']);
     TestBed.configureTestingModule({
       declarations: [TestComponent],
@@ -128,8 +129,9 @@ describe('ActivePersonHandlerServiceService in TestComponent', () => {
 
   it('should call getAbsencyForPersonInRange when active year changes', () => {
     mockPersonAPIService.getAbsencyForPersonInRange.and.returnValue(of({ data: [], message: 'success', status: 200 }));
+    mockPersonAPIService.getPerson.and.returnValue(of({ data: mockPerson, message: 'success', status: 200 }));
     const year = 2021;
-    service.activePerson = mockPerson;
+    service.activePerson = mockPerson.id;
     service.activeYear = year;
 
     fixture.detectChanges();
@@ -177,7 +179,9 @@ describe('ActivePersonHandlerServiceService in TestComponent', () => {
       events: [],
       date: currentDate,
     };
-    service.activePerson = mockPerson;
+
+    mockPersonAPIService.getPerson.and.returnValue(of({ data: mockPerson, message: 'success', status: 200 }));
+    service.activePerson = mockPerson.id;
     service.activeYear = currentDate.getFullYear();
     // mock API response
     mockPersonAPIService.removeAbsencyFromPerson.and.returnValue(of({ data: null, message: 'success', status: 200 }));
@@ -211,8 +215,10 @@ describe('ActivePersonHandlerServiceService in TestComponent', () => {
   });
 
   it('should handle Add Absency', () => {
+    mockPersonAPIService.getPerson.and.returnValue(of({ data: mockPerson, message: 'success', status: 200 }));
     const currentDate = new Date();
-    service.activePerson = mockPerson;
+
+    service.activePerson = mockPerson.id;
     service.activeYear = currentDate.getFullYear();
     // mock API response
     mockPersonAPIService.addAbsencyToPerson.and.returnValue(of({ data: null, message: 'success', status: 200 }));
@@ -257,8 +263,9 @@ describe('ActivePersonHandlerServiceService in TestComponent', () => {
   });
 
   it('should handle error during remove absency', () => {
+    mockPersonAPIService.getPerson.and.returnValue(of({ data: mockPerson, message: 'success', status: 200 }));
     const currentDate = new Date();
-    service.activePerson = mockPerson;
+    service.activePerson = mockPerson.id;
     service.activeYear = currentDate.getFullYear();
     // mock API response
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -287,8 +294,9 @@ describe('ActivePersonHandlerServiceService in TestComponent', () => {
   });
 
   it('should handle error during add absency', () => {
+    mockPersonAPIService.getPerson.and.returnValue(of({ data: mockPerson, message: 'success', status: 200 }));
     const currentDate = new Date();
-    service.activePerson = mockPerson;
+    service.activePerson = mockPerson.id;
     service.activeYear = currentDate.getFullYear();
 
     // mock API response

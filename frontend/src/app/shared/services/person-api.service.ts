@@ -85,7 +85,7 @@ export class PersonAPIService {
   }
 
   // Relations
-  addDepartmentToPerson(departmentName: string, personID: string): Observable<APIResponse<null>> {
+  addDepartmentToPerson(departmentID: string, personID: string): Observable<APIResponse<null>> {
     const url = `${constants.APIS.PLANNER}/person/${personID}/department`;
 
     const httpOptions = {
@@ -96,14 +96,14 @@ export class PersonAPIService {
     };
 
     const body = {
-      department_id: departmentName,
+      department_id: departmentID,
     };
 
     return this.http.post<APIResponse<null>>(url, body, httpOptions);
   }
 
-  removeDepartmentFromPerson(departmentName: string, personID: string): Observable<APIResponse<null>> {
-    const url = `${constants.APIS.PLANNER}/person/${personID}/department/${departmentName}`;
+  removeDepartmentFromPerson(departmentID: string, personID: string): Observable<APIResponse<null>> {
+    const url = `${constants.APIS.PLANNER}/person/${personID}/department/${departmentID}`;
 
     const httpOptions = {
       headers: new HttpHeaders({
@@ -115,7 +115,7 @@ export class PersonAPIService {
     return this.http.delete<APIResponse<null>>(url, httpOptions);
   }
 
-  addWorkplaceToPerson(departmentName: string, workplaceName: string, personID: string): Observable<APIResponse<null>> {
+  addWorkplaceToPerson(departmentID: string, workplaceID: string, personID: string): Observable<APIResponse<null>> {
     const url = `${constants.APIS.PLANNER}/person/${personID}/workplace`;
 
     const httpOptions = {
@@ -126,19 +126,19 @@ export class PersonAPIService {
     };
 
     const body = {
-      department_id: departmentName,
-      workplace_id: workplaceName,
+      department_id: departmentID,
+      workplace_id: workplaceID,
     };
 
     return this.http.post<APIResponse<null>>(url, body, httpOptions);
   }
 
-  removeWorkplaceFromPerson(departmentName: string, workplaceName: string, personID: string): Observable<APIResponse<null>> {
+  removeWorkplaceFromPerson(departmentID: string, workplaceID: string, personID: string): Observable<APIResponse<null>> {
     const url = `${constants.APIS.PLANNER}/person/${personID}/workplace`;
 
     const body = {
-      department_id: departmentName,
-      workplace_id: workplaceName,
+      department_id: departmentID,
+      workplace_id: workplaceID,
     };
 
     const httpOptions = {
@@ -152,7 +152,7 @@ export class PersonAPIService {
     return this.http.delete<APIResponse<null>>(url, httpOptions);
   }
 
-  addWeekdayToPerson(weekdayID: string, personID: string): Observable<APIResponse<null>> {
+  addWeekdayToPerson(weekdayID: number, personID: string): Observable<APIResponse<null>> {
     const url = `${constants.APIS.PLANNER}/person/${personID}/weekday`;
 
     const httpOptions = {
@@ -163,13 +163,13 @@ export class PersonAPIService {
     };
 
     const body = {
-      weekday_name: weekdayID,
+      weekday_id: weekdayID,
     };
 
     return this.http.post<APIResponse<null>>(url, body, httpOptions);
   }
 
-  removeWeekdayFromPerson(weekdayID: string, personID: string): Observable<APIResponse<null>> {
+  removeWeekdayFromPerson(weekdayID: number, personID: string): Observable<APIResponse<null>> {
     const url = `${constants.APIS.PLANNER}/person/${personID}/weekday/${weekdayID}`;
 
     const httpOptions = {

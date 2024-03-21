@@ -23,7 +23,7 @@ import { debounceTime, filter, map } from 'rxjs';
 export class PersonAutocompleteComponent {
   personDataContainerService = inject(PersonDataContainerService);
 
-  @Output() personSelected = new EventEmitter<PersonWithMetadata>();
+  @Output() personSelected = new EventEmitter<string>();
   personControl = new FormControl<string>('');
   filteredPersons$ = this.personControl.valueChanges.pipe(
     debounceTime(150),
