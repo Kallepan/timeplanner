@@ -3,11 +3,13 @@ import { PersonAutocompleteComponent } from '@app/modules/absency/components/per
 import { PersonWithMetadata } from '@app/shared/interfaces/person';
 import { PersonEditorDataContainerService } from '../../services/person-editor-data-container.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { EditWorkplacesComponent } from './edit-workplaces/edit-workplaces.component';
+import { EditWeekdaysComponent } from './edit-weekdays/edit-weekdays.component';
 
 @Component({
   selector: 'app-person-editor',
   standalone: true,
-  imports: [PersonAutocompleteComponent, MatProgressSpinnerModule],
+  imports: [PersonAutocompleteComponent, MatProgressSpinnerModule, EditWorkplacesComponent, EditWeekdaysComponent],
   templateUrl: './person-editor.component.html',
   styleUrl: './person-editor.component.scss',
   providers: [PersonEditorDataContainerService],

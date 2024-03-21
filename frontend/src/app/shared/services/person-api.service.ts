@@ -152,7 +152,7 @@ export class PersonAPIService {
     return this.http.delete<APIResponse<null>>(url, httpOptions);
   }
 
-  addWeekdayToPerson(weekdayID: string, personID: string): Observable<APIResponse<null>> {
+  addWeekdayToPerson(weekdayID: number, personID: string): Observable<APIResponse<null>> {
     const url = `${constants.APIS.PLANNER}/person/${personID}/weekday`;
 
     const httpOptions = {
@@ -163,13 +163,13 @@ export class PersonAPIService {
     };
 
     const body = {
-      weekday_name: weekdayID,
+      weekday_id: weekdayID,
     };
 
     return this.http.post<APIResponse<null>>(url, body, httpOptions);
   }
 
-  removeWeekdayFromPerson(weekdayID: string, personID: string): Observable<APIResponse<null>> {
+  removeWeekdayFromPerson(weekdayID: number, personID: string): Observable<APIResponse<null>> {
     const url = `${constants.APIS.PLANNER}/person/${personID}/weekday/${weekdayID}`;
 
     const httpOptions = {

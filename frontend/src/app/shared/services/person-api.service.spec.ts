@@ -261,7 +261,7 @@ describe('PersonAPIService', () => {
       message: 'Weekday added',
     };
 
-    const weekdayID = '1';
+    const weekdayID = 1;
     const personID = '1';
 
     service.addWeekdayToPerson(weekdayID, personID).subscribe((response) => {
@@ -280,7 +280,7 @@ describe('PersonAPIService', () => {
       message: 'Weekday removed',
     };
 
-    const weekdayID = '1';
+    const weekdayID = 1;
     const personID = '1';
 
     service.removeWeekdayFromPerson(weekdayID, personID).subscribe((response) => {

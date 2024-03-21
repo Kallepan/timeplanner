@@ -11,6 +11,9 @@ export class messages {
     TIMESLOT_WEEKDAY_ASSIGNMENT_FAILED: 'Zuordnen des Wochentags fehlgeschlagen',
     TIMESLOT_WEEKDAY_UPDATE_FAILED: 'Aktualisieren des Wochentags fehlgeschlagen',
     TIMESLOT_WEEKDAY_UPDATE_SUCCESS: 'Wochentag erfolgreich aktualisiert',
+
+    PERSON_WEEKDAY_UPDATED: 'Wochentage der Person erfolgreich aktualisiert',
+    PERSON_WEEKDAY_UPDATE_FAILED: 'Aktualisieren der Wochentage der Person fehlgeschlagen',
   };
   public static AUTH = {
     LOGGED_IN: 'Login erfolgreich',
