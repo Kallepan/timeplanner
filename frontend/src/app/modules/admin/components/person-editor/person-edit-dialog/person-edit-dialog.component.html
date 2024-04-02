@@ -1,0 +1,37 @@
+<app-dialog-layout [control]="group" title="Person bearbeiten">
+  <form body [formGroup]="group" class="form">
+    <mat-form-field>
+      <input matInput autocomplete="off" type="text" formControlName="firstName" placeholder="Name" />
+      @if (group.get('firstName')?.hasError('required')) {
+        <mat-error>Vorname ist erforderlich</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput autocomplete="off" type="text" formControlName="lastName" placeholder="Vorname" />
+      @if (group.get('lastName')?.hasError('required')) {
+        <mat-error>Nachname ist erforderlich</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput autocomplete="off" type="text" formControlName="email" placeholder="E-Mail" />
+      @if (group.get('email')?.hasError('required')) {
+        <mat-error>E-Mail ist erforderlich</mat-error>
+      } @else if (group.get('email')?.hasError('email')) {
+        <mat-error>Ungültige E-Mail-Adresse</mat-error>
+      }
+    </mat-form-field>
+    <mat-form-field>
+      <input matInput autocomplete="off" type="number" formControlName="workingHours" placeholder="Arbeitsstunden" />
+      @if (group.get('workingHours')?.hasError('required')) {
+        <mat-error>Arbeitsstunden sind erforderlich</mat-error>
+      } @else if (group.get('workingHours')?.hasError('min')) {
+        <mat-error>Mindestens 1 Stunde</mat-error>
+      } @else if (group.get('workingHours')?.hasError('max')) {
+        <mat-error>Maximal 40 Stunden</mat-error>
+      } @else if (group.get('workingHours')?.hasError('pattern')) {
+        <mat-error>Ungültige Arbeitsstunden</mat-error>
+      }
+    </mat-form-field>
+    <mat-checkbox formControlName="active">Person ist aktiv?</mat-checkbox>
+  </form>
+</app-dialog-layout>
