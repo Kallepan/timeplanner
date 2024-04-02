@@ -4,6 +4,7 @@
   @if (getActivePerson(); as person) {
     <div class="center">
       <h2>{{ person.last_name }}, {{ person.first_name }} ({{ person.id }})</h2>
+      <button mat-raised-button color="accent" (click)="editPerson(person.id)">Person bearbeiten</button>
       <app-edit-weekdays></app-edit-weekdays>
       <app-edit-workplaces></app-edit-workplaces>
     </div>
