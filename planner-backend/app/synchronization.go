@@ -8,8 +8,8 @@ import (
 )
 
 func InitalizeSynchronization(injector *config.Injector) {
-	// every week
-	interval := 7 * 24 * time.Hour
+	// every day
+	interval := 24 * time.Hour
 	slog.Info("Initializing synchronization")
 
 	weeksInAdvance := 4
